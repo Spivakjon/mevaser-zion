@@ -185,6 +185,21 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
 .mbtn-gray{background:#f3f4f6;color:var(--ink3)}
 .mhint{font-size:.72rem;color:var(--ink3);margin-top:-.25rem;margin-bottom:.55rem}
 
+/* This Week card */
+.week-card{max-width:760px;margin:0 auto .85rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(200,168,75,.25);border-radius:14px;padding:.85rem 1rem;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.wk-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
+.wk-par{font-family:'Frank Ruhl Libre',serif;font-size:1.05rem;font-weight:700;color:var(--gold2)}
+.wk-date{font-size:.75rem;color:rgba(255,255,255,.45)}
+.wk-heb{font-size:.78rem;color:rgba(255,255,255,.55);font-weight:600}
+.wk-events{display:flex;flex-direction:column;gap:.35rem}
+.wk-ev{display:flex;align-items:center;gap:.45rem;background:rgba(255,255,255,.06);border-radius:8px;padding:.42rem .6rem;font-size:.8rem;color:rgba(255,255,255,.75)}
+.wk-ev-icon{font-size:.95rem;flex-shrink:0}
+.wk-ev-text{flex:1}
+.wk-ev-name{font-weight:700;color:#fff}
+.wk-none{font-size:.78rem;color:rgba(255,255,255,.3);padding:.3rem 0}
+.wk-link{display:inline-block;margin-top:.45rem;font-size:.72rem;color:var(--gold);text-decoration:none;border:1px solid rgba(200,168,75,.25);border-radius:6px;padding:.2rem .55rem;transition:all .15s}
+.wk-link:hover{background:rgba(200,168,75,.12);color:var(--gold2)}
+
 /* Member detail view */
 .md-ovl{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1500;background:rgba(0,0,0,.55);-webkit-overflow-scrolling:touch;justify-content:center;align-items:flex-start;padding:2rem .75rem;overflow-y:auto}
 .md-ovl.show{display:flex}
@@ -315,6 +330,9 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
   .wr{margin-bottom:.75rem}
   .mav{width:44px;height:44px;font-size:.95rem}
   .sheets-banner{flex-direction:column;text-align:center}
+  .week-card{margin:0 .45rem .85rem;padding:.75rem .7rem}
+  .wk-par{font-size:.95rem}
+  .wk-head{flex-wrap:wrap}
 }
 
 /* ===== SMALL MOBILE (max 380px) ===== */
@@ -335,6 +353,7 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
 <body>
 <div class="top-actions"><button onclick="openSelfEdit()">📝 עריכת הפרטים שלי</button><button onclick="openAdm()">🔒 ניהול</button></div>
 <div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name">עמותת מבשר ציון</div><div class="logo-sub">שלום וברוך הבא! אנא מלא את פרטיך ונשמח לשמור על קשר</div></div></div>
+<div class="week-card" id="week-card"><div class="wk-head"><span class="wk-par">📅 טוען פרשת השבוע...</span></div></div>
 <div class="main-card" id="main-card">
   <div class="sv" id="sv"><div class="s-icon">✓</div><div class="s-title">הרישום נשמר בהצלחה!</div><div class="s-body">פרטיך נשמרו בתיק הקהילה.<br>נשמח לראותך בקרב מתפללי בית הכנסת.</div><div class="s-btns"><button class="btn-new" onclick="resetForm()">רישום חדש</button><button class="btn-adm" onclick="openAdm()">ממשק מנהל</button></div></div>
   <div id="fv">
@@ -966,7 +985,7 @@ function renderWR(sh,parInfo,hd2,evs){
   row.innerHTML=`<div class="wh" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.parentElement.classList.contains('open')?'block':'none'"><div class="wdates"><span class="wheb">שבת ${hs}</span><span class="wgreg">${sh.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})}</span></div><div class="wpar">${pLabel} <a href="${CHBD}" target="_blank" rel="noopener">קרא בחב"ד ↗</a></div><div class="wbdgs">${hasBM?`<span class="wbdg bdg-bm">✡ ${evs.filter(x=>x.t==='bm').length} בר מצווה</span>`:''}${hasY?`<span class="wbdg bdg-yr">🕯 ${evs.filter(x=>x.t==='yr').length} יארצייט</span>`:''}</div><div class="wtgl">▾</div></div><div class="wevs"${evs.length?' style="display:block"':''}>${eH}</div>`;
   if(evs.length)row.classList.add('open');}
 let mflt='';
-function renderML(f=mflt){mflt=f.toLowerCase();const ms=getMs().filter(m=>!mflt||(m.firstName+' '+m.lastName+' '+m.torahName).toLowerCase().includes(mflt));const el=document.getElementById('mcnt');if(el)el.textContent=`${ms.length} מתפלל${ms.length!==1?'ים':''}`;const list=document.getElementById('ml');if(!list)return;if(!ms.length){list.innerHTML='<div class="no-m">אין מתפללים רשומים עדיין</div>';return}list.innerHTML=ms.map(m=>{const init=(m.firstName[0]||'')+(m.lastName[0]||'');const sub=[m.phone,m.email,m.address].filter(Boolean).join(' · ');const tags=[];if((m.children||[]).length)tags.push(`${m.children.length} ילד${m.children.length>1?'ים':''}`);if((m.yahrzeits||[]).length)tags.push(`${m.yahrzeits.length} יארצייט`);if((m.volunteering||[]).length)tags.push('מתנדב');return`<div class="mc"><div class="mav">${es(init)}</div><div class="mi"><div class="mn">${es(m.firstName)} ${es(m.lastName)}</div><div class="ms2">${es(sub)}</div></div><div class="mts">${tags.map(t=>`<span class="mt2">${t}</span>`).join('')}</div><div class="mas"><button class="med" onclick="editMx('${m.id}')">עריכה</button><button class="mde" onclick="delMx('${m.id}')">מחק</button></div></div>`}).join('')}
+function renderML(f=mflt){mflt=f.toLowerCase();const ms=getMs().filter(m=>!mflt||(m.firstName+' '+m.lastName+' '+m.torahName).toLowerCase().includes(mflt));const el=document.getElementById('mcnt');if(el)el.textContent=`${ms.length} מתפלל${ms.length!==1?'ים':''}`;const list=document.getElementById('ml');if(!list)return;if(!ms.length){list.innerHTML='<div class="no-m">אין מתפללים רשומים עדיין</div>';return}list.innerHTML=ms.map(m=>{const init=(m.firstName[0]||'')+(m.lastName[0]||'');const sub=[m.phone,m.email,m.address].filter(Boolean).join(' · ');const tags=[];if((m.children||[]).length)tags.push(`${m.children.length} ילד${m.children.length>1?'ים':''}`);if((m.yahrzeits||[]).length)tags.push(`${m.yahrzeits.length} יארצייט`);if((m.volunteering||[]).length)tags.push('מתנדב');return`<div class="mc"><div class="mav">${es(init)}</div><div class="mi"><div class="mn">${es(m.firstName)} ${es(m.lastName)}</div><div class="ms2">${es(sub)}</div></div><div class="mts">${tags.map(t=>`<span class="mt2">${t}</span>`).join('')}</div><div class="mas"><button class="med" onclick="editMx('${m.id}')">צפיה</button><button class="mde" onclick="delMx('${m.id}')">מחק</button></div></div>`}).join('')}
 function filtM(v){renderML(v)}
 function editMx(id){var m=getM(id);if(!m)return;showMemberDetail(m)}
 function doEditMx(id){var m=getM(id);if(!m)return;closeMD();closeAdm();initForm(m);document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';window.scrollTo(0,0)}
@@ -1051,7 +1070,53 @@ async function jumpHeb(){
   const sh=gSh(new Date(g.y,g.m-1,g.d));
   calSt=sh;renderCal();
 }
+// ── This Week Summary (public-facing) ────────────────────
+async function loadWeekSummary(){
+  var card=document.getElementById('week-card');
+  if(!card)return;
+  try{
+    var sh=gSh();
+    var key=d2s(sh);
+    var hd2=await g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate());
+    var hebStr=hd2?fhd(hd2.hd,hd2.hm,hd2.hy):'';
+    var d1=new Date(sh);d1.setDate(d1.getDate()-1);
+    var d2n=new Date(sh);d2n.setDate(d2n.getDate()+1);
+    var parMap=await fetchParashot(d1,d2n);
+    var pi=parMap[key]||{};
+    var parName=pi.parasha||pi.holiday||pi.special||'';
+    var ms=getMs();
+    var curHY=hd2?hd2.hy:5786;
+    var evs=await getWkEvs(ms,sh,curHY);
+    var h='<div class="wk-head">';
+    h+='<span class="wk-par">📖 '+(parName?es(parName):'שבת הקרובה')+'</span>';
+    h+='<span class="wk-heb">שבת '+es(hebStr)+'</span>';
+    h+='<span class="wk-date">'+sh.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})+'</span>';
+    h+='</div>';
+    if(evs.length){
+      h+='<div class="wk-events">';
+      for(var i=0;i<evs.length;i++){
+        var e=evs[i];
+        if(e.t==='bm'){
+          h+='<div class="wk-ev"><span class="wk-ev-icon">✡</span><div class="wk-ev-text"><span class="wk-ev-name">בר מצווה: '+es(e.child)+'</span> בן/בת '+es(e.parent)+(e.par?' — '+es(e.par):'')+'</div></div>';
+        }else{
+          h+='<div class="wk-ev"><span class="wk-ev-icon">🕯</span><div class="wk-ev-text"><span class="wk-ev-name">יארצייט: '+es(e.dec)+'</span> לזכרו של '+es(e.mem)+(e.dh?' — '+es(e.dh):'')+'</div></div>';
+        }
+      }
+      h+='</div>';
+    }else{
+      h+='<div class="wk-none">אין אירועים מיוחדים השבת</div>';
+    }
+    if(parName){
+      h+='<a class="wk-link" href="'+CHBD+'" target="_blank" rel="noopener">קרא את הפרשה בחב"ד ↗</a>';
+    }
+    card.innerHTML=h;
+  }catch(err){
+    console.warn('Week summary error:',err);
+    card.innerHTML='<div class="wk-head"><span class="wk-par">📅 לא ניתן לטעון</span></div>';
+  }
+}
 initForm();
+loadWeekSummary();
 </script>
 </body>
 </html>
