@@ -467,8 +467,10 @@ const PW='Nir2026',SK='mbz_v5',CHBD='https://www.chabad.org.il/ParashotArticles/
 const HM=[{n:'תשרי',v:7,e:'Tishrei'},{n:'חשון',v:8,e:'Cheshvan'},{n:'כסלו',v:9,e:'Kislev'},{n:'טבת',v:10,e:'Tevet'},{n:'שבט',v:11,e:'Shevat'},{n:'אדר א׳',v:12,e:'Adar I'},{n:'אדר ב׳',v:13,e:'Adar II'},{n:'ניסן',v:1,e:'Nisan'},{n:'אייר',v:2,e:'Iyar'},{n:'סיון',v:3,e:'Sivan'},{n:'תמוז',v:4,e:'Tamuz'},{n:'אב',v:5,e:'Av'},{n:'אלול',v:6,e:'Elul'}];
 const HD=['','א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב','יג','יד','טו','טז','יז','יח','יט','כ','כא','כב','כג','כד','כה','כו','כז','כח','כט','ל'];
 function hy2s(y){const T=[[400,'ת'],[300,'ש'],[200,'ר'],[100,'ק'],[90,'צ'],[80,'פ'],[70,'ע'],[60,'ס'],[50,'נ'],[40,'מ'],[30,'ל'],[20,'כ'],[10,'י'],[9,'ט'],[8,'ח'],[7,'ז'],[6,'ו'],[5,'ה'],[4,'ד'],[3,'ג'],[2,'ב'],[1,'א']];let n=y%1000,s='';for(const[v,l]of T){while(n>=v){if(n===15){s+='טו';n=0;break}if(n===16){s+='טז';n=0;break}s+=l;n-=v}if(!n)break}return s.length===1?s+"'":s.slice(0,-1)+'"'+s.slice(-1)}
-function hmn(v){const f=HM.find(m=>m.v==v||m.e===v);return f?f.n:v}
-function normHm(raw){const found=HM.find(m=>m.v==raw||m.e===raw);return found?found.v:raw}
+// Map Hebcal API month names (which vary) to our canonical values
+var _hmAlias={'Iyyar':2,'Sh\'vat':11,'Shvat':11,'Adar':12};
+function hmn(v){var f=HM.find(function(m){return m.v==v||m.e===v});if(f)return f.n;if(_hmAlias[v]!==undefined){var f2=HM.find(function(m){return m.v===_hmAlias[v]});if(f2)return f2.n}return v}
+function normHm(raw){var found=HM.find(function(m){return m.v==raw||m.e===raw});if(found)return found.v;if(_hmAlias[raw]!==undefined)return _hmAlias[raw];return raw}
 function fhd(d,m,y){if(!d&&!m&&!y)return'';return[HD[+d]||d,hmn(m),y?hy2s(+y):''].filter(Boolean).join(' ')}
 function fgd(s){if(!s)return'';return new Date(s+'T12:00:00').toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})}
 function d2s(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
