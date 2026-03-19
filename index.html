@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="מבשר ציון">
+<meta name="theme-color" content="#1a2744">
+<title>עמותת מבשר ציון</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#1a2744;--bg2:#1c3a4a;--bg3:#162035;--gold:#c8a84b;--gold2:#ddb95e;--gold3:#f0d48a;--gL:rgba(200,168,75,.12);--card:#fff;--c2:#f8f6f1;--c3:#f2ede3;--ink:#1a1a2e;--ink2:#3d3d5c;--ink3:#7a7a9a;--bd:#ddd8c8;--bd2:#eae5d8;--red:#c0392b;--grn:#1e7d4b;--blu:#1a5fa8;--shd:0 20px 60px rgba(0,0,0,.35),0 4px 16px rgba(0,0,0,.2)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Heebo',sans-serif;min-height:100vh;direction:rtl;background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 50%,var(--bg3) 100%);background-attachment:fixed;color:var(--ink);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+.logo-area{text-align:center;padding:2.25rem 1rem 1rem;padding-top:calc(2.25rem + env(safe-area-inset-top,0px))}
+.logo-wrap{display:inline-flex;flex-direction:column;align-items:center;gap:.5rem}
+.logo-box{width:112px;height:112px;background:rgba(255,255,255,.97);border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(0,0,0,.3),0 0 0 2px var(--gold);position:relative;overflow:hidden;flex-direction:column}
+.logo-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.logo-icon{font-size:2.8rem;line-height:1}
+.logo-25{font-family:'Frank Ruhl Libre',serif;font-size:1.2rem;font-weight:900;color:var(--gold);margin-top:-.2rem}
+.logo-name{color:#fff;font-family:'Frank Ruhl Libre',serif;font-size:1.75rem;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.logo-sub{color:rgba(255,255,255,.5);font-size:.82rem;font-weight:300;margin-top:.1rem}
+.main-card{background:var(--card);border-radius:20px;max-width:760px;margin:0 auto 1.5rem;box-shadow:var(--shd);overflow:hidden}
+.sh{display:flex;align-items:center;gap:.55rem;padding:.6rem 1.5rem;border-bottom:2px solid var(--gold);background:linear-gradient(90deg,var(--gL),transparent)}
+.sh-t{font-family:'Frank Ruhl Libre',serif;color:var(--ink2);font-size:.95rem;font-weight:700}
+.sec{padding:1.2rem 1.5rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7rem}
+.ff{display:flex;flex-direction:column;gap:.25rem}
+.ff label{font-size:.75rem;font-weight:600;color:var(--ink2)}
+.req{color:var(--red)}
+.ff input,.ff select{padding:.58rem .82rem;border:1.5px solid var(--bd);border-radius:9px;font-family:'Heebo',sans-serif;font-size:1rem;color:var(--ink);background:var(--c2);transition:border-color .2s,box-shadow .2s;direction:rtl;-webkit-appearance:none;appearance:none;width:100%}
+.ff input:focus,.ff select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,168,75,.14);background:#fff}
+.ff.err input,.ff.err select{border-color:var(--red)}
+.emsg{font-size:.71rem;color:var(--red);display:none}
+.ff.err .emsg{display:block}
+.ff select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23888' d='M8 10.5L3 5h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 8px center;background-size:11px;padding-left:1.75rem}
+.cb-row{display:flex;gap:.55rem;flex-wrap:wrap}
+.cbl{display:flex;align-items:center;gap:.45rem;cursor:pointer;padding:.42rem .78rem;border-radius:8px;border:1.5px solid var(--bd);font-size:.83rem;color:var(--ink2);transition:all .18s;background:var(--c2)}
+.cbl:hover{border-color:var(--gold);background:var(--gL)}
+.cbl input{width:15px;height:15px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+.cbl.on{border-color:var(--gold);background:var(--gL);color:var(--ink)}
+.dblock{background:var(--c3);border:1.5px solid var(--bd2);border-radius:10px;padding:.8rem .9rem;margin-top:.25rem}
+.drow{display:flex;align-items:center;gap:.38rem;margin-bottom:.5rem}
+.drow:last-of-type{margin-bottom:0}
+.dlbl{font-size:.68rem;font-weight:700;color:var(--ink3);width:44px;flex-shrink:0;text-align:center;background:var(--bd2);border-radius:5px;padding:.18rem .25rem;line-height:1.3}
+.hrow{display:grid;grid-template-columns:54px 1fr 128px;gap:.38rem;flex:1}
+.grow{flex:1}
+.grow input[type="date"]{width:100%;direction:ltr;padding:.52rem .75rem;border:1.5px solid var(--bd);border-radius:8px;font-family:'Heebo',sans-serif;font-size:1rem;background:var(--c2);-webkit-appearance:none}
+.grow input[type="date"]:focus{outline:none;border-color:var(--gold)}
+.bcnv{background:var(--gold);color:var(--ink);border:none;border-radius:7px;padding:.45rem .72rem;font-family:'Heebo',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .18s;flex-shrink:0}
+.bcnv:hover{background:var(--gold2)}
+.bcnv:disabled{opacity:.5;cursor:not-allowed}
+.dres{font-size:.77rem;font-weight:600;margin-top:.45rem;display:flex;gap:.65rem;flex-wrap:wrap}
+.dres-h{color:var(--grn)}
+.dres-g{color:var(--blu)}
+.ic{background:var(--c2);border:1.5px solid var(--bd2);border-radius:12px;padding:.95rem 1.05rem .85rem;margin-bottom:.75rem}
+.ic-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;padding-bottom:.55rem;border-bottom:1px solid var(--bd2)}
+.ic-title{font-family:'Frank Ruhl Libre',serif;font-size:.9rem;font-weight:700;color:var(--ink2)}
+.brm{background:transparent;border:1.5px solid #f5c6c6;border-radius:6px;color:var(--red);width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.85rem;transition:all .15s;flex-shrink:0}
+.brm:hover{background:#fff0f0;border-color:var(--red)}
+.bm-btn{background:var(--ink);color:var(--gold2);border:none;border-radius:8px;padding:.5rem 1.05rem;font-family:'Heebo',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .18s;margin-top:.32rem}
+.bm-btn:hover{background:var(--bg1)}
+.bm-btn:disabled{opacity:.5;cursor:not-allowed}
+.bm-res{background:var(--ink);color:var(--gold3);border-radius:8px;padding:.55rem .88rem;font-size:.79rem;line-height:1.65;margin-top:.45rem;display:none}
+.badd{display:flex;align-items:center;justify-content:center;gap:.42rem;background:transparent;border:2px dashed var(--bd);border-radius:10px;width:100%;padding:.68rem 1rem;cursor:pointer;color:var(--ink3);font-family:'Heebo',sans-serif;font-size:.83rem;transition:all .18s;margin-top:.35rem}
+.badd:hover{border-color:var(--gold);color:var(--gold2);background:var(--gL)}
+.fmsg{text-align:center;font-size:.79rem;color:var(--ink3);min-height:1rem;padding:.3rem 0}
+.bsave{width:100%;background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 100%);color:var(--ink);border:none;padding:.95rem 1.5rem;font-family:'Frank Ruhl Libre',serif;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+.bsave:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.sv{display:none;padding:2.75rem 2rem;text-align:center}
+.s-icon{width:68px;height:68px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.7rem;box-shadow:0 4px 18px rgba(200,168,75,.4)}
+.s-title{font-family:'Frank Ruhl Libre',serif;color:var(--ink);font-size:1.45rem;font-weight:700;margin-bottom:.55rem}
+.s-body{color:var(--ink3);font-size:.89rem;line-height:1.75}
+.s-btns{display:flex;gap:.7rem;justify-content:center;margin-top:1.2rem;flex-wrap:wrap}
+.s-btns button{padding:.62rem 1.35rem;border:none;border-radius:8px;font-family:'Heebo',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer}
+.btn-new{background:var(--ink);color:var(--gold2)}
+.btn-adm{background:var(--gold);color:var(--ink)}
+.adm-lnk{text-align:center;padding:1rem 0 2.5rem;padding-bottom:calc(2.5rem + env(safe-area-inset-bottom,0px))}
+.adm-lnk button{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.18);color:rgba(255,255,255,.6);padding:.55rem 1.4rem;border-radius:28px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:.83rem;transition:all .2s;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.adm-lnk button:hover{background:rgba(255,255,255,.13);color:#fff;border-color:rgba(255,255,255,.35)}
+#adm-ovl{display:none;position:fixed;inset:0;z-index:1000;overflow-y:auto;background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 50%,var(--bg3) 100%);-webkit-overflow-scrolling:touch}
+.adm-x{position:fixed;top:.9rem;left:.9rem;top:calc(.9rem + env(safe-area-inset-top,0px));background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;width:36px;height:36px;border-radius:50%;font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;z-index:10}
+.adm-x:hover{background:rgba(255,255,255,.18)}
+.lg-wrap{max-width:370px;margin:0 auto;padding:3.5rem 1rem 2rem;padding-top:calc(3.5rem + env(safe-area-inset-top,0px))}
+.lg-card{background:#fff;border-radius:16px;padding:2.1rem 1.9rem;box-shadow:var(--shd);text-align:center}
+.lg-card h2{font-family:'Frank Ruhl Libre',serif;color:var(--ink);font-size:1.3rem;font-weight:700;margin-bottom:.3rem}
+.lg-card p{color:var(--ink3);font-size:.81rem;margin-bottom:1.3rem}
+.lg-card input{width:100%;padding:.68rem;border:1.5px solid var(--bd);border-radius:9px;font-size:1rem;text-align:center;letter-spacing:.12em;margin-bottom:.7rem;direction:ltr;font-family:'Heebo',sans-serif;-webkit-appearance:none}
+.lg-card input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,168,75,.14)}
+.blg{width:100%;background:var(--gold);color:var(--ink);border:none;padding:.72rem;border-radius:9px;font-family:'Frank Ruhl Libre',serif;font-size:.98rem;font-weight:700;cursor:pointer}
+.blg:hover{filter:brightness(1.07)}
+.lg-err{color:var(--red);font-size:.78rem;margin-top:.45rem;display:none}
+.adm-pnl{max-width:940px;margin:0 auto;padding:1.5rem 1rem 3rem;padding-bottom:calc(3rem + env(safe-area-inset-bottom,0px));display:none}
+.adm-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;flex-wrap:wrap;gap:.65rem}
+.adm-title{color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:1.25rem;font-weight:700}
+.adm-acts{display:flex;gap:.45rem;flex-wrap:wrap}
+.abt{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.17);color:rgba(255,255,255,.68);padding:.35rem .82rem;border-radius:7px;font-family:'Heebo',sans-serif;font-size:.77rem;cursor:pointer;transition:all .15s}
+.abt:hover{border-color:var(--gold);color:var(--gold2)}
+.stabs{display:flex;gap:.38rem;background:rgba(255,255,255,.06);border-radius:9px;padding:.28rem;margin-bottom:1.2rem}
+.stb{flex:1;text-align:center;padding:.46rem;border-radius:7px;cursor:pointer;color:rgba(255,255,255,.48);font-size:.8rem;font-family:'Heebo',sans-serif;transition:all .18s;border:none;background:transparent}
+.stb.active{background:rgba(255,255,255,.13);color:var(--gold2);font-weight:600}
+.cnav-row{display:flex;align-items:center;gap:.55rem;margin-bottom:1rem;flex-wrap:wrap}
+.cnav-title{color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:.93rem;font-weight:700;flex:1;text-align:center}
+.cnv{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.68);padding:.36rem .82rem;border-radius:7px;font-size:.79rem;cursor:pointer;transition:all .15s;font-family:'Heebo',sans-serif}
+.cnv:hover{background:rgba(255,255,255,.13);color:#fff}
+.wr{background:#fff;border-radius:11px;margin-bottom:.62rem;border:1px solid rgba(255,255,255,.14);overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.wr.pin{border-right:4px solid var(--gold)}
+.wh{display:flex;align-items:center;gap:.65rem;padding:.78rem .92rem;cursor:pointer;transition:background .15s;flex-wrap:wrap}
+.wh:hover{background:#faf7f0}
+.wdates{display:flex;flex-direction:column;gap:.05rem;min-width:115px}
+.wheb{font-family:'Frank Ruhl Libre',serif;font-size:.86rem;color:var(--ink);font-weight:700}
+.wgreg{font-size:.71rem;color:var(--ink3)}
+.wpar{flex:1;font-family:'Frank Ruhl Libre',serif;font-size:.95rem;color:var(--ink2);font-weight:700}
+.wpar a{display:inline-block;background:#eef2fb;border:1px solid #c8d4f0;border-radius:5px;padding:.1rem .43rem;font-size:.67rem;color:var(--blu);font-family:'Heebo',sans-serif;font-weight:500;margin-right:.38rem;transition:all .15s;text-decoration:none}
+.wpar a:hover{background:var(--ink);color:var(--gold2);border-color:var(--ink)}
+.wbdgs{display:flex;gap:.32rem;flex-shrink:0}
+.wbdg{display:inline-flex;align-items:center;gap:.18rem;padding:.14rem .48rem;border-radius:5px;font-size:.69rem;font-weight:600}
+.bdg-bm{background:rgba(26,32,68,.1);color:#1a2044}
+.bdg-yr{background:rgba(30,125,75,.1);color:var(--grn)}
+.wtgl{color:var(--ink3);font-size:.8rem;flex-shrink:0;transition:transform .2s}
+.wr.open .wtgl{transform:rotate(180deg)}
+.wevs{display:none;border-top:1px solid #f0ece2;padding:.15rem .62rem .82rem}
+.wr.open .wevs{display:block}
+.evi{display:flex;align-items:flex-start;gap:.58rem;padding:.46rem .28rem;border-bottom:1px solid #f5f0e8;font-size:.81rem}
+.evi:last-child{border-bottom:none}
+.etag{flex-shrink:0;padding:.12rem .46rem;border-radius:5px;font-size:.67rem;font-weight:700;width:66px;text-align:center}
+.t-bm{background:rgba(26,32,68,.1);color:#1a2044}
+.t-yr{background:rgba(30,125,75,.1);color:var(--grn)}
+.evb .en{font-weight:700;font-family:'Frank Ruhl Libre',serif;color:var(--ink)}
+.evb .es{color:var(--ink3);font-size:.75rem;margin-top:.08rem}
+.m-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-wrap:wrap;gap:.55rem}
+.m-cnt{color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:.93rem;font-weight:700}
+.m-srch{padding:.48rem .75rem;border:1.5px solid rgba(255,255,255,.14);border-radius:8px;background:rgba(255,255,255,.07);color:#fff;font-family:'Heebo',sans-serif;font-size:1rem;width:195px;direction:rtl;-webkit-appearance:none}
+.m-srch::placeholder{color:rgba(255,255,255,.28)}
+.m-srch:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.1)}
+.mc{background:#fff;border-radius:10px;padding:.88rem .98rem;margin-bottom:.52rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.mav{width:38px;height:38px;background:var(--ink);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Frank Ruhl Libre',serif;color:var(--gold);font-size:.87rem;font-weight:700}
+.mi{flex:1;min-width:0}
+.mn{font-family:'Frank Ruhl Libre',serif;font-size:.91rem;font-weight:700;color:var(--ink)}
+.ms2{font-size:.73rem;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mts{display:flex;gap:.28rem;flex-wrap:wrap;flex-shrink:0}
+.mt2{background:#f0ece2;color:var(--ink2);padding:.1rem .4rem;border-radius:4px;font-size:.66rem;font-weight:600}
+.mas{display:flex;gap:.32rem;flex-shrink:0}
+.med{background:rgba(26,32,68,.07);border:1.5px solid var(--bd);border-radius:6px;padding:.27rem .58rem;font-size:.71rem;cursor:pointer;color:var(--ink2);font-family:'Heebo',sans-serif;transition:all .15s}
+.med:hover{background:var(--ink);color:var(--gold2);border-color:var(--ink)}
+.mde{background:rgba(192,57,43,.07);border:1.5px solid #f5c0bc;border-radius:6px;padding:.27rem .58rem;font-size:.71rem;cursor:pointer;color:var(--red);font-family:'Heebo',sans-serif;transition:all .15s}
+.mde:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.no-m{text-align:center;color:rgba(255,255,255,.32);padding:2.25rem;font-size:.84rem}
+.div{height:1px;background:var(--bd2);margin:.7rem 0}
+.jnav{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem}
+.jnav-title{color:rgba(255,255,255,.55);font-size:.74rem;font-weight:600;margin-bottom:.6rem;letter-spacing:.04em}
+.jnav-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.jnav select,.jnav input[type="date"]{padding:.42rem .65rem;border:1.5px solid rgba(255,255,255,.15);border-radius:7px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:.8rem;direction:rtl;-webkit-appearance:none;appearance:none}
+.jnav select option{background:#1a2744;color:#fff}
+.jnav input[type="date"]{direction:ltr;min-width:140px}
+.jnav select:focus,.jnav input:focus{outline:none;border-color:var(--gold)}
+.jbtn{background:var(--gold);color:var(--ink);border:none;border-radius:7px;padding:.44rem .95rem;font-family:'Heebo',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;transition:all .18s;white-space:nowrap}
+.jbtn:hover{background:var(--gold2)}
+.jnav-sep{color:rgba(255,255,255,.25);font-size:.75rem;padding:0 .2rem}
+.par-tag{display:inline-block;background:rgba(200,168,75,.15);border:1px solid rgba(200,168,75,.3);border-radius:4px;padding:.08rem .4rem;font-size:.67rem;color:var(--gold2);font-weight:600;margin-right:.3rem;white-space:nowrap}
+.hol-tag{display:inline-block;background:rgba(30,125,75,.15);border:1px solid rgba(30,125,75,.3);border-radius:4px;padding:.08rem .4rem;font-size:.67rem;color:#5dbe8a;font-weight:600;margin-right:.3rem;white-space:nowrap}
+.bm-section{background:linear-gradient(135deg,rgba(26,32,68,.04),rgba(200,168,75,.04));border:1.5px solid var(--bd2);border-radius:10px;padding:.85rem 1rem;margin-top:.65rem}
+.bm-toggle-row{display:flex;align-items:center;gap:.55rem;cursor:pointer;margin-bottom:0}
+.bm-toggle-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+.bm-toggle-lbl{font-size:.83rem;font-weight:600;color:var(--ink2);cursor:pointer;-webkit-user-select:none;user-select:none}
+.bm-details{margin-top:.75rem;padding-top:.7rem;border-top:1px solid var(--bd2);display:none}
+.bm-details.show{display:block}
+
+/* ── Export modal (iOS-friendly) ── */
+.exp-overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);-webkit-overflow-scrolling:touch;justify-content:center;align-items:center;padding:1rem}
+.exp-overlay.show{display:flex}
+.exp-card{background:#fff;border-radius:16px;max-width:420px;width:100%;padding:1.6rem;box-shadow:var(--shd);text-align:center}
+.exp-card h3{font-family:'Frank Ruhl Libre',serif;font-size:1.1rem;margin-bottom:1rem;color:var(--ink)}
+.exp-btns{display:flex;flex-direction:column;gap:.65rem}
+.exp-btn{padding:.7rem 1.2rem;border:none;border-radius:9px;font-family:'Heebo',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .18s}
+.exp-btn-copy{background:var(--gold);color:var(--ink)}
+.exp-btn-copy:hover{filter:brightness(1.07)}
+.exp-btn-tab{background:var(--ink);color:var(--gold2)}
+.exp-btn-tab:hover{background:var(--bg1)}
+.exp-btn-cancel{background:#f3f4f6;color:var(--ink3)}
+.exp-hint{font-size:.72rem;color:var(--ink3);margin-top:-.2rem}
+
+/* ── Import restore overlay ── */
+.imp-overlay{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);justify-content:center;align-items:center;padding:1rem}
+.imp-overlay.show{display:flex}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--gold2);padding:.65rem 1.3rem;border-radius:10px;font-family:'Heebo',sans-serif;font-size:.82rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;text-align:center;max-width:90vw}
+.toast.show{opacity:1}
+
+@media(max-width:520px){
+  .g2,.g3{grid-template-columns:1fr}
+  .hrow{grid-template-columns:48px 1fr 106px}
+  .main-card{margin:0 .5rem 1.5rem}
+  .sec{padding:1rem}
+  .mc{flex-wrap:wrap}
+  .mts{display:none}
+  .jnav-row{gap:.35rem}
+  .adm-hdr{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<!-- ═══════════════ PUBLIC FORM ═══════════════ -->
+<div class="logo-area"><div class="logo-wrap"><div class="logo-box"><div class="logo-icon">🕍</div><div class="logo-25">25</div></div><div class="logo-name">עמותת מבשר ציון</div><div class="logo-sub">שלום וברוך הבא! אנא מלא את פרטיך ונשמח לשמור על קשר</div></div></div>
+<div class="main-card" id="main-card">
+  <div class="sv" id="sv"><div class="s-icon">✓</div><div class="s-title">הרישום נשמר בהצלחה!</div><div class="s-body">פרטיך נשמרו בתיק הקהילה.<br>נשמח לראותך בקרב מתפללי בית הכנסת.</div><div class="s-btns"><button class="btn-new" onclick="resetForm()">רישום חדש</button><button class="btn-adm" onclick="openAdm()">ממשק מנהל</button></div></div>
+  <div id="fv">
+    <div class="sh"><span>👤</span><span class="sh-t">פרטי קשר ומשפחה</span></div>
+    <div class="sec">
+      <div class="g3" style="margin-bottom:.7rem"><div class="ff"><label>שם פרטי <span class="req">*</span></label><input id="fn" placeholder="משה"><div class="emsg">שדה חובה</div></div><div class="ff"><label>שם משפחה <span class="req">*</span></label><input id="ln" placeholder="כהן"><div class="emsg">שדה חובה</div></div><div class="ff"><label>שם האב <span class="req">*</span></label><input id="fa" placeholder="אברהם"><div class="emsg">שדה חובה</div></div></div>
+      <div class="g3"><div class="ff"><label>שם האם</label><input id="mo" placeholder="שרה"></div><div class="ff"><label>שם מלא לעלייה לתורה</label><input id="tr" placeholder="משה בן אברהם"></div><div class="ff"><label>טלפון <span class="req">*</span></label><input id="ph" type="tel" placeholder="050-1234567" dir="ltr"><div class="emsg">שדה חובה</div></div></div>
+      <div class="g2" style="margin-top:.7rem"><div class="ff"><label>דואר אלקטרוני</label><input id="em" type="email" placeholder="shalom@gmail.com" dir="ltr"></div><div class="ff"><label>כתובת מגורים</label><input id="ad" placeholder="רחוב, מספר, עיר"></div></div>
+    </div>
+    <div class="sh"><span>👨‍👧‍👦</span><span class="sh-t">ילדים</span></div>
+    <div class="sec"><div id="cw"></div><button class="badd" id="badd-c" onclick="addCh()">+ הוסף ילד</button></div>
+    <div class="sh"><span>🙏</span><span class="sh-t">תחומי התנדבות</span></div>
+    <div class="sec"><div class="cb-row"><label class="cbl" id="cb1" onclick="tCb(this)"><input type="checkbox" id="v1"> קניות לקידוש שבת</label><label class="cbl" id="cb2" onclick="tCb(this)"><input type="checkbox" id="v2"> סידור וארגון הקידוש</label><label class="cbl" id="cb3" onclick="tCb(this)"><input type="checkbox" id="v3"> העברת דבר תורה</label></div></div>
+    <div class="sh"><span>🕯</span><span class="sh-t">ימי זיכרון (יארצייט)</span></div>
+    <div class="sec"><div id="yw"></div><button class="badd" onclick="addYr()">+ הוסף יום זיכרון</button></div>
+    <div class="fmsg" id="fmsg"></div>
+    <button class="bsave" id="bsave" onclick="submitForm()"><span>💾</span> שמור פרטים</button>
+  </div>
+</div>
+<div class="adm-lnk"><button onclick="openAdm()">🔒 כניסה לממשק מנהל</button></div>
+
+<!-- ═══════════════ ADMIN OVERLAY ═══════════════ -->
+<div id="adm-ovl">
+  <button class="adm-x" onclick="closeAdm()">✕</button>
+  <!-- Login -->
+  <div id="adm-lg" class="lg-wrap"><div class="lg-card"><div style="font-size:2.4rem;margin-bottom:.65rem">🔐</div><h2>ממשק מנהל</h2><p>הזן סיסמה לגישה לפאנל הניהול</p><input type="password" id="pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLg()"><button class="blg" onclick="doLg()">כניסה לממשק</button><div class="lg-err" id="pw-err">סיסמה שגויה</div></div></div>
+  <!-- Admin panel -->
+  <div class="adm-pnl" id="adm-pnl">
+    <div class="adm-hdr">
+      <span class="adm-title">🕍 ממשק ניהול — קהילת מבשר ציון</span>
+      <div class="adm-acts">
+        <button class="abt" onclick="expData()">💾 ייצוא גיבוי</button>
+        <button class="abt" onclick="impData()">📂 שחזור מגיבוי</button>
+        <button class="abt" onclick="doLo()">יציאה ✕</button>
+      </div>
+    </div>
+    <div class="stabs">
+      <button class="stb active" onclick="showAt('cal')">📅 לוח שבועי</button>
+      <button class="stb" onclick="showAt('mem')">📋 מתפללים</button>
+    </div>
+    <!-- Calendar tab -->
+    <div id="at-cal">
+      <div class="jnav" id="jnav">
+        <div class="jnav-title">⏩ קפוץ לתאריך</div>
+        <div class="jnav-row">
+          <select id="jn-jd" style="width:58px"></select>
+          <select id="jn-jm"></select>
+          <select id="jn-jy" style="min-width:130px"></select>
+          <button class="jbtn" onclick="jumpHeb()">קפוץ (עברי)</button>
+          <span class="jnav-sep">|</span>
+          <input type="date" id="jn-gd">
+          <button class="jbtn" onclick="jumpGreg()">קפוץ (לועזי)</button>
+        </div>
+      </div>
+      <div class="cnav-row">
+        <button class="cnv" onclick="calNav(-4)">← 4 שבועות</button>
+        <button class="cnv" onclick="calNav(0)">היום</button>
+        <div class="cnav-title" id="cal-ttl"></div>
+        <button class="cnv" onclick="calNav(4)">4 שבועות →</button>
+      </div>
+      <div id="cal-grid"></div>
+    </div>
+    <!-- Members tab -->
+    <div id="at-mem" style="display:none">
+      <div class="m-top">
+        <span class="m-cnt" id="mcnt">0 מתפללים</span>
+        <input class="m-srch" type="text" placeholder="חיפוש שם..." oninput="filtM(this.value)">
+      </div>
+      <div id="ml"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ EXPORT MODAL ═══════════════ -->
+<div class="exp-overlay" id="exp-ovl" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="exp-card">
+    <h3>💾 ייצוא נתונים</h3>
+    <div class="exp-btns">
+      <button class="exp-btn exp-btn-copy" onclick="expCopy()">📋 העתק ללוח</button>
+      <div class="exp-hint">להדבקה בכל אפליקציה</div>
+      <button class="exp-btn exp-btn-tab" onclick="expTab()">🔗 פתח בטאב חדש</button>
+      <div class="exp-hint">לאחר מכן לחץ □↑ ← "שמור ב-Files"</div>
+      <button class="exp-btn exp-btn-cancel" onclick="document.getElementById('exp-ovl').classList.remove('show')">סגור</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ IMPORT MODAL ═══════════════ -->
+<div class="imp-overlay" id="imp-ovl" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="exp-card">
+    <h3>📂 שחזור מגיבוי</h3>
+    <p style="font-size:.82rem;color:var(--ink3);margin-bottom:1rem">בחר קובץ JSON שיוצא בעבר. שים לב — זה יחליף את כל הנתונים הקיימים!</p>
+    <input type="file" id="imp-file" accept=".json,.txt" style="margin-bottom:1rem;font-family:Heebo,sans-serif;font-size:.85rem">
+    <div class="exp-btns">
+      <button class="exp-btn exp-btn-tab" onclick="doImpFile()">שחזר</button>
+      <button class="exp-btn exp-btn-cancel" onclick="document.getElementById('imp-ovl').classList.remove('show')">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TOAST ═══════════════ -->
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+const PW='Nir2026',SK='mbz_v5',CHBD='https://www.chabad.org.il/ParashotArticles/Item.asp?CategoryID=41';
+const HM=[{n:'תשרי',v:7,e:'Tishrei'},{n:'חשון',v:8,e:'Cheshvan'},{n:'כסלו',v:9,e:'Kislev'},{n:'טבת',v:10,e:'Tevet'},{n:'שבט',v:11,e:'Shevat'},{n:'אדר א׳',v:12,e:'Adar I'},{n:'אדר ב׳',v:13,e:'Adar II'},{n:'ניסן',v:1,e:'Nisan'},{n:'אייר',v:2,e:'Iyar'},{n:'סיון',v:3,e:'Sivan'},{n:'תמוז',v:4,e:'Tamuz'},{n:'אב',v:5,e:'Av'},{n:'אלול',v:6,e:'Elul'}];
+const HD=['','א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב','יג','יד','טו','טז','יז','יח','יט','כ','כא','כב','כג','כד','כה','כו','כז','כח','כט','ל'];
+
+// ── Utility helpers ─────────────────────────────────────
+function hy2s(y){const T=[[400,'ת'],[300,'ש'],[200,'ר'],[100,'ק'],[90,'צ'],[80,'פ'],[70,'ע'],[60,'ס'],[50,'נ'],[40,'מ'],[30,'ל'],[20,'כ'],[10,'י'],[9,'ט'],[8,'ח'],[7,'ז'],[6,'ו'],[5,'ה'],[4,'ד'],[3,'ג'],[2,'ב'],[1,'א']];let n=y%1000,s='';for(const[v,l]of T){while(n>=v){if(n===15){s+='טו';n=0;break}if(n===16){s+='טז';n=0;break}s+=l;n-=v}if(!n)break}return s.length===1?s+"'":s.slice(0,-1)+'"'+s.slice(-1)}
+function hmn(v){return HM.find(m=>m.v==v||m.e===v)?.n||v}
+function normHm(raw){const found=HM.find(m=>m.v==raw||m.e===raw);return found?found.v:raw}
+function fhd(d,m,y){if(!d&&!m&&!y)return'';return[HD[+d]||d,hmn(m),y?hy2s(+y):''].filter(Boolean).join(' ')}
+function fgd(s){if(!s)return'';return new Date(s+'T12:00:00').toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})}
+function d2s(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function gSh(b){b=b||new Date();var d=new Date(b);var w=d.getDay();if(w!==6)d.setDate(d.getDate()+(6-w));return d}
+function es(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function sDay(id,v){v=v||'';var h='<select id="'+id+'"><option value="">יום</option>';for(var i=1;i<=30;i++)h+='<option value="'+i+'"'+(v==i?' selected':'')+'>'+HD[i]+'</option>';return h+'</select>'}
+function sMon(id,v){v=v||'';var h='<select id="'+id+'"><option value="">חודש</option>';for(var i=0;i<HM.length;i++)h+='<option value="'+HM[i].v+'"'+(v==HM[i].v?' selected':'')+'>'+HM[i].n+'</option>';return h+'</select>'}
+function sYr(id,v,f,t){v=v||'';f=f||5700;t=t||5790;var h='<select id="'+id+'"><option value="">שנה</option>';for(var y=t;y>=f;y--)h+='<option value="'+y+'"'+(v==y?' selected':'')+'>'+hy2s(y)+' ('+y+')</option>';return h+'</select>'}
+
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove('show')},2500)}
+
+// ── Date block HTML for children & yahrzeits ────────────
+function dbH(p,dt,isY){
+  dt=dt||{};isY=isY||false;
+  var hd=dt.hd||'',hm=dt.hm||'',hy=dt.hy||'',gd=dt.gd||'',fr=isY?5680:5700;
+  var rh=fhd(hd,hm,hy),rg=gd?fgd(gd):'';
+  return '<div class="dblock" id="db-'+p+'">'+
+    '<div class="drow"><span class="dlbl">עברי</span><div class="hrow">'+sDay(p+'-hd',hd)+sMon(p+'-hm',hm)+sYr(p+'-hy',hy,fr,5790)+'</div><button class="bcnv" onclick="cnvH2G(\''+p+'\')">קבע לועזי →</button></div>'+
+    '<div class="drow"><span class="dlbl">לועזי</span><div class="grow"><input type="date" id="'+p+'-gd" value="'+gd+'" onchange="autoH(\''+p+'\')"></div><button class="bcnv" onclick="cnvG2H(\''+p+'\')">המר לעברי ←</button></div>'+
+    '<div class="dres" id="dr-'+p+'">'+(rh?'<span class="dres-h">עברי: '+rh+'</span>':'')+(rg?'<span class="dres-g">לועזי: '+rg+'</span>':'')+'</div></div>'
+}
+
+// ── Hebcal API (cached) ─────────────────────────────────
+var _c={};
+function hf(url){
+  if(_c[url])return Promise.resolve(_c[url]);
+  return fetch(url).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
+    if(d&&!d.error){_c[url]=d;return d}return null;
+  }).catch(function(){return null})
+}
+function g2h(y,m,d){
+  return hf('https://www.hebcal.com/converter?cfg=json&gy='+y+'&gm='+m+'&gd='+d+'&g2h=1').then(function(r){
+    return(r&&!r.error)?{hd:r.hd,hm:normHm(r.hm),hy:r.hy}:null})
+}
+function h2g(hy,hm,hd){
+  return hf('https://www.hebcal.com/converter?cfg=json&hy='+hy+'&hm='+hm+'&hd='+hd+'&h2g=1').then(function(r){
+    if(r&&!r.error&&r.gy)return{y:r.gy,m:r.gm,d:r.gd};
+    // Fallback: brute force
+    var hmOff=hm<=6?hm+5:hm-7;
+    var estYear=hy-3761+(hmOff>=3?1:0);
+    var estMonth=(9+hmOff-1)%12+1;
+    var estDate=new Date(estYear,estMonth-1,hd);
+    var checks=[];
+    for(var off=-20;off<=20;off++){
+      (function(o){
+        var t=new Date(estDate);t.setDate(t.getDate()+o);
+        checks.push(g2h(t.getFullYear(),t.getMonth()+1,t.getDate()).then(function(h){
+          if(h&&+h.hy===+hy&&+h.hm===+hm&&+h.hd===+hd)return{y:t.getFullYear(),m:t.getMonth()+1,d:t.getDate()};
+          return null;
+        }));
+      })(off);
+    }
+    return Promise.all(checks).then(function(results){
+      for(var i=0;i<results.length;i++){if(results[i])return results[i]}
+      return null;
+    });
+  })
+}
+
+// Bulk parasha fetch
+function fetchParashot(startD,endD){
+  var s=d2s(startD),e2=d2s(endD);
+  var url='https://www.hebcal.com/hebcal?cfg=json&v=1&s=on&maj=on&ss=on&i=on&leyning=off&lg=he&start='+s+'&end='+e2;
+  return hf(url).then(function(r){
+    var map={};if(!r||!r.items)return map;
+    for(var i=0;i<r.items.length;i++){
+      var it=r.items[i];var dt=it.date?it.date.slice(0,10):'';if(!dt)continue;
+      if(!map[dt])map[dt]={parasha:'',holiday:'',special:''};
+      if(it.category==='parashat')map[dt].parasha=it.hebrew||it.title||'';
+      else if(it.category==='holiday'&&it.subcat==='major')map[dt].holiday=it.hebrew||it.title||'';
+      else if(it.category==='holiday'&&it.subcat==='special')map[dt].special=it.hebrew||it.title||'';
+    }
+    return map;
+  })
+}
+
+// Single shabbat parasha
+function getPar(sh){
+  var y=sh.getFullYear(),m=sh.getMonth()+1,d=sh.getDate();
+  var d1=new Date(sh);d1.setDate(d1.getDate()-1);
+  var d2=new Date(sh);d2.setDate(d2.getDate()+1);
+  return fetchParashot(d1,d2).then(function(map){
+    var key=d2s(sh);var pi=map[key]||{};
+    if(pi.parasha)return{name:pi.parasha};
+    if(pi.holiday)return{name:pi.holiday};
+    return hf('https://www.hebcal.com/shabbat?cfg=json&gy='+y+'&gm='+m+'&gd='+d+'&m=50&lg=he&i=on&maj=on').then(function(r){
+      if(!r)return null;var items=r.items||[];
+      var par;for(var i=0;i<items.length;i++){if(items[i].category==='parashat'){par=items[i];break}}
+      if(par)return{name:par.hebrew||par.title};
+      var hol;for(var i=0;i<items.length;i++){if(items[i].category==='holiday'&&(items[i].subcat==='major'||items[i].subcat==='special')){hol=items[i];break}}
+      return hol?{name:hol.hebrew||hol.title}:null;
+    });
+  })
+}
+
+// ── Date conversion UI ──────────────────────────────────
+function cnvG2H(p){
+  var btns=document.querySelectorAll('#db-'+p+' .bcnv');for(var i=0;i<btns.length;i++)btns[i].disabled=true;
+  var gi=document.getElementById(p+'-gd');
+  if(!gi||!gi.value){alert('אנא בחר תאריך לועזי');for(var i=0;i<btns.length;i++)btns[i].disabled=false;return}
+  var parts=gi.value.split('-');
+  g2h(+parts[0],+parts[1],+parts[2]).then(function(h){
+    for(var i=0;i<btns.length;i++)btns[i].disabled=false;
+    if(!h){alert('שגיאת המרה — בדוק חיבור לאינטרנט');return}
+    document.getElementById(p+'-hd').value=h.hd;
+    document.getElementById(p+'-hm').value=h.hm;
+    document.getElementById(p+'-hy').value=h.hy;
+    updRes(p,h.hd,h.hm,h.hy,gi.value);
+  })
+}
+function cnvH2G(p){
+  var btns=document.querySelectorAll('#db-'+p+' .bcnv');for(var i=0;i<btns.length;i++)btns[i].disabled=true;
+  var hd=document.getElementById(p+'-hd');hd=hd?hd.value:'';
+  var hm=document.getElementById(p+'-hm');hm=hm?hm.value:'';
+  var hy=document.getElementById(p+'-hy');hy=hy?hy.value:'';
+  if(!hd||!hm||!hy){alert('אנא בחר תאריך עברי מלא');for(var i=0;i<btns.length;i++)btns[i].disabled=false;return}
+  h2g(+hy,+hm,+hd).then(function(g){
+    for(var i=0;i<btns.length;i++)btns[i].disabled=false;
+    if(!g){alert('שגיאת המרה — בדוק חיבור לאינטרנט');return}
+    var gs=g.y+'-'+String(g.m).padStart(2,'0')+'-'+String(g.d).padStart(2,'0');
+    document.getElementById(p+'-gd').value=gs;
+    updRes(p,hd,hm,hy,gs);saveToState(p,hd,hm,hy,gs);
+  })
+}
+function autoH(p){
+  var gi=document.getElementById(p+'-gd');if(!gi||!gi.value)return;
+  var parts=gi.value.split('-');
+  g2h(+parts[0],+parts[1],+parts[2]).then(function(h){
+    if(!h)return;
+    document.getElementById(p+'-hd').value=h.hd;
+    document.getElementById(p+'-hm').value=h.hm;
+    document.getElementById(p+'-hy').value=h.hy;
+    updRes(p,h.hd,h.hm,h.hy,gi.value);
+    saveToState(p,h.hd,h.hm,h.hy,gi.value);
+  })
+}
+function updRes(p,hd,hm,hy,gd){
+  var el=document.getElementById('dr-'+p);if(!el)return;
+  var rh=fhd(hd,hm,hy),rg=gd?fgd(gd):'';
+  el.innerHTML=(rh?'<span class="dres-h">עברי: '+rh+'</span>':'')+(rg?'<span class="dres-g">לועזי: '+rg+'</span>':'');
+}
+function saveToState(p,hd,hm,hy,gd){
+  if(p.charAt(0)==='c'&&!isNaN(+p.slice(1))){
+    var idx=+p.slice(1);if(CH[idx]){CH[idx].hd=hd;CH[idx].hm=hm;CH[idx].hy=hy;if(gd)CH[idx].gd=gd;}}
+  else if(p.charAt(0)==='y'&&!isNaN(+p.slice(1))){
+    var idx=+p.slice(1);if(YR[idx]){YR[idx].hd=hd;YR[idx].hm=hm;YR[idx].hy=hy;if(gd)YR[idx].gd=gd;}}
+}
+
+// ── State ───────────────────────────────────────────────
+var eid=null,CH=[],YR=[];
+function bC(){return{name:'',hd:'',hm:'',hy:'',gd:'',mode:'heb',wantsBM:false,parasha:'',barDate:'',readP:'',readH:''}}
+function bY(){return{name:'',hd:'',hm:'',hy:'',gd:'',mode:'heb',lead:'',haft:''}}
+
+// ── Children ────────────────────────────────────────────
+function chH(i){
+  var c=CH[i];var bmOn=c.wantsBM?'show':'';
+  return '<div class="ic" id="ci-'+i+'">'+
+  '<div class="ic-head"><span class="ic-title">ילד '+(i+1)+(c.name?' — '+es(c.name):'')+'</span><button class="brm" onclick="remCh('+i+')">✕</button></div>'+
+  '<div class="g2" style="margin-bottom:.65rem">'+
+  '<div class="ff"><label>שם הילד <span class="req">*</span></label><input id="cn-'+i+'" value="'+es(c.name)+'" placeholder="שם מלא" onchange="CH['+i+'].name=this.value;rChT('+i+')"><div class="emsg">שדה חובה</div></div>'+
+  '<div><div style="font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.25rem">תאריך לידה</div>'+dbH('c'+i,{hd:c.hd,hm:c.hm,hy:c.hy,gd:c.gd,mode:c.mode})+'</div></div>'+
+  '<div class="bm-section"><label class="bm-toggle-row"><input type="checkbox" id="cbm-'+i+'" '+(c.wantsBM?'checked':'')+' onchange="toggleBM('+i+')"><span class="bm-toggle-lbl">📖 רישום לפרשת שבת בר/בת מצווה</span></label>'+
+  '<div class="bm-details '+bmOn+'" id="bmd-'+i+'">'+
+  '<button class="bm-btn" id="bmc-'+i+'" onclick="calcBM('+i+')" style="margin-bottom:.5rem">📖 חשב פרשת בר מצווה ←</button>'+
+  '<div class="bm-res" id="bmr-'+i+'">'+(c.parasha?'<span style="color:var(--gold3)">📖 פרשה: <strong>'+es(c.parasha)+'</strong></span>'+(c.barDate?'<br><span style="color:rgba(255,255,255,.7)">📅 שבת: '+fgd(c.barDate)+'</span>':''):'')+'</div>'+
+  '<div class="div" style="margin:.65rem 0"></div>'+
+  '<div class="g3"><div class="ff"><label>פרשת בר מצווה</label><input id="cp-'+i+'" value="'+es(c.parasha)+'" placeholder="יחושב אוטומטית" onchange="CH['+i+'].parasha=this.value"></div>'+
+  '<div class="ff"><label>קריאה בתורה?</label><select id="crp-'+i+'" onchange="CH['+i+'].readP=this.value"><option value="">לא צוין</option><option value="כן"'+(c.readP==='כן'?' selected':'')+'>כן</option><option value="לא"'+(c.readP==='לא'?' selected':'')+'>לא</option></select></div>'+
+  '<div class="ff"><label>הפטרה?</label><select id="crh-'+i+'" onchange="CH['+i+'].readH=this.value"><option value="">לא צוין</option><option value="כן"'+(c.readH==='כן'?' selected':'')+'>כן</option><option value="לא"'+(c.readH==='לא'?' selected':'')+'>לא</option></select></div></div>'+
+  '</div></div></div>';
+}
+function toggleBM(i){
+  var cb=document.getElementById('cbm-'+i);var det=document.getElementById('bmd-'+i);
+  if(!cb||!det)return;CH[i].wantsBM=cb.checked;
+  if(det.classList.contains('show')){det.classList.remove('show')}else{det.classList.add('show')}
+  // sync with checkbox
+  if(cb.checked&&!det.classList.contains('show'))det.classList.add('show');
+  if(!cb.checked&&det.classList.contains('show'))det.classList.remove('show');
+}
+function rChT(i){var el=document.querySelector('#ci-'+i+' .ic-title');if(el)el.textContent='ילד '+(i+1)+(CH[i].name?' — '+CH[i].name:'')}
+function renderCH(){document.getElementById('cw').innerHTML=CH.map(function(_,i){return chH(i)}).join('');document.getElementById('badd-c').style.display='flex'}
+function addCh(){CH.push(bC());renderCH();var el=document.getElementById('ci-'+(CH.length-1));if(el)el.scrollIntoView({behavior:'smooth'})}
+function remCh(i){CH.splice(i,1);renderCH()}
+
+// ── Bar Mitzvah calc ────────────────────────────────────
+function calcBM(i){
+  var btn=document.getElementById('bmc-'+i),res=document.getElementById('bmr-'+i);
+  var hd=parseInt(CH[i].hd)||parseInt((document.getElementById('c'+i+'-hd')||{}).value)||0;
+  var hm=parseInt(CH[i].hm)||parseInt((document.getElementById('c'+i+'-hm')||{}).value)||0;
+  var hy=parseInt(CH[i].hy)||parseInt((document.getElementById('c'+i+'-hy')||{}).value)||0;
+  if(!hd||!hm||!hy){
+    res.innerHTML='<span style="color:#f87171">אנא בחר תאריך לידה עברי מלא (יום + חודש + שנה)</span>';
+    res.style.display='block';return;}
+  CH[i].hd=hd;CH[i].hm=hm;CH[i].hy=hy;
+  btn.disabled=true;btn.textContent='מחשב...';
+  res.innerHTML='<span style="color:var(--gold3)">⏳ מחשב תאריך בר מצווה...</span>';
+  res.style.display='block';
+  var bmHY=hy+13;
+  h2g(bmHY,hm,hd).then(function(g){
+    if(!g&&(hm===12||hm===13))return h2g(bmHY,12,hd);
+    return g;
+  }).then(function(g){
+    if(!g&&hd===30)return h2g(bmHY,hm,29).then(function(g2){return g2||h2g(bmHY,12,29)});
+    return g;
+  }).then(function(g){
+    if(!g){
+      res.innerHTML='<span style="color:#f87171">שגיאה: לא ניתן לחשב את התאריך.<br>ודא שמלאת יום + חודש + שנה עברית תקינים.</span>';
+      res.style.display='block';btn.disabled=false;btn.textContent='📖 חשב פרשת בר מצווה ←';return;}
+    var sh=gSh(new Date(g.y,g.m-1,g.d));
+    return getPar(sh).then(function(par){
+      CH[i].barDate=d2s(sh);CH[i].parasha=par?par.name:'';
+      var piEl=document.getElementById('cp-'+i);if(piEl)piEl.value=CH[i].parasha;
+      res.innerHTML='<span style="color:var(--gold3)">📖 פרשה: <strong>'+es(par?par.name:'לא נמצאה — הזן ידנית')+'</strong></span><br><span style="color:rgba(255,255,255,.7)">📅 שבת: '+fgd(d2s(sh))+'</span><br><span style="color:rgba(255,255,255,.55);font-size:.74rem">תאריך עברי: '+fhd(hd,hm,bmHY)+'</span>';
+      res.style.display='block';
+    });
+  }).catch(function(e){
+    console.error('calcBM error:',e);
+    res.innerHTML='<span style="color:#f87171">שגיאה — בדוק חיבור לאינטרנט ונסה שוב</span>';
+    res.style.display='block';
+  }).then(function(){
+    btn.disabled=false;btn.textContent='📖 חשב פרשת בר מצווה ←';
+  });
+}
+
+// ── Yahrzeits ───────────────────────────────────────────
+function yrH(i){var y=YR[i];return '<div class="ic" id="yi-'+i+'"><div class="ic-head"><span class="ic-title">יום זיכרון '+(i+1)+(y.name?' — '+es(y.name):'')+'</span><button class="brm" onclick="remYr('+i+')">✕</button></div><div class="g2" style="margin-bottom:.65rem"><div class="ff"><label>שם הנפטר <span class="req">*</span></label><input id="yn-'+i+'" value="'+es(y.name)+'" placeholder="שם הנפטר" onchange="YR['+i+'].name=this.value;rYrT('+i+')"><div class="emsg">שדה חובה</div></div><div><div style="font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.25rem">תאריך הפטירה</div>'+dbH('y'+i,{hd:y.hd,hm:y.hm,hy:y.hy,gd:y.gd,mode:y.mode},true)+'</div></div><div class="g2"><div class="ff"><label>לפני התיבה ביארצייט?</label><select id="yl-'+i+'" onchange="YR['+i+'].lead=this.value"><option value="">לא צוין</option><option value="כן"'+(y.lead==='כן'?' selected':'')+'>כן</option><option value="לא"'+(y.lead==='לא'?' selected':'')+'>לא</option></select></div><div class="ff"><label>קריאת הפטרה ביארצייט?</label><select id="yh-'+i+'" onchange="YR['+i+'].haft=this.value"><option value="">לא צוין</option><option value="כן"'+(y.haft==='כן'?' selected':'')+'>כן</option><option value="לא"'+(y.haft==='לא'?' selected':'')+'>לא</option></select></div></div></div>'}
+function rYrT(i){var el=document.querySelector('#yi-'+i+' .ic-title');if(el)el.textContent='יום זיכרון '+(i+1)+(YR[i].name?' — '+YR[i].name:'')}
+function renderYR(){document.getElementById('yw').innerHTML=YR.map(function(_,i){return yrH(i)}).join('')}
+function addYr(){YR.push(bY());renderYR();var el=document.getElementById('yi-'+(YR.length-1));if(el)el.scrollIntoView({behavior:'smooth'})}
+function remYr(i){YR.splice(i,1);renderYR()}
+function tCb(l){var cb=l.querySelector('input');cb.checked=!cb.checked;if(cb.checked){l.classList.add('on')}else{l.classList.remove('on')}}
+
+// ── Form init / collect / submit ────────────────────────
+function initForm(m){
+  eid=m?m.id:null;
+  CH=m?JSON.parse(JSON.stringify(m.children||[])):[];
+  YR=m?JSON.parse(JSON.stringify(m.yahrzeits||[])):[];
+  if(m){
+    var ids=['fn','ln','fa','mo','tr','ph','em','ad'];
+    var vals=[m.firstName,m.lastName,m.fatherName,m.motherName,m.torahName,m.phone,m.email,m.address];
+    for(var i=0;i<ids.length;i++)document.getElementById(ids[i]).value=vals[i]||'';
+    var vkeys=['קניות לקידוש','סידור קידוש','דבר תורה'];
+    for(var i=0;i<3;i++){
+      var checked=(m.volunteering||[]).indexOf(vkeys[i])>=0;
+      document.getElementById('v'+(i+1)).checked=checked;
+      if(checked){document.getElementById('cb'+(i+1)).classList.add('on')}else{document.getElementById('cb'+(i+1)).classList.remove('on')}
+    }
+  }
+  renderCH();renderYR();
+}
+
+function colCh(i){
+  var c={};for(var k in CH[i])c[k]=CH[i][k];
+  var keys=['hd','hm','hy'];
+  for(var j=0;j<keys.length;j++){var el=document.getElementById('c'+i+'-'+keys[j]);if(el)c[keys[j]]=el.value}
+  var gi=document.getElementById('c'+i+'-gd');if(gi)c.gd=gi.value;
+  var ni=document.getElementById('cn-'+i);if(ni)c.name=ni.value.trim();
+  var wbm=document.getElementById('cbm-'+i);if(wbm)c.wantsBM=wbm.checked;
+  var pi=document.getElementById('cp-'+i);if(pi)c.parasha=pi.value.trim();
+  var rp=document.getElementById('crp-'+i);if(rp)c.readP=rp.value;
+  var rh=document.getElementById('crh-'+i);if(rh)c.readH=rh.value;
+  return c;
+}
+function colYr(i){
+  var y={};for(var k in YR[i])y[k]=YR[i][k];
+  var keys=['hd','hm','hy'];
+  for(var j=0;j<keys.length;j++){var el=document.getElementById('y'+i+'-'+keys[j]);if(el)y[keys[j]]=el.value}
+  var gi=document.getElementById('y'+i+'-gd');if(gi)y.gd=gi.value;
+  var ni=document.getElementById('yn-'+i);if(ni)y.name=ni.value.trim();
+  var yl=document.getElementById('yl-'+i);if(yl)y.lead=yl.value;
+  var yh=document.getElementById('yh-'+i);if(yh)y.haft=yh.value;
+  return y;
+}
+function reqF(id){var el=document.getElementById(id);var ok=el&&el.value.trim().length>0;var ff=el?el.closest('.ff'):null;if(ff){if(!ok)ff.classList.add('err');else ff.classList.remove('err')}return ok}
+
+function submitForm(){
+  if(!(reqF('fn')&reqF('ln')&reqF('ph')))return;
+  var vols=[];
+  if(document.getElementById('v1').checked)vols.push('קניות לקידוש');
+  if(document.getElementById('v2').checked)vols.push('סידור קידוש');
+  if(document.getElementById('v3').checked)vols.push('דבר תורה');
+  var data={
+    firstName:document.getElementById('fn').value.trim(),
+    lastName:document.getElementById('ln').value.trim(),
+    fatherName:document.getElementById('fa').value.trim(),
+    motherName:document.getElementById('mo').value.trim(),
+    torahName:document.getElementById('tr').value.trim(),
+    phone:document.getElementById('ph').value.trim(),
+    email:document.getElementById('em').value.trim(),
+    address:document.getElementById('ad').value.trim(),
+    volunteering:vols,
+    children:CH.map(function(_,i){return colCh(i)}).filter(function(c){return c.name}),
+    yahrzeits:YR.map(function(_,i){return colYr(i)}).filter(function(y){return y.name}),
+    timestamp:new Date().toISOString()
+  };
+  if(eid)updM(eid,data);else addM(data);
+  document.getElementById('fv').style.display='none';
+  document.getElementById('sv').style.display='block';
+  window.scrollTo(0,0);
+}
+function resetForm(){
+  document.getElementById('fv').style.display='block';
+  document.getElementById('sv').style.display='none';
+  var ids=['fn','ln','fa','mo','tr','ph','em','ad'];
+  for(var i=0;i<ids.length;i++)document.getElementById(ids[i]).value='';
+  for(var i=1;i<=3;i++){document.getElementById('v'+i).checked=false;document.getElementById('cb'+i).classList.remove('on')}
+  initForm();window.scrollTo(0,0);
+}
+
+// ── Storage: localStorage only ──────────────────────────
+function lsGet(){try{return JSON.parse(localStorage.getItem(SK)||'[]')}catch(e){return[]}}
+function lsSet(a){try{localStorage.setItem(SK,JSON.stringify(a))}catch(e){}}
+function getMs(){return lsGet()}
+function getM(id){var a=lsGet();for(var i=0;i<a.length;i++){if(a[i].id===id)return a[i]}return null}
+function addM(d){var a=lsGet();d.id=Date.now()+'_'+Math.random().toString(36).slice(2,7);a.push(d);lsSet(a)}
+function updM(id,d){var a=lsGet();for(var i=0;i<a.length;i++){if(a[i].id===id){for(var k in d)a[i][k]=d[k];break}}lsSet(a)}
+function delM(id){lsSet(lsGet().filter(function(m){return m.id!==id}))}
+
+// ── Export / Import (iOS-safe) ──────────────────────────
+var _expJSON='';
+function expData(){
+  var data=getMs();
+  _expJSON=JSON.stringify(data,null,2);
+  document.getElementById('exp-ovl').classList.add('show');
+}
+function expCopy(){
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(_expJSON).then(function(){toast('הנתונים הועתקו ללוח!');document.getElementById('exp-ovl').classList.remove('show')}).catch(function(){expFallbackCopy()});
+  } else {expFallbackCopy()}
+}
+function expFallbackCopy(){
+  var ta=document.createElement('textarea');ta.value=_expJSON;ta.style.cssText='position:fixed;top:0;left:0;opacity:0';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand('copy');toast('הנתונים הועתקו ללוח!')}catch(e){toast('לא ניתן להעתיק — פתח בטאב חדש')}
+  document.body.removeChild(ta);document.getElementById('exp-ovl').classList.remove('show');
+}
+function expTab(){
+  var w=window.open('','_blank');
+  if(w){
+    w.document.write('<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>גיבוי מבשר ציון</title></head><body style="font-family:sans-serif;padding:1.5rem;direction:rtl;background:#f0f2f5"><h2 style="margin-bottom:1rem">💾 גיבוי נתונים — מבשר ציון</h2><p style="margin-bottom:.5rem;color:#666;font-size:.85rem">לשמירה: לחץ □↑ (שיתוף) → "שמור ב-Files"</p><textarea id="d" style="width:100%;height:70vh;direction:ltr;font-size:13px;border:1px solid #ccc;border-radius:8px;padding:.8rem" readonly>'+_expJSON.replace(/</g,'&lt;')+'</textarea><button onclick="var t=document.getElementById(\'d\');t.select();document.execCommand(\'copy\')" style="margin-top:.8rem;padding:.6rem 1.5rem;background:#1a2744;color:#ddb95e;border:none;border-radius:8px;font-size:.9rem;cursor:pointer">📋 העתק הכל</button></body></html>');
+    w.document.close();
+  }
+  document.getElementById('exp-ovl').classList.remove('show');
+}
+function impData(){document.getElementById('imp-ovl').classList.add('show');document.getElementById('imp-file').value=''}
+function doImpFile(){
+  var fileEl=document.getElementById('imp-file');
+  if(!fileEl.files||!fileEl.files[0]){toast('אנא בחר קובץ');return}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      if(!Array.isArray(data)){
+        // Maybe it's wrapped: {members:[...]}
+        if(data.members&&Array.isArray(data.members))data=data.members;
+        else{toast('קובץ לא תקין');return}
+      }
+      if(!confirm('שחזור יחליף את כל הנתונים הקיימים ('+lsGet().length+' מתפללים). להמשיך?'))return;
+      lsSet(data);toast('שוחזרו '+data.length+' מתפללים!');
+      document.getElementById('imp-ovl').classList.remove('show');
+      if(curAt==='mem')renderML();
+    }catch(err){toast('קובץ גיבוי לא תקין')}
+  };
+  reader.readAsText(fileEl.files[0]);
+}
+
+// ── Admin ───────────────────────────────────────────────
+function openAdm(){document.getElementById('adm-ovl').style.display='block';document.body.style.overflow='hidden'}
+function closeAdm(){document.getElementById('adm-ovl').style.display='none';document.body.style.overflow=''}
+function doLg(){
+  var p=document.getElementById('pw').value,err=document.getElementById('pw-err');
+  if(p===PW){err.style.display='none';document.getElementById('adm-lg').style.display='none';document.getElementById('adm-pnl').style.display='block';calSt=gSh();loadAdm()}
+  else{err.style.display='block';document.getElementById('pw').value=''}
+}
+function doLo(){document.getElementById('adm-pnl').style.display='none';document.getElementById('adm-lg').style.display='block';document.getElementById('pw').value=''}
+
+var calSt=gSh(),curAt='cal';
+function showAt(t){
+  curAt=t;
+  var btns=document.querySelectorAll('.stb');
+  for(var i=0;i<btns.length;i++)btns[i].classList.toggle('active',(i===0&&t==='cal')||(i===1&&t==='mem'));
+  document.getElementById('at-cal').style.display=t==='cal'?'block':'none';
+  document.getElementById('at-mem').style.display=t==='mem'?'block':'none';
+  if(t==='mem')renderML();
+}
+function loadAdm(){initJNav();if(curAt==='cal')renderCal();else renderML()}
+function calNav(w){if(w===0)calSt=gSh();else{calSt=new Date(calSt);calSt.setDate(calSt.getDate()+w*7)}renderCal()}
+
+// ── Calendar rendering ──────────────────────────────────
+function renderCal(){
+  var grid=document.getElementById('cal-grid');var shs=[];var d=new Date(calSt);
+  for(var i=0;i<12;i++){shs.push(new Date(d));d.setDate(d.getDate()+7)}
+  document.getElementById('cal-ttl').textContent=shs[0].toLocaleDateString('he-IL',{month:'long',year:'numeric'})+' — '+shs[11].toLocaleDateString('he-IL',{month:'long',year:'numeric'});
+  grid.innerHTML=shs.map(function(s){return '<div class="wr" id="wr-'+d2s(s)+'"><div class="wh"><div class="wdates"><span class="wheb">טוען...</span><span class="wgreg">'+s.toLocaleDateString('he-IL',{day:'numeric',month:'long'})+'</span></div><div class="wpar">טוען פרשות...</div><div class="wbdgs"></div><div class="wtgl">▾</div></div><div class="wevs"></div></div>'}).join('');
+
+  var ms=getMs();
+  var now=new Date();
+  g2h(now.getFullYear(),now.getMonth()+1,now.getDate()).then(function(tH){
+    var curHY=tH?tH.hy:5786;
+    var rangeEnd=new Date(shs[shs.length-1]);rangeEnd.setDate(rangeEnd.getDate()+1);
+    return fetchParashot(shs[0],rangeEnd).then(function(parMap){
+      var tasks=shs.map(function(sh){
+        var key=d2s(sh);var pi=parMap[key]||{};
+        var parInfo={parasha:pi.parasha||'',holiday:pi.holiday||'',special:pi.special||''};
+        return Promise.all([g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate()),getWkEvs(ms,sh,curHY)]).then(function(results){
+          renderWR(sh,parInfo,results[0],results[1]);
+        });
+      });
+      return Promise.all(tasks);
+    });
+  }).catch(function(e){console.error('Calendar error:',e)});
+}
+
+function getWkEvs(ms,sh,curHY){
+  var evs=[],ss=d2s(sh);
+  var promises=[];
+  for(var mi=0;mi<ms.length;mi++){
+    var m=ms[mi];var fn=m.firstName+' '+m.lastName;
+    var children=m.children||[];
+    for(var ci=0;ci<children.length;ci++){
+      var c=children[ci];
+      if(c.barDate&&c.barDate===ss)evs.push({t:'bm',child:c.name,parent:fn,torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH});
+    }
+    var yahrzeits=m.yahrzeits||[];
+    for(var yi=0;yi<yahrzeits.length;yi++){
+      var y=yahrzeits[yi];if(!y.hm||!y.hd)continue;
+      (function(yy,fname){
+        var years=[curHY,curHY+1];
+        for(var ti=0;ti<years.length;ti++){
+          (function(tY){
+            promises.push(h2g(tY,+yy.hm,+yy.hd).then(function(g){
+              if(!g)return;
+              var gd=new Date(g.y,g.m-1,g.d);
+              var ss2=new Date(sh);ss2.setDate(sh.getDate()-6);ss2.setHours(0,0,0);
+              var se=new Date(sh);se.setHours(23,59,59);
+              if(gd>=ss2&&gd<=se){
+                evs.push({t:'yr',dec:yy.name,mem:fname,lead:yy.lead,haft:yy.haft,dh:fhd(yy.hd,yy.hm,tY)});
+              }
+            }).catch(function(){}));
+          })(years[ti]);
+        }
+      })(y,fn);
+    }
+  }
+  return Promise.all(promises).then(function(){return evs});
+}
+
+function renderWR(sh,parInfo,hd2,evs){
+  var key=d2s(sh);var row=document.getElementById('wr-'+key);if(!row)return;
+  var hasBM=false,hasY=false,bmCnt=0,yCnt=0;
+  for(var i=0;i<evs.length;i++){if(evs[i].t==='bm'){hasBM=true;bmCnt++}if(evs[i].t==='yr'){hasY=true;yCnt++}}
+  if(evs.length)row.classList.add('pin');
+  var hs=hd2?fhd(hd2.hd,hd2.hm,hd2.hy):'';
+  var pLabel='';
+  if(parInfo.parasha)pLabel+=es(parInfo.parasha);
+  else if(!parInfo.holiday&&!parInfo.special)pLabel='לא זמין';
+  if(parInfo.holiday)pLabel+=' <span class="hol-tag">🕎 '+es(parInfo.holiday)+'</span>';
+  if(parInfo.special)pLabel+=' <span class="par-tag">✡ '+es(parInfo.special)+'</span>';
+  var eH='';
+  for(var i=0;i<evs.length;i++){
+    var x=evs[i];
+    if(x.t==='bm')eH+='<div class="evi"><span class="etag t-bm">בר מצווה</span><div class="evb"><div class="en">'+es(x.child)+'</div><div class="es">בן/בת '+es(x.parent)+(x.torah?' | תורה: '+es(x.torah):'')+(x.par?' | פרשה: '+es(x.par):'')+(x.rp?' | קריאה: '+es(x.rp):'')+(x.rh?' | הפטרה: '+es(x.rh):'')+'</div></div></div>';
+    else eH+='<div class="evi"><span class="etag t-yr">יארצייט</span><div class="evb"><div class="en">'+es(x.dec)+'</div><div class="es">לזכרו של: '+es(x.mem)+(x.lead?' | לפני התיבה: '+es(x.lead):'')+(x.haft?' | הפטרה: '+es(x.haft):'')+(x.dh?' | '+es(x.dh):'')+'</div></div></div>';
+  }
+  if(!eH)eH='<div style="padding:.45rem 0;color:var(--ink3);font-size:.79rem">אין אירועים השבוע</div>';
+  row.innerHTML='<div class="wh" onclick="togWR(this)"><div class="wdates"><span class="wheb">שבת '+hs+'</span><span class="wgreg">'+sh.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})+'</span></div><div class="wpar">'+pLabel+' <a href="'+CHBD+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">קרא בחב"ד ↗</a></div><div class="wbdgs">'+(hasBM?'<span class="wbdg bdg-bm">✡ '+bmCnt+' בר מצווה</span>':'')+(hasY?'<span class="wbdg bdg-yr">🕯 '+yCnt+' יארצייט</span>':'')+'</div><div class="wtgl">▾</div></div><div class="wevs"'+(evs.length?' style="display:block"':'')+'">'+eH+'</div>';
+  if(evs.length)row.classList.add('open');
+}
+function togWR(el){
+  var wr=el.parentElement;
+  var wevs=el.nextElementSibling;
+  if(wr.classList.contains('open')){wr.classList.remove('open');wevs.style.display='none'}
+  else{wr.classList.add('open');wevs.style.display='block'}
+}
+
+// ── Members list ────────────────────────────────────────
+var mflt='';
+function renderML(f){
+  if(f!==undefined)mflt=f.toLowerCase();
+  var ms=getMs().filter(function(m){
+    if(!mflt)return true;
+    return(m.firstName+' '+m.lastName+' '+(m.torahName||'')).toLowerCase().indexOf(mflt)>=0;
+  });
+  var el=document.getElementById('mcnt');
+  if(el)el.textContent=ms.length+' מתפלל'+(ms.length!==1?'ים':'');
+  var list=document.getElementById('ml');if(!list)return;
+  if(!ms.length){list.innerHTML='<div class="no-m">אין מתפללים רשומים עדיין</div>';return}
+  var html='';
+  for(var i=0;i<ms.length;i++){
+    var m=ms[i];
+    var init=(m.firstName?m.firstName[0]:'')+(m.lastName?m.lastName[0]:'');
+    var sub=[m.phone,m.email,m.address].filter(Boolean).join(' · ');
+    var tags=[];
+    if((m.children||[]).length)tags.push(m.children.length+' ילד'+(m.children.length>1?'ים':''));
+    if((m.yahrzeits||[]).length)tags.push(m.yahrzeits.length+' יארצייט');
+    if((m.volunteering||[]).length)tags.push('מתנדב');
+    html+='<div class="mc"><div class="mav">'+es(init)+'</div><div class="mi"><div class="mn">'+es(m.firstName)+' '+es(m.lastName)+'</div><div class="ms2">'+es(sub)+'</div></div><div class="mts">'+tags.map(function(t){return'<span class="mt2">'+t+'</span>'}).join('')+'</div><div class="mas"><button class="med" onclick="editMx(\''+m.id+'\')">עריכה</button><button class="mde" onclick="delMx(\''+m.id+'\')">מחק</button></div></div>';
+  }
+  list.innerHTML=html;
+}
+function filtM(v){renderML(v)}
+function editMx(id){
+  var m=getM(id);if(!m)return;
+  closeAdm();initForm(m);
+  document.getElementById('fv').style.display='block';
+  document.getElementById('sv').style.display='none';
+  window.scrollTo(0,0);
+}
+function delMx(id){
+  var m=getM(id);if(!m)return;
+  if(confirm('מחק את '+m.firstName+' '+m.lastName+'?')){delM(id);renderML()}
+}
+
+// ── Jump navigation ─────────────────────────────────────
+function initJNav(){
+  var jd=document.getElementById('jn-jd');
+  if(!jd||jd.options.length>1)return;
+  for(var i=1;i<=30;i++)jd.innerHTML+='<option value="'+i+'">'+HD[i]+'</option>';
+  var jm=document.getElementById('jn-jm');
+  jm.innerHTML='<option value="">חודש</option>';
+  for(var i=0;i<HM.length;i++)jm.innerHTML+='<option value="'+HM[i].v+'">'+HM[i].n+'</option>';
+  var jy=document.getElementById('jn-jy');
+  jy.innerHTML='<option value="">שנה</option>';
+  for(var y=5800;y>=5750;y--)jy.innerHTML+='<option value="'+y+'">'+hy2s(y)+' ('+y+')</option>';
+  document.getElementById('jn-gd').value=d2s(new Date());
+}
+function jumpGreg(){
+  var v=document.getElementById('jn-gd');v=v?v.value:'';
+  if(!v){alert('אנא בחר תאריך לועזי');return}
+  var parts=v.split('-');
+  calSt=gSh(new Date(+parts[0],+parts[1]-1,+parts[2]));renderCal();
+}
+function jumpHeb(){
+  var hd=document.getElementById('jn-jd');hd=hd?hd.value:'';
+  var hm=document.getElementById('jn-jm');hm=hm?hm.value:'';
+  var hy=document.getElementById('jn-jy');hy=hy?hy.value:'';
+  if(!hd||!hm||!hy){alert('אנא בחר תאריך עברי מלא');return}
+  h2g(+hy,+hm,+hd).then(function(g){
+    if(!g){alert('שגיאת המרה');return}
+    calSt=gSh(new Date(g.y,g.m-1,g.d));renderCal();
+  });
+}
+
+// ── Init ────────────────────────────────────────────────
+initForm();
+</script>
+</body>
+</html>
