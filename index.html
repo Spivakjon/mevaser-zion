@@ -600,7 +600,7 @@ function saveToState(p,hd,hm,hy,gd){
 
 // ── State ───────────────────────────────────────────────
 let eid=null,CH=[],YR=[];
-const bC=()=>({name:'',hd:'',hm:'',hy:'',gd:'',mode:'heb',wantsBM:false,parasha:'',barDate:'',readP:'',readH:''});
+const bC=()=>({name:'',gender:'',hd:'',hm:'',hy:'',gd:'',mode:'heb',wantsBM:false,parasha:'',barDate:'',readP:'',readH:''});
 const bY=()=>({name:'',hd:'',hm:'',hy:'',gd:'',mode:'heb',lead:'',haft:''});
 function initForm(m=null){_torahManual=!!m;eid=m?m.id:null;CH=m?JSON.parse(JSON.stringify(m.children||[])):[];YR=m?JSON.parse(JSON.stringify(m.yahrzeits||[])):[];
   if(m){['fn','ln','fa','mo','tr','ph','em','ad'].forEach((id,i)=>document.getElementById(id).value=[m.firstName,m.lastName,m.fatherName,m.motherName,m.torahName,m.phone,m.email,m.address][i]||'');['v1','v2','v3'].forEach((id,i)=>{const k=['קניות לקידוש','סידור קידוש','דבר תורה'][i];document.getElementById(id).checked=(m.volunteering||[]).includes(k)});['cb1','cb2','cb3'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',document.getElementById(`v${i+1}`).checked))}
@@ -610,14 +610,15 @@ function initForm(m=null){_torahManual=!!m;eid=m?m.id:null;CH=m?JSON.parse(JSON.
 function chH(i){const c=CH[i];const bmOn=c.wantsBM?'show':'';
   return`<div class="ic" id="ci-${i}">
 <div class="ic-head"><span class="ic-title">ילד ${i+1}${c.name?' — '+es(c.name):''}</span><button class="brm" onclick="remCh(${i})">✕</button></div>
-<div class="g2" style="margin-bottom:.65rem">
-  <div class="ff"><label>שם הילד <span class="req">*</span></label><input id="cn-${i}" value="${es(c.name)}" placeholder="שם מלא" onchange="CH[${i}].name=this.value;rChT(${i})"><div class="emsg">שדה חובה</div></div>
+<div class="g3" style="margin-bottom:.65rem">
+  <div class="ff"><label>שם פרטי <span class="req">*</span></label><input id="cn-${i}" value="${es(c.name)}" placeholder="שם פרטי" onchange="CH[${i}].name=this.value;rChT(${i})"><div class="emsg">שדה חובה</div></div>
+  <div class="ff"><label>מין</label><select id="cg-${i}" onchange="CH[${i}].gender=this.value"><option value="">בחר</option><option value="זכר"${c.gender==='זכר'?' selected':''}>זכר</option><option value="נקבה"${c.gender==='נקבה'?' selected':''}>נקבה</option></select></div>
   <div><div style="font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.25rem">תאריך לידה</div>${dbH('c'+i,{hd:c.hd,hm:c.hm,hy:c.hy,gd:c.gd,mode:c.mode})}</div>
 </div>
 <div class="bm-section">
   <label class="bm-toggle-row">
     <input type="checkbox" id="cbm-${i}" ${c.wantsBM?'checked':''} onchange="toggleBM(${i})">
-    <span class="bm-toggle-lbl">📖 רישום לפרשת שבת בר/בת מצווה</span>
+    <span class="bm-toggle-lbl">📖 רישום לפרשת שבת ${c.gender==='נקבה'?'בת':'בר'} מצווה</span>
   </label>
   <div class="bm-details ${bmOn}" id="bmd-${i}">
     <button class="bm-btn" id="bmc-${i}" onclick="calcBM(${i})" style="margin-bottom:.5rem">📖 חשב פרשת בר מצווה ←</button>
@@ -654,7 +655,8 @@ async function calcBM(i){
   btn.disabled=true;btn.textContent='מחשב...';
   res.innerHTML='<span style="color:var(--gold3)">⏳ מחשב תאריך בר מצווה...</span>';
   res.style.display='block';
-  const bmHY=hy+13;
+  const bmAge=(CH[i].gender==='נקבה')?12:13;
+  const bmHY=hy+bmAge;
   let g=await h2g(bmHY,hm,hd);
   if(!g&&(hm===12||hm===13)){g=await h2g(bmHY,12,hd)}
   if(!g&&hd===30){g=await h2g(bmHY,hm,29)||await h2g(bmHY,12,29)}
@@ -715,7 +717,7 @@ function tCb(lblId,cbId){
 }
 
 // ── Form collect ────────────────────────────────────────
-function colCh(i){const c={...CH[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`c${i}-${k}`);if(el)c[k]=el.value});const gi=document.getElementById(`c${i}-gd`);if(gi)c.gd=gi.value;const ni=document.getElementById(`cn-${i}`);if(ni)c.name=ni.value.trim();const wbm=document.getElementById(`cbm-${i}`);if(wbm)c.wantsBM=wbm.checked;const pi=document.getElementById(`cp-${i}`);if(pi)c.parasha=pi.value.trim();const rp=document.getElementById(`crp-${i}`);if(rp)c.readP=rp.value;const rh=document.getElementById(`crh-${i}`);if(rh)c.readH=rh.value;return c}
+function colCh(i){const c={...CH[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`c${i}-${k}`);if(el)c[k]=el.value});const gi=document.getElementById(`c${i}-gd`);if(gi)c.gd=gi.value;const ni=document.getElementById(`cn-${i}`);if(ni)c.name=ni.value.trim();const ge=document.getElementById(`cg-${i}`);if(ge)c.gender=ge.value;const wbm=document.getElementById(`cbm-${i}`);if(wbm)c.wantsBM=wbm.checked;const pi=document.getElementById(`cp-${i}`);if(pi)c.parasha=pi.value.trim();const rp=document.getElementById(`crp-${i}`);if(rp)c.readP=rp.value;const rh=document.getElementById(`crh-${i}`);if(rh)c.readH=rh.value;return c}
 function colYr(i){const y={...YR[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`y${i}-${k}`);if(el)y[k]=el.value});const gi=document.getElementById(`y${i}-gd`);if(gi)y.gd=gi.value;const ni=document.getElementById(`yn-${i}`);if(ni)y.name=ni.value.trim();const yl=document.getElementById(`yl-${i}`);if(yl)y.lead=yl.value;const yh=document.getElementById(`yh-${i}`);if(yh)y.haft=yh.value;return y}
 function reqF(id){const el=document.getElementById(id);const ok=el&&el.value.trim().length>0;const ff=el?el.closest('.ff'):null;if(ff)ff.classList.toggle('err',!ok);return ok}
 
@@ -1009,6 +1011,7 @@ function showMemberDetail(m){
     for(var c=0;c<m.children.length;c++){
       var ch=m.children[c];
       var cinfo=[];
+      if(ch.gender)cinfo.push(ch.gender);
       if(ch.gd)cinfo.push('לידה: '+fgd(ch.gd));
       if(ch.hd&&ch.hm&&ch.hy)cinfo.push('עברי: '+fhd(ch.hd,ch.hm,ch.hy));
       if(ch.parasha)cinfo.push('פרשה: '+ch.parasha);
