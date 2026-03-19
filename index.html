@@ -20,10 +20,8 @@ html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;scrol
 body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction:rtl;background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 50%,var(--bg3) 100%);background-attachment:fixed;color:var(--ink);overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:0 env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
 .logo-area{text-align:center;padding:2.25rem 1rem 1rem;padding-top:calc(2.25rem + env(safe-area-inset-top,0px))}
 .logo-wrap{display:inline-flex;flex-direction:column;align-items:center;gap:.5rem}
-.logo-box{width:112px;height:112px;background:rgba(255,255,255,.97);border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(0,0,0,.3),0 0 0 2px var(--gold);position:relative;overflow:hidden;flex-direction:column}
-.logo-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),var(--gold2))}
-.logo-icon{font-size:2.8rem;line-height:1}
-.logo-25{font-family:'Frank Ruhl Libre',serif;font-size:1.2rem;font-weight:900;color:var(--gold);margin-top:-.2rem}
+.logo-box{width:112px;height:112px;background:#fff;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(0,0,0,.3),0 0 0 2px var(--gold);position:relative;overflow:hidden;padding:8px}
+.logo-box img{width:100%;height:100%;object-fit:contain}
 .logo-name{color:#fff;font-family:'Frank Ruhl Libre',serif;font-size:1.75rem;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,.4)}
 .logo-sub{color:rgba(255,255,255,.5);font-size:.82rem;font-weight:300;margin-top:.1rem}
 .main-card{background:var(--card);border-radius:20px;max-width:760px;margin:0 auto 1.5rem;box-shadow:var(--shd);overflow:hidden}
@@ -82,9 +80,12 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
 .s-btns button{padding:.65rem 1.35rem;border:none;border-radius:10px;font-family:'Heebo',sans-serif;font-size:.87rem;font-weight:600;cursor:pointer;min-height:44px}
 .btn-new{background:var(--ink);color:var(--gold2)}
 .btn-adm{background:var(--gold);color:var(--ink)}
-.adm-lnk{text-align:center;padding:1rem 0 2.5rem;padding-bottom:calc(2.5rem + env(safe-area-inset-bottom,0px))}
+.adm-lnk{text-align:center;padding:1rem 0 .5rem}
 .adm-lnk button{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.18);color:rgba(255,255,255,.6);padding:.6rem 1.4rem;border-radius:28px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:.85rem;transition:all .2s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);min-height:44px}
 .adm-lnk button:hover{background:rgba(255,255,255,.13);color:#fff;border-color:rgba(255,255,255,.35)}
+.self-edit-lnk{text-align:center;padding:.5rem 0 2.5rem;padding-bottom:calc(2.5rem + env(safe-area-inset-bottom,0px))}
+.self-edit-lnk button{background:rgba(255,255,255,.07);border:1.5px solid rgba(200,168,75,.35);color:var(--gold2);padding:.6rem 1.4rem;border-radius:28px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:.85rem;transition:all .2s;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);min-height:44px}
+.self-edit-lnk button:hover{background:rgba(255,255,255,.13);color:var(--gold3);border-color:var(--gold)}
 #adm-ovl{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;overflow-y:auto;background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 50%,var(--bg3) 100%);-webkit-overflow-scrolling:touch}
 .adm-x{position:fixed;top:calc(.9rem + env(safe-area-inset-top,0px));left:calc(.9rem + env(safe-area-inset-left,0px));background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;width:42px;height:42px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;z-index:10}
 .adm-x:hover{background:rgba(255,255,255,.18)}
@@ -155,8 +156,11 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
 .no-m{text-align:center;color:rgba(255,255,255,.32);padding:2.25rem;font-size:.84rem}
 .div{height:1px;background:var(--bd2);margin:.7rem 0}
 .jnav{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem}
-.jnav-title{color:rgba(255,255,255,.55);font-size:.74rem;font-weight:600;margin-bottom:.6rem;letter-spacing:.04em}
+.jnav-title{color:rgba(255,255,255,.55);font-size:.74rem;font-weight:600;margin-bottom:.6rem;letter-spacing:.04em;cursor:pointer;display:flex;align-items:center;gap:.4rem}
+.jnav-title .jtgl{transition:transform .2s;font-size:.65rem}
+.jnav.collapsed .jnav-title .jtgl{transform:rotate(180deg)}
 .jnav-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.jnav.collapsed .jnav-row{display:none}
 .jnav select,.jnav input[type="date"]{padding:.48rem .65rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:16px;direction:rtl;-webkit-appearance:none;appearance:none;min-height:44px}
 .jnav select option{background:#1a2744;color:#fff}
 .jnav input[type="date"]{direction:ltr;min-width:140px}
@@ -188,6 +192,41 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--gold2);padding:.65rem 1.3rem;border-radius:10px;font-family:'Heebo',sans-serif;font-size:.82rem;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;text-align:center;max-width:90vw}
 .toast.show{opacity:1}
 
+/* Self-edit modal */
+.se-ovl{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:2000;background:rgba(0,0,0,.55);justify-content:center;align-items:center;padding:1rem;-webkit-overflow-scrolling:touch}
+.se-ovl.show{display:flex}
+.se-card{background:#fff;border-radius:16px;max-width:400px;width:100%;padding:2rem 1.8rem;box-shadow:var(--shd);text-align:center}
+.se-card h2{font-family:'Frank Ruhl Libre',serif;color:var(--ink);font-size:1.2rem;font-weight:700;margin-bottom:.3rem}
+.se-card p{color:var(--ink3);font-size:.81rem;margin-bottom:1.2rem}
+.se-card .ff{margin-bottom:.7rem;text-align:right}
+.se-card input{width:100%;padding:.72rem;border:1.5px solid var(--bd);border-radius:10px;font-size:16px;font-family:'Heebo',sans-serif;-webkit-appearance:none;min-height:48px;direction:rtl}
+.se-card input[dir="ltr"]{direction:ltr}
+.se-card input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,168,75,.14)}
+.se-btn{width:100%;background:var(--gold);color:var(--ink);border:none;padding:.75rem;border-radius:10px;font-family:'Frank Ruhl Libre',serif;font-size:1rem;font-weight:700;cursor:pointer;min-height:48px;margin-top:.5rem}
+.se-btn:hover{filter:brightness(1.07)}
+.se-close{width:100%;background:#f3f4f6;color:var(--ink3);border:none;padding:.65rem;border-radius:10px;font-family:'Heebo',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;min-height:44px;margin-top:.4rem}
+.se-err{color:var(--red);font-size:.78rem;margin-top:.5rem;display:none}
+
+/* Sheets sync */
+.sheets-banner{background:rgba(200,168,75,.12);border:1.5px solid rgba(200,168,75,.3);border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+.sheets-banner-text{color:var(--gold2);font-size:.82rem;font-weight:500}
+.sheets-banner-btn{background:var(--gold);color:var(--ink);border:none;border-radius:8px;padding:.4rem .85rem;font-family:'Heebo',sans-serif;font-size:.78rem;font-weight:700;cursor:pointer;min-height:38px}
+.sheets-cfg{display:none;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:12px;padding:1rem;margin-bottom:1rem}
+.sheets-cfg.show{display:block}
+.sheets-cfg h3{color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:.95rem;font-weight:700;margin-bottom:.7rem}
+.sheets-cfg-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem}
+.sheets-cfg input{flex:1;padding:.52rem .75rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:16px;direction:ltr;-webkit-appearance:none;min-height:44px;min-width:0}
+.sheets-cfg input:focus{outline:none;border-color:var(--gold)}
+.sheets-cfg input::placeholder{color:rgba(255,255,255,.3)}
+.sheets-cfg-btn{background:var(--gold);color:var(--ink);border:none;border-radius:8px;padding:.48rem .95rem;font-family:'Heebo',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;min-height:44px;white-space:nowrap}
+.sheets-cfg-btn:hover{background:var(--gold2)}
+.sheets-cfg-btn.test{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.17);color:rgba(255,255,255,.68)}
+.sheets-cfg-btn.test:hover{border-color:var(--gold);color:var(--gold2)}
+.sync-status{font-size:.73rem;padding:.3rem .6rem;border-radius:6px;display:inline-flex;align-items:center;gap:.3rem;margin-bottom:.8rem}
+.sync-status.connected{background:rgba(30,125,75,.15);color:#5dbe8a}
+.sync-status.disconnected{background:rgba(192,57,43,.1);color:#e88}
+.sync-status.syncing{background:rgba(200,168,75,.15);color:var(--gold2)}
+
 /* ===== TABLET (max 768px) ===== */
 @media(max-width:768px){
   .g3{grid-template-columns:1fr 1fr}
@@ -205,9 +244,7 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
   .sec{padding:1rem .85rem}
   .sh{padding:.55rem 1rem}
   .logo-area{padding:1.5rem .75rem .75rem;padding-top:calc(1.5rem + env(safe-area-inset-top,0px))}
-  .logo-box{width:88px;height:88px}
-  .logo-icon{font-size:2.2rem}
-  .logo-25{font-size:1rem}
+  .logo-box{width:88px;height:88px;padding:6px}
   .logo-name{font-size:1.35rem}
   .logo-sub{font-size:.78rem;max-width:280px;margin:0 auto;line-height:1.5}
   .hrow{grid-template-columns:48px 1fr}
@@ -222,24 +259,26 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
   .ms2{white-space:normal}
   .mts{width:100%}
   .mas{width:100%;justify-content:flex-end;margin-top:.15rem}
+  .med,.mde{padding:.45rem .85rem;font-size:.78rem;min-height:44px}
   .m-srch{width:100%;max-width:100%}
   .m-top{flex-direction:column;align-items:stretch}
   .adm-hdr{flex-direction:column;align-items:center;text-align:center}
   .adm-acts{justify-content:center;width:100%}
   .cnav-row{justify-content:center}
   .cnav-title{order:-1;width:100%;text-align:center;margin-bottom:.3rem;font-size:.85rem}
-  .cnv{flex:1;justify-content:center;text-align:center}
+  .cnv{flex:1;justify-content:center;text-align:center;min-height:44px}
   .jnav{padding:.7rem .65rem}
+  .jnav.collapsed .jnav-row{display:none}
   .jnav-row{gap:.32rem}
   .jnav select{flex:1;min-width:0}
   .jnav input[type="date"]{flex:1;min-width:0}
   .jnav-sep{display:none}
   .jbtn{flex:1;text-align:center}
-  .wh{gap:.4rem;padding:.65rem .55rem}
+  .wh{gap:.4rem;padding:.75rem .65rem}
   .wdates{min-width:auto;width:100%}
   .wpar{width:100%;font-size:.84rem}
   .wbdgs{width:100%}
-  .evi{flex-direction:column;gap:.25rem}
+  .evi{flex-direction:column;gap:.25rem;padding:.55rem .28rem}
   .etag{width:auto;align-self:flex-start}
   .evb .es{word-break:break-word}
   .sv{padding:2rem 1.2rem}
@@ -247,10 +286,14 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
   .s-btns{flex-direction:column}
   .s-btns button{width:100%;min-height:44px}
   .modal-box{padding:1.3rem;margin:.5rem}
+  .se-card{padding:1.5rem 1.1rem}
   .lg-card{padding:1.6rem 1.2rem}
   .bm-section{padding:.7rem .65rem}
   .bm-toggle-lbl{font-size:.8rem}
   .toast{bottom:calc(1.2rem + env(safe-area-inset-bottom,0px));max-width:85vw;font-size:.8rem}
+  .wr{margin-bottom:.75rem}
+  .mav{width:44px;height:44px;font-size:.95rem}
+  .sheets-banner{flex-direction:column;text-align:center}
 }
 
 /* ===== SMALL MOBILE (max 380px) ===== */
@@ -258,9 +301,7 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
   .sec{padding:.85rem .6rem}
   .sh{padding:.5rem .7rem}
   .sh-t{font-size:.88rem}
-  .logo-box{width:72px;height:72px}
-  .logo-icon{font-size:1.8rem}
-  .logo-25{font-size:.85rem}
+  .logo-box{width:72px;height:72px;padding:5px}
   .logo-name{font-size:1.15rem}
   .ff label{font-size:.73rem}
   .wh{padding:.55rem .45rem}
@@ -271,7 +312,7 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
 </style>
 </head>
 <body>
-<div class="logo-area"><div class="logo-wrap"><div class="logo-box"><div class="logo-icon">🕍</div><div class="logo-25">25</div></div><div class="logo-name">עמותת מבשר ציון</div><div class="logo-sub">שלום וברוך הבא! אנא מלא את פרטיך ונשמח לשמור על קשר</div></div></div>
+<div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name">עמותת מבשר ציון</div><div class="logo-sub">שלום וברוך הבא! אנא מלא את פרטיך ונשמח לשמור על קשר</div></div></div>
 <div class="main-card" id="main-card">
   <div class="sv" id="sv"><div class="s-icon">✓</div><div class="s-title">הרישום נשמר בהצלחה!</div><div class="s-body">פרטיך נשמרו בתיק הקהילה.<br>נשמח לראותך בקרב מתפללי בית הכנסת.</div><div class="s-btns"><button class="btn-new" onclick="resetForm()">רישום חדש</button><button class="btn-adm" onclick="openAdm()">ממשק מנהל</button></div></div>
   <div id="fv">
@@ -292,15 +333,29 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
   </div>
 </div>
 <div class="adm-lnk"><button onclick="openAdm()">🔒 כניסה לממשק מנהל</button></div>
+<div class="self-edit-lnk"><button onclick="openSelfEdit()">📝 עריכת הפרטים שלי</button></div>
 <div id="adm-ovl">
   <button class="adm-x" onclick="closeAdm()">✕</button>
   <div id="adm-lg" class="lg-wrap"><div class="lg-card"><div style="font-size:2.4rem;margin-bottom:.65rem">🔐</div><h2>ממשק מנהל</h2><p>הזן סיסמה לגישה לפאנל הניהול</p><input type="password" id="pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLg()"><button class="blg" onclick="doLg()">כניסה לממשק</button><div class="lg-err" id="pw-err">סיסמה שגויה</div></div></div>
   <div class="adm-pnl" id="adm-pnl">
-    <div class="adm-hdr"><span class="adm-title">🕍 ממשק ניהול — קהילת מבשר ציון</span><div class="adm-acts"><button class="abt" onclick="expData()">💾 ייצוא</button><button class="abt" onclick="impData()">📂 שחזור</button><button class="abt" onclick="doLo()">יציאה ✕</button></div></div>
+    <div class="adm-hdr"><span class="adm-title">🕍 ממשק ניהול — קהילת מבשר ציון</span><div class="adm-acts"><button class="abt" onclick="doSync()">🔄 סנכרן</button><button class="abt" onclick="expData()">💾 ייצוא</button><button class="abt" onclick="impData()">📂 שחזור</button><button class="abt" onclick="doLo()">יציאה ✕</button></div></div>
+    <div id="sheets-banner" class="sheets-banner" style="display:none"><span class="sheets-banner-text">Google Sheets לא מחובר — הנתונים נשמרים מקומית בלבד</span><button class="sheets-banner-btn" onclick="toggleSheetsCfg()">הגדר חיבור</button></div>
+    <div id="sheets-cfg" class="sheets-cfg">
+      <h3>הגדרת חיבור Google Sheets</h3>
+      <div class="sheets-cfg-row">
+        <input type="text" id="sheets-url-input" placeholder="הכנס כתובת Google Apps Script URL" dir="ltr">
+      </div>
+      <div class="sheets-cfg-row">
+        <button class="sheets-cfg-btn" onclick="saveSheetsCfg()">שמור</button>
+        <button class="sheets-cfg-btn test" onclick="testSheetsConn()">בדוק חיבור</button>
+        <button class="sheets-cfg-btn test" onclick="toggleSheetsCfg()">סגור</button>
+      </div>
+    </div>
+    <div id="sync-status" class="sync-status" style="display:none"></div>
     <div class="stabs"><button class="stb active" onclick="showAt('cal')">📅 לוח שבועי</button><button class="stb" onclick="showAt('mem')">📋 מתפללים</button></div>
     <div id="at-cal">
     <div class="jnav" id="jnav">
-      <div class="jnav-title">⏩ קפוץ לתאריך</div>
+      <div class="jnav-title" onclick="toggleJnav()">⏩ קפוץ לתאריך <span class="jtgl">▾</span></div>
       <div class="jnav-row">
         <select id="jn-jd" style="width:58px"></select>
         <select id="jn-jm"></select>
@@ -313,6 +368,25 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
     </div>
     <div class="cnav-row"><button class="cnv" onclick="calNav(-4)">← 4 שבועות</button><button class="cnv" onclick="calNav(0)">היום</button><div class="cnav-title" id="cal-ttl"></div><button class="cnv" onclick="calNav(4)">4 שבועות →</button></div><div id="cal-grid"></div></div>
     <div id="at-mem" style="display:none"><div class="m-top"><span class="m-cnt" id="mcnt">0 מתפללים</span><input class="m-srch" type="text" placeholder="חיפוש שם..." oninput="filtM(this.value)"></div><div id="ml"></div></div>
+  </div>
+</div>
+
+<!-- Self-Edit Modal -->
+<div class="se-ovl" id="se-ovl" onclick="if(event.target===this)closeSelfEdit()">
+  <div class="se-card">
+    <h2>📝 עריכת הפרטים שלי</h2>
+    <p>הזן את מספר הטלפון והשם המלא שלך לזיהוי</p>
+    <div class="ff">
+      <label>טלפון</label>
+      <input type="tel" id="se-phone" placeholder="050-1234567" dir="ltr">
+    </div>
+    <div class="ff">
+      <label>שם מלא (שם פרטי + שם משפחה)</label>
+      <input type="text" id="se-name" placeholder="משה כהן">
+    </div>
+    <button class="se-btn" onclick="doSelfEdit()">חפש</button>
+    <button class="se-close" onclick="closeSelfEdit()">סגור</button>
+    <div class="se-err" id="se-err">לא נמצא מתפלל עם פרטים אלו</div>
   </div>
 </div>
 
@@ -343,7 +417,7 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
 /* ═══════════════════════════════════════════════════════
    מבשר ציון — קוד JavaScript
    כל הלוגיקה: טופס רישום + ממשק מנהל
-   אחסון: localStorage בלבד
+   אחסון: localStorage + Google Sheets (אופציונלי)
    ═══════════════════════════════════════════════════════ */
 const PW='Nir2026',SK='mbz_v5',CHBD='https://www.chabad.org.il/ParashotArticles/Item.asp?CategoryID=41';
 const HM=[{n:'תשרי',v:7,e:'Tishrei'},{n:'חשון',v:8,e:'Cheshvan'},{n:'כסלו',v:9,e:'Kislev'},{n:'טבת',v:10,e:'Tevet'},{n:'שבט',v:11,e:'Shevat'},{n:'אדר א׳',v:12,e:'Adar I'},{n:'אדר ב׳',v:13,e:'Adar II'},{n:'ניסן',v:1,e:'Nisan'},{n:'אייר',v:2,e:'Iyar'},{n:'סיון',v:3,e:'Sivan'},{n:'תמוז',v:4,e:'Tamuz'},{n:'אב',v:5,e:'Av'},{n:'אלול',v:6,e:'Elul'}];
@@ -580,14 +654,179 @@ function reqF(id){const el=document.getElementById(id);const ok=el&&el.value.tri
 async function submitForm(){if(!['fn','ln','ph'].map(reqF).every(Boolean))return;const vols=[];if(document.getElementById('v1').checked)vols.push('קניות לקידוש');if(document.getElementById('v2').checked)vols.push('סידור קידוש');if(document.getElementById('v3').checked)vols.push('דבר תורה');const data={firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),address:document.getElementById('ad').value.trim(),volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
 function resetForm(){document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em','ad'].forEach(id=>document.getElementById(id).value='');['v1','v2','v3'].forEach(id=>{document.getElementById(id).checked=false});['cb1','cb2','cb3'].forEach(id=>document.getElementById(id).classList.remove('on'));initForm();window.scrollTo(0,0)}
 
-// ── Storage: localStorage only ──────────────────────────
+// ── Storage: localStorage + Google Sheets ───────────────
+let SHEETS_URL=localStorage.getItem('mbz_sheets_url')||'';
+
 function lsGet(){try{return JSON.parse(localStorage.getItem(SK)||'[]')}catch(e){return[]}}
 function lsSet(a){try{localStorage.setItem(SK,JSON.stringify(a))}catch(e){}}
 function getMs(){return lsGet()}
 function getM(id){return lsGet().find(m=>m.id===id)||null}
-function addM(d){const a=lsGet();d.id=Date.now()+'_'+Math.random().toString(36).slice(2,7);a.push(d);lsSet(a)}
-function updM(id,d){const a=lsGet();const i=a.findIndex(m=>m.id===id);if(i>=0){a[i]={...a[i],...d,id};lsSet(a)}}
-function delM(id){lsSet(lsGet().filter(m=>m.id!==id))}
+function addM(d){const a=lsGet();d.id=Date.now()+'_'+Math.random().toString(36).slice(2,7);a.push(d);lsSet(a);if(SHEETS_URL)sheetsPost({action:'add',member:d}).catch(e=>console.warn('Sheets sync error:',e))}
+function updM(id,d){const a=lsGet();const i=a.findIndex(m=>m.id===id);if(i>=0){a[i]={...a[i],...d,id};lsSet(a);if(SHEETS_URL)sheetsPost({action:'update',member:a[i]}).catch(e=>console.warn('Sheets sync error:',e))}}
+function delM(id){lsSet(lsGet().filter(m=>m.id!==id));if(SHEETS_URL)sheetsPost({action:'delete',id:id}).catch(e=>console.warn('Sheets sync error:',e))}
+
+// ── Google Sheets Integration ───────────────────────────
+async function sheetsPost(payload){
+  if(!SHEETS_URL)return null;
+  const r=await fetch(SHEETS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload),mode:'no-cors'});
+  return r;
+}
+async function sheetsFetch(){
+  if(!SHEETS_URL)return null;
+  try{
+    const r=await fetch(SHEETS_URL+'?action=getAll',{mode:'cors'});
+    if(!r.ok)return null;
+    const data=await r.json();
+    return data;
+  }catch(e){console.warn('Sheets fetch error:',e);return null}
+}
+async function syncFromSheets(){
+  updateSyncStatus('syncing','מסנכרן...');
+  try{
+    const data=await sheetsFetch();
+    if(data&&Array.isArray(data)){
+      lsSet(data);
+      updateSyncStatus('connected','מסונכרן - '+data.length+' רשומות');
+      showToast('סנכרון הושלם! '+data.length+' רשומות');
+      if(curAt==='mem')renderML();
+      return true;
+    }else if(data&&data.members&&Array.isArray(data.members)){
+      lsSet(data.members);
+      updateSyncStatus('connected','מסונכרן - '+data.members.length+' רשומות');
+      showToast('סנכרון הושלם! '+data.members.length+' רשומות');
+      if(curAt==='mem')renderML();
+      return true;
+    }else{
+      updateSyncStatus('disconnected','שגיאת סנכרון');
+      showToast('שגיאה בסנכרון מ-Sheets');
+      return false;
+    }
+  }catch(e){
+    updateSyncStatus('disconnected','שגיאת סנכרון');
+    showToast('שגיאה בסנכרון: '+e.message);
+    return false;
+  }
+}
+async function doSync(){
+  if(!SHEETS_URL){
+    showToast('יש להגדיר כתובת Google Sheets תחילה');
+    toggleSheetsCfg();
+    return;
+  }
+  // First push all local data to Sheets
+  updateSyncStatus('syncing','שולח נתונים...');
+  try{
+    await sheetsPost({action:'sync',members:lsGet()});
+    showToast('הנתונים נשלחו ל-Sheets');
+    updateSyncStatus('connected','מסונכרן');
+  }catch(e){
+    showToast('שגיאה בשליחה ל-Sheets');
+    updateSyncStatus('disconnected','שגיאת שליחה');
+  }
+}
+function updateSyncStatus(state,text){
+  const el=document.getElementById('sync-status');
+  if(!el)return;
+  el.style.display='inline-flex';
+  el.className='sync-status '+state;
+  el.textContent=(state==='connected'?'🟢 ':state==='syncing'?'🔄 ':'🔴 ')+text;
+}
+function toggleSheetsCfg(){
+  const cfg=document.getElementById('sheets-cfg');
+  cfg.classList.toggle('show');
+  if(cfg.classList.contains('show')){
+    document.getElementById('sheets-url-input').value=SHEETS_URL||'';
+  }
+}
+function saveSheetsCfg(){
+  const url=document.getElementById('sheets-url-input').value.trim();
+  SHEETS_URL=url;
+  localStorage.setItem('mbz_sheets_url',url);
+  if(url){
+    updateSyncStatus('connected','מחובר');
+    document.getElementById('sheets-banner').style.display='none';
+  }else{
+    document.getElementById('sync-status').style.display='none';
+    document.getElementById('sheets-banner').style.display='flex';
+  }
+  document.getElementById('sheets-cfg').classList.remove('show');
+  showToast(url?'כתובת Sheets נשמרה':'כתובת Sheets הוסרה');
+}
+async function testSheetsConn(){
+  const url=document.getElementById('sheets-url-input').value.trim();
+  if(!url){showToast('הזן כתובת URL');return}
+  updateSyncStatus('syncing','בודק חיבור...');
+  try{
+    const r=await fetch(url+'?action=ping',{mode:'cors'});
+    if(r.ok){
+      updateSyncStatus('connected','חיבור תקין!');
+      showToast('חיבור תקין!');
+    }else{
+      updateSyncStatus('disconnected','חיבור נכשל ('+r.status+')');
+      showToast('חיבור נכשל');
+    }
+  }catch(e){
+    updateSyncStatus('disconnected','חיבור נכשל');
+    showToast('חיבור נכשל - בדוק URL');
+  }
+}
+function initSheetsUI(){
+  const banner=document.getElementById('sheets-banner');
+  if(!SHEETS_URL){
+    banner.style.display='flex';
+  }else{
+    banner.style.display='none';
+    updateSyncStatus('connected','מחובר');
+  }
+}
+
+// ── Self-Edit Feature ───────────────────────────────────
+function openSelfEdit(){
+  document.getElementById('se-ovl').classList.add('show');
+  document.getElementById('se-phone').value='';
+  document.getElementById('se-name').value='';
+  document.getElementById('se-err').style.display='none';
+}
+function closeSelfEdit(){
+  document.getElementById('se-ovl').classList.remove('show');
+}
+function doSelfEdit(){
+  const phone=document.getElementById('se-phone').value.trim();
+  const name=document.getElementById('se-name').value.trim();
+  const errEl=document.getElementById('se-err');
+  if(!phone||!name){
+    errEl.textContent='אנא הזן טלפון ושם מלא';
+    errEl.style.display='block';
+    return;
+  }
+  const ms=getMs();
+  const normalizePhone=p=>p.replace(/[-\s()]/g,'');
+  const np=normalizePhone(phone);
+  const match=ms.find(m=>{
+    const mp=normalizePhone(m.phone||'');
+    const fullName=(m.firstName||'')+' '+(m.lastName||'');
+    return mp===np&&fullName.trim()===name.trim();
+  });
+  if(!match){
+    // Try phone-only match as fallback
+    const phoneMatch=ms.find(m=>normalizePhone(m.phone||'')===np);
+    if(phoneMatch){
+      errEl.textContent='מספר הטלפון נמצא אך השם אינו תואם';
+      errEl.style.display='block';
+    }else{
+      errEl.textContent='לא נמצא מתפלל עם פרטים אלו';
+      errEl.style.display='block';
+    }
+    return;
+  }
+  // Found! Close modal and load into form
+  closeSelfEdit();
+  initForm(match);
+  document.getElementById('fv').style.display='block';
+  document.getElementById('sv').style.display='none';
+  window.scrollTo(0,0);
+  showToast('הפרטים נטענו - ערוך ולחץ שמור');
+}
 
 // ── Export / Import (iOS-safe — no <a download>) ────────
 let _expJSON='';
@@ -635,11 +874,11 @@ function doImpFile(){
 // ── Admin ───────────────────────────────────────────────
 function openAdm(){document.getElementById('adm-ovl').style.display='block';document.body.style.overflow='hidden'}
 function closeAdm(){document.getElementById('adm-ovl').style.display='none';document.body.style.overflow=''}
-function doLg(){const p=document.getElementById('pw').value,err=document.getElementById('pw-err');if(p===PW){err.style.display='none';document.getElementById('adm-lg').style.display='none';document.getElementById('adm-pnl').style.display='block';calSt=gSh();loadAdm();}else{err.style.display='block';document.getElementById('pw').value=''}}
+function doLg(){const p=document.getElementById('pw').value,err=document.getElementById('pw-err');if(p===PW){err.style.display='none';document.getElementById('adm-lg').style.display='none';document.getElementById('adm-pnl').style.display='block';calSt=gSh();initSheetsUI();loadAdm();}else{err.style.display='block';document.getElementById('pw').value=''}}
 function doLo(){document.getElementById('adm-pnl').style.display='none';document.getElementById('adm-lg').style.display='block';document.getElementById('pw').value=''}
 let calSt=gSh(),curAt='cal';
 function showAt(t){curAt=t;document.querySelectorAll('.stb').forEach((b,i)=>b.classList.toggle('active',(i===0&&t==='cal')||(i===1&&t==='mem')));document.getElementById('at-cal').style.display=t==='cal'?'block':'none';document.getElementById('at-mem').style.display=t==='mem'?'block':'none';if(t==='mem')renderML()}
-function loadAdm(){initJNav();if(curAt==='cal')renderCal();else renderML()}
+function loadAdm(){initJNav();collapseJnavOnMobile();if(curAt==='cal')renderCal();else renderML()}
 function calNav(w){if(w===0){calSt=gSh();}else{calSt=new Date(calSt);calSt.setDate(calSt.getDate()+w*7);}renderCal()}
 async function renderCal(){
   const grid=document.getElementById('cal-grid');const shs=[];const d=new Date(calSt);
@@ -695,6 +934,14 @@ function initJNav(){
   jy.innerHTML='<option value="">שנה</option>';
   for(let y=5800;y>=5750;y--)jy.innerHTML+=`<option value="${y}">${hy2s(y)} (${y})</option>`;
   document.getElementById('jn-gd').value=d2s(new Date());
+}
+function toggleJnav(){
+  document.getElementById('jnav').classList.toggle('collapsed');
+}
+function collapseJnavOnMobile(){
+  if(window.innerWidth<=600){
+    document.getElementById('jnav').classList.add('collapsed');
+  }
 }
 async function jumpGreg(){
   const v=document.getElementById('jn-gd')?.value;
