@@ -32,6 +32,9 @@ body.light-mode .wk-heb{color:var(--ink2)}
 body.light-mode .wk-ev{background:rgba(0,0,0,.04);color:var(--ink2)}
 body.light-mode .wk-ev-name{color:var(--ink)}
 body.light-mode .wk-none{color:var(--ink3)}
+body.light-mode .wk-times{background:rgba(200,168,75,.08);border-color:rgba(200,168,75,.2)}
+body.light-mode .wk-time{color:var(--ink2)}
+body.light-mode .wk-time strong{color:var(--ink)}
 body.light-mode .wk-link{color:var(--gold);border-color:var(--bd)}
 body.light-mode .ann-card{background:rgba(255,255,255,.9);border-color:var(--bd)}
 body.light-mode .ann-title{color:var(--ink)}
@@ -228,6 +231,9 @@ body.light-mode .lang-toggle button.active{background:rgba(0,0,0,.1);color:var(-
 .wk-ev-icon{font-size:.95rem;flex-shrink:0}
 .wk-ev-text{flex:1}
 .wk-ev-name{font-weight:700;color:#fff}
+.wk-times{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:.5rem;padding:.45rem .6rem;background:rgba(200,168,75,.1);border:1px solid rgba(200,168,75,.2);border-radius:8px}
+.wk-time{font-size:.82rem;color:var(--gold2);display:flex;align-items:center;gap:.3rem}
+.wk-time strong{color:#fff;font-size:.9rem}
 .wk-none{font-size:.78rem;color:rgba(255,255,255,.3);padding:.3rem 0}
 .wk-link{display:inline-block;margin-top:.45rem;font-size:.72rem;color:var(--gold);text-decoration:none;border:1px solid rgba(200,168,75,.25);border-radius:6px;padding:.2rem .55rem;transition:all .15s}
 .wk-link:hover{background:rgba(200,168,75,.12);color:var(--gold2)}
@@ -432,6 +438,8 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
   .week-card{margin:0 .45rem .85rem;padding:.75rem .7rem}
   .wk-par{font-size:.95rem}
   .wk-head{flex-wrap:wrap}
+  .wk-times{gap:.5rem;padding:.4rem .5rem}
+  .wk-time{font-size:.8rem;flex:1;min-width:0;justify-content:center}
   .ann-card{margin:0 .45rem .85rem;padding:.75rem .7rem}
   .stats-row{gap:.3rem}
   .stat-card{min-width:70px;padding:.4rem .35rem}
@@ -1969,6 +1977,31 @@ async function getHebrewBirthdays(ms,sh){
   return results;
 }
 
+// ── Shabbat Times (Tel Mond) ─────────────────────────────
+async function getShabbatTimes(){
+  try{
+    var url='https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude=32.258&longitude=34.917&tzid=Asia/Jerusalem&m=50&lg=he&i=on';
+    var r=await hf(url);
+    if(!r||!r.items)return null;
+    var times={candles:'',havdalah:'',parashaLink:''};
+    for(var i=0;i<r.items.length;i++){
+      var it=r.items[i];
+      if(it.category==='candles'){
+        var dt=new Date(it.date);
+        times.candles=String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
+      }
+      if(it.category==='havdalah'){
+        var dt2=new Date(it.date);
+        times.havdalah=String(dt2.getHours()).padStart(2,'0')+':'+String(dt2.getMinutes()).padStart(2,'0');
+      }
+      if(it.category==='parashat'&&it.link){
+        times.parashaLink=it.link;
+      }
+    }
+    return times;
+  }catch(e){console.warn('Shabbat times error:',e);return null}
+}
+
 // ── This Week Summary (public-facing) ────────────────────
 async function loadWeekSummary(){
   var card=document.getElementById('week-card');
@@ -1985,10 +2018,9 @@ async function loadWeekSummary(){
     var parName=pi.parasha||pi.holiday||pi.special||'';
     var ms=getMs();
     var curHY=hd2?hd2.hy:5786;
+    var shTimes=await getShabbatTimes();
     var evs=await getWkEvs(ms,sh,curHY);
-    // Hebrew birthdays
     var birthdays=await getHebrewBirthdays(ms,sh);
-    // Aliyot and Kiddush
     var aliyot=getAliyot();
     var kiddush=getKiddush();
 
@@ -1997,6 +2029,13 @@ async function loadWeekSummary(){
     h+='<span class="wk-heb">שבת '+es(hebStr)+'</span>';
     h+='<span class="wk-date">'+sh.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})+'</span>';
     h+='</div>';
+    // Shabbat times
+    if(shTimes&&(shTimes.candles||shTimes.havdalah)){
+      h+='<div class="wk-times">';
+      if(shTimes.candles)h+='<span class="wk-time">🕯️ הדלקת נרות: <strong>'+shTimes.candles+'</strong></span>';
+      if(shTimes.havdalah)h+='<span class="wk-time">✨ צאת שבת: <strong>'+shTimes.havdalah+'</strong></span>';
+      h+='</div>';
+    }
     if(evs.length||birthdays.length||(aliyot&&aliyot.date===key)||(kiddush&&kiddush.date===key)){
       h+='<div class="wk-events">';
       for(var i=0;i<evs.length;i++){
