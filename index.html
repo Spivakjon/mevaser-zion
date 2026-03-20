@@ -454,6 +454,51 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
   .main-card{margin:0 .3rem 1.2rem}
   .g4{grid-template-columns:1fr}
 }
+
+/* Registration collapse */
+.reg-btn-wrap{text-align:center;max-width:400px;margin:0 auto 1.2rem}
+.reg-btn{display:block;width:100%;max-width:400px;height:54px;margin:0 auto;background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 100%);color:var(--ink);border:none;border-radius:14px;font-family:'Frank Ruhl Libre',serif;font-size:1.15rem;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(200,168,75,.4);transition:all .2s;letter-spacing:.02em}
+.reg-btn:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 6px 24px rgba(200,168,75,.5)}
+.reg-collapsed{display:none !important}
+
+/* Community info section */
+.info-section{max-width:760px;margin:0 auto 1.5rem;padding:0 .45rem}
+.info-welcome{background:linear-gradient(135deg,rgba(200,168,75,.18),rgba(200,168,75,.06));border:1.5px solid rgba(200,168,75,.35);border-radius:14px;padding:1.2rem 1.3rem;margin-bottom:1rem;text-align:center}
+.info-welcome h2{font-family:'Frank Ruhl Libre',serif;color:var(--gold2);font-size:1.25rem;font-weight:700;margin-bottom:.5rem}
+.info-welcome p{color:rgba(255,255,255,.72);font-size:.88rem;line-height:1.7}
+body.light-mode .info-welcome{background:linear-gradient(135deg,rgba(200,168,75,.12),rgba(200,168,75,.04));border-color:var(--bd)}
+body.light-mode .info-welcome h2{color:var(--ink)}
+body.light-mode .info-welcome p{color:var(--ink2)}
+.info-acc{margin-bottom:.55rem}
+.info-acc-head{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1.5px solid rgba(200,168,75,.2);border-radius:10px;padding:.7rem 1rem;cursor:pointer;transition:all .18s;user-select:none;-webkit-user-select:none}
+.info-acc-head:hover{background:rgba(255,255,255,.1);border-color:rgba(200,168,75,.4)}
+.info-acc-head span:first-child{font-family:'Frank Ruhl Libre',serif;font-size:.92rem;font-weight:700;color:var(--gold2)}
+.info-acc-head .acc-arrow{color:rgba(255,255,255,.4);font-size:.75rem;transition:transform .25s}
+.info-acc.open .info-acc-head{border-radius:10px 10px 0 0;border-bottom-color:transparent;background:rgba(200,168,75,.12)}
+.info-acc.open .info-acc-head .acc-arrow{transform:rotate(180deg)}
+.info-acc-body{display:none;background:rgba(255,255,255,.04);border:1.5px solid rgba(200,168,75,.15);border-top:none;border-radius:0 0 10px 10px;padding:.85rem 1rem;color:rgba(255,255,255,.78);font-size:.85rem;line-height:1.75}
+.info-acc.open .info-acc-body{display:block}
+.info-acc-body a{color:var(--gold2);text-decoration:none;border-bottom:1px dotted rgba(200,168,75,.4);transition:all .15s}
+.info-acc-body a:hover{color:var(--gold3);border-bottom-color:var(--gold3)}
+.info-acc-body strong{color:rgba(255,255,255,.92)}
+.info-acc-body ul{margin:.3rem 0 .3rem 0;padding-right:1.2rem;list-style:disc}
+.info-acc-body li{margin-bottom:.3rem}
+body.light-mode .info-acc-head{background:rgba(0,0,0,.03);border-color:var(--bd)}
+body.light-mode .info-acc-head span:first-child{color:var(--ink)}
+body.light-mode .info-acc-head .acc-arrow{color:var(--ink3)}
+body.light-mode .info-acc.open .info-acc-head{background:rgba(200,168,75,.08)}
+body.light-mode .info-acc-body{background:rgba(0,0,0,.015);border-color:var(--bd);color:var(--ink2)}
+body.light-mode .info-acc-body a{color:var(--gold)}
+body.light-mode .info-acc-body strong{color:var(--ink)}
+@media(max-width:600px){
+  .info-section{padding:0 .25rem}
+  .info-welcome{padding:.9rem .85rem}
+  .info-welcome h2{font-size:1.1rem}
+  .info-welcome p{font-size:.82rem}
+  .info-acc-head{padding:.6rem .75rem}
+  .info-acc-head span:first-child{font-size:.85rem}
+  .info-acc-body{padding:.7rem .75rem;font-size:.82rem}
+}
 </style>
 </head>
 <body>
@@ -470,7 +515,177 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
 <div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name">עמותת מבשר ציון</div><div class="logo-sub" data-i18n="welcome">שלום וברוך הבא! אנא מלא את פרטיך ונשמח לשמור על קשר</div></div></div>
 <div class="week-card" id="week-card"><div class="wk-head"><span class="wk-par">📅 טוען פרשת השבוע...</span></div></div>
 <div id="announcements-public"></div>
-<div class="main-card" id="main-card">
+<div class="reg-btn-wrap"><button class="reg-btn" onclick="toggleReg()">📝 הרשמה לקהילה</button></div>
+
+<div class="info-section" id="info-section">
+<div class="info-welcome">
+<h2>ברוכים הבאים לקהילת מבשר ציון</h2>
+<p>קהילת מבשר ציון הינה קהילה דתית-לאומית אנגלו-סקסית בתל מונד. אנו שמחים שאתם שוקלים לעבור לתל מונד ולהצטרף לקהילתנו הפעילה והתוססת.</p>
+</div>
+
+<div class="info-acc" id="iacc-0">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>🕍 בית הכנסת והרב</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body">
+<ul>
+<li><strong>כתובת:</strong> רח' הצופית 23, תל מונד</li>
+<li><strong>אתר:</strong> <a href="http://www.mevaser.org.il" target="_blank" rel="noopener">www.mevaser.org.il</a></li>
+<li><strong>פייסבוק:</strong> קהילת מבשר ציון בתל מונד</li>
+<li><strong>רב הקהילה:</strong> הרב ברוך וינטרוב — <a href="mailto:rabbi@mevaser.org.il">rabbi@mevaser.org.il</a>, WhatsApp <a href="tel:055-666-4674">055-666-4674</a></li>
+<li>הודעות קהילתיות לאחר מעריב ומוסף בכל שבת</li>
+</ul>
+</div>
+</div>
+
+<div class="info-acc" id="iacc-1">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>💰 דמי חבר</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body">
+<ul>
+<li>הקהילה אינה מקבלת תמיכה ממשלתית — נבנתה כולה על ידי חבריה</li>
+<li><strong>דמי הצטרפות:</strong> מינימום 15,000 ₪</li>
+<li><strong>דמי חבר שנתיים למשפחה:</strong> נקבעים על ידי הועד, כולל מקומות לימים הנוראים</li>
+<li><strong>אפשרויות תשלום:</strong> הוראת קבע, העברה בנקאית, צ'קים, כרטיסי אשראי, PayPal</li>
+<li><strong>גזבר:</strong> <a href="mailto:gizbar@mevaser.org.il">gizbar@mevaser.org.il</a></li>
+<li><strong>גבאי:</strong> <a href="mailto:gabbai@mevaser.org.il">gabbai@mevaser.org.il</a></li>
+</ul>
+</div>
+</div>
+
+<div class="info-acc" id="iacc-2">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>📚 שיעורים</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body">
+<ul>
+<li>שיעורים יומיים ושבועיים בעברית ובאנגלית</li>
+<li><strong>נושאים:</strong> פרשת השבוע, תנ"ך, הלכה, גמרא, דף יומי, גמרא לנשים</li>
+<li>לוח זמנים מלא באתר הקהילה</li>
+</ul>
+</div>
+</div>
+
+<div class="info-acc" id="iacc-3">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>📧 רשימת תפוצה</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body">
+<ul>
+<li>עלון שבועי בעריכת Michael Goodman — <a href="mailto:michael.goodman@mail.com">michael.goodman@mail.com</a></li>
+<li><strong>הרשמה לרשימת התפוצה:</strong> <a href="mailto:avituriel@gmail.com">avituriel@gmail.com</a></li>
+<li>אפשרות הרשמה דרך Dizzit</li>
+</ul>
+</div>
+</div>
+
+<div class="info-acc" id="iacc-4">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>🎉 אירועים וקידושים</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body">
+<ul>
+<li><strong>אירועים קהילתיים:</strong> פרויקט השבת, אירוח קבוצות, שבתות לבעלי צרכים מיוחדים</li>
+<li>קידוש שבועי לאחר התפילה, מאורגן על ידי משפחות בתורנות</li>
+<li><strong>רכזת קידוש:</strong> Nurit Brand — <a href="mailto:brandns@netvision.net.il">brandns@netvision.net.il</a></li>
+<li>שיעור פרשת השבוע לנשים לאחר הקידוש</li>
+<li><strong>רכזת שיעור נשים:</strong> Lisa Sambol — <a href="mailto:lisasambol@gmail.com">lisasambol@gmail.com</a></li>
+</ul>
+</div>
+</div>
+
+<div class="info-acc" id="iacc-5">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>📖 דברי תורה וקריאת התורה</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body">
+<ul>
+<li>דברי תורה מהרב, ואחת לשלושה שבועות מחבר קהילה</li>
+<li><strong>איש קשר לדברי תורה:</strong> Daniel Amitai — <a href="mailto:amitydaniel@gmail.com">amitydaniel@gmail.com</a></li>
+<li>קריאת התורה מעודדת לכל הגילאים</li>
+<li><strong>איש קשר לקריאה:</strong> Howard Abrams — <a href="mailto:howarda@amdocs.com">howarda@amdocs.com</a></li>
+</ul>
+</div>
+</div>
+
+<div class="info-acc" id="iacc-6">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>👶 תפילות ילדים</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body">
+<ul>
+<li>כל שבת לגילאי 1-10</li>
+<li>באולם בית הכנסת, בניהול Kevin Swain עם מדריכים מתנדבים</li>
+</ul>
+</div>
+</div>
+
+<div class="info-acc" id="iacc-7">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>🎄 חגים</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body">
+<ul>
+<li>ועדת חגים מארגנת אירועים לכל חג</li>
+<li><strong>יו"ר ועדת חגים:</strong> Janet Goodvach — <a href="mailto:jgoodvach@gmail.com">jgoodvach@gmail.com</a></li>
+</ul>
+</div>
+</div>
+
+<div class="info-acc" id="iacc-8">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>❤️ חסד</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body">
+<ul>
+<li>ועדת חסד פעילה</li>
+<li>ארוחות שבת לקשישים, חלות ויין לנזקקים, חבילות מזון לחגים</li>
+<li><strong>יו"ר ועדת חסד:</strong> Elissa Bash — <a href="mailto:elisab1@gmail.com">elisab1@gmail.com</a></li>
+<li>ארוחות תמיכה ללידות ושבעה</li>
+<li><strong>איש קשר:</strong> Lisa Sambol — <a href="mailto:lisasambol@gmail.com">lisasambol@gmail.com</a></li>
+</ul>
+</div>
+</div>
+
+<div class="info-acc" id="iacc-9">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>🏛 שימוש במתקני בית הכנסת</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body">
+<ul>
+<li>חברי הקהילה יכולים להשתמש בבית הכנסת ובאולם</li>
+<li><strong>איש קשר:</strong> Rozanne Platzky — <a href="mailto:rozannep500@gmail.com">rozannep500@gmail.com</a></li>
+<li>מומלץ להזמין מראש! הזמנת בר/בת מצווה עד שנתיים מראש — לחברים בלבד</li>
+</ul>
+</div>
+</div>
+
+<div class="info-acc" id="iacc-10">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>👥 ועד הקהילה</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body">
+<ul>
+<li>עמותה רשומה (סעיף 46 לניכוי מס, PEF בארה"ב)</li>
+<li>הועד נבחר כל שנתיים, מתכנס אחת לרבעון</li>
+<li><strong>חברי הועד:</strong></li>
+</ul>
+<p>יו"ר – דרן פלצקי | ועד חסד – אליסה בש | יו"ר יוצא – הווארד אייברמס | גזבר – דניאל עמיתי | סגן יו"ר – לורנס הרש | חברי ועד – ג'נט גודבך, אבי טוריאל, קווין סוויין, ג'ק קליין</p>
+</div>
+</div>
+
+<div class="info-acc" id="iacc-11">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>🗺 פרטים על תל-מונד</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body">
+<ul>
+<li>השכונות מאורגנות לפי נושאים: ציפורים, פרחים, הרים ועוד</li>
+<li>בית הכנסת נמצא ב"שכונת הציפורים" ברחוב הצופית</li>
+</ul>
+<p><strong>בנקים:</strong></p>
+<ul>
+<li>הפועלים — הדקל 42</li>
+<li>לאומי — הדקל 52</li>
+</ul>
+<p><strong>סופרמרקטים:</strong></p>
+<ul>
+<li>שופרסל שלי — הדקל 49</li>
+<li>מגה בעיר — השקד 4</li>
+<li>יינות ביתן — אזור תעשייה</li>
+<li>רמי לוי — כדימה (קדימה)</li>
+</ul>
+<p><strong>מוסדות:</strong></p>
+<ul>
+<li><strong>עירייה:</strong> הדקל 52, טל' <a href="tel:09-7774102">09-7774102</a>, <a href="http://www.tel-mond.muni.il/" target="_blank" rel="noopener">www.tel-mond.muni.il</a></li>
+<li><strong>דואר:</strong> הדקל 50</li>
+<li><strong>מכבי:</strong> השקד 4</li>
+<li><strong>כללית:</strong> מצדה 5</li>
+<li><strong>מתנ"ס:</strong> הדקל 30, טל' <a href="tel:09-7777602">09-7777602</a>, <a href="http://www.tel-mond.org.il" target="_blank" rel="noopener">www.tel-mond.org.il</a></li>
+<li><strong>מקווה:</strong> התמר 18, טל' <a href="tel:09-7964001">09-7964001</a> (גם מקווה כלים)</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="main-card reg-collapsed" id="main-card">
   <div class="sv" id="sv"><div class="s-icon">✓</div><div class="s-title">הרישום נשמר בהצלחה!</div><div class="s-body">פרטיך נשמרו בתיק הקהילה.<br>נשמח לראותך בקרב מתפללי בית הכנסת.</div><div class="s-btns"><button class="btn-new" onclick="resetForm()">רישום חדש</button><button class="btn-adm" onclick="openAdm()">ממשק מנהל</button></div></div>
   <div id="fv">
     <div class="sh"><span>👤</span><span class="sh-t" data-i18n="contactDetails">פרטי קשר ומשפחה</span></div>
@@ -913,7 +1128,7 @@ function colYr(i){const y={...YR[i]};['hd','hm','hy'].forEach(k=>{const el=docum
 function reqF(id){const el=document.getElementById(id);const ok=el&&el.value.trim().length>0;const ff=el?el.closest('.ff'):null;if(ff)ff.classList.toggle('err',!ok);return ok}
 
 async function submitForm(){if(!['fn','ln','ph'].map(reqF).every(Boolean))return;const vols=[];if(document.getElementById('v1').checked)vols.push('קניות לקידוש');if(document.getElementById('v2').checked)vols.push('סידור קידוש');if(document.getElementById('v3').checked)vols.push('דבר תורה');const data={firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),address:combineAddress(),volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
-function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em'].forEach(id=>document.getElementById(id).value='');document.getElementById('ad-street').value='';document.getElementById('ad-num').value='';document.getElementById('ad-apt').value='';document.getElementById('ad-city').value='תל מונד';['v1','v2','v3'].forEach(id=>{document.getElementById(id).checked=false});['cb1','cb2','cb3'].forEach(id=>document.getElementById(id).classList.remove('on'));initForm();window.scrollTo(0,0)}
+function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em'].forEach(id=>document.getElementById(id).value='');document.getElementById('ad-street').value='';document.getElementById('ad-num').value='';document.getElementById('ad-apt').value='';document.getElementById('ad-city').value='תל מונד';['v1','v2','v3'].forEach(id=>{document.getElementById(id).checked=false});['cb1','cb2','cb3'].forEach(id=>document.getElementById(id).classList.remove('on'));initForm();document.getElementById('main-card').classList.add('reg-collapsed');window.scrollTo(0,0)}
 
 // ── Storage: localStorage + Google Sheets ───────────────
 let SHEETS_URL=localStorage.getItem('mbz_sheets_url')||'';
@@ -1084,6 +1299,7 @@ function doSelfEdit(){
   initForm(match);
   document.getElementById('fv').style.display='block';
   document.getElementById('sv').style.display='none';
+  document.getElementById('main-card').classList.remove('reg-collapsed');
   window.scrollTo(0,0);
   showToast('הפרטים נטענו — ערוך ולחץ שמור');
 }
@@ -1253,7 +1469,7 @@ function renderML(f){
   const el=document.getElementById('mcnt');if(el)el.textContent=`${ms.length} מתפלל${ms.length!==1?'ים':''}`;const list=document.getElementById('ml');if(!list)return;if(!ms.length){list.innerHTML='<div class="no-m">אין מתפללים רשומים עדיין</div>';return}list.innerHTML=ms.map(m=>{const init=(m.firstName[0]||'')+(m.lastName[0]||'');const sub=[m.phone,m.email,m.address].filter(Boolean).join(' · ');const tags=[];if((m.children||[]).length)tags.push(`${m.children.length} ילד${m.children.length>1?'ים':''}`);if((m.yahrzeits||[]).length)tags.push(`${m.yahrzeits.length} יארצייט`);if((m.volunteering||[]).length)tags.push('מתנדב');return`<div class="mc"><div class="mav">${es(init)}</div><div class="mi"><div class="mn">${es(m.firstName)} ${es(m.lastName)}</div><div class="ms2">${es(sub)}</div></div><div class="mts">${tags.map(t=>`<span class="mt2">${t}</span>`).join('')}</div><div class="mas"><button class="med" onclick="editMx('${m.id}')">צפיה</button><button class="mde" onclick="delMx('${m.id}')">מחק</button></div></div>`}).join('')}
 function filtM(v){renderML(v)}
 function editMx(id){var m=getM(id);if(!m)return;showMemberDetail(m)}
-function doEditMx(id){var m=getM(id);if(!m)return;closeMD();closeAdm();initForm(m);document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';window.scrollTo(0,0)}
+function doEditMx(id){var m=getM(id);if(!m)return;closeMD();closeAdm();initForm(m);document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';document.getElementById('main-card').classList.remove('reg-collapsed');window.scrollTo(0,0)}
 function closeMD(){document.getElementById('md-ovl').classList.remove('show')}
 function showMemberDetail(m){
   var init=(m.firstName||'').charAt(0)+(m.lastName||'').charAt(0);
@@ -1751,6 +1967,21 @@ async function loadWeekSummary(){
     console.warn('Week summary error:',err);
     card.innerHTML='<div class="wk-head"><span class="wk-par">📅 לא ניתן לטעון</span></div>';
   }
+}
+
+// ── Registration toggle & Accordion ─────────────────────
+function toggleReg(){
+  var mc=document.getElementById('main-card');
+  if(!mc)return;
+  mc.classList.toggle('reg-collapsed');
+  if(!mc.classList.contains('reg-collapsed')){
+    mc.scrollIntoView({behavior:'smooth'});
+  }
+}
+function toggleAcc(el){
+  var acc=el.parentElement;
+  if(!acc)return;
+  acc.classList.toggle('open');
 }
 
 // ── Init ─────────────────────────────────────────────────
