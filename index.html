@@ -478,6 +478,9 @@ body.light-mode .info-welcome p{color:var(--ink2)}
 .info-acc.open .info-acc-head .acc-arrow{transform:rotate(180deg)}
 .info-acc-body{display:none;background:rgba(255,255,255,.04);border:1.5px solid rgba(200,168,75,.15);border-top:none;border-radius:0 0 10px 10px;padding:.85rem 1rem;color:rgba(255,255,255,.78);font-size:.85rem;line-height:1.75}
 .info-acc.open .info-acc-body{display:block}
+.info-master-body{padding:.4rem .2rem}
+.info-master-body .info-acc{margin-bottom:.25rem}
+.info-master-body .info-acc-head{font-size:.85rem;padding:.55rem .8rem}
 .info-acc-body a{color:var(--gold2);text-decoration:none;border-bottom:1px dotted rgba(200,168,75,.4);transition:all .15s}
 .info-acc-body a:hover{color:var(--gold3);border-bottom-color:var(--gold3)}
 .info-acc-body strong{color:rgba(255,255,255,.92)}
@@ -508,7 +511,6 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
   <button onclick="toggleTheme()" id="theme-toggle-btn">☀️</button>
   <div class="lang-toggle" id="lang-toggle">
     <button class="active" onclick="setLang('he')">עב</button>
-    <button onclick="setLang('fr')">FR</button>
     <button onclick="setLang('en')">EN</button>
   </div>
 </div>
@@ -521,8 +523,12 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 <div class="info-welcome">
 <h2>🕍 קהילת מבשר ציון — תל מונד</h2>
 <p>קהילה דתית-לאומית אנגלו-סקסית פעילה ותוססת.<br>כאן תוכלו להירשם לבית הכנסת, לצפות במידע על אירועי השבוע, ולנהל את פרטיכם בקהילה.</p>
-<p style="margin-top:.4rem"><a href="https://mevaser.org.il" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(200,168,75,.4)">mevaser.org.il</a> · <a href="https://www.facebook.com/MevaserZionTelMond" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(200,168,75,.4)">פייסבוק</a></p>
+<p style="margin-top:.4rem"><a href="https://mevaser.org.il" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(200,168,75,.4)">mevaser.org.il ↗</a></p>
 </div>
+
+<div class="info-acc" id="iacc-master">
+<div class="info-acc-head" onclick="toggleMasterAcc(this)"><span>📋 מידע על הקהילה ותל מונד</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body info-master-body" id="info-master-body">
 
 <div class="info-acc" id="iacc-0">
 <div class="info-acc-head" onclick="toggleAcc(this)"><span>🕍 בית הכנסת והרב</span><span class="acc-arrow">▾</span></div>
@@ -684,6 +690,8 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 </ul>
 </div>
 </div>
+</div>
+</div>
 <div style="text-align:center;padding:.8rem 0 .3rem"><a href="https://mevaser.org.il/mz/he/%D7%91%D7%A8%D7%95%D7%9B%D7%99%D7%9D-%D7%94%D7%91%D7%90%D7%99%D7%9D/" target="_blank" rel="noopener" style="color:rgba(255,255,255,.35);font-size:.7rem;text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.2)">מידע מלא ומעודכן באתר הקהילה ↗</a></div>
 </div>
 
@@ -823,7 +831,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
    כל הלוגיקה: טופס רישום + ממשק מנהל
    אחסון: localStorage + Google Sheets (אופציונלי)
    ═══════════════════════════════════════════════════════ */
-const PW='Nir2026',SK='mbz_v5',CHBD='https://www.sefaria.org.il/Parashat_Hashavua?lang=he',MEVASER_URL='https://mevaser.org.il';
+const PW='Nir2026',SK='mbz_v5',CHBD='https://www.hebcal.com/sedrot/?i=on&lg=he',MEVASER_URL='https://mevaser.org.il';
 const HM=[{n:'תשרי',v:7,e:'Tishrei'},{n:'חשון',v:8,e:'Cheshvan'},{n:'כסלו',v:9,e:'Kislev'},{n:'טבת',v:10,e:'Tevet'},{n:'שבט',v:11,e:'Shevat'},{n:'אדר א׳',v:12,e:'Adar I'},{n:'אדר ב׳',v:13,e:'Adar II'},{n:'ניסן',v:1,e:'Nisan'},{n:'אייר',v:2,e:'Iyar'},{n:'סיון',v:3,e:'Sivan'},{n:'תמוז',v:4,e:'Tamuz'},{n:'אב',v:5,e:'Av'},{n:'אלול',v:6,e:'Elul'}];
 const HD=['','א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב','יג','יד','טו','טז','יז','יח','יט','כ','כא','כב','כג','כד','כה','כו','כז','כח','כט','ל'];
 function hy2s(y){const T=[[400,'ת'],[300,'ש'],[200,'ר'],[100,'ק'],[90,'צ'],[80,'פ'],[70,'ע'],[60,'ס'],[50,'נ'],[40,'מ'],[30,'ל'],[20,'כ'],[10,'י'],[9,'ט'],[8,'ח'],[7,'ז'],[6,'ו'],[5,'ה'],[4,'ד'],[3,'ג'],[2,'ב'],[1,'א']];let n=y%1000,s='';for(const[v,l]of T){while(n>=v){if(n===15){s+='טו';n=0;break}if(n===16){s+='טז';n=0;break}s+=l;n-=v}if(!n)break}return s.length===1?s+"'":s.slice(0,-1)+'"'+s.slice(-1)}
@@ -1777,29 +1785,6 @@ var I18N={
     addYahrzeit:'+ הוסף יום זיכרון',
     save:'💾 שמור פרטים'
   },
-  fr:{
-    editMyDetails:'📝 Modifier mes informations',
-    welcome:'Bienvenue ! Veuillez remplir vos coordonnées',
-    contactDetails:'Coordonnées et famille',
-    firstName:'Prénom',
-    lastName:'Nom',
-    fatherName:'Nom du père',
-    motherName:'Nom de la mère',
-    torahName:'Nom complet pour la Torah',
-    phone:'Téléphone',
-    email:'E-mail',
-    address:'Adresse',
-    street:'Rue',
-    houseNum:'Numéro',
-    apartment:'Appartement',
-    city:'Ville',
-    children:'Enfants',
-    addChild:'+ Ajouter un enfant',
-    volunteering:'Bénévolat',
-    yahrzeits:'Jours de commémoration (Yahrzeit)',
-    addYahrzeit:'+ Ajouter un Yahrzeit',
-    save:'💾 Enregistrer'
-  },
   en:{
     editMyDetails:'📝 Edit My Details',
     welcome:'Welcome! Please fill in your details and we will stay in touch',
@@ -1831,7 +1816,7 @@ function initLang(){
   applyLang();
   // Highlight active lang button
   document.querySelectorAll('#lang-toggle button').forEach(function(b){
-    b.classList.toggle('active',b.textContent.trim()===(curLang==='he'?'עב':curLang==='fr'?'FR':'EN'));
+    b.classList.toggle('active',b.textContent.trim()===(curLang==='he'?'עב':'EN'));
   });
 }
 function setLang(lang){
@@ -1839,7 +1824,7 @@ function setLang(lang){
   localStorage.setItem('mbz_lang',lang);
   applyLang();
   document.querySelectorAll('#lang-toggle button').forEach(function(b){
-    b.classList.toggle('active',b.textContent.trim()===(lang==='he'?'עב':lang==='fr'?'FR':'EN'));
+    b.classList.toggle('active',b.textContent.trim()===(lang==='he'?'עב':'EN'));
   });
 }
 function applyLang(){
@@ -1982,6 +1967,11 @@ function toggleReg(){
   }
 }
 function toggleAcc(el){
+  var acc=el.parentElement;
+  if(!acc)return;
+  acc.classList.toggle('open');
+}
+function toggleMasterAcc(el){
   var acc=el.parentElement;
   if(!acc)return;
   acc.classList.toggle('open');
