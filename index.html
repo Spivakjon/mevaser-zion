@@ -775,19 +775,21 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 
 <div class="main-card" id="membership-prompt-card">
   <div class="mbr-prompt">
-    <h2>💳 דמי חבר</h2>
-    <p>האם שילמת דמי חבר לשנת <strong id="prompt-year">—</strong>?</p>
+    <h2>🕍 ברוכים הבאים לקהילת מבשר ציון</h2>
+    <p style="font-size:.9rem;color:var(--ink3);margin-bottom:.8rem">בית הכנסת שלנו נבנה ומתוחזק מכספי החברים.<br>האם שילמת דמי חבר לשנת <strong id="prompt-year">—</strong>?</p>
     <div class="mbr-btns">
       <button class="mbr-yes" onclick="membershipAnswer(true)">✓ כן, שילמתי</button>
-      <button class="mbr-no" onclick="membershipAnswer(false)">לא שילמתי</button>
+      <button class="mbr-no" onclick="membershipAnswer(false)">עדיין לא</button>
     </div>
   </div>
 </div>
 <div class="main-card" id="payment-msg-card" style="display:none">
   <div class="pay-msg">
-    <h2>⚠ נא לשלם דמי חבר</h2>
-    <p>יש לשלם דמי חבר לשנת <strong id="payment-year">—</strong></p>
+    <h2 style="color:var(--gold)">💳 תשלום דמי חבר</h2>
+    <p>דמי החבר לשנת <strong id="payment-year">—</strong> טרם הוסדרו</p>
+    <p style="font-size:.85rem;color:var(--ink3);margin-bottom:.8rem">דמי החבר כוללים מס שנתי + מקומות לימים הנוראים.<br>ניתן לפרוס תשלומים. לשאלות: <a href="mailto:gizbar@mevaser.org.il" style="color:var(--gold)">gizbar@mevaser.org.il</a></p>
     <p><a id="payment-link-btn" href="#" target="_blank" class="pay-link">💰 לחץ כאן לתשלום</a></p>
+    <p style="font-size:.8rem;color:var(--ink3);margin-top:.6rem">או בטלפון: 073-7057470 | WhatsApp: 055-2778750</p>
     <button class="pay-continue" onclick="showFormAnyway()">← המשך לטופס רישום</button>
   </div>
 </div>
@@ -901,6 +903,37 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
         <button class="abt" onclick="sendBulkReminder()" style="font-size:.8rem" data-i18n-text="mbrBulkBtn">📨 שלח תזכורת לכל מי שלא שילם</button>
       </div>
       <div id="mbr-list"></div>
+      <div style="margin-top:1.2rem">
+        <button class="abt" onclick="toggleCollapse('mbr-info-body')" style="width:100%;text-align:right;font-size:.85rem;padding:8px 12px;border:1px solid var(--bd2);border-radius:8px;background:var(--c2)">📋 מידע על דמי חבר וחברות בקהילה <span style="float:left">▾</span></button>
+        <div id="mbr-info-body" style="display:none;background:var(--c2);border-radius:0 0 10px 10px;padding:1rem;border:1px solid var(--bd2);border-top:0;font-size:.85rem;line-height:1.7;color:var(--ink2)">
+          <h4 style="color:var(--ink);margin-bottom:.5rem">💳 דמי חבר — קהילת מבשר ציון</h4>
+          <p>בית הכנסת אינו זוכה לתמיכה ממשלתית או עירונית כלשהי. הוא נבנה ומתוחזק באופן מלא מכספי החברים.</p>
+          <p style="margin-top:.5rem"><strong>דמי החבר כוללים:</strong></p>
+          <ul style="padding-right:1.2rem;margin:.3rem 0">
+            <li><strong>דמי הצטרפות</strong> — מינימום 15,000 ₪ (לתחזוקה שוטפת ופיתוח הבניין)</li>
+            <li><strong>מס שנתי</strong> — נקבע מדי שנה ע"י הוועד, כולל מקומות ישיבה לימים הנוראים למשפחה</li>
+          </ul>
+          <p style="margin-top:.5rem"><strong>אמצעי תשלום:</strong></p>
+          <ul style="padding-right:1.2rem;margin:.3rem 0">
+            <li>כרטיס אשראי (דרך הקישור)</li>
+            <li>העברה בנקאית — בנק הפועלים (12), חשבון 136503, סניף 448</li>
+            <li>הוראת קבע / המחאות / מזומן — במשרד הקהילה</li>
+            <li>טלפון לאשראי: 073-7057470 או WhatsApp: 055-2778750</li>
+            <li>PayPal</li>
+          </ul>
+          <p style="margin-top:.5rem">ניתן לפרוס את כל התשלומים. לדיון באפשרויות תשלום — הגזבר: <a href="mailto:gizbar@mevaser.org.il" style="color:var(--gold)">gizbar@mevaser.org.il</a> (חשאיות מירבית).</p>
+          <p style="margin-top:.5rem"><em>אם אין ביכולתכם לשלם את מלוא דמי החברות, שלמו כל סכום אותו אתם יכולים.</em></p>
+          <hr style="border:none;border-top:1px solid var(--bd);margin:1rem 0">
+          <h4 style="color:var(--ink);margin-bottom:.5rem">📬 אנשי קשר</h4>
+          <ul style="padding-right:1.2rem;margin:.3rem 0;list-style:none">
+            <li>🕍 <strong>רב הקהילה:</strong> הרב ברוך וינטרוב — <a href="mailto:rabbi@mevaser.org.il" style="color:var(--gold)">rabbi@mevaser.org.il</a> | WhatsApp: 055-666-4674</li>
+            <li>💼 <strong>גזבר:</strong> דוד הופנשטיין — <a href="mailto:gizbar@mevaser.org.il" style="color:var(--gold)">gizbar@mevaser.org.il</a></li>
+            <li>📖 <strong>גבאי:</strong> דוד לבנדה — <a href="mailto:gabbai@mevaser.org.il" style="color:var(--gold)">gabbai@mevaser.org.il</a></li>
+            <li>🌐 <strong>אתר:</strong> <a href="https://www.mevaser.org.il" target="_blank" style="color:var(--gold)">www.mevaser.org.il</a></li>
+          </ul>
+          <p style="margin-top:.5rem;font-size:.8rem;color:var(--ink3)">תרומות לעמותה מוכרות לצרכי מס (סעיף 46) ודרך PEF בארה"ב.</p>
+        </div>
+      </div>
     </div>
     <div id="at-duty" style="display:none">
       <div id="duty-hero-card"></div>
@@ -1758,15 +1791,15 @@ function renderML(f){
     if((m.yahrzeits||[]).length)tags.push(`<span class="mt2">${m.yahrzeits.length} יארצייט</span>`);
     if((m.volunteering||[]).length)tags.push('<span class="mt2">מתנדב</span>');
     // Duty toggle
-    var dutyToggle='<label style="display:flex;align-items:center;gap:4px;font-size:.72rem;color:var(--ink3);cursor:pointer;white-space:nowrap" onclick="event.stopPropagation()"><input type="checkbox" '+(m.dutyRoster?'checked':'')+' onchange="toggleMbrField(\''+m.id+'\',\'dutyRoster\');renderML()"> תורן</label>';
-    return`<div class="mc" style="cursor:pointer" onclick="showMemberDetail(getM('${m.id}'))"><div class="mav">${es(init)}</div><div class="mi"><div class="mn">${es(m.firstName)} ${es(m.lastName)}</div><div class="ms2">${es(m.phone||'')}${famLine}${kidNames}</div></div><div class="mts">${tags.join('')}</div><div class="mas">${dutyToggle}<button class="med" onclick="event.stopPropagation();doEditMx('${m.id}')">✏️ עריכה</button><button class="mde" onclick="event.stopPropagation();delMx('${m.id}')">מחק</button></div></div>`}).join('')}
+    var dutyToggle='<label style="display:flex;align-items:center;gap:4px;font-size:.72rem;color:var(--ink3);cursor:pointer;white-space:nowrap" onclick="event.stopPropagation()"><input type="checkbox" onclick="event.stopPropagation()" '+(m.dutyRoster?'checked':'')+' onchange="event.stopPropagation();toggleMbrField(\''+m.id+'\',\'dutyRoster\');renderML()"> תורן</label>';
+    return`<div class="mc" style="cursor:pointer" onclick="showMemberDetail(getM('${m.id}'))"><div class="mav">${es(init)}</div><div class="mi"><div class="mn">${es(m.firstName)} <strong>${es(m.lastName)}</strong></div><div class="ms2">${es(m.phone||'')}${famLine}${kidNames}</div></div><div class="mts">${tags.join('')}</div><div class="mas">${dutyToggle}<button class="med" onclick="event.stopPropagation();doEditMx('${m.id}')">✏️ עריכה</button><button class="mde" onclick="event.stopPropagation();delMx('${m.id}')">מחק</button></div></div>`}).join('')}
 function filtM(v){renderML(v)}
 function editMx(id){var m=getM(id);if(!m)return;showMemberDetail(m)}
 function doEditMx(id){var m=getM(id);if(!m)return;closeMD();closeAdm();initForm(m);document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';document.getElementById('main-card').classList.remove('reg-collapsed');window.scrollTo(0,0)}
 function closeMD(){document.getElementById('md-ovl').classList.remove('show')}
 function showMemberDetail(m){
   var init=(m.firstName||'').charAt(0)+(m.lastName||'').charAt(0);
-  var h='<div class="md-header"><div class="md-avatar">'+es(init)+'</div><div><div class="md-name">'+es(m.firstName)+' '+es(m.lastName)+'</div>'+(m.torahName?'<div class="md-torah">'+es(m.torahName)+'</div>':'')+'</div></div>';
+  var h='<div class="md-header"><div class="md-avatar">'+es(init)+'</div><div><div class="md-name">'+es(m.firstName)+' <strong>'+es(m.lastName)+'</strong></div>'+(m.torahName?'<div class="md-torah">'+es(m.torahName)+'</div>':'')+'</div></div>';
   h+='<div class="md-section"><div class="md-section-title">👤 פרטים אישיים</div>';
   var rows=[['שם האב',m.fatherName],['שם האם',m.motherName],['טלפון',m.phone],['דוא"ל',m.email],['כתובת',m.address]];
   for(var i=0;i<rows.length;i++){if(rows[i][1])h+='<div class="md-row"><span class="md-label">'+rows[i][0]+'</span><span class="md-val">'+es(rows[i][1])+'</span></div>'}
@@ -1778,11 +1811,24 @@ function showMemberDetail(m){
     if(m.spouse.email)h+='<div class="md-row"><span class="md-label">דוא"ל</span><span class="md-val">'+es(m.spouse.email)+'</span></div>';
     h+='</div>';
   }
+  // Volunteering + Duty + Payment in one section
+  h+='<div class="md-section"><div class="md-section-title">🏛 חברות וניהול</div>';
+  // Payment
+  var payDetails=[];
+  if(m.membershipPaidDate)payDetails.push(es(m.membershipPaidDate));
+  if(m.paymentMethod)payDetails.push(es(m.paymentMethod));
+  if(m.paymentAmount)payDetails.push('₪'+es(m.paymentAmount));
+  if(m.paymentNotes)payDetails.push(es(m.paymentNotes));
+  h+='<div class="md-row"><span class="md-label">💳 דמי חבר</span><span class="md-val">'+(m.membershipPaid?'<span class="paid-tag">שולם ✓</span>'+(payDetails.length?' <span style="font-size:.75rem;color:var(--ink3)">'+payDetails.join(' · ')+'</span>':''):'<span class="unpaid-tag">לא שולם</span>')+' <button style="font-size:.75rem;padding:2px 8px;border:1px solid var(--bd);border-radius:4px;background:none;cursor:pointer;margin-right:6px" onclick="togglePayment(\''+m.id+'\')">'+(m.membershipPaid?'ביטול':'סמן כשולם')+'</button></span></div>';
+  // Duty
+  h+='<div class="md-row"><span class="md-label">📋 תורנות</span><span class="md-val">'+(m.dutyRoster?'<span class="duty-tag">ברשימה ✓</span>':'לא ברשימה')+' <button style="font-size:.75rem;padding:2px 8px;border:1px solid var(--bd);border-radius:4px;background:none;cursor:pointer;margin-right:6px" onclick="toggleMbrField(\''+m.id+'\',\'dutyRoster\')">'+(m.dutyRoster?'הסר מרשימה':'הוסף לרשימה')+'</button></span></div>';
+  // Volunteering
   if(m.volunteering&&m.volunteering.length){
-    h+='<div class="md-section"><div class="md-section-title">🙏 התנדבות</div><div>';
-    for(var v=0;v<m.volunteering.length;v++)h+='<span class="md-tag">'+es(m.volunteering[v])+'</span>';
-    h+='</div></div>';
+    h+='<div class="md-row"><span class="md-label">🙏 התנדבות</span><span class="md-val">';
+    for(var v=0;v<m.volunteering.length;v++)h+='<span class="md-tag">'+es(m.volunteering[v])+'</span> ';
+    h+='</span></div>';
   }
+  h+='</div>';
   if(m.children&&m.children.length){
     h+='<div class="md-section"><div class="md-section-title">👨‍👧‍👦 ילדים ('+m.children.length+')</div>';
     for(var c=0;c<m.children.length;c++){
@@ -1810,15 +1856,6 @@ function showMemberDetail(m){
     }
     h+='</div>';
   }
-  h+='<div class="md-section"><div class="md-section-title">⚙ ניהול</div>';
-  var payDetails=[];
-  if(m.membershipPaidDate)payDetails.push(es(m.membershipPaidDate));
-  if(m.paymentMethod)payDetails.push(es(m.paymentMethod));
-  if(m.paymentAmount)payDetails.push('₪'+es(m.paymentAmount));
-  if(m.paymentNotes)payDetails.push(es(m.paymentNotes));
-  h+='<div class="md-row"><span class="md-label">דמי חבר</span><span class="md-val">'+(m.membershipPaid?'<span class="paid-tag">שולם ✓</span>'+(payDetails.length?' <span style="font-size:.75rem;color:var(--ink3)">'+payDetails.join(' · ')+'</span>':''):'<span class="unpaid-tag">לא שולם</span>')+' <button style="font-size:.75rem;padding:2px 8px;border:1px solid var(--bd);border-radius:4px;background:none;cursor:pointer;margin-right:6px" onclick="togglePayment(\''+m.id+'\')">'+(m.membershipPaid?'ביטול תשלום':'סמן כשולם')+'</button></span></div>';
-  h+='<div class="md-row"><span class="md-label">תורנות</span><span class="md-val">'+(m.dutyRoster?'<span class="duty-tag">ברשימה ✓</span>':'לא ברשימה')+' <button style="font-size:.75rem;padding:2px 8px;border:1px solid var(--bd);border-radius:4px;background:none;cursor:pointer;margin-right:6px" onclick="toggleMbrField(\''+m.id+'\',\'dutyRoster\')">'+(m.dutyRoster?'הסר מרשימה':'הוסף לרשימה')+'</button></span></div>';
-  h+='</div>';
   h+='<div class="md-actions"><button class="md-btn-edit" onclick="doEditMx(\''+m.id+'\')">✏️ עריכה</button><button class="md-btn-del" onclick="if(confirm(\'מחק את '+es(m.firstName)+' '+es(m.lastName)+'?\')){delM(\''+m.id+'\');closeMD();renderML()}">🗑 מחק</button><button class="md-btn-close" onclick="closeMD()">סגור</button></div>';
   document.getElementById('md-card').innerHTML=h;
   document.getElementById('md-ovl').classList.add('show');
@@ -2688,7 +2725,7 @@ function renderMbrTab(){
     return '<div class="mc" style="margin-bottom:6px;border-right:3px solid '+(isPaid?'#1e7d4b':'#c0392b')+';cursor:pointer" onclick="showMbrFamily(\''+m.id+'\')"><div class="mav" style="background:'+(isPaid?'#1e7d4b':'#c0392b')+'">'+es(init)+'</div><div class="mi" style="flex:1"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone||'')+famLine+'</div></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+statusHtml+actionsHtml+'</div></div>';
   }).join('');
 }
-var DEFAULT_MSG_TPL='שלום {name} היקר/ה,\n\nמקווים שהכל טוב ושמחים שאת/ה חלק מקהילתנו! 🙏\n\nרצינו להזכיר בנעימות שדמי החבר לשנת {year} טרם הוסדרו.\nהתשלום עוזר לנו להמשיך לתחזק את בית הכנסת ולקיים פעילויות לטובת כל הקהילה.\n\nניתן לשלם בקלות בקישור:\n{link}\n\nאפשרויות תשלום: אשראי, העברה בנקאית, ביט, מזומן.\nניתן גם לפרוס עד 4 תשלומים.\n\nתודה רבה על השותפות! ❤️\nקהילת מבשר ציון';
+var DEFAULT_MSG_TPL='שלום {name} היקר/ה,\n\nמקווים שהכל טוב ושמחים שאת/ה חלק מקהילת מבשר ציון! 🙏\n\nכידוע, בית הכנסת שלנו אינו זוכה לתמיכה ממשלתית או עירונית — הוא נבנה ומתוחזק באופן מלא מכספי החברים.\n\nרצינו להזכיר בנעימות שדמי החבר לשנת {year} טרם הוסדרו.\n\nניתן לשלם בקישור:\n{link}\n\nאפשרויות תשלום:\n• כרטיס אשראי\n• העברה בנקאית — בנק הפועלים (12), חשבון 136503, סניף 448\n• הוראת קבע / המחאות\n• PayPal / ביט\n• טלפון: 073-7057470 או WhatsApp: 055-2778750\n\nניתן לפרוס את כל התשלומים.\nלשאלות בנושא תשלום — gizbar@mevaser.org.il (חשאיות מלאה).\n\nתודה רבה על השותפות! ❤️\nקהילת מבשר ציון — בית הכנסת, רח׳ הצופית 23, תל מונד';
 var MSG_TPL_KEY='mbz_msg_tpl';
 function getMsgTpl(){return localStorage.getItem(MSG_TPL_KEY)||DEFAULT_MSG_TPL}
 function saveMsgTpl(){
