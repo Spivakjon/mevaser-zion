@@ -567,6 +567,19 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 .settings-field-inline{display:flex;gap:10px;margin-bottom:12px}
 .settings-field-inline .settings-field{flex:1}
 @media(max-width:500px){.mbr-config{padding:.7rem}.mbr-config h3{font-size:.8rem}}
+#at-duty{background:#fff;border-radius:10px;padding:1rem;margin-top:.5rem}
+.msg-editor{background:var(--c2);border-radius:10px;padding:1rem;margin-bottom:1rem;border:1px solid var(--bd2)}
+.msg-editor textarea{width:100%;min-height:120px;border:1.5px solid var(--bd);border-radius:8px;padding:10px;font-family:inherit;font-size:.85rem;direction:rtl;resize:vertical}
+.msg-editor .placeholders{font-size:.75rem;color:var(--ink3);margin-top:.4rem}
+.pay-modal-ovl{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
+.pay-modal{background:#fff;border-radius:12px;max-width:400px;width:100%;padding:1.5rem;position:relative}
+.pay-modal h3{margin-bottom:1rem;font-size:1rem}
+.pay-modal .ff{margin-bottom:.8rem}
+.pay-modal label{font-size:.8rem;font-weight:600;display:block;margin-bottom:.25rem}
+.pay-modal input,.pay-modal select{width:100%;padding:8px 10px;border:1.5px solid #d1d5db;border-radius:8px;font-family:inherit;font-size:.9rem}
+.pay-modal .pm-btns{display:flex;gap:8px;margin-top:1rem}
+.pay-modal .pm-btns button{flex:1;padding:8px;border:none;border-radius:8px;font-family:inherit;font-size:.9rem;cursor:pointer;font-weight:600}
+.spouse-sec{background:var(--c2);border-radius:8px;padding:.8rem;margin-top:.5rem;border:1px solid var(--bd2)}
 </style>
 </head>
 <body>
@@ -795,6 +808,8 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
         </div>
       </div>
     </div>
+    <div class="sh"><span>💍</span><span class="sh-t">בן/בת זוג</span></div>
+    <div class="sec"><div class="spouse-sec"><div class="g3"><div class="ff"><label>שם פרטי</label><input id="sp-fn" placeholder="שם בן/בת הזוג"></div><div class="ff"><label>טלפון</label><input id="sp-ph" type="tel" placeholder="050-..." dir="ltr"></div><div class="ff"><label>דוא"ל</label><input id="sp-em" type="email" placeholder="email@..." dir="ltr"></div></div></div></div>
     <div class="sh"><span>👨‍👧‍👦</span><span class="sh-t" data-i18n="children">ילדים</span></div>
     <div class="sec"><div id="cw"></div><button class="badd" id="badd-c" onclick="addCh()" data-i18n="addChild">+ הוסף ילד</button></div>
     <div class="sh"><span>🙏</span><span class="sh-t" data-i18n="volunteering">תחומי התנדבות</span></div>
@@ -871,6 +886,12 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
         </div>
       </div>
       <div id="mbr-stats" style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap"></div>
+      <div class="msg-editor">
+        <h3 style="font-size:.9rem;margin-bottom:.5rem">📝 עריכת הודעת תזכורת</h3>
+        <textarea id="mbr-msg-tpl"></textarea>
+        <div class="placeholders">משתנים זמינים: <strong>{name}</strong> = שם המתפלל, <strong>{year}</strong> = שנת גבייה, <strong>{link}</strong> = קישור תשלום</div>
+        <button class="abt" onclick="saveMsgTpl()" style="margin-top:.5rem;font-size:.8rem">💾 שמור הודעה</button>
+      </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-wrap:wrap;gap:8px">
         <h3 style="font-size:.95rem;margin:0">רשימת מתפללים</h3>
         <button class="abt" onclick="sendBulkReminder()" style="font-size:.8rem">📨 שלח תזכורת לכל מי שלא שילם</button>
@@ -1012,6 +1033,22 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 </div>
 <div class="md-ovl" id="md-ovl" onclick="if(event.target===this)closeMD()"><div class="md-card" id="md-card"></div></div>
 <div class="toast" id="toast"></div>
+
+<!-- Payment Modal -->
+<div class="pay-modal-ovl" id="pay-modal" style="display:none" onclick="if(event.target===this)closePayModal()">
+  <div class="pay-modal">
+    <h3>💳 סימון תשלום</h3>
+    <div class="ff"><label>תאריך תשלום</label><input type="date" id="pay-date"></div>
+    <div class="ff"><label>אמצעי תשלום</label><select id="pay-method"><option value="אשראי" selected>אשראי</option><option value="העברה בנקאית">העברה בנקאית</option><option value="מזומן">מזומן</option><option value="המחאה">המחאה</option><option value="הוראת קבע">הוראת קבע</option><option value="ביט/פייבוקס">ביט/פייבוקס</option></select></div>
+    <div class="ff"><label>סכום (אופציונלי)</label><input type="text" id="pay-amount" placeholder="₪" dir="ltr"></div>
+    <div class="ff"><label>הערות</label><input type="text" id="pay-notes" placeholder="תשלום ב-4 תשלומים..."></div>
+    <input type="hidden" id="pay-member-id">
+    <div class="pm-btns">
+      <button onclick="confirmPayment()" style="background:#1e7d4b;color:#fff">✓ אשר תשלום</button>
+      <button onclick="closePayModal()" style="background:#e5e7eb;color:#374151">ביטול</button>
+    </div>
+  </div>
+</div>
 
 <script>
 'use strict';
@@ -1202,7 +1239,8 @@ function initForm(m=null){_torahManual=!!m;eid=m?m.id:null;CH=m?JSON.parse(JSON.
     document.getElementById('ad-num').value=ap.num;
     document.getElementById('ad-apt').value=ap.apt;
     document.getElementById('ad-city').value=ap.city;
-    ['v1','v2','v3'].forEach((id,i)=>{const k=['קניות לקידוש','סידור קידוש','דבר תורה'][i];document.getElementById(id).checked=(m.volunteering||[]).includes(k)});['cb1','cb2','cb3'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',document.getElementById(`v${i+1}`).checked))
+    ['v1','v2','v3'].forEach((id,i)=>{const k=['קניות לקידוש','סידור קידוש','דבר תורה'][i];document.getElementById(id).checked=(m.volunteering||[]).includes(k)});['cb1','cb2','cb3'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',document.getElementById(`v${i+1}`).checked));
+    var sp=m.spouse||{};document.getElementById('sp-fn').value=sp.name||'';document.getElementById('sp-ph').value=sp.phone||'';document.getElementById('sp-em').value=sp.email||'';
   } else {
     // Reset address fields
     document.getElementById('ad-street').value='';
@@ -1326,8 +1364,8 @@ function colCh(i){const c={...CH[i]};['hd','hm','hy'].forEach(k=>{const el=docum
 function colYr(i){const y={...YR[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`y${i}-${k}`);if(el)y[k]=el.value});const gi=document.getElementById(`y${i}-gd`);if(gi)y.gd=gi.value;const ni=document.getElementById(`yn-${i}`);if(ni)y.name=ni.value.trim();const yl=document.getElementById(`yl-${i}`);if(yl)y.lead=yl.value;const yh=document.getElementById(`yh-${i}`);if(yh)y.haft=yh.value;return y}
 function reqF(id){const el=document.getElementById(id);const ok=el&&el.value.trim().length>0;const ff=el?el.closest('.ff'):null;if(ff)ff.classList.toggle('err',!ok);return ok}
 
-async function submitForm(){if(!['fn','ln','ph'].map(reqF).every(Boolean))return;const vols=[];if(document.getElementById('v1').checked)vols.push('קניות לקידוש');if(document.getElementById('v2').checked)vols.push('סידור קידוש');if(document.getElementById('v3').checked)vols.push('דבר תורה');const data={firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),address:combineAddress(),volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};data.membershipPaid=window._mbrPaidStatus||false;data.membershipPaidDate=window._mbrPaidStatus?new Date().toLocaleDateString('he-IL'):'';if(eid){var existing=getM(eid);if(existing){data.membershipPaid=existing.membershipPaid;data.dutyRoster=existing.dutyRoster}}if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
-function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em'].forEach(id=>document.getElementById(id).value='');document.getElementById('ad-street').value='';document.getElementById('ad-num').value='';document.getElementById('ad-apt').value='';document.getElementById('ad-city').value='תל מונד';['v1','v2','v3'].forEach(id=>{document.getElementById(id).checked=false});['cb1','cb2','cb3'].forEach(id=>document.getElementById(id).classList.remove('on'));initForm();document.getElementById('main-card').classList.add('reg-collapsed');window._mbrPaidStatus=false;var ms=getMbrSettings();if(ms.year||ms.link){document.getElementById('main-card').style.display='none';document.getElementById('payment-msg-card').style.display='none';document.getElementById('membership-prompt-card').style.display=''}window.scrollTo(0,0)}
+async function submitForm(){if(!['fn','ln','ph'].map(reqF).every(Boolean))return;const vols=[];if(document.getElementById('v1').checked)vols.push('קניות לקידוש');if(document.getElementById('v2').checked)vols.push('סידור קידוש');if(document.getElementById('v3').checked)vols.push('דבר תורה');var spouseFn=document.getElementById('sp-fn').value.trim();var spousePh=document.getElementById('sp-ph').value.trim();var spouseEm=document.getElementById('sp-em').value.trim();var spouse=(spouseFn||spousePh)?{name:spouseFn,phone:spousePh,email:spouseEm}:null;const data={firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),address:combineAddress(),spouse:spouse,volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};data.membershipPaid=window._mbrPaidStatus||false;data.membershipPaidDate=window._mbrPaidStatus?new Date().toLocaleDateString('he-IL'):'';if(eid){var existing=getM(eid);if(existing){data.membershipPaid=existing.membershipPaid;data.dutyRoster=existing.dutyRoster}}if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
+function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em','sp-fn','sp-ph','sp-em'].forEach(id=>{var el=document.getElementById(id);if(el)el.value=''});document.getElementById('ad-street').value='';document.getElementById('ad-num').value='';document.getElementById('ad-apt').value='';document.getElementById('ad-city').value='תל מונד';['v1','v2','v3'].forEach(id=>{document.getElementById(id).checked=false});['cb1','cb2','cb3'].forEach(id=>document.getElementById(id).classList.remove('on'));initForm();document.getElementById('main-card').classList.add('reg-collapsed');window._mbrPaidStatus=false;var ms=getMbrSettings();if(ms.year||ms.link){document.getElementById('main-card').style.display='none';document.getElementById('payment-msg-card').style.display='none';document.getElementById('membership-prompt-card').style.display=''}window.scrollTo(0,0)}
 
 // ── Storage: localStorage + Google Sheets ───────────────
 let SHEETS_URL=localStorage.getItem('mbz_sheets_url')||'';
@@ -1675,7 +1713,7 @@ function renderML(f){
   else if(mFilterType==='unpaid')ms=ms.filter(function(m){return!m.membershipPaid});
   // Apply text search
   if(mflt)ms=ms.filter(function(m){return(m.firstName+' '+m.lastName+' '+m.torahName).toLowerCase().indexOf(mflt)>=0});
-  const el=document.getElementById('mcnt');if(el)el.textContent=`${ms.length} מתפלל${ms.length!==1?'ים':''}`;const list=document.getElementById('ml');if(!list)return;if(!ms.length){list.innerHTML='<div class="no-m">אין מתפללים רשומים עדיין</div>';return}list.innerHTML=ms.map(m=>{const init=(m.firstName[0]||'')+(m.lastName[0]||'');const sub=[m.phone,m.email,m.address].filter(Boolean).join(' · ');const tags=[];if(m.membershipPaid)tags.push('<span class="paid-tag">שילם'+(m.membershipPaidDate?' '+es(m.membershipPaidDate):'')+'</span>');else tags.push('<span class="unpaid-tag">לא שילם</span>');if(m.dutyRoster)tags.push('<span class="duty-tag">תורן</span>');if((m.children||[]).length)tags.push(`${m.children.length} ילד${m.children.length>1?'ים':''}`);if((m.yahrzeits||[]).length)tags.push(`${m.yahrzeits.length} יארצייט`);if((m.volunteering||[]).length)tags.push('מתנדב');return`<div class="mc"><div class="mav">${es(init)}</div><div class="mi"><div class="mn">${es(m.firstName)} ${es(m.lastName)}</div><div class="ms2">${es(sub)}</div></div><div class="mts">${tags.map(t=>`<span class="mt2">${t}</span>`).join('')}</div><div class="mas"><button class="med" onclick="editMx('${m.id}')">צפיה</button><button class="mde" onclick="delMx('${m.id}')">מחק</button></div></div>`}).join('')}
+  const el=document.getElementById('mcnt');if(el)el.textContent=`${ms.length} מתפלל${ms.length!==1?'ים':''}`;const list=document.getElementById('ml');if(!list)return;if(!ms.length){list.innerHTML='<div class="no-m">אין מתפללים רשומים עדיין</div>';return}list.innerHTML=ms.map(m=>{const init=(m.firstName[0]||'')+(m.lastName[0]||'');const sub=[m.phone,m.email,m.address].filter(Boolean).join(' · ');const tags=[];if(m.membershipPaid){var pi=[];if(m.membershipPaidDate)pi.push(es(m.membershipPaidDate));if(m.paymentMethod)pi.push(es(m.paymentMethod));tags.push('<span class="paid-tag">שילם'+(pi.length?' · '+pi.join(' · '):'')+'</span>')}else{tags.push('<span class="unpaid-tag">לא שילם</span>')}if(m.dutyRoster)tags.push('<span class="duty-tag">תורן</span>');if((m.children||[]).length)tags.push(`${m.children.length} ילד${m.children.length>1?'ים':''}`);if((m.yahrzeits||[]).length)tags.push(`${m.yahrzeits.length} יארצייט`);if((m.volunteering||[]).length)tags.push('מתנדב');return`<div class="mc"><div class="mav">${es(init)}</div><div class="mi"><div class="mn">${es(m.firstName)} ${es(m.lastName)}</div><div class="ms2">${es(sub)}</div></div><div class="mts">${tags.map(t=>`<span class="mt2">${t}</span>`).join('')}</div><div class="mas"><button class="med" onclick="editMx('${m.id}')">צפיה</button><button class="mde" onclick="delMx('${m.id}')">מחק</button></div></div>`}).join('')}
 function filtM(v){renderML(v)}
 function editMx(id){var m=getM(id);if(!m)return;showMemberDetail(m)}
 function doEditMx(id){var m=getM(id);if(!m)return;closeMD();closeAdm();initForm(m);document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';document.getElementById('main-card').classList.remove('reg-collapsed');window.scrollTo(0,0)}
@@ -1687,6 +1725,13 @@ function showMemberDetail(m){
   var rows=[['שם האב',m.fatherName],['שם האם',m.motherName],['טלפון',m.phone],['דוא"ל',m.email],['כתובת',m.address]];
   for(var i=0;i<rows.length;i++){if(rows[i][1])h+='<div class="md-row"><span class="md-label">'+rows[i][0]+'</span><span class="md-val">'+es(rows[i][1])+'</span></div>'}
   h+='</div>';
+  if(m.spouse&&m.spouse.name){
+    h+='<div class="md-section"><div class="md-section-title">💍 בן/בת זוג</div>';
+    h+='<div class="md-row"><span class="md-label">שם</span><span class="md-val">'+es(m.spouse.name)+'</span></div>';
+    if(m.spouse.phone)h+='<div class="md-row"><span class="md-label">טלפון</span><span class="md-val">'+es(m.spouse.phone)+'</span></div>';
+    if(m.spouse.email)h+='<div class="md-row"><span class="md-label">דוא"ל</span><span class="md-val">'+es(m.spouse.email)+'</span></div>';
+    h+='</div>';
+  }
   if(m.volunteering&&m.volunteering.length){
     h+='<div class="md-section"><div class="md-section-title">🙏 התנדבות</div><div>';
     for(var v=0;v<m.volunteering.length;v++)h+='<span class="md-tag">'+es(m.volunteering[v])+'</span>';
@@ -1720,7 +1765,12 @@ function showMemberDetail(m){
     h+='</div>';
   }
   h+='<div class="md-section"><div class="md-section-title">⚙ ניהול</div>';
-  h+='<div class="md-row"><span class="md-label">דמי חבר</span><span class="md-val">'+(m.membershipPaid?'<span class="paid-tag">שולם ✓</span>'+(m.membershipPaidDate?' <span style="font-size:.75rem;color:var(--ink3)">'+es(m.membershipPaidDate)+'</span>':''):'<span class="unpaid-tag">לא שולם</span>')+' <button style="font-size:.75rem;padding:2px 8px;border:1px solid var(--bd);border-radius:4px;background:none;cursor:pointer;margin-right:6px" onclick="togglePayment(\''+m.id+'\')">'+(m.membershipPaid?'סמן כלא שולם':'סמן כשולם')+'</button></span></div>';
+  var payDetails=[];
+  if(m.membershipPaidDate)payDetails.push(es(m.membershipPaidDate));
+  if(m.paymentMethod)payDetails.push(es(m.paymentMethod));
+  if(m.paymentAmount)payDetails.push('₪'+es(m.paymentAmount));
+  if(m.paymentNotes)payDetails.push(es(m.paymentNotes));
+  h+='<div class="md-row"><span class="md-label">דמי חבר</span><span class="md-val">'+(m.membershipPaid?'<span class="paid-tag">שולם ✓</span>'+(payDetails.length?' <span style="font-size:.75rem;color:var(--ink3)">'+payDetails.join(' · ')+'</span>':''):'<span class="unpaid-tag">לא שולם</span>')+' <button style="font-size:.75rem;padding:2px 8px;border:1px solid var(--bd);border-radius:4px;background:none;cursor:pointer;margin-right:6px" onclick="togglePayment(\''+m.id+'\')">'+(m.membershipPaid?'ביטול תשלום':'סמן כשולם')+'</button></span></div>';
   h+='<div class="md-row"><span class="md-label">תורנות</span><span class="md-val">'+(m.dutyRoster?'<span class="duty-tag">ברשימה ✓</span>':'לא ברשימה')+' <button style="font-size:.75rem;padding:2px 8px;border:1px solid var(--bd);border-radius:4px;background:none;cursor:pointer;margin-right:6px" onclick="toggleMbrField(\''+m.id+'\',\'dutyRoster\')">'+(m.dutyRoster?'הסר מרשימה':'הוסף לרשימה')+'</button></span></div>';
   h+='</div>';
   h+='<div class="md-actions"><button class="md-btn-edit" onclick="doEditMx(\''+m.id+'\')">✏️ עריכה</button><button class="md-btn-del" onclick="if(confirm(\'מחק את '+es(m.firstName)+' '+es(m.lastName)+'?\')){delM(\''+m.id+'\');closeMD();renderML()}">🗑 מחק</button><button class="md-btn-close" onclick="closeMD()">סגור</button></div>';
@@ -2399,26 +2449,60 @@ function toggleMbrField(id,field){
   if(i>=0){a[i][field]=!a[i][field];lsSet(a);var m=a[i];showMemberDetail(m);renderML()}
 }
 function togglePayment(id){
-  var a=lsGet();var i=a.findIndex(function(m){return m.id===id});
-  if(i>=0){
-    if(a[i].membershipPaid){a[i].membershipPaid=false;a[i].membershipPaidDate=''}
-    else{a[i].membershipPaid=true;a[i].membershipPaidDate=new Date().toLocaleDateString('he-IL')}
-    lsSet(a);showMemberDetail(a[i]);renderML();
-  }
+  var m=getM(id);if(!m)return;
+  if(m.membershipPaid){
+    if(!confirm('לבטל את סימון התשלום?'))return;
+    var a=lsGet();var i=a.findIndex(function(x){return x.id===id});
+    if(i>=0){a[i].membershipPaid=false;a[i].membershipPaidDate='';a[i].paymentMethod='';a[i].paymentAmount='';a[i].paymentNotes='';lsSet(a);showMemberDetail(a[i]);renderML()}
+  }else{openPayModal(id,'detail')}
 }
 function togglePaymentFromList(id){
-  var a=lsGet();var i=a.findIndex(function(m){return m.id===id});
+  var m=getM(id);if(!m)return;
+  if(m.membershipPaid){
+    if(!confirm('לבטל את סימון התשלום?'))return;
+    var a=lsGet();var i=a.findIndex(function(x){return x.id===id});
+    if(i>=0){a[i].membershipPaid=false;a[i].membershipPaidDate='';a[i].paymentMethod='';a[i].paymentAmount='';a[i].paymentNotes='';lsSet(a);renderMbrTab();renderML()}
+  }else{openPayModal(id,'list')}
+}
+function openPayModal(id,source){
+  document.getElementById('pay-member-id').value=id;
+  document.getElementById('pay-date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('pay-method').value='אשראי';
+  document.getElementById('pay-amount').value='';
+  document.getElementById('pay-notes').value='';
+  document.getElementById('pay-modal').style.display='flex';
+  document.getElementById('pay-modal').dataset.source=source;
+}
+function closePayModal(){document.getElementById('pay-modal').style.display='none'}
+function confirmPayment(){
+  var id=document.getElementById('pay-member-id').value;
+  var date=document.getElementById('pay-date').value;
+  var method=document.getElementById('pay-method').value;
+  var amount=document.getElementById('pay-amount').value.trim();
+  var notes=document.getElementById('pay-notes').value.trim();
+  var a=lsGet();var i=a.findIndex(function(x){return x.id===id});
   if(i>=0){
-    if(a[i].membershipPaid){a[i].membershipPaid=false;a[i].membershipPaidDate=''}
-    else{a[i].membershipPaid=true;a[i].membershipPaidDate=new Date().toLocaleDateString('he-IL')}
-    lsSet(a);renderMbrTab();renderML();
+    var dateStr=date?new Date(date+'T12:00:00').toLocaleDateString('he-IL'):new Date().toLocaleDateString('he-IL');
+    a[i].membershipPaid=true;
+    a[i].membershipPaidDate=dateStr;
+    a[i].paymentMethod=method;
+    a[i].paymentAmount=amount;
+    a[i].paymentNotes=notes;
+    lsSet(a);
   }
+  closePayModal();
+  var src=document.getElementById('pay-modal').dataset.source;
+  if(src==='detail'){showMemberDetail(a[i]);renderML()}
+  else{renderMbrTab();renderML()}
 }
 function renderMbrTab(){
   var s=getMbrSettings();
   // Config fields
   var yc=document.getElementById('mbr-year-cfg');if(yc)yc.value=s.year||'';
   var lc=document.getElementById('mbr-link-cfg');if(lc)lc.value=s.link||'';
+  // Message template
+  var tpl=document.getElementById('mbr-msg-tpl');
+  if(tpl&&!tpl.dataset.loaded){tpl.value=getMsgTpl();tpl.dataset.loaded='1'}
   var ms=getMs();
   var paid=ms.filter(function(m){return m.membershipPaid});
   var unpaid=ms.filter(function(m){return!m.membershipPaid});
@@ -2436,8 +2520,12 @@ function renderMbrTab(){
   list.innerHTML=sorted.map(function(m){
     var isPaid=m.membershipPaid;
     var init=(m.firstName||'').charAt(0)+(m.lastName||'').charAt(0);
+    var payInfo=[];
+    if(m.membershipPaidDate)payInfo.push(es(m.membershipPaidDate));
+    if(m.paymentMethod)payInfo.push(es(m.paymentMethod));
+    if(m.paymentAmount)payInfo.push('₪'+es(m.paymentAmount));
     var statusHtml=isPaid?
-      '<span class="paid-tag" style="font-size:.8rem;padding:3px 10px">✓ שולם'+(m.membershipPaidDate?' · '+es(m.membershipPaidDate):'')+'</span>':
+      '<span class="paid-tag" style="font-size:.8rem;padding:3px 10px">✓ שולם'+(payInfo.length?' · '+payInfo.join(' · '):'')+'</span>':
       '<span class="unpaid-tag" style="font-size:.8rem;padding:3px 10px">✗ טרם שולם</span>';
     var actionsHtml='<button style="font-size:.75rem;padding:4px 10px;border:1px solid '+(isPaid?'#c0392b':'#1e7d4b')+';color:'+(isPaid?'#c0392b':'#1e7d4b')+';border-radius:6px;background:none;cursor:pointer;font-family:inherit" onclick="togglePaymentFromList(\''+m.id+'\')">'+(isPaid?'ביטול':'סמן שולם')+'</button>';
     if(!isPaid){
@@ -2446,33 +2534,46 @@ function renderMbrTab(){
     return '<div class="mc" style="margin-bottom:6px;border-right:3px solid '+(isPaid?'#1e7d4b':'#c0392b')+'"><div class="mav" style="background:'+(isPaid?'#1e7d4b':'#c0392b')+'">'+es(init)+'</div><div class="mi" style="flex:1"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone||'')+'</div></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+statusHtml+actionsHtml+'</div></div>';
   }).join('');
 }
+var DEFAULT_MSG_TPL='שלום {name} היקר/ה,\n\nמקווים שהכל טוב ושמחים שאת/ה חלק מקהילתנו! 🙏\n\nרצינו להזכיר בנעימות שדמי החבר לשנת {year} טרם הוסדרו.\nהתשלום עוזר לנו להמשיך לתחזק את בית הכנסת ולקיים פעילויות לטובת כל הקהילה.\n\nניתן לשלם בקלות בקישור:\n{link}\n\nאפשרויות תשלום: אשראי, העברה בנקאית, ביט, מזומן.\nניתן גם לפרוס עד 4 תשלומים.\n\nתודה רבה על השותפות! ❤️\nקהילת מבשר ציון';
+var MSG_TPL_KEY='mbz_msg_tpl';
+function getMsgTpl(){return localStorage.getItem(MSG_TPL_KEY)||DEFAULT_MSG_TPL}
+function saveMsgTpl(){
+  var tpl=document.getElementById('mbr-msg-tpl');
+  if(tpl){localStorage.setItem(MSG_TPL_KEY,tpl.value);alert('הודעת התזכורת נשמרה!')}
+}
 function buildReminderMsg(m){
   var s=getMbrSettings();
   var year=s.year||new Date().getFullYear().toString();
   var link=s.link||'';
-  var msg='שלום '+m.firstName+' היקר/ה,\\n\\n'+
-    'מקווים שהכל טוב ושמחים שאת/ה חלק מהקהילה שלנו! 🙏\\n\\n'+
-    'רצינו להזכיר בנעימות שדמי החבר לשנת '+year+' טרם הוסדרו.\\n'+
-    'התשלום עוזר לנו להמשיך לתחזק את בית הכנסת ולקיים פעילויות לטובת כל הקהילה.\\n\\n';
-  if(link)msg+='ניתן לשלם בקלות בקישור:\\n'+link+'\\n\\n';
-  msg+='תודה רבה על השותפות! ❤️\\nקהילת מבשר ציון';
-  return msg;
+  var tpl=getMsgTpl();
+  return tpl.replace(/\{name\}/g,m.firstName).replace(/\{year\}/g,year).replace(/\{link\}/g,link);
+}
+function phoneToWA(phone){
+  var p=phone.replace(/[^0-9]/g,'');
+  if(p.startsWith('0'))p='972'+p.slice(1);
+  return p;
 }
 function sendReminder(id){
   var m=getM(id);if(!m||!m.phone)return alert('אין מספר טלפון למתפלל זה');
-  var phone=m.phone.replace(/[^0-9]/g,'');
-  if(phone.startsWith('0'))phone='972'+phone.slice(1);
   var msg=buildReminderMsg(m);
-  var url='https://wa.me/'+phone+'?text='+encodeURIComponent(msg.replace(/\\n/g,'\n'));
+  var url='https://wa.me/'+phoneToWA(m.phone)+'?text='+encodeURIComponent(msg);
   window.open(url,'_blank');
 }
 function sendBulkReminder(){
   var ms=getMs().filter(function(m){return!m.membershipPaid&&m.phone});
   if(!ms.length)return alert('כל המתפללים שילמו! 🎉');
-  if(!confirm('פתיחת WhatsApp עבור '+ms.length+' מתפללים שטרם שילמו.\\nכל תזכורת תיפתח בחלון חדש.\\nלהמשיך?'))return;
+  // Show list of WhatsApp links instead of auto-opening
+  var s=getMbrSettings();var year=s.year||'';
+  var h='<div style="max-height:60vh;overflow-y:auto">';
+  h+='<p style="margin-bottom:.8rem;font-size:.9rem">'+ms.length+' מתפללים טרם שילמו. לחץ על כל שם לפתיחת WhatsApp:</p>';
   ms.forEach(function(m,i){
-    setTimeout(function(){sendReminder(m.id)},i*1500);
+    var msg=buildReminderMsg(m);
+    var url='https://wa.me/'+phoneToWA(m.phone)+'?text='+encodeURIComponent(msg);
+    h+='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd2)"><span style="min-width:24px;text-align:center;color:var(--ink3);font-size:.8rem">'+(i+1)+'</span><a href="'+url+'" target="_blank" style="flex:1;color:var(--ink);font-weight:500;text-decoration:none">'+es(m.firstName+' '+m.lastName)+'</a><span style="font-size:.8rem;color:var(--ink3);direction:ltr">'+es(m.phone)+'</span><a href="'+url+'" target="_blank" style="font-size:.8rem;color:#25d366;font-weight:600;text-decoration:none">📨 WhatsApp</a></div>';
   });
+  h+='</div>';
+  document.getElementById('md-card').innerHTML='<div style="padding:.5rem"><h2 style="margin-bottom:.8rem">📨 שליחת תזכורות</h2>'+h+'<div style="margin-top:1rem;text-align:center"><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
+  document.getElementById('md-ovl').classList.add('show');
 }
 
 // ── Duty Roster ──────────────────────────────────────────
