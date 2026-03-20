@@ -2641,8 +2641,10 @@ function saveMbrCfg(){
   alert('הגדרות דמי חבר נשמרו');
 }
 function toggleMbrField(id,field){
-  var a=lsGet();var i=a.findIndex(function(m){return m.id===id});
-  if(i>=0){a[i][field]=!a[i][field];lsSet(a);var m=a[i];showMemberDetail(m);renderML()}
+  var m=getM(id);if(!m)return;
+  var update={};update[field]=!m[field];
+  updM(id,update);
+  showMemberDetail(getM(id));renderML();
 }
 function togglePayment(id){
   var m=getM(id);if(!m)return;
