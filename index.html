@@ -1638,7 +1638,7 @@ function showMemberDetail(m){
     }
     h+='</div>';
   }
-  h+='<div class="md-actions"><button class="md-btn-edit" onclick="doEditMx(\''+m.id+'\')">✏️ עריכה</button><button class="md-btn-del" onclick="if(confirm(\'מחק את '+es(m.firstName)+' '+es(m.lastName)+'?\')){{delM(\''+m.id+'\');closeMD();renderML()}}">🗑 מחק</button><button class="md-btn-close" onclick="closeMD()">סגור</button></div>';
+  h+='<div class="md-actions"><button class="md-btn-edit" onclick="doEditMx(\''+m.id+'\')">✏️ עריכה</button><button class="md-btn-del" onclick="if(confirm(\'מחק את '+es(m.firstName)+' '+es(m.lastName)+'?\')){delM(\''+m.id+'\');closeMD();renderML()}">🗑 מחק</button><button class="md-btn-close" onclick="closeMD()">סגור</button></div>';
   document.getElementById('md-card').innerHTML=h;
   document.getElementById('md-ovl').classList.add('show');
 }
