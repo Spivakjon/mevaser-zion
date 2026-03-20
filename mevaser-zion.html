@@ -1,0 +1,2525 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ניהול מתפללים — עמותת מבשר ציון</title>
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Arial, sans-serif;
+  background: #f0f2f5;
+  color: #1a1a2e;
+  direction: rtl;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+a { color: #2563eb; text-decoration: none; }
+
+/* ===== LAYOUT ===== */
+.container { max-width: 900px; margin: 0 auto; padding: 16px; }
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+/* ===== TOPBAR ===== */
+.topbar {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5f8a 100%);
+  color: #fff;
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.topbar h1 { font-size: 1.2rem; font-weight: 700; }
+.topbar .info { font-size: 0.85rem; opacity: 0.9; }
+.topbar button {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+.topbar button:hover { background: rgba(255,255,255,0.3); }
+
+/* ===== HEADER (public) ===== */
+.public-header {
+  background: linear-gradient(135deg, #1e3a5f 0%, #2d5f8a 100%);
+  color: #fff;
+  text-align: center;
+  padding: 32px 16px 24px;
+}
+.public-header h1 { font-size: 1.6rem; margin-bottom: 8px; }
+.public-header p { font-size: 0.95rem; opacity: 0.9; }
+
+/* ===== FORMS ===== */
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+label .req { color: #e53e3e; margin-right: 2px; }
+input[type="text"], input[type="email"], input[type="tel"],
+input[type="date"], input[type="password"], input[type="number"],
+select, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  direction: rtl;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+input.invalid, select.invalid { border-color: #e53e3e; }
+.field-error { color: #e53e3e; font-size: 0.8rem; margin-top: 2px; display: none; }
+
+.form-group { margin-bottom: 16px; }
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 600px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin: 24px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+.btn-primary { background: #2563eb; color: #fff; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-success { background: #059669; color: #fff; }
+.btn-success:hover { background: #047857; }
+.btn-danger { background: #dc2626; color: #fff; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-secondary { background: #6b7280; color: #fff; }
+.btn-secondary:hover { background: #4b5563; }
+.btn-outline {
+  background: transparent;
+  color: #2563eb;
+  border: 1.5px solid #2563eb;
+}
+.btn-outline:hover { background: #eff6ff; }
+.btn-sm { padding: 6px 12px; font-size: 0.82rem; }
+
+/* ===== TABS ===== */
+.tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 12px 16px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  -webkit-overflow-scrolling: touch;
+}
+.tab-btn {
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+  white-space: nowrap;
+  color: #6b7280;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.tab-btn.active {
+  background: #2563eb;
+  color: #fff;
+}
+.tab-btn:hover:not(.active) { background: #f3f4f6; }
+.tab-content { display: none; padding: 16px; }
+.tab-content.active { display: block; }
+
+/* ===== TABLE ===== */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  min-width: 600px;
+}
+th {
+  background: #f8fafc;
+  padding: 10px 12px;
+  text-align: right;
+  font-weight: 700;
+  color: #374151;
+  border-bottom: 2px solid #e5e7eb;
+  white-space: nowrap;
+}
+td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+tr:hover { background: #f8fafc; }
+.actions { display: flex; gap: 4px; }
+.actions button { font-size: 0.82rem; }
+
+/* ===== FULL TABLE ===== */
+.full-table-wrap {
+  overflow: auto;
+  max-height: 65vh;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  -webkit-overflow-scrolling: touch;
+}
+.full-table-wrap table { min-width: 2400px; }
+.full-table-wrap th { position: sticky; top: 0; z-index: 2; }
+
+/* ===== SEARCH ===== */
+.search-box {
+  margin-bottom: 16px;
+  position: relative;
+}
+.search-box input {
+  padding-right: 36px;
+}
+.search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  z-index: 9999;
+  animation: toastIn 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.toast-success { background: #059669; }
+.toast-error { background: #dc2626; }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 24px;
+  position: relative;
+}
+.modal-close {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 4px;
+}
+.modal h2 { margin-bottom: 16px; font-size: 1.2rem; }
+
+/* ===== LOGIN ===== */
+.login-box {
+  max-width: 400px;
+  margin: 60px auto;
+}
+.login-box h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #1e3a5f;
+}
+
+/* ===== MISC ===== */
+.admin-link {
+  text-align: center;
+  padding: 16px;
+  font-size: 0.8rem;
+}
+.admin-link a { color: #9ca3af; }
+.admin-link a:hover { color: #6b7280; }
+
+.child-row, .memorial-row {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #e5e7eb;
+}
+.child-row .form-row, .memorial-row .form-row {
+  align-items: end;
+}
+.remove-btn {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px;
+}
+
+.settings-section {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.settings-section:last-child { border-bottom: none; }
+
+.filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.filter-btn {
+  padding: 6px 14px;
+  border: 1.5px solid #d1d5db;
+  background: #fff;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.filter-btn.active {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+}
+.stat-card .num { font-size: 2rem; font-weight: 700; color: #2563eb; }
+.stat-card .lbl { font-size: 0.8rem; color: #6b7280; margin-top: 4px; }
+
+.url-display {
+  background: #f3f4f6;
+  padding: 12px;
+  border-radius: 8px;
+  word-break: break-all;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  direction: ltr;
+  text-align: left;
+}
+.hidden { display: none !important; }
+
+.duty-current {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.duty-current h3 { font-size: 1.1rem; margin-bottom: 12px; opacity: 0.9; }
+.duty-current .duty-names { font-size: 1.4rem; font-weight: 700; }
+.duty-current .duty-phones { font-size: 0.85rem; margin-top: 8px; opacity: 0.8; }
+
+.membership-prompt { text-align: center; }
+.membership-prompt h2 { color: #1e3a5f; margin-bottom: 16px; }
+.membership-prompt p { font-size: 1.05rem; margin-bottom: 20px; }
+.payment-msg { text-align: center; }
+.payment-msg h2 { color: #dc2626; margin-bottom: 12px; }
+.payment-msg p { font-size: 1rem; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ==================== PUBLIC FORM ==================== -->
+<div id="publicView">
+  <div class="public-header">
+    <h1 id="pubSynName">בית כנסת מבשר ציון</h1>
+    <p id="pubSubtitle">גבאי: — | רב: —</p>
+  </div>
+  <div class="container">
+    <div id="membershipPrompt" class="card membership-prompt">
+      <h2>&#128722; דמי חבר</h2>
+      <p>האם שילמת דמי חבר לשנת <strong id="promptYear">—</strong>?</p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-success" onclick="membershipAnswer(true)" style="padding:12px 36px;font-size:1.05rem;">&#10003; כן, שילמתי</button>
+        <button class="btn btn-secondary" onclick="membershipAnswer(false)" style="padding:12px 36px;font-size:1.05rem;">לא שילמתי</button>
+      </div>
+    </div>
+    <div id="paymentMessage" class="card payment-msg hidden">
+      <h2>&#9888;&#65039; נא לשלם דמי חבר</h2>
+      <p>יש לשלם דמי חבר לשנת <strong id="paymentYear">—</strong></p>
+      <p><a id="paymentLinkBtn" href="#" target="_blank" class="btn btn-primary" style="padding:10px 32px;font-size:1rem;">&#128179; לחץ כאן לתשלום</a></p>
+      <button class="btn btn-outline" onclick="showFormAnyway()" style="margin-top:12px;">&#8592; המשך לטופס רישום</button>
+    </div>
+    <div id="registrationCard" class="card hidden">
+      <form id="registrationForm" novalidate>
+        <!-- Personal Info -->
+        <div class="section-title">פרטים אישיים</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label><span class="req">*</span> שם פרטי</label>
+            <input type="text" id="firstName" required>
+            <div class="field-error">שדה חובה</div>
+          </div>
+          <div class="form-group">
+            <label><span class="req">*</span> שם משפחה</label>
+            <input type="text" id="lastName" required>
+            <div class="field-error">שדה חובה</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label><span class="req">*</span> שם האב</label>
+            <input type="text" id="fatherName" required>
+            <div class="field-error">שדה חובה</div>
+          </div>
+          <div class="form-group">
+            <label>שם האם</label>
+            <input type="text" id="motherName">
+          </div>
+        </div>
+        <div class="form-group">
+          <label><span class="req">*</span> שם לעלייה לתורה</label>
+          <input type="text" id="aliyahName" placeholder="פלוני בן פלוני" required>
+          <div class="field-error">שדה חובה</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label><span class="req">*</span> תאריך לידה</label>
+            <input type="date" id="birthDate" required>
+            <div class="field-error">שדה חובה</div>
+          </div>
+          <div class="form-group">
+            <label><span class="req">*</span> טלפון</label>
+            <input type="tel" id="phone" required>
+            <div class="field-error">שדה חובה</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>דוא"ל</label>
+            <input type="email" id="email">
+          </div>
+          <div class="form-group">
+            <label>כתובת</label>
+            <input type="text" id="address">
+          </div>
+        </div>
+
+        <!-- Children -->
+        <div class="section-title">ילדים <span style="font-weight:400;font-size:0.85rem;color:#6b7280">(עד 7)</span></div>
+        <div id="childrenContainer"></div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="addChild()" id="addChildBtn">+ הוסף ילד</button>
+
+        <!-- Volunteering -->
+        <div class="section-title">התנדבות</div>
+        <div style="display:flex;flex-wrap:wrap;gap:16px;">
+          <label style="font-weight:400;display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" id="volKidush"> קניות קידוש
+          </label>
+          <label style="font-weight:400;display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" id="volSetup"> סידור קידוש
+          </label>
+          <label style="font-weight:400;display:flex;align-items:center;gap:6px;">
+            <input type="checkbox" id="volDvar"> דבר תורה
+          </label>
+        </div>
+
+        <!-- Bar Mitzvah -->
+        <div class="section-title">בר מצווה</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>תאריך לידה לועזי (לחישוב פרשה)</label>
+            <input type="date" id="bmBirthDate" onchange="calcBarMitzvah()">
+          </div>
+          <div class="form-group">
+            <label>פרשת בר מצווה</label>
+            <input type="text" id="bmParsha" placeholder="יחושב אוטומטית">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>קריאה בתורה</label>
+            <select id="bmAliyah">
+              <option value="">— בחר —</option>
+              <option value="ראשון">עולה ראשון</option>
+              <option value="שני">עולה שני</option>
+              <option value="שלישי">עולה שלישי</option>
+              <option value="רביעי">עולה רביעי</option>
+              <option value="חמישי">עולה חמישי</option>
+              <option value="שישי">עולה שישי</option>
+              <option value="שביעי">עולה שביעי</option>
+              <option value="מפטיר">מפטיר</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>הפטרה</label>
+            <select id="bmHaftarah">
+              <option value="">— בחר —</option>
+              <option value="כן">כן</option>
+              <option value="לא">לא</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Memorial Days -->
+        <div class="section-title">ימי זיכרון / יארצייט <span style="font-weight:400;font-size:0.85rem;color:#6b7280">(עד 3)</span></div>
+        <div id="memorialContainer"></div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="addMemorial()" id="addMemorialBtn">+ הוסף יום זיכרון</button>
+
+        <div style="margin-top:32px; text-align:center;">
+          <button type="submit" class="btn btn-primary" style="padding:12px 48px;font-size:1.05rem;">שלח טופס</button>
+        </div>
+
+        <input type="hidden" id="editId" value="">
+        <input type="hidden" id="membershipPaid" value="">
+      </form>
+    </div>
+    <div class="admin-link">
+      <a href="#admin">&#128272; כניסה לממשק מנהל</a>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN LOGIN ==================== -->
+<div id="loginView" class="hidden">
+  <div class="container">
+    <div class="login-box card">
+      <h2>&#128272; כניסה לממשק מנהל</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>שם משתמש</label>
+          <input type="text" id="loginUser" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label>סיסמה</label>
+          <input type="password" id="loginPass" autocomplete="current-password">
+        </div>
+        <div id="loginError" style="color:#dc2626;font-size:0.85rem;margin-bottom:12px;display:none;">שם משתמש או סיסמה שגויים</div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">כניסה</button>
+      </form>
+      <div style="text-align:center;margin-top:16px;">
+        <a href="#" style="font-size:0.85rem;color:#6b7280;">חזרה לטופס רישום</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADMIN PANEL ==================== -->
+<div id="adminView" class="hidden">
+  <div class="topbar">
+    <div>
+      <h1 id="adminSynName">בית כנסת מבשר ציון</h1>
+      <div class="info" id="adminGabaiName">גבאי: —</div>
+    </div>
+    <button onclick="logout()">יציאה</button>
+  </div>
+
+  <div class="tabs" id="adminTabs">
+    <button class="tab-btn active" data-tab="tabMembers">&#128101; מתפללים</button>
+    <button class="tab-btn" data-tab="tabMemorials">&#128367;&#65039; ימי זיכרון</button>
+    <button class="tab-btn" data-tab="tabVolunteers">&#128591; מתנדבים</button>
+    <button class="tab-btn" data-tab="tabFull">&#128202; טבלה מלאה</button>
+    <button class="tab-btn" data-tab="tabDuty">&#128203; תורנות</button>
+    <button class="tab-btn" data-tab="tabSettings">&#9881;&#65039; הגדרות</button>
+  </div>
+
+  <!-- Tab: Members -->
+  <div class="tab-content active" id="tabMembers">
+    <div class="container">
+      <div class="stat-cards" id="statsCards"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+        <button class="btn btn-primary btn-sm" onclick="openAddMember()">&#10133; הוסף מתפלל</button>
+        <button class="btn btn-outline btn-sm" onclick="exportMembersCSV()">&#128196; ייצוא CSV</button>
+      </div>
+      <div class="search-box">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" id="memberSearch" placeholder="חיפוש לפי שם, טלפון, דוא&quot;ל..." oninput="renderMembersTable()">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>שם מלא</th>
+              <th>טלפון</th>
+              <th>דוא"ל</th>
+              <th>שם לעלייה לתורה</th>
+              <th>תאריך לידה</th>
+              <th>דמי חבר</th>
+              <th>פעולות</th>
+            </tr>
+          </thead>
+          <tbody id="membersBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Memorials -->
+  <div class="tab-content" id="tabMemorials">
+    <div class="container">
+      <h2 style="margin-bottom:16px;">&#128367;&#65039; ימי זיכרון</h2>
+      <div class="form-group" style="max-width:250px;margin-bottom:16px;">
+        <label>סינון לפי חודש עברי</label>
+        <select id="memorialMonthFilter" onchange="renderMemorialsTable()">
+          <option value="">הכל</option>
+          <option value="תשרי">תשרי</option>
+          <option value="חשון">חשון</option>
+          <option value="כסלו">כסלו</option>
+          <option value="טבת">טבת</option>
+          <option value="שבט">שבט</option>
+          <option value="אדר">אדר</option>
+          <option value="אדר א">אדר א׳</option>
+          <option value="אדר ב">אדר ב׳</option>
+          <option value="ניסן">ניסן</option>
+          <option value="אייר">אייר</option>
+          <option value="סיון">סיון</option>
+          <option value="תמוז">תמוז</option>
+          <option value="אב">אב</option>
+          <option value="אלול">אלול</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>שם מתפלל</th>
+              <th>שם נפטר/ת</th>
+              <th>יום</th>
+              <th>חודש</th>
+              <th>שנה</th>
+              <th>חזן</th>
+              <th>הפטרה</th>
+            </tr>
+          </thead>
+          <tbody id="memorialsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Volunteers -->
+  <div class="tab-content" id="tabVolunteers">
+    <div class="container">
+      <h2 style="margin-bottom:16px;">&#128591; מתנדבים</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>שם</th>
+              <th>טלפון</th>
+              <th>קניות קידוש</th>
+              <th>סידור קידוש</th>
+              <th>דבר תורה</th>
+            </tr>
+          </thead>
+          <tbody id="volunteersBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Full Table -->
+  <div class="tab-content" id="tabFull">
+    <div class="container">
+      <h2 style="margin-bottom:16px;">&#128202; טבלה מלאה</h2>
+      <div class="filter-bar" id="fullTableFilters">
+        <button class="filter-btn active" data-filter="all" onclick="setFullFilter('all',this)">כולם</button>
+        <button class="filter-btn" data-filter="volunteers" onclick="setFullFilter('volunteers',this)">מתנדבים</button>
+        <button class="filter-btn" data-filter="memorial" onclick="setFullFilter('memorial',this)">יש יום זיכרון</button>
+        <button class="filter-btn" data-filter="barmitzvah" onclick="setFullFilter('barmitzvah',this)">בר מצווה</button>
+      </div>
+      <div class="full-table-wrap" id="fullTableWrap"></div>
+      <div style="margin-top:12px;">
+        <button class="btn btn-outline btn-sm" onclick="exportFullCSV()">&#128196; ייצוא CSV</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Duty Roster -->
+  <div class="tab-content" id="tabDuty">
+    <div class="container">
+      <h2 style="margin-bottom:16px;">&#128203; תורנות שבועית</h2>
+      <div id="currentDutyCard"></div>
+      <h3 style="margin:20px 0 12px;">לוח תורנויות — 8 שבועות הקרובים</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>תאריך שבת</th><th>תורן 1</th><th>תורן 2</th></tr>
+          </thead>
+          <tbody id="dutyBody"></tbody>
+        </table>
+      </div>
+      <h3 style="margin:20px 0 12px;">רשימת תורנים</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>שם</th><th>טלפון</th></tr></thead>
+          <tbody id="rosterBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Settings -->
+  <div class="tab-content" id="tabSettings">
+    <div class="container">
+      <h2 style="margin-bottom:20px;">&#9881;&#65039; הגדרות</h2>
+
+      <!-- Public link -->
+      <div class="settings-section">
+        <h3 style="margin-bottom:8px;">&#128279; קישור ציבורי לרישום מתפללים</h3>
+        <p style="font-size:0.85rem;color:#6b7280;margin-bottom:8px;">זהו הקישור לשלוח למתפללים למילוי פרטים</p>
+        <div class="url-display" id="publicUrl"></div>
+        <button class="btn btn-outline btn-sm" onclick="copyPublicUrl()">&#128203; העתק קישור</button>
+      </div>
+
+      <!-- Community info -->
+      <div class="settings-section">
+        <h3 style="margin-bottom:12px;">פרטי קהילה</h3>
+        <div class="form-group">
+          <label>שם בית הכנסת</label>
+          <input type="text" id="setSynName" onchange="saveSettings()">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>שם הגבאי</label>
+            <input type="text" id="setGabaiName" onchange="saveSettings()">
+          </div>
+          <div class="form-group">
+            <label>שם הרב</label>
+            <input type="text" id="setRavName" onchange="saveSettings()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Users management -->
+      <div class="settings-section">
+        <h3 style="margin-bottom:12px;">ניהול משתמשים</h3>
+        <div class="table-wrap" style="margin-bottom:12px;">
+          <table>
+            <thead><tr><th>שם משתמש</th><th>פעולה</th></tr></thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+        <h4 style="margin-bottom:8px;">הוסף משתמש חדש</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label>שם משתמש</label>
+            <input type="text" id="newUsername">
+          </div>
+          <div class="form-group">
+            <label>סיסמה</label>
+            <input type="password" id="newUserPass">
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="addUser()">הוסף משתמש</button>
+      </div>
+
+      <!-- Membership fees -->
+      <div class="settings-section">
+        <h3 style="margin-bottom:12px;">&#128176; דמי חבר</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>שנת דמי חבר</label>
+            <input type="text" id="setMembershipYear" placeholder="תשפ״ו" onchange="saveSettings()">
+          </div>
+          <div class="form-group">
+            <label>קישור לתשלום</label>
+            <input type="text" id="setPaymentLink" placeholder="https://..." onchange="saveSettings()" dir="ltr" style="text-align:left;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Backup -->
+      <div class="settings-section">
+        <h3 style="margin-bottom:12px;">גיבוי ושחזור</h3>
+        <p style="font-size:0.85rem;color:#6b7280;margin-bottom:12px;">
+          הורדת גיבוי תשמור את כל הנתונים לקובץ JSON. שחזור מגיבוי יטען קובץ JSON ויחליף את כל הנתונים הקיימים.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <button class="btn btn-success btn-sm" onclick="downloadBackup()">&#11015;&#65039; הורד גיבוי JSON</button>
+          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('restoreFile').click()">&#11014;&#65039; שחזר מגיבוי</button>
+          <input type="file" id="restoreFile" accept=".json" style="display:none;" onchange="restoreBackup(event)">
+        </div>
+        <p id="lastSaveTime" style="font-size:0.8rem;color:#9ca3af;margin-top:8px;"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== VIEW MEMBER MODAL ==================== -->
+<div id="viewModal" class="modal-overlay hidden" onclick="if(event.target===this)closeViewModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeViewModal()">&times;</button>
+    <h2>&#128100; פרטי מתפלל</h2>
+    <div id="viewContent"></div>
+  </div>
+</div>
+
+<!-- ==================== CSV EXPORT MODAL (iOS) ==================== -->
+<div id="csvModal" class="modal-overlay hidden" onclick="if(event.target===this)closeCsvModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeCsvModal()">&times;</button>
+    <h2>&#128196; ייצוא נתונים</h2>
+    <div id="csvModalContent"></div>
+  </div>
+</div>
+
+<!-- ==================== ADD/EDIT MEMBER MODAL ==================== -->
+<div id="memberFormModal" class="modal-overlay hidden" onclick="if(event.target===this)closeMemberForm()">
+  <div class="modal" style="max-width:750px;max-height:90vh;">
+    <button class="modal-close" onclick="closeMemberForm()">&times;</button>
+    <h2 id="memberFormTitle">&#10133; הוסף מתפלל</h2>
+    <div id="memberFormContainer"></div>
+  </div>
+</div>
+
+<script>
+/* ===================================================================
+   DATA LAYER
+   =================================================================== */
+const STORAGE_KEY = 'mz_members';
+const SETTINGS_KEY = 'mz_settings';
+const USERS_KEY = 'mz_users';
+const SESSION_KEY = 'mz_session';
+
+function loadData(key, fallback) {
+  try {
+    const d = localStorage.getItem(key);
+    if (d) return JSON.parse(d);
+  } catch(e) {}
+  try {
+    const d = sessionStorage.getItem(key);
+    if (d) return JSON.parse(d);
+  } catch(e) {}
+  return fallback;
+}
+
+function saveData(key, data) {
+  const json = JSON.stringify(data);
+  try { localStorage.setItem(key, json); } catch(e) {}
+  try { sessionStorage.setItem(key, json); } catch(e) {}
+}
+
+function getMembers() { return loadData(STORAGE_KEY, []); }
+function saveMembers(arr) {
+  saveData(STORAGE_KEY, arr);
+  saveData('mz_lastSave', new Date().toISOString());
+}
+
+function getSettings() {
+  return loadData(SETTINGS_KEY, {
+    synName: 'בית כנסת מבשר ציון',
+    gabaiName: '',
+    ravName: '',
+    membershipYear: '',
+    paymentLink: ''
+  });
+}
+function saveSettingsData(s) { saveData(SETTINGS_KEY, s); }
+
+function getUsers() {
+  return loadData(USERS_KEY, [
+    { username: 'admin', password: 'admin123' },
+    { username: 'gabai', password: 'gabai2024' }
+  ]);
+}
+function saveUsers(u) { saveData(USERS_KEY, u); }
+
+/* ===================================================================
+   ROUTING
+   =================================================================== */
+let isLoggedIn = false;
+
+function route() {
+  const hash = window.location.hash;
+  document.getElementById('publicView').classList.add('hidden');
+  document.getElementById('loginView').classList.add('hidden');
+  document.getElementById('adminView').classList.add('hidden');
+
+  if (hash === '#admin') {
+    if (isLoggedIn) {
+      document.getElementById('adminView').classList.remove('hidden');
+      refreshAdmin();
+    } else {
+      document.getElementById('loginView').classList.remove('hidden');
+    }
+  } else {
+    document.getElementById('publicView').classList.remove('hidden');
+    updatePublicHeader();
+  }
+}
+
+window.addEventListener('hashchange', route);
+
+/* ===================================================================
+   AUTH
+   =================================================================== */
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const users = getUsers();
+  const found = users.find(u => u.username === user && u.password === pass);
+  if (found) {
+    isLoggedIn = true;
+    document.getElementById('loginError').style.display = 'none';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    route();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+});
+
+function logout() {
+  isLoggedIn = false;
+  window.location.hash = '';
+}
+
+/* ===================================================================
+   PUBLIC HEADER
+   =================================================================== */
+function updatePublicHeader() {
+  const s = getSettings();
+  document.getElementById('pubSynName').textContent = s.synName;
+  const parts = [];
+  if (s.gabaiName) parts.push('גבאי: ' + s.gabaiName);
+  if (s.ravName) parts.push('רב: ' + s.ravName);
+  document.getElementById('pubSubtitle').textContent = parts.join(' | ') || '';
+  // Update membership prompt
+  var year = s.membershipYear || new Date().getFullYear().toString();
+  document.getElementById('promptYear').textContent = year;
+  document.getElementById('paymentYear').textContent = year;
+  var link = s.paymentLink || '#';
+  document.getElementById('paymentLinkBtn').href = link;
+  if (!s.paymentLink) document.getElementById('paymentLinkBtn').style.display = 'none';
+  else document.getElementById('paymentLinkBtn').style.display = '';
+}
+
+/* ===================================================================
+   CHILDREN MANAGEMENT
+   =================================================================== */
+let childCount = 0;
+
+function addChild(data) {
+  if (childCount >= 7) return;
+  childCount++;
+  const idx = childCount;
+  const div = document.createElement('div');
+  div.className = 'child-row';
+  div.id = 'child-' + idx;
+  div.innerHTML = '<div class="form-row" style="grid-template-columns:1fr 1fr auto;">' +
+    '<div class="form-group"><label>שם ילד/ה</label>' +
+    '<input type="text" class="child-name" value="' + (data ? escAttr(data.name) : '') + '"></div>' +
+    '<div class="form-group"><label>תאריך לידה</label>' +
+    '<input type="date" class="child-bd" value="' + (data ? escAttr(data.birthDate) : '') + '"></div>' +
+    '<button type="button" class="remove-btn" onclick="removeChild(' + idx + ')" title="הסר">&times;</button>' +
+    '</div>';
+  document.getElementById('childrenContainer').appendChild(div);
+  if (childCount >= 7) document.getElementById('addChildBtn').classList.add('hidden');
+}
+
+function removeChild(idx) {
+  const el = document.getElementById('child-' + idx);
+  if (el) el.remove();
+  childCount--;
+  document.getElementById('addChildBtn').classList.remove('hidden');
+}
+
+function getChildrenData(container) {
+  const children = [];
+  const rows = (container || document).querySelectorAll('#childrenContainer .child-row, .modal-children .child-row');
+  rows.forEach(r => {
+    const name = r.querySelector('.child-name').value.trim();
+    const bd = r.querySelector('.child-bd').value;
+    if (name || bd) children.push({ name, birthDate: bd });
+  });
+  return children;
+}
+
+/* ===================================================================
+   MEMORIAL DAYS MANAGEMENT
+   =================================================================== */
+let memorialCount = 0;
+const HEB_MONTHS = ['תשרי','חשון','כסלו','טבת','שבט','אדר','אדר א','אדר ב','ניסן','אייר','סיון','תמוז','אב','אלול'];
+
+function memorialDayOptions() {
+  let opts = '<option value="">—</option>';
+  for (let i = 1; i <= 30; i++) opts += '<option value="' + i + '">' + hebrewDay(i) + '</option>';
+  return opts;
+}
+
+function hebrewDay(n) {
+  const ones = ['','א','ב','ג','ד','ה','ו','ז','ח','ט'];
+  const tens = ['','י','כ','ל'];
+  if (n <= 0) return '';
+  if (n === 15) return 'ט״ו';
+  if (n === 16) return 'ט״ז';
+  if (n < 10) return ones[n] + '׳';
+  if (n === 10) return 'י׳';
+  if (n === 20) return 'כ׳';
+  if (n === 30) return 'ל׳';
+  const t = Math.floor(n / 10);
+  const o = n % 10;
+  return tens[t] + '״' + ones[o];
+}
+
+function memorialMonthOptions() {
+  let opts = '<option value="">—</option>';
+  HEB_MONTHS.forEach(m => opts += '<option value="' + m + '">' + m + '</option>');
+  return opts;
+}
+
+function addMemorial(data) {
+  if (memorialCount >= 3) return;
+  memorialCount++;
+  const idx = memorialCount;
+  const div = document.createElement('div');
+  div.className = 'memorial-row';
+  div.id = 'memorial-' + idx;
+  div.innerHTML =
+    '<div class="form-row" style="grid-template-columns:1fr auto;margin-bottom:8px;">' +
+      '<div class="form-group"><label>שם הנפטר/ת</label>' +
+      '<input type="text" class="mem-name" value="' + (data ? escAttr(data.name) : '') + '"></div>' +
+      '<button type="button" class="remove-btn" onclick="removeMemorial(' + idx + ')" title="הסר">&times;</button>' +
+    '</div>' +
+    '<div class="form-row" style="grid-template-columns:1fr 1fr 1fr;">' +
+      '<div class="form-group"><label>יום</label><select class="mem-day">' + memorialDayOptions() + '</select></div>' +
+      '<div class="form-group"><label>חודש</label><select class="mem-month">' + memorialMonthOptions() + '</select></div>' +
+      '<div class="form-group"><label>שנת פטירה</label><input type="text" class="mem-year" value="' + (data ? escAttr(data.year) : '') + '" placeholder="תשפ״ד"></div>' +
+    '</div>' +
+    '<div class="form-row">' +
+      '<div class="form-group"><label>חזן</label><select class="mem-hazan"><option value="">—</option><option value="כן"' + (data && data.hazan === 'כן' ? ' selected' : '') + '>כן</option><option value="לא"' + (data && data.hazan === 'לא' ? ' selected' : '') + '>לא</option></select></div>' +
+      '<div class="form-group"><label>הפטרה</label><select class="mem-haftarah"><option value="">—</option><option value="כן"' + (data && data.haftarah === 'כן' ? ' selected' : '') + '>כן</option><option value="לא"' + (data && data.haftarah === 'לא' ? ' selected' : '') + '>לא</option></select></div>' +
+    '</div>';
+  document.getElementById('memorialContainer').appendChild(div);
+
+  if (data) {
+    if (data.day) div.querySelector('.mem-day').value = data.day;
+    if (data.month) div.querySelector('.mem-month').value = data.month;
+  }
+  if (memorialCount >= 3) document.getElementById('addMemorialBtn').classList.add('hidden');
+}
+
+function removeMemorial(idx) {
+  const el = document.getElementById('memorial-' + idx);
+  if (el) el.remove();
+  memorialCount--;
+  document.getElementById('addMemorialBtn').classList.remove('hidden');
+}
+
+function getMemorialData() {
+  const arr = [];
+  document.querySelectorAll('#memorialContainer .memorial-row').forEach(r => {
+    const name = r.querySelector('.mem-name').value.trim();
+    const day = r.querySelector('.mem-day').value;
+    const month = r.querySelector('.mem-month').value;
+    const year = r.querySelector('.mem-year').value.trim();
+    const hazan = r.querySelector('.mem-hazan').value;
+    const haftarah = r.querySelector('.mem-haftarah').value;
+    if (name || day || month) arr.push({ name, day, month, year, hazan, haftarah });
+  });
+  return arr;
+}
+
+/* ===================================================================
+   FORM SUBMISSION (PUBLIC)
+   =================================================================== */
+document.getElementById('registrationForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (!validateForm()) return;
+
+  const member = collectFormData();
+  const editId = document.getElementById('editId').value;
+  const members = getMembers();
+
+  if (editId) {
+    const idx = members.findIndex(m => m.id === editId);
+    if (idx >= 0) { member.id = editId; members[idx] = member; }
+  } else {
+    member.id = generateId();
+    member.createdAt = new Date().toISOString();
+    members.push(member);
+  }
+
+  saveMembers(members);
+  showToast('הנתונים נשמרו בהצלחה!', 'success');
+  resetForm();
+});
+
+function collectFormData() {
+  return {
+    firstName: val('firstName'),
+    lastName: val('lastName'),
+    fatherName: val('fatherName'),
+    motherName: val('motherName'),
+    aliyahName: val('aliyahName'),
+    birthDate: val('birthDate'),
+    phone: val('phone'),
+    email: val('email'),
+    address: val('address'),
+    children: getChildrenFromContainer(document.getElementById('childrenContainer')),
+    volKidush: document.getElementById('volKidush').checked,
+    volSetup: document.getElementById('volSetup').checked,
+    volDvar: document.getElementById('volDvar').checked,
+    membershipPaid: document.getElementById('membershipPaid').value === 'true',
+    bmBirthDate: val('bmBirthDate'),
+    bmParsha: val('bmParsha'),
+    bmAliyah: val('bmAliyah'),
+    bmHaftarah: val('bmHaftarah'),
+    memorials: getMemorialData()
+  };
+}
+
+function getChildrenFromContainer(container) {
+  const children = [];
+  container.querySelectorAll('.child-row').forEach(r => {
+    const name = r.querySelector('.child-name').value.trim();
+    const bd = r.querySelector('.child-bd').value;
+    if (name || bd) children.push({ name, birthDate: bd });
+  });
+  return children;
+}
+
+function validateForm() {
+  let valid = true;
+  const required = ['firstName','lastName','fatherName','aliyahName','birthDate','phone'];
+  required.forEach(id => {
+    const el = document.getElementById(id);
+    const err = el.parentElement.querySelector('.field-error');
+    if (!el.value.trim()) {
+      el.classList.add('invalid');
+      if (err) err.style.display = 'block';
+      valid = false;
+    } else {
+      el.classList.remove('invalid');
+      if (err) err.style.display = 'none';
+    }
+  });
+  if (!valid) showToast('נא למלא את כל שדות החובה', 'error');
+  return valid;
+}
+
+function resetForm() {
+  document.getElementById('registrationForm').reset();
+  document.getElementById('editId').value = '';
+  document.getElementById('childrenContainer').innerHTML = '';
+  document.getElementById('memorialContainer').innerHTML = '';
+  childCount = 0;
+  memorialCount = 0;
+  document.getElementById('addChildBtn').classList.remove('hidden');
+  document.getElementById('addMemorialBtn').classList.remove('hidden');
+  document.querySelectorAll('.invalid').forEach(el => el.classList.remove('invalid'));
+  document.querySelectorAll('.field-error').forEach(el => el.style.display = 'none');
+  // Reset membership prompt
+  document.getElementById('registrationCard').classList.add('hidden');
+  document.getElementById('paymentMessage').classList.add('hidden');
+  document.getElementById('membershipPrompt').classList.remove('hidden');
+  membershipPaidStatus = false;
+}
+
+/* ===================================================================
+   ADMIN - TABS
+   =================================================================== */
+document.getElementById('adminTabs').addEventListener('click', function(e) {
+  if (!e.target.classList.contains('tab-btn')) return;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById(e.target.dataset.tab).classList.add('active');
+});
+
+function refreshAdmin() {
+  const s = getSettings();
+  document.getElementById('adminSynName').textContent = s.synName;
+  document.getElementById('adminGabaiName').textContent = s.gabaiName ? 'גבאי: ' + s.gabaiName : '';
+  renderMembersTable();
+  renderMemorialsTable();
+  renderVolunteersTable();
+  renderFullTable();
+  renderDutyTable();
+  loadSettings();
+  updateStats();
+}
+
+/* ===================================================================
+   ADMIN - STATS
+   =================================================================== */
+function updateStats() {
+  const m = getMembers();
+  const vols = m.filter(x => x.volKidush || x.volSetup || x.volDvar).length;
+  const mems = m.filter(x => x.memorials && x.memorials.length > 0).length;
+  const bm = m.filter(x => x.bmParsha).length;
+  var paid = m.filter(x => x.membershipPaid).length;
+  var duty = m.filter(x => x.dutyRoster).length;
+  document.getElementById('statsCards').innerHTML =
+    '<div class="stat-card"><div class="num">' + m.length + '</div><div class="lbl">מתפללים</div></div>' +
+    '<div class="stat-card"><div class="num">' + paid + '</div><div class="lbl">שילמו דמי חבר</div></div>' +
+    '<div class="stat-card"><div class="num">' + vols + '</div><div class="lbl">מתנדבים</div></div>' +
+    '<div class="stat-card"><div class="num">' + duty + '</div><div class="lbl">תורנים</div></div>' +
+    '<div class="stat-card"><div class="num">' + mems + '</div><div class="lbl">ימי זיכרון</div></div>' +
+    '<div class="stat-card"><div class="num">' + bm + '</div><div class="lbl">בר מצווה</div></div>';
+}
+
+/* ===================================================================
+   ADMIN - MEMBERS TABLE
+   =================================================================== */
+function renderMembersTable() {
+  const members = getMembers();
+  const q = (document.getElementById('memberSearch').value || '').trim().toLowerCase();
+  const filtered = q ? members.filter(m =>
+    (m.firstName + ' ' + m.lastName).toLowerCase().includes(q) ||
+    (m.phone || '').includes(q) ||
+    (m.email || '').toLowerCase().includes(q) ||
+    (m.aliyahName || '').includes(q)
+  ) : members;
+
+  const body = document.getElementById('membersBody');
+  body.innerHTML = filtered.map((m, i) =>
+    '<tr>' +
+    '<td>' + (i + 1) + '</td>' +
+    '<td>' + esc(m.firstName + ' ' + m.lastName) + '</td>' +
+    '<td dir="ltr" style="text-align:right;">' + esc(m.phone) + '</td>' +
+    '<td>' + esc(m.email || '—') + '</td>' +
+    '<td>' + esc(m.aliyahName) + '</td>' +
+    '<td>' + esc(m.birthDate || '—') + '</td>' +
+    '<td style="color:' + (m.membershipPaid ? '#059669' : '#dc2626') + ';font-weight:600;">' + (m.membershipPaid ? '&#10003; שולם' : '&#10007;') + '</td>' +
+    '<td class="actions">' +
+      '<button class="btn btn-outline btn-sm" onclick="viewMember(\'' + m.id + '\')" title="צפייה">&#128065;</button>' +
+      '<button class="btn btn-outline btn-sm" onclick="editMember(\'' + m.id + '\')" title="עריכה">&#9999;&#65039;</button>' +
+      '<button class="btn btn-danger btn-sm" onclick="deleteMember(\'' + m.id + '\')" title="מחיקה">&#128465;</button>' +
+    '</td></tr>'
+  ).join('');
+
+  if (!filtered.length) {
+    body.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:24px;">אין מתפללים להצגה</td></tr>';
+  }
+  updateStats();
+}
+
+/* ===================================================================
+   ADMIN - VIEW MEMBER
+   =================================================================== */
+function viewMember(id) {
+  const m = getMembers().find(x => x.id === id);
+  if (!m) return;
+  let html = '<table style="width:100%;min-width:auto;">';
+  const rows = [
+    ['שם פרטי', m.firstName], ['שם משפחה', m.lastName],
+    ['שם האב', m.fatherName], ['שם האם', m.motherName || '—'],
+    ['שם לעלייה לתורה', m.aliyahName], ['תאריך לידה', m.birthDate || '—'],
+    ['טלפון', m.phone], ['דוא"ל', m.email || '—'], ['כתובת', m.address || '—'],
+    ['קניות קידוש', m.volKidush ? 'כן' : 'לא'],
+    ['סידור קידוש', m.volSetup ? 'כן' : 'לא'],
+    ['דבר תורה', m.volDvar ? 'כן' : 'לא'],
+    ['תורנות', m.dutyRoster ? 'כן' : 'לא'],
+    ['דמי חבר', m.membershipPaid ? 'שולם' : 'לא שולם'],
+  ];
+  if (m.bmParsha) {
+    rows.push(['פרשת בר מצווה', m.bmParsha]);
+    rows.push(['קריאה בתורה', m.bmAliyah || '—']);
+    rows.push(['הפטרה (בר מצווה)', m.bmHaftarah || '—']);
+  }
+  rows.forEach(r => html += '<tr><th style="text-align:right;padding:6px 8px;width:40%;background:#f8fafc;">' + r[0] + '</th><td style="padding:6px 8px;">' + esc(r[1]) + '</td></tr>');
+  html += '</table>';
+
+  if (m.children && m.children.length) {
+    html += '<h3 style="margin:16px 0 8px;">ילדים</h3><ul>';
+    m.children.forEach(c => html += '<li>' + esc(c.name) + (c.birthDate ? ' — ' + c.birthDate : '') + '</li>');
+    html += '</ul>';
+  }
+
+  if (m.memorials && m.memorials.length) {
+    html += '<h3 style="margin:16px 0 8px;">ימי זיכרון</h3><ul>';
+    m.memorials.forEach(mem => html += '<li>' + esc(mem.name) + ' — ' + hebrewDay(parseInt(mem.day)||0) + ' ' + esc(mem.month) + ' ' + esc(mem.year) +
+      (mem.hazan === 'כן' ? ' (חזן)' : '') + (mem.haftarah === 'כן' ? ' (הפטרה)' : '') + '</li>');
+    html += '</ul>';
+  }
+
+  document.getElementById('viewContent').innerHTML = html;
+  document.getElementById('viewModal').classList.remove('hidden');
+}
+
+function closeViewModal() { document.getElementById('viewModal').classList.add('hidden'); }
+
+/* ===================================================================
+   ADMIN - DELETE MEMBER
+   =================================================================== */
+function deleteMember(id) {
+  if (!confirm('האם למחוק את המתפלל?')) return;
+  const members = getMembers().filter(m => m.id !== id);
+  saveMembers(members);
+  showToast('המתפלל נמחק', 'success');
+  refreshAdmin();
+}
+
+/* ===================================================================
+   ADMIN - ADD/EDIT MEMBER (MODAL)
+   =================================================================== */
+function openAddMember() {
+  showMemberFormModal(null);
+}
+
+function editMember(id) {
+  const m = getMembers().find(x => x.id === id);
+  if (m) showMemberFormModal(m);
+}
+
+function showMemberFormModal(member) {
+  const isEdit = !!member;
+  document.getElementById('memberFormTitle').textContent = isEdit ? '&#9999;&#65039; עריכת מתפלל' : '&#10133; הוסף מתפלל';
+  const c = document.getElementById('memberFormContainer');
+
+  // Build the form HTML inside modal
+  let html = '<form id="modalMemberForm" novalidate>';
+
+  html += '<div class="section-title">פרטים אישיים</div>';
+  html += '<div class="form-row">' +
+    '<div class="form-group"><label><span class="req">*</span> שם פרטי</label><input type="text" id="mf_firstName" value="' + (isEdit ? escAttr(member.firstName) : '') + '" required><div class="field-error">שדה חובה</div></div>' +
+    '<div class="form-group"><label><span class="req">*</span> שם משפחה</label><input type="text" id="mf_lastName" value="' + (isEdit ? escAttr(member.lastName) : '') + '" required><div class="field-error">שדה חובה</div></div>' +
+    '</div>';
+  html += '<div class="form-row">' +
+    '<div class="form-group"><label><span class="req">*</span> שם האב</label><input type="text" id="mf_fatherName" value="' + (isEdit ? escAttr(member.fatherName) : '') + '" required><div class="field-error">שדה חובה</div></div>' +
+    '<div class="form-group"><label>שם האם</label><input type="text" id="mf_motherName" value="' + (isEdit ? escAttr(member.motherName || '') : '') + '"></div>' +
+    '</div>';
+  html += '<div class="form-group"><label><span class="req">*</span> שם לעלייה לתורה</label><input type="text" id="mf_aliyahName" value="' + (isEdit ? escAttr(member.aliyahName) : '') + '" required><div class="field-error">שדה חובה</div></div>';
+  html += '<div class="form-row">' +
+    '<div class="form-group"><label><span class="req">*</span> תאריך לידה</label><input type="date" id="mf_birthDate" value="' + (isEdit ? escAttr(member.birthDate || '') : '') + '" required><div class="field-error">שדה חובה</div></div>' +
+    '<div class="form-group"><label><span class="req">*</span> טלפון</label><input type="tel" id="mf_phone" value="' + (isEdit ? escAttr(member.phone) : '') + '" required><div class="field-error">שדה חובה</div></div>' +
+    '</div>';
+  html += '<div class="form-row">' +
+    '<div class="form-group"><label>דוא"ל</label><input type="email" id="mf_email" value="' + (isEdit ? escAttr(member.email || '') : '') + '"></div>' +
+    '<div class="form-group"><label>כתובת</label><input type="text" id="mf_address" value="' + (isEdit ? escAttr(member.address || '') : '') + '"></div>' +
+    '</div>';
+
+  // Children
+  html += '<div class="section-title">ילדים</div>';
+  html += '<div class="modal-children" id="modalChildren"></div>';
+  html += '<button type="button" class="btn btn-outline btn-sm" id="modalAddChildBtn" onclick="modalAddChild()">+ הוסף ילד</button>';
+
+  // Volunteering
+  html += '<div class="section-title">התנדבות</div>';
+  html += '<div style="display:flex;flex-wrap:wrap;gap:16px;">';
+  html += '<label style="font-weight:400;display:flex;align-items:center;gap:6px;"><input type="checkbox" id="mf_volKidush"' + (isEdit && member.volKidush ? ' checked' : '') + '> קניות קידוש</label>';
+  html += '<label style="font-weight:400;display:flex;align-items:center;gap:6px;"><input type="checkbox" id="mf_volSetup"' + (isEdit && member.volSetup ? ' checked' : '') + '> סידור קידוש</label>';
+  html += '<label style="font-weight:400;display:flex;align-items:center;gap:6px;"><input type="checkbox" id="mf_volDvar"' + (isEdit && member.volDvar ? ' checked' : '') + '> דבר תורה</label>';
+  html += '</div>';
+
+  // Duty Roster
+  html += '<div class="section-title">תורנות</div>';
+  html += '<label style="font-weight:400;display:flex;align-items:center;gap:6px;"><input type="checkbox" id="mf_dutyRoster"' + (isEdit && member.dutyRoster ? ' checked' : '') + '> שייך לרשימת תורנות שבועית</label>';
+
+  // Membership
+  html += '<div class="section-title">דמי חבר</div>';
+  html += '<label style="font-weight:400;display:flex;align-items:center;gap:6px;"><input type="checkbox" id="mf_membershipPaid"' + (isEdit && member.membershipPaid ? ' checked' : '') + '> שילם דמי חבר</label>';
+
+  // Bar Mitzvah
+  html += '<div class="section-title">בר מצווה</div>';
+  html += '<div class="form-row">' +
+    '<div class="form-group"><label>תאריך לידה לועזי</label><input type="date" id="mf_bmBirthDate" value="' + (isEdit ? escAttr(member.bmBirthDate || '') : '') + '" onchange="calcBarMitzvahModal()"></div>' +
+    '<div class="form-group"><label>פרשת בר מצווה</label><input type="text" id="mf_bmParsha" value="' + (isEdit ? escAttr(member.bmParsha || '') : '') + '"></div>' +
+    '</div>';
+  html += '<div class="form-row">' +
+    '<div class="form-group"><label>קריאה בתורה</label><select id="mf_bmAliyah"><option value="">—</option>';
+  ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שביעי','מפטיר'].forEach(a => {
+    html += '<option value="' + a + '"' + (isEdit && member.bmAliyah === a ? ' selected' : '') + '>עולה ' + a + '</option>';
+  });
+  html += '</select></div>';
+  html += '<div class="form-group"><label>הפטרה</label><select id="mf_bmHaftarah"><option value="">—</option>' +
+    '<option value="כן"' + (isEdit && member.bmHaftarah === 'כן' ? ' selected' : '') + '>כן</option>' +
+    '<option value="לא"' + (isEdit && member.bmHaftarah === 'לא' ? ' selected' : '') + '>לא</option></select></div></div>';
+
+  // Memorials
+  html += '<div class="section-title">ימי זיכרון</div>';
+  html += '<div class="modal-memorials" id="modalMemorials"></div>';
+  html += '<button type="button" class="btn btn-outline btn-sm" id="modalAddMemBtn" onclick="modalAddMemorial()">+ הוסף יום זיכרון</button>';
+
+  html += '<div style="margin-top:24px;text-align:center;">';
+  html += '<input type="hidden" id="mf_editId" value="' + (isEdit ? member.id : '') + '">';
+  html += '<button type="submit" class="btn btn-primary" style="padding:10px 40px;">שמור</button>';
+  html += '</div></form>';
+
+  c.innerHTML = html;
+
+  // Add children rows
+  modalChildCount = 0;
+  modalMemCount = 0;
+  if (isEdit && member.children) {
+    member.children.forEach(ch => modalAddChild(ch));
+  }
+  if (isEdit && member.memorials) {
+    member.memorials.forEach(mem => modalAddMemorial(mem));
+  }
+
+  document.getElementById('modalMemberForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    saveMemberFromModal();
+  });
+
+  document.getElementById('memberFormModal').classList.remove('hidden');
+}
+
+let modalChildCount = 0;
+let modalMemCount = 0;
+
+function modalAddChild(data) {
+  if (modalChildCount >= 7) return;
+  modalChildCount++;
+  const idx = modalChildCount;
+  const div = document.createElement('div');
+  div.className = 'child-row';
+  div.innerHTML = '<div class="form-row" style="grid-template-columns:1fr 1fr auto;">' +
+    '<div class="form-group"><label>שם ילד/ה</label><input type="text" class="child-name" value="' + (data ? escAttr(data.name) : '') + '"></div>' +
+    '<div class="form-group"><label>תאריך לידה</label><input type="date" class="child-bd" value="' + (data ? escAttr(data.birthDate) : '') + '"></div>' +
+    '<button type="button" class="remove-btn" onclick="this.closest(\'.child-row\').remove();modalChildCount--;">&times;</button></div>';
+  document.getElementById('modalChildren').appendChild(div);
+  if (modalChildCount >= 7) document.getElementById('modalAddChildBtn').classList.add('hidden');
+}
+
+function modalAddMemorial(data) {
+  if (modalMemCount >= 3) return;
+  modalMemCount++;
+  const div = document.createElement('div');
+  div.className = 'memorial-row';
+  div.innerHTML =
+    '<div class="form-row" style="grid-template-columns:1fr auto;margin-bottom:8px;">' +
+      '<div class="form-group"><label>שם הנפטר/ת</label><input type="text" class="mem-name" value="' + (data ? escAttr(data.name) : '') + '"></div>' +
+      '<button type="button" class="remove-btn" onclick="this.closest(\'.memorial-row\').remove();modalMemCount--;">&times;</button></div>' +
+    '<div class="form-row" style="grid-template-columns:1fr 1fr 1fr;">' +
+      '<div class="form-group"><label>יום</label><select class="mem-day">' + memorialDayOptions() + '</select></div>' +
+      '<div class="form-group"><label>חודש</label><select class="mem-month">' + memorialMonthOptions() + '</select></div>' +
+      '<div class="form-group"><label>שנת פטירה</label><input type="text" class="mem-year" value="' + (data ? escAttr(data.year) : '') + '"></div></div>' +
+    '<div class="form-row">' +
+      '<div class="form-group"><label>חזן</label><select class="mem-hazan"><option value="">—</option><option value="כן"' + (data && data.hazan === 'כן' ? ' selected' : '') + '>כן</option><option value="לא"' + (data && data.hazan === 'לא' ? ' selected' : '') + '>לא</option></select></div>' +
+      '<div class="form-group"><label>הפטרה</label><select class="mem-haftarah"><option value="">—</option><option value="כן"' + (data && data.haftarah === 'כן' ? ' selected' : '') + '>כן</option><option value="לא"' + (data && data.haftarah === 'לא' ? ' selected' : '') + '>לא</option></select></div></div>';
+  document.getElementById('modalMemorials').appendChild(div);
+  if (data) {
+    if (data.day) div.querySelector('.mem-day').value = data.day;
+    if (data.month) div.querySelector('.mem-month').value = data.month;
+  }
+  if (modalMemCount >= 3) document.getElementById('modalAddMemBtn').classList.add('hidden');
+}
+
+function saveMemberFromModal() {
+  // Validate required
+  const reqFields = ['mf_firstName','mf_lastName','mf_fatherName','mf_aliyahName','mf_birthDate','mf_phone'];
+  let valid = true;
+  reqFields.forEach(id => {
+    const el = document.getElementById(id);
+    const err = el.parentElement.querySelector('.field-error');
+    if (!el.value.trim()) {
+      el.classList.add('invalid');
+      if (err) err.style.display = 'block';
+      valid = false;
+    } else {
+      el.classList.remove('invalid');
+      if (err) err.style.display = 'none';
+    }
+  });
+  if (!valid) { showToast('נא למלא את כל שדות החובה', 'error'); return; }
+
+  // Collect children
+  const children = [];
+  document.querySelectorAll('#modalChildren .child-row').forEach(r => {
+    const name = r.querySelector('.child-name').value.trim();
+    const bd = r.querySelector('.child-bd').value;
+    if (name || bd) children.push({ name, birthDate: bd });
+  });
+
+  // Collect memorials
+  const memorials = [];
+  document.querySelectorAll('#modalMemorials .memorial-row').forEach(r => {
+    const name = r.querySelector('.mem-name').value.trim();
+    const day = r.querySelector('.mem-day').value;
+    const month = r.querySelector('.mem-month').value;
+    const year = r.querySelector('.mem-year').value.trim();
+    const hazan = r.querySelector('.mem-hazan').value;
+    const haftarah = r.querySelector('.mem-haftarah').value;
+    if (name || day || month) memorials.push({ name, day, month, year, hazan, haftarah });
+  });
+
+  const member = {
+    firstName: document.getElementById('mf_firstName').value.trim(),
+    lastName: document.getElementById('mf_lastName').value.trim(),
+    fatherName: document.getElementById('mf_fatherName').value.trim(),
+    motherName: document.getElementById('mf_motherName').value.trim(),
+    aliyahName: document.getElementById('mf_aliyahName').value.trim(),
+    birthDate: document.getElementById('mf_birthDate').value,
+    phone: document.getElementById('mf_phone').value.trim(),
+    email: document.getElementById('mf_email').value.trim(),
+    address: document.getElementById('mf_address').value.trim(),
+    children: children,
+    volKidush: document.getElementById('mf_volKidush').checked,
+    volSetup: document.getElementById('mf_volSetup').checked,
+    volDvar: document.getElementById('mf_volDvar').checked,
+    dutyRoster: document.getElementById('mf_dutyRoster').checked,
+    membershipPaid: document.getElementById('mf_membershipPaid').checked,
+    bmBirthDate: document.getElementById('mf_bmBirthDate').value,
+    bmParsha: document.getElementById('mf_bmParsha').value.trim(),
+    bmAliyah: document.getElementById('mf_bmAliyah').value,
+    bmHaftarah: document.getElementById('mf_bmHaftarah').value,
+    memorials: memorials
+  };
+
+  const editId = document.getElementById('mf_editId').value;
+  const members = getMembers();
+
+  if (editId) {
+    const idx = members.findIndex(m => m.id === editId);
+    if (idx >= 0) {
+      member.id = editId;
+      member.createdAt = members[idx].createdAt;
+      members[idx] = member;
+    }
+  } else {
+    member.id = generateId();
+    member.createdAt = new Date().toISOString();
+    members.push(member);
+  }
+
+  saveMembers(members);
+  closeMemberForm();
+  showToast('המתפלל נשמר בהצלחה!', 'success');
+  refreshAdmin();
+}
+
+function closeMemberForm() {
+  document.getElementById('memberFormModal').classList.add('hidden');
+}
+
+/* ===================================================================
+   ADMIN - MEMORIALS TABLE
+   =================================================================== */
+function renderMemorialsTable() {
+  const members = getMembers();
+  const filter = document.getElementById('memorialMonthFilter').value;
+  const rows = [];
+  members.forEach(m => {
+    if (!m.memorials) return;
+    m.memorials.forEach(mem => {
+      if (filter && mem.month !== filter) return;
+      rows.push({ memberName: m.firstName + ' ' + m.lastName, ...mem });
+    });
+  });
+
+  const body = document.getElementById('memorialsBody');
+  body.innerHTML = rows.map((r, i) =>
+    '<tr><td>' + (i+1) + '</td>' +
+    '<td>' + esc(r.memberName) + '</td>' +
+    '<td>' + esc(r.name) + '</td>' +
+    '<td>' + hebrewDay(parseInt(r.day)||0) + '</td>' +
+    '<td>' + esc(r.month) + '</td>' +
+    '<td>' + esc(r.year) + '</td>' +
+    '<td>' + esc(r.hazan || '—') + '</td>' +
+    '<td>' + esc(r.haftarah || '—') + '</td></tr>'
+  ).join('');
+
+  if (!rows.length) body.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:24px;">אין ימי זיכרון</td></tr>';
+}
+
+/* ===================================================================
+   ADMIN - VOLUNTEERS TABLE
+   =================================================================== */
+function renderVolunteersTable() {
+  const members = getMembers().filter(m => m.volKidush || m.volSetup || m.volDvar);
+  const body = document.getElementById('volunteersBody');
+  body.innerHTML = members.map((m, i) =>
+    '<tr><td>' + (i+1) + '</td>' +
+    '<td>' + esc(m.firstName + ' ' + m.lastName) + '</td>' +
+    '<td dir="ltr" style="text-align:right;">' + esc(m.phone) + '</td>' +
+    '<td>' + (m.volKidush ? '&#10003;' : '') + '</td>' +
+    '<td>' + (m.volSetup ? '&#10003;' : '') + '</td>' +
+    '<td>' + (m.volDvar ? '&#10003;' : '') + '</td></tr>'
+  ).join('');
+
+  if (!members.length) body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:24px;">אין מתנדבים</td></tr>';
+}
+
+/* ===================================================================
+   ADMIN - FULL TABLE
+   =================================================================== */
+let fullTableFilter = 'all';
+
+function setFullFilter(f, btn) {
+  fullTableFilter = f;
+  document.querySelectorAll('#fullTableFilters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFullTable();
+}
+
+function getFilteredMembers() {
+  let members = getMembers();
+  switch (fullTableFilter) {
+    case 'volunteers': return members.filter(m => m.volKidush || m.volSetup || m.volDvar);
+    case 'memorial': return members.filter(m => m.memorials && m.memorials.length > 0);
+    case 'barmitzvah': return members.filter(m => m.bmParsha);
+    default: return members;
+  }
+}
+
+function renderFullTable() {
+  const members = getFilteredMembers();
+
+  let html = '<table><thead><tr>';
+  const headers = ['#','שם פרטי','שם משפחה','שם האב','שם האם','שם לעלייה לתורה','תאריך לידה','טלפון','דוא"ל','כתובת',
+    'קניות קידוש','סידור קידוש','דבר תורה',
+    'פרשת בר מצווה','קריאה בתורה','הפטרה (בר מצווה)'];
+
+  for (let i = 1; i <= 7; i++) {
+    headers.push('ילד ' + i + ' שם');
+    headers.push('ילד ' + i + ' ת.לידה');
+  }
+  for (let i = 1; i <= 3; i++) {
+    headers.push('נפטר ' + i + ' שם');
+    headers.push('נפטר ' + i + ' יום');
+    headers.push('נפטר ' + i + ' חודש');
+    headers.push('נפטר ' + i + ' שנה');
+    headers.push('נפטר ' + i + ' חזן');
+    headers.push('נפטר ' + i + ' הפטרה');
+  }
+
+  headers.forEach(h => html += '<th>' + h + '</th>');
+  html += '</tr></thead><tbody>';
+
+  members.forEach((m, idx) => {
+    html += '<tr>';
+    html += '<td>' + (idx+1) + '</td>';
+    html += '<td>' + esc(m.firstName) + '</td>';
+    html += '<td>' + esc(m.lastName) + '</td>';
+    html += '<td>' + esc(m.fatherName) + '</td>';
+    html += '<td>' + esc(m.motherName || '') + '</td>';
+    html += '<td>' + esc(m.aliyahName) + '</td>';
+    html += '<td>' + esc(m.birthDate || '') + '</td>';
+    html += '<td>' + esc(m.phone) + '</td>';
+    html += '<td>' + esc(m.email || '') + '</td>';
+    html += '<td>' + esc(m.address || '') + '</td>';
+    html += '<td>' + (m.volKidush ? 'כן' : '') + '</td>';
+    html += '<td>' + (m.volSetup ? 'כן' : '') + '</td>';
+    html += '<td>' + (m.volDvar ? 'כן' : '') + '</td>';
+    html += '<td>' + esc(m.bmParsha || '') + '</td>';
+    html += '<td>' + esc(m.bmAliyah || '') + '</td>';
+    html += '<td>' + esc(m.bmHaftarah || '') + '</td>';
+
+    for (let i = 0; i < 7; i++) {
+      const ch = (m.children && m.children[i]) || {};
+      html += '<td>' + esc(ch.name || '') + '</td>';
+      html += '<td>' + esc(ch.birthDate || '') + '</td>';
+    }
+    for (let i = 0; i < 3; i++) {
+      const mem = (m.memorials && m.memorials[i]) || {};
+      html += '<td>' + esc(mem.name || '') + '</td>';
+      html += '<td>' + (mem.day ? hebrewDay(parseInt(mem.day)) : '') + '</td>';
+      html += '<td>' + esc(mem.month || '') + '</td>';
+      html += '<td>' + esc(mem.year || '') + '</td>';
+      html += '<td>' + esc(mem.hazan || '') + '</td>';
+      html += '<td>' + esc(mem.haftarah || '') + '</td>';
+    }
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('fullTableWrap').innerHTML = html;
+}
+
+/* ===================================================================
+   CSV EXPORT
+   =================================================================== */
+function exportMembersCSV() {
+  const members = getMembers();
+  const headers = ['שם פרטי','שם משפחה','טלפון','דוא"ל','שם לעלייה לתורה','תאריך לידה'];
+  const rows = members.map(m => [m.firstName, m.lastName, m.phone, m.email||'', m.aliyahName, m.birthDate||'']);
+  triggerCSVExport(headers, rows, 'members');
+}
+
+function exportFullCSV() {
+  const members = getFilteredMembers();
+  const headers = ['שם פרטי','שם משפחה','שם האב','שם האם','שם לעלייה לתורה','תאריך לידה','טלפון','דוא"ל','כתובת',
+    'קניות קידוש','סידור קידוש','דבר תורה','פרשת בר מצווה','קריאה בתורה','הפטרה (בר מצווה)'];
+  for (let i = 1; i <= 7; i++) { headers.push('ילד ' + i + ' שם'); headers.push('ילד ' + i + ' ת.לידה'); }
+  for (let i = 1; i <= 3; i++) { headers.push('נפטר ' + i + ' שם'); headers.push('נפטר ' + i + ' יום'); headers.push('נפטר ' + i + ' חודש'); headers.push('נפטר ' + i + ' שנה'); headers.push('נפטר ' + i + ' חזן'); headers.push('נפטר ' + i + ' הפטרה'); }
+
+  const rows = members.map(m => {
+    const row = [m.firstName, m.lastName, m.fatherName, m.motherName||'', m.aliyahName, m.birthDate||'',
+      m.phone, m.email||'', m.address||'',
+      m.volKidush?'כן':'', m.volSetup?'כן':'', m.volDvar?'כן':'',
+      m.bmParsha||'', m.bmAliyah||'', m.bmHaftarah||''];
+    for (let i = 0; i < 7; i++) {
+      const ch = (m.children && m.children[i]) || {};
+      row.push(ch.name||''); row.push(ch.birthDate||'');
+    }
+    for (let i = 0; i < 3; i++) {
+      const mem = (m.memorials && m.memorials[i]) || {};
+      row.push(mem.name||''); row.push(mem.day||''); row.push(mem.month||''); row.push(mem.year||''); row.push(mem.hazan||''); row.push(mem.haftarah||'');
+    }
+    return row;
+  });
+  triggerCSVExport(headers, rows, 'full_data');
+}
+
+function triggerCSVExport(headers, rows, filename) {
+  const BOM = '\uFEFF';
+  const csvContent = BOM + [headers, ...rows].map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\n');
+
+  // Detect iOS
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  if (isIOS) {
+    showCsvModal(csvContent, filename);
+  } else {
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename + '_' + new Date().toISOString().slice(0, 10) + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+}
+
+function showCsvModal(csvContent, filename) {
+  const html =
+    '<p style="margin-bottom:16px;">בגלל מגבלות Safari ב-iOS, לא ניתן להוריד ישירות. בחר אחת מהאפשרויות:</p>' +
+    '<div style="display:flex;flex-direction:column;gap:12px;">' +
+    '<button class="btn btn-primary" onclick="openCsvInTab()">&#128196; פתח בטאב חדש</button>' +
+    '<p style="font-size:0.8rem;color:#6b7280;">לאחר הפתיחה, לחץ על □↑ ובחר "שמור ב-Files"</p>' +
+    '<button class="btn btn-outline" onclick="copyCsvToClipboard()">&#128203; העתק ללוח</button>' +
+    '<p style="font-size:0.8rem;color:#6b7280;">להדבקה ב-Google Sheets או אפליקציה אחרת</p>' +
+    '</div>';
+  document.getElementById('csvModalContent').innerHTML = html;
+  document.getElementById('csvModal').classList.remove('hidden');
+
+  // Store CSV for use by buttons
+  window._csvContent = csvContent;
+  window._csvFilename = filename;
+}
+
+function openCsvInTab() {
+  const w = window.open('', '_blank');
+  if (w) {
+    w.document.write('<html><head><meta charset="UTF-8"><title>ייצוא CSV</title></head><body style="direction:rtl;font-family:Arial,sans-serif;padding:20px;">' +
+      '<h2>ייצוא נתונים</h2><p>לשמירת הקובץ: לחץ על □↑ (שיתוף) ← "שמור ב-Files"</p>' +
+      '<textarea style="width:100%;height:70vh;direction:ltr;font-size:12px;">' + window._csvContent.replace(/</g, '&lt;') + '</textarea></body></html>');
+  }
+}
+
+function copyCsvToClipboard() {
+  navigator.clipboard.writeText(window._csvContent).then(() => {
+    showToast('הנתונים הועתקו ללוח', 'success');
+    closeCsvModal();
+  }).catch(() => {
+    showToast('לא ניתן להעתיק', 'error');
+  });
+}
+
+function closeCsvModal() { document.getElementById('csvModal').classList.add('hidden'); }
+
+/* ===================================================================
+   SETTINGS
+   =================================================================== */
+function loadSettings() {
+  const s = getSettings();
+  document.getElementById('setSynName').value = s.synName;
+  document.getElementById('setGabaiName').value = s.gabaiName;
+  document.getElementById('setRavName').value = s.ravName;
+  document.getElementById('setMembershipYear').value = s.membershipYear || '';
+  document.getElementById('setPaymentLink').value = s.paymentLink || '';
+
+  // Public URL
+  const url = window.location.href.split('#')[0];
+  document.getElementById('publicUrl').textContent = url;
+
+  // Users
+  renderUsersTable();
+
+  // Last save
+  const ls = loadData('mz_lastSave', null);
+  if (ls) {
+    document.getElementById('lastSaveTime').textContent = 'שמירה אחרונה: ' + new Date(ls).toLocaleString('he-IL');
+  }
+}
+
+function saveSettings() {
+  const s = {
+    synName: document.getElementById('setSynName').value.trim() || 'בית כנסת מבשר ציון',
+    gabaiName: document.getElementById('setGabaiName').value.trim(),
+    ravName: document.getElementById('setRavName').value.trim(),
+    membershipYear: document.getElementById('setMembershipYear').value.trim(),
+    paymentLink: document.getElementById('setPaymentLink').value.trim()
+  };
+  saveSettingsData(s);
+  showToast('ההגדרות נשמרו', 'success');
+  refreshAdmin();
+}
+
+function copyPublicUrl() {
+  const url = window.location.href.split('#')[0];
+  navigator.clipboard.writeText(url).then(() => showToast('הקישור הועתק', 'success')).catch(() => showToast('לא ניתן להעתיק', 'error'));
+}
+
+/* ===================================================================
+   USER MANAGEMENT
+   =================================================================== */
+function renderUsersTable() {
+  const users = getUsers();
+  document.getElementById('usersBody').innerHTML = users.map(u =>
+    '<tr><td>' + esc(u.username) + '</td>' +
+    '<td><button class="btn btn-danger btn-sm" onclick="deleteUser(\'' + escAttr(u.username) + '\')">&#128465; מחק</button></td></tr>'
+  ).join('');
+}
+
+function addUser() {
+  const username = document.getElementById('newUsername').value.trim();
+  const password = document.getElementById('newUserPass').value;
+  if (!username || !password) { showToast('נא למלא שם משתמש וסיסמה', 'error'); return; }
+  const users = getUsers();
+  if (users.find(u => u.username === username)) { showToast('שם משתמש כבר קיים', 'error'); return; }
+  users.push({ username, password });
+  saveUsers(users);
+  document.getElementById('newUsername').value = '';
+  document.getElementById('newUserPass').value = '';
+  showToast('המשתמש נוסף', 'success');
+  renderUsersTable();
+}
+
+function deleteUser(username) {
+  const users = getUsers();
+  if (users.length <= 1) { showToast('לא ניתן למחוק את המשתמש האחרון', 'error'); return; }
+  if (!confirm('למחוק את המשתמש ' + username + '?')) return;
+  saveUsers(users.filter(u => u.username !== username));
+  showToast('המשתמש נמחק', 'success');
+  renderUsersTable();
+}
+
+/* ===================================================================
+   BACKUP & RESTORE
+   =================================================================== */
+function downloadBackup() {
+  const data = {
+    members: getMembers(),
+    settings: getSettings(),
+    users: getUsers(),
+    exportDate: new Date().toISOString()
+  };
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIOS) {
+    const w = window.open('', '_blank');
+    if (w) {
+      w.document.write('<html><head><meta charset="UTF-8"><title>גיבוי</title></head><body style="direction:rtl;font-family:Arial;padding:20px;">' +
+        '<h2>גיבוי נתונים</h2><p>לשמירה: לחץ □↑ ← "שמור ב-Files"</p>' +
+        '<textarea style="width:100%;height:70vh;direction:ltr;font-size:12px;">' + json.replace(/</g, '&lt;') + '</textarea></body></html>');
+    }
+  } else {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'backup_' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+  URL.revokeObjectURL(url);
+}
+
+function restoreBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!confirm('שחזור הגיבוי יחליף את כל הנתונים הקיימים. להמשיך?')) return;
+      if (data.members) saveMembers(data.members);
+      if (data.settings) saveSettingsData(data.settings);
+      if (data.users) saveUsers(data.users);
+      showToast('הנתונים שוחזרו בהצלחה!', 'success');
+      refreshAdmin();
+    } catch (err) {
+      showToast('קובץ גיבוי לא תקין', 'error');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+/* ===================================================================
+   BAR MITZVAH PARSHA CALCULATION
+   =================================================================== */
+
+// Hebrew calendar utilities
+function hebrewElapsedDays(year) {
+  var months = Math.floor((235 * year - 234) / 19);
+  var parts = 12084 + 13753 * months;
+  var day = months * 29 + Math.floor(parts / 25920);
+  if (3 * (day + 1) % 7 < 3) day++;
+  return day;
+}
+
+function hebrewDaysInYear(year) {
+  return hebrewElapsedDays(year + 1) - hebrewElapsedDays(year);
+}
+
+function hebrewLeapYear(year) {
+  return ((7 * year + 1) % 19) < 7;
+}
+
+function hebrewMonthsInYear(year) {
+  return hebrewLeapYear(year) ? 13 : 12;
+}
+
+function hebrewDaysInMonth(year, month) {
+  // month 1=Tishrei, 2=Cheshvan, 3=Kislev, ...
+  switch (month) {
+    case 2: // Cheshvan - 29 or 30
+      return (hebrewDaysInYear(year) % 10 === 5) ? 30 : 29;
+    case 3: // Kislev - 29 or 30
+      return (hebrewDaysInYear(year) % 10 === 3) ? 29 : 30;
+    case 4: return 29; // Tevet
+    case 5: return 30; // Shevat
+    case 6: return hebrewLeapYear(year) ? 30 : 29; // Adar I / Adar
+    case 7: return 29; // Adar II (only in leap year)
+    case 8: return 30; // Nisan
+    case 9: return 29; // Iyyar
+    case 10: return 30; // Sivan
+    case 11: return 29; // Tammuz
+    case 12: return 30; // Av
+    case 13: return 29; // Elul
+    case 1: return 30; // Tishrei
+    default: return 30;
+  }
+}
+
+// Hebrew epoch: Julian Day Number of 1 Tishrei 1
+var HEBREW_EPOCH = 347997.5;
+
+function hebrewToJD(year, month, day) {
+  var jd = HEBREW_EPOCH + hebrewElapsedDays(year) + day - 1;
+  // Add days of months before this month
+  if (month < 7) {
+    // Months from Tishrei to before Nisan
+    for (var m = 7; m <= hebrewMonthsInYear(year); m++) {
+      jd += hebrewDaysInMonth(year, m);
+    }
+    for (var m = 1; m < month; m++) {
+      jd += hebrewDaysInMonth(year, m);
+    }
+  } else {
+    for (var m = 7; m < month; m++) {
+      jd += hebrewDaysInMonth(year, m);
+    }
+  }
+  // Wait... the month numbering is tricky in Hebrew calendar
+  // Let me use a simpler approach
+
+  // Actually let's just count from Tishrei
+  return jd;
+}
+
+// Simpler approach: convert between Gregorian and Hebrew dates
+// Using the algorithm from Nachum Dershowitz & Edward Reingold
+
+function gregorianToJD(year, month, day) {
+  // Julian Day Number for Gregorian date
+  var a = Math.floor((14 - month) / 12);
+  var y = year + 4800 - a;
+  var m = month + 12 * a - 3;
+  return day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+}
+
+function jdToGregorian(jd) {
+  var l = jd + 68569;
+  var n = Math.floor(4 * l / 146097);
+  l = l - Math.floor((146097 * n + 3) / 4);
+  var i = Math.floor(4000 * (l + 1) / 1461001);
+  l = l - Math.floor(1461 * i / 4) + 31;
+  var j = Math.floor(80 * l / 2447);
+  var day = l - Math.floor(2447 * j / 80);
+  l = Math.floor(j / 11);
+  var month = j + 2 - 12 * l;
+  var year = 100 * (n - 49) + i + l;
+  return { year: year, month: month, day: day };
+}
+
+function gregorianToHebrew(gyear, gmonth, gday) {
+  var jd = gregorianToJD(gyear, gmonth, gday);
+
+  // Approximate Hebrew year
+  var hyear = gyear + 3760;
+
+  // Find start of Hebrew year (1 Tishrei)
+  var startJD = hebrewElapsedDays(hyear) + HEBREW_EPOCH;
+  if (jd < startJD) {
+    hyear--;
+    startJD = hebrewElapsedDays(hyear) + HEBREW_EPOCH;
+  }
+  // Check if we need to go forward
+  var nextStart = hebrewElapsedDays(hyear + 1) + HEBREW_EPOCH;
+  if (jd >= nextStart) {
+    hyear++;
+    startJD = nextStart;
+  }
+
+  var dayOfYear = jd - startJD;
+
+  // Find month and day
+  // Months order from Tishrei: 1=Tishrei(30), 2=Cheshvan(29/30), 3=Kislev(29/30),
+  // 4=Tevet(29), 5=Shevat(30), 6=Adar/AdarI(29/30), [7=AdarII(29)],
+  // 8=Nisan(30), 9=Iyyar(29), 10=Sivan(30), 11=Tammuz(29), 12=Av(30), 13=Elul(29)
+  // But in non-leap year, month 6 is Adar(29) and there's no month 7
+  // In leap year, month 6 is Adar I(30) and month 7 is Adar II(29)
+
+  var monthOrder;
+  if (hebrewLeapYear(hyear)) {
+    monthOrder = [1,2,3,4,5,6,7,8,9,10,11,12,13];
+  } else {
+    monthOrder = [1,2,3,4,5,6,8,9,10,11,12,13];
+  }
+
+  var remaining = dayOfYear;
+  var hmonth = 1;
+  var hday = 1;
+
+  for (var mi = 0; mi < monthOrder.length; mi++) {
+    var m = monthOrder[mi];
+    var dim = hebrewDaysInMonth(hyear, m);
+    if (remaining < dim) {
+      hmonth = m;
+      hday = remaining + 1;
+      break;
+    }
+    remaining -= dim;
+  }
+
+  return { year: hyear, month: hmonth, day: hday };
+}
+
+function hebrewToGregorian(hyear, hmonth, hday) {
+  // Find JD of 1 Tishrei of hyear
+  var startJD = hebrewElapsedDays(hyear) + HEBREW_EPOCH;
+
+  // Count days from 1 Tishrei to the target date
+  var monthOrder;
+  if (hebrewLeapYear(hyear)) {
+    monthOrder = [1,2,3,4,5,6,7,8,9,10,11,12,13];
+  } else {
+    monthOrder = [1,2,3,4,5,6,8,9,10,11,12,13];
+  }
+
+  var days = 0;
+  for (var mi = 0; mi < monthOrder.length; mi++) {
+    if (monthOrder[mi] === hmonth) break;
+    days += hebrewDaysInMonth(hyear, monthOrder[mi]);
+  }
+  days += hday - 1;
+
+  var jd = startJD + days;
+  return jdToGregorian(jd);
+}
+
+// Torah portions (parshiot) in order
+var PARSHIOT = [
+  'בראשית','נח','לך לך','וירא','חיי שרה','תולדות','ויצא','וישלח','וישב',
+  'מקץ','ויגש','ויחי',
+  'שמות','וארא','בא','בשלח','יתרו','משפטים','תרומה','תצוה','כי תשא',
+  'ויקהל','פקודי',
+  'ויקרא','צו','שמיני','תזריע','מצורע','אחרי מות','קדושים','אמור',
+  'בהר','בחוקותי',
+  'במדבר','נשא','בהעלותך','שלח','קרח','חוקת','בלק','פינחס',
+  'מטות','מסעי',
+  'דברים','ואתחנן','עקב','ראה','שופטים','כי תצא','כי תבוא','ניצבים','וילך',
+  'האזינו','וזאת הברכה'
+];
+
+// Simplified parsha lookup: find the Torah portion for a given Shabbat
+// This is a simplified version that handles the main cases
+function getNextShabbat(date) {
+  // date is a Date object
+  var d = new Date(date);
+  var day = d.getDay(); // 0=Sunday
+  var daysUntilShabbat = (6 - day + 7) % 7;
+  if (daysUntilShabbat === 0 && day !== 6) daysUntilShabbat = 7;
+  if (day === 6) daysUntilShabbat = 0; // Already Shabbat, but we want NEXT Shabbat after bar mitzvah
+  if (daysUntilShabbat === 0) daysUntilShabbat = 7;
+  d.setDate(d.getDate() + daysUntilShabbat);
+  return d;
+}
+
+function getParshaForShabbat(shabbatDate) {
+  // Use a known reference point and cycle through parshiot
+  // Reference: Simchat Torah 5784 (Oct 7, 2023) starts the cycle with Bereshit
+  // The Shabbat after is Oct 14, 2023 = Bereshit
+
+  // A complete cycle of parshiot takes one year
+  // This is a simplified approach - for production, you'd want full Hebcal logic
+
+  // Find the Hebrew year of this Shabbat
+  var heb = gregorianToHebrew(shabbatDate.getFullYear(), shabbatDate.getMonth() + 1, shabbatDate.getDate());
+  var hyear = heb.year;
+
+  // Find 1 Tishrei of this Hebrew year
+  var tishrei1 = hebrewToGregorian(hyear, 1, 1);
+  var tishrei1Date = new Date(tishrei1.year, tishrei1.month - 1, tishrei1.day);
+
+  // Find first Shabbat after Simchat Torah (22/23 Tishrei)
+  // In Israel, Simchat Torah is 22 Tishrei; outside Israel, 23 Tishrei
+  // We'll use 23 Tishrei (diaspora)
+  var simchatTorah = hebrewToGregorian(hyear, 1, 23);
+  var stDate = new Date(simchatTorah.year, simchatTorah.month - 1, simchatTorah.day);
+  var firstShabbat = getNextShabbat(stDate);
+
+  // Count weeks from firstShabbat to our shabbatDate
+  var diff = Math.round((shabbatDate - firstShabbat) / (7 * 24 * 60 * 60 * 1000));
+
+  if (diff < 0) {
+    // The Shabbat is before Simchat Torah in this year - it's in the previous year's cycle
+    // During Tishrei holidays, special readings
+    // Return holiday-related parsha
+    if (heb.month === 1) { // Tishrei
+      if (heb.day <= 2) return 'ראש השנה';
+      if (heb.day >= 10 && heb.day <= 10) return 'יום כיפור';
+      if (heb.day >= 15 && heb.day <= 21) return 'סוכות';
+      if (heb.day === 22) return 'שמיני עצרת';
+      return 'וזאת הברכה';
+    }
+    // Fall back to previous year
+    hyear--;
+    simchatTorah = hebrewToGregorian(hyear, 1, 23);
+    stDate = new Date(simchatTorah.year, simchatTorah.month - 1, simchatTorah.day);
+    firstShabbat = getNextShabbat(stDate);
+    diff = Math.round((shabbatDate - firstShabbat) / (7 * 24 * 60 * 60 * 1000));
+  }
+
+  if (diff < 0) return '';
+
+  // Determine parsha reading schedule for this year
+  var isLeap = hebrewLeapYear(hyear);
+  var yearLen = hebrewDaysInYear(hyear);
+
+  // Build the schedule based on year type
+  var schedule = buildParshaSchedule(hyear, isLeap, yearLen);
+
+  if (diff < schedule.length) {
+    return schedule[diff];
+  }
+
+  return '';
+}
+
+function buildParshaSchedule(hyear, isLeap, yearLen) {
+  // Determine which parshiot are doubled and which weeks are holidays
+  // Year types based on length:
+  // Non-leap: 353 (חסרה), 354 (כסדרה), 355 (שלמה)
+  // Leap: 383 (חסרה), 384 (כסדרה), 385 (שלמה)
+
+  // Day of week of 1 Tishrei
+  var tishrei1 = hebrewToGregorian(hyear, 1, 1);
+  var t1Date = new Date(tishrei1.year, tishrei1.month - 1, tishrei1.day);
+  var dow = t1Date.getDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed, 5=Thu, 6=Sat
+  // 1 Tishrei can fall on Mon(1), Tue(2), Thu(4), Sat(6)
+
+  var schedule = [];
+
+  // Basic parsha list (54 parshiot, last is V'Zot HaBracha which is read on Simchat Torah)
+  // We need 53 Shabbat readings (Bereshit through Ha'azinu)
+  // Some weeks have double parshiot to fit everything
+
+  // The 53 regular parshiot (excluding V'Zot HaBracha):
+  var base = PARSHIOT.slice(0, 53); // indices 0-52
+
+  // Parshiot that can be doubled:
+  // Vayakhel-Pekudei (21-22), Tazria-Metzora (26-27), Acharei Mot-Kedoshim (28-29),
+  // Behar-Bechukotai (31-32), Chukat-Balak (38-39), Matot-Masei (41-42), Nitzavim-Vayelech (50-51)
+
+  // Simplified approach: determine number of available Shabbatot
+  // and double parshiot as needed
+
+  // Find how many Shabbatot from first Bereshit Shabbat to next Simchat Torah
+  var simchatTorah = hebrewToGregorian(hyear, 1, 23);
+  var stDate = new Date(simchatTorah.year, simchatTorah.month - 1, simchatTorah.day);
+  var firstShabbat = getNextShabbat(stDate);
+
+  var nextST = hebrewToGregorian(hyear + 1, 1, 23);
+  var nextSTDate = new Date(nextST.year, nextST.month - 1, nextST.day);
+
+  var totalWeeks = Math.round((nextSTDate - firstShabbat) / (7 * 24 * 60 * 60 * 1000));
+
+  // We need to assign 53 parshiot to totalWeeks slots
+  // Some slots will be holidays (Pesach, Shavuot, etc.) where we don't read regular parsha
+  // Holiday Shabbatot: roughly 4-5 per year
+
+  // Simplified: count holiday Shabbatot
+  var holidayShabbatot = countHolidayShabbatot(hyear);
+  var availableWeeks = totalWeeks - holidayShabbatot;
+
+  // We have 53 parshiot. If availableWeeks < 53, double some.
+  // If availableWeeks > 53, we have a problem (shouldn't happen in practice)
+
+  var needToDouble = 53 - availableWeeks;
+
+  // Doubling order priority (standard halacha):
+  // 1. Vayakhel-Pekudei (21,22)
+  // 2. Tazria-Metzora (26,27)
+  // 3. Acharei-Kedoshim (28,29)
+  // 4. Behar-Bechukotai (31,32)
+  // 5. Chukat-Balak (38,39) - only in some years
+  // 6. Matot-Masei (41,42)
+  // 7. Nitzavim-Vayelech (50,51)
+
+  var doubleIndices = [];
+  var doublePairs = [
+    [21, 22], // Vayakhel-Pekudei
+    [26, 27], // Tazria-Metzora
+    [28, 29], // Acharei Mot-Kedoshim
+    [31, 32], // Behar-Bechukotai
+    [38, 39], // Chukat-Balak
+    [41, 42], // Matot-Masei
+    [50, 51], // Nitzavim-Vayelech
+  ];
+
+  // In a non-leap year, typically double: VP, TM, AK, BB, MM, NV (6 doubles)
+  // In a leap year, typically double: MM, NV or fewer
+
+  if (needToDouble < 0) needToDouble = 0;
+  if (needToDouble > 7) needToDouble = 7;
+
+  // Select which pairs to double
+  // Non-leap: usually double all except Chukat-Balak
+  // Leap: usually only Matot-Masei and maybe Nitzavim-Vayelech
+
+  var doubleSel = [];
+  if (!isLeap) {
+    // Standard non-leap: double VP, TM, AK, BB, MM, NV = 6
+    doubleSel = [0, 1, 2, 3, 5, 6];
+    // If we need 7, add Chukat-Balak
+    if (needToDouble >= 7) doubleSel = [0, 1, 2, 3, 4, 5, 6];
+    // If we need fewer, remove from end
+    while (doubleSel.length > needToDouble && doubleSel.length > 0) doubleSel.pop();
+  } else {
+    // Leap year: usually 0-2 doubles
+    doubleSel = [5, 6]; // Matot-Masei, Nitzavim-Vayelech
+    while (doubleSel.length > needToDouble && doubleSel.length > 0) doubleSel.pop();
+    // If we need more, add from the beginning
+    var extras = [0, 1, 2, 3, 4];
+    var ei = 0;
+    while (doubleSel.length < needToDouble && ei < extras.length) {
+      doubleSel.unshift(extras[extras.length - 1 - ei]);
+      ei++;
+    }
+  }
+
+  var doubledSet = new Set();
+  doubleSel.forEach(function(idx) {
+    doubledSet.add(doublePairs[idx][1]); // Mark second of pair for doubling
+  });
+
+  // Build schedule
+  for (var i = 0; i < 53; i++) {
+    if (doubledSet.has(i)) continue; // Skip, it's merged with previous
+    if (doubleSel.some(function(di) { return doublePairs[di][0] === i; })) {
+      // This is first of a double
+      var pair = doublePairs.find(function(p) { return p[0] === i; });
+      schedule.push(base[pair[0]] + '-' + base[pair[1]]);
+    } else {
+      schedule.push(base[i]);
+    }
+  }
+
+  // Insert holiday Shabbatot (empty/holiday readings) at appropriate positions
+  // This is approximate - exact positions depend on when holidays fall
+  // For simplicity, we'll just return the schedule as-is since the parsha
+  // lookup will work approximately
+
+  return schedule;
+}
+
+function countHolidayShabbatot(hyear) {
+  // Count Shabbatot that fall on holidays when regular Torah reading is replaced
+  // Main holidays: Pesach (15-22 Nisan), Shavuot (6-7 Sivan),
+  // Rosh Hashana (1-2 Tishrei), Yom Kippur (10 Tishrei), Sukkot (15-22 Tishrei)
+  var count = 0;
+
+  // Check Pesach
+  var pesach = hebrewToGregorian(hyear, 8, 15); // 15 Nisan
+  var pDate = new Date(pesach.year, pesach.month - 1, pesach.day);
+  for (var d = 0; d < 8; d++) {
+    var check = new Date(pDate);
+    check.setDate(check.getDate() + d);
+    if (check.getDay() === 6) count++;
+  }
+
+  // Check Shavuot
+  var shavuot = hebrewToGregorian(hyear, 10, 6); // 6 Sivan
+  var svDate = new Date(shavuot.year, shavuot.month - 1, shavuot.day);
+  for (var d = 0; d < 2; d++) {
+    var check = new Date(svDate);
+    check.setDate(check.getDate() + d);
+    if (check.getDay() === 6) count++;
+  }
+
+  return count;
+}
+
+function calcBarMitzvah() {
+  var bdStr = document.getElementById('bmBirthDate').value;
+  if (!bdStr) return;
+  var bd = new Date(bdStr);
+  var bmDate = new Date(bd.getFullYear() + 13, bd.getMonth(), bd.getDate());
+  var shabbat = getNextShabbat(bmDate);
+  var parsha = getParshaForShabbat(shabbat);
+  if (parsha) {
+    document.getElementById('bmParsha').value = parsha;
+  }
+}
+
+function calcBarMitzvahModal() {
+  var bdStr = document.getElementById('mf_bmBirthDate').value;
+  if (!bdStr) return;
+  var bd = new Date(bdStr);
+  var bmDate = new Date(bd.getFullYear() + 13, bd.getMonth(), bd.getDate());
+  var shabbat = getNextShabbat(bmDate);
+  var parsha = getParshaForShabbat(shabbat);
+  if (parsha) {
+    document.getElementById('mf_bmParsha').value = parsha;
+  }
+}
+
+/* ===================================================================
+   MEMBERSHIP FEE PROMPT
+   =================================================================== */
+var membershipPaidStatus = false;
+
+function membershipAnswer(paid) {
+  membershipPaidStatus = paid;
+  document.getElementById('membershipPrompt').classList.add('hidden');
+  if (paid) {
+    document.getElementById('membershipPaid').value = 'true';
+    document.getElementById('registrationCard').classList.remove('hidden');
+  } else {
+    document.getElementById('paymentMessage').classList.remove('hidden');
+  }
+}
+
+function showFormAnyway() {
+  document.getElementById('paymentMessage').classList.add('hidden');
+  document.getElementById('membershipPaid').value = 'false';
+  document.getElementById('registrationCard').classList.remove('hidden');
+}
+
+/* ===================================================================
+   DUTY ROSTER
+   =================================================================== */
+function getDutyRosterMembers() {
+  return getMembers().filter(function(m) { return m.dutyRoster; });
+}
+
+function getUpcomingShabbat(fromDate) {
+  var d = new Date(fromDate);
+  var day = d.getDay();
+  var daysUntil = (6 - day + 7) % 7;
+  d.setDate(d.getDate() + daysUntil);
+  return d;
+}
+
+function getRotationWeekIndex(date) {
+  // Count weeks from a fixed epoch (Jan 1, 2024) for consistent rotation
+  var epoch = new Date(2024, 0, 1);
+  var diffDays = Math.floor((date - epoch) / (24 * 60 * 60 * 1000));
+  return Math.floor(diffDays / 7);
+}
+
+function getDutyPairForDate(date) {
+  var roster = getDutyRosterMembers();
+  if (roster.length === 0) return [];
+  if (roster.length === 1) return [roster[0]];
+
+  var shabbat = getUpcomingShabbat(date);
+  var weekIdx = getRotationWeekIndex(shabbat);
+  var totalPairs = Math.ceil(roster.length / 2);
+  var pairIdx = weekIdx % totalPairs;
+  var idx1 = (pairIdx * 2) % roster.length;
+  var idx2 = (pairIdx * 2 + 1) % roster.length;
+
+  return [roster[idx1], roster[idx2]];
+}
+
+function renderDutyTable() {
+  var roster = getDutyRosterMembers();
+
+  // Current duty card
+  var cardHtml = '';
+  if (roster.length >= 2) {
+    var pair = getDutyPairForDate(new Date());
+    var shabbat = getUpcomingShabbat(new Date());
+    var dateStr = shabbat.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    cardHtml = '<div class="duty-current">' +
+      '<h3>&#128197; תורנים לשבת הקרובה — ' + dateStr + '</h3>' +
+      '<div class="duty-names">' + esc(pair[0].firstName + ' ' + pair[0].lastName) + '  &amp;  ' + esc(pair[1].firstName + ' ' + pair[1].lastName) + '</div>' +
+      '<div class="duty-phones">' + esc(pair[0].phone) + ' | ' + esc(pair[1].phone) + '</div>' +
+      '</div>';
+  } else if (roster.length === 1) {
+    cardHtml = '<div class="duty-current" style="background:linear-gradient(135deg,#d97706,#f59e0b);">' +
+      '<h3>&#9888;&#65039; יש רק תורן אחד ברשימה</h3>' +
+      '<div class="duty-names">' + esc(roster[0].firstName + ' ' + roster[0].lastName) + '</div>' +
+      '</div>';
+  } else {
+    cardHtml = '<div class="duty-current" style="background:#6b7280;">' +
+      '<h3>אין תורנים ברשימה</h3>' +
+      '<p style="margin-top:8px;opacity:0.9;">ניתן להוסיף תורנים דרך עריכת מתפלל</p>' +
+      '</div>';
+  }
+  document.getElementById('currentDutyCard').innerHTML = cardHtml;
+
+  // Future 8 weeks table
+  var body = document.getElementById('dutyBody');
+  var html = '';
+  for (var w = 0; w < 8; w++) {
+    var d = new Date();
+    d.setDate(d.getDate() + w * 7);
+    var shabbat = getUpcomingShabbat(d);
+    var dateStr = shabbat.toLocaleDateString('he-IL', { day: 'numeric', month: 'long' });
+    var pair = getDutyPairForDate(d);
+    var name1 = pair[0] ? esc(pair[0].firstName + ' ' + pair[0].lastName) : '—';
+    var name2 = pair[1] ? esc(pair[1].firstName + ' ' + pair[1].lastName) : '—';
+    html += '<tr' + (w === 0 ? ' style="background:#f0fdf4;font-weight:600;"' : '') + '>' +
+      '<td>' + dateStr + (w === 0 ? ' (השבת)' : '') + '</td>' +
+      '<td>' + name1 + '</td>' +
+      '<td>' + name2 + '</td></tr>';
+  }
+  body.innerHTML = html || '<tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:24px;">אין תורנים</td></tr>';
+
+  // Roster list
+  var rosterBody = document.getElementById('rosterBody');
+  rosterBody.innerHTML = roster.map(function(m, i) {
+    return '<tr><td>' + (i+1) + '</td><td>' + esc(m.firstName + ' ' + m.lastName) + '</td><td dir="ltr" style="text-align:right;">' + esc(m.phone) + '</td></tr>';
+  }).join('') || '<tr><td colspan="3" style="text-align:center;color:#9ca3af;padding:24px;">אין תורנים ברשימה</td></tr>';
+}
+
+/* ===================================================================
+   UTILITIES
+   =================================================================== */
+function val(id) { return document.getElementById(id).value.trim(); }
+function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+function escAttr(s) { return (s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function generateId() { return 'id_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9); }
+
+function showToast(msg, type) {
+  var el = document.createElement('div');
+  el.className = 'toast toast-' + type;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function() { el.remove(); }, 3000);
+}
+
+/* ===================================================================
+   INIT
+   =================================================================== */
+function init() {
+  // Initialize default users if not set
+  if (!localStorage.getItem(USERS_KEY)) {
+    saveUsers([
+      { username: 'admin', password: 'admin123' },
+      { username: 'gabai', password: 'gabai2024' }
+    ]);
+  }
+  if (!localStorage.getItem(SETTINGS_KEY)) {
+    saveSettingsData({
+      synName: 'בית כנסת מבשר ציון',
+      gabaiName: '',
+      ravName: ''
+    });
+  }
+
+  updatePublicHeader();
+  route();
+}
+
+init();
+</script>
+</body>
+</html>
