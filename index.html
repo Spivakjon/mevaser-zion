@@ -879,6 +879,11 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     </div>
     <div class="cnav-row"><button class="cnv" onclick="calNav(-4)">← 4 שבועות</button><button class="cnv" onclick="calNav(0)">היום</button><div class="cnav-title" id="cal-ttl"></div><button class="cnv" onclick="calNav(4)">4 שבועות →</button></div><div id="cal-grid"></div></div>
     <div id="at-mem" style="display:none">
+      <div style="display:flex;gap:6px;margin-bottom:.6rem;flex-wrap:wrap">
+        <button class="abt" onclick="exportExcel()" style="font-size:.8rem">📊 ייצוא לאקסל</button>
+        <button class="abt" onclick="document.getElementById('excel-imp-file').click()" style="font-size:.8rem">📂 ייבוא מאקסל</button>
+        <input type="file" id="excel-imp-file" accept=".csv,.tsv,.txt" style="display:none" onchange="importExcel(event)">
+      </div>
       <div class="m-top"><span class="m-cnt" id="mcnt">0 מתפללים</span><input class="m-srch" id="m-srch-input" type="text" placeholder="חיפוש שם..." oninput="filtM(this.value)"></div>
       <div class="filter-pills" id="filter-pills">
         <button class="fpill active" onclick="setFilter('all')">הכל</button>
@@ -2946,6 +2951,160 @@ function renderDutyTab(){
   }else{
     rl.innerHTML='<div style="text-align:center;color:var(--ink3);padding:1.5rem">אין תורנים ברשימה</div>';
   }
+}
+
+// ── Excel Export/Import ──────────────────────────────────
+function exportExcel(){
+  var ms=getMs();
+  var BOM='\uFEFF';
+  var headers=[
+    'שם פרטי','שם משפחה','שם האב','שם האם','שם לעלייה לתורה',
+    'טלפון','דוא"ל','כתובת',
+    'שם בן/בת זוג','טלפון בן/בת זוג','דוא"ל בן/בת זוג',
+    'התנדבות','תורן','דמי חבר שולם','תאריך תשלום','אמצעי תשלום','סכום','הערות תשלום'
+  ];
+  // Dynamic: up to max children and yahrzeits
+  var maxCh=0,maxYr=0;
+  for(var i=0;i<ms.length;i++){
+    var ch=(ms[i].children||[]).length;var yr=(ms[i].yahrzeits||[]).length;
+    if(ch>maxCh)maxCh=ch;if(yr>maxYr)maxYr=yr;
+  }
+  for(var c=1;c<=maxCh;c++){headers.push('ילד'+c+' שם','ילד'+c+' מין','ילד'+c+' ת.לידה','ילד'+c+' פרשה')}
+  for(var y=1;y<=maxYr;y++){headers.push('יארצייט'+y+' שם','יארצייט'+y+' יום','יארצייט'+y+' חודש','יארצייט'+y+' שנה','יארצייט'+y+' חזן','יארצייט'+y+' הפטרה')}
+  var rows=[headers.join(',')];
+  for(var i=0;i<ms.length;i++){
+    var m=ms[i];var sp=m.spouse||{};
+    var row=[
+      csvCell(m.firstName),csvCell(m.lastName),csvCell(m.fatherName),csvCell(m.motherName),csvCell(m.torahName),
+      csvCell(m.phone),csvCell(m.email),csvCell(m.address),
+      csvCell(sp.name),csvCell(sp.phone),csvCell(sp.email),
+      csvCell((m.volunteering||[]).join('; ')),csvCell(m.dutyRoster?'כן':'לא'),
+      csvCell(m.membershipPaid?'כן':'לא'),csvCell(m.membershipPaidDate),csvCell(m.paymentMethod),csvCell(m.paymentAmount),csvCell(m.paymentNotes)
+    ];
+    for(var c=0;c<maxCh;c++){
+      var ch=(m.children||[])[c]||{};
+      row.push(csvCell(ch.name),csvCell(ch.gender),csvCell(ch.gd),csvCell(ch.parasha));
+    }
+    for(var y=0;y<maxYr;y++){
+      var yr=(m.yahrzeits||[])[y]||{};
+      row.push(csvCell(yr.name),csvCell(yr.hd),csvCell(yr.hm),csvCell(yr.hy),csvCell(yr.lead),csvCell(yr.haft));
+    }
+    rows.push(row.join(','));
+  }
+  var csv=BOM+rows.join('\r\n');
+  try{
+    var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;a.download='mevaser_zion_'+new Date().toISOString().slice(0,10)+'.csv';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('קובץ אקסל (CSV) הורד בהצלחה');
+  }catch(e){
+    var w=window.open('','_blank');
+    if(w){w.document.write('<pre>'+csv.replace(/</g,'&lt;')+'</pre>');w.document.close()}
+  }
+}
+function parseCSVLine(line){
+  var result=[];var cell='';var inQuotes=false;
+  for(var i=0;i<line.length;i++){
+    var ch=line[i];
+    if(inQuotes){
+      if(ch==='"'&&line[i+1]==='"'){cell+='"';i++}
+      else if(ch==='"'){inQuotes=false}
+      else{cell+=ch}
+    }else{
+      if(ch==='"'){inQuotes=true}
+      else if(ch===','){result.push(cell);cell=''}
+      else{cell+=ch}
+    }
+  }
+  result.push(cell);
+  return result;
+}
+function importExcel(event){
+  var file=event.target.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var text=e.target.result;
+      // Remove BOM
+      if(text.charCodeAt(0)===0xFEFF)text=text.slice(1);
+      var lines=text.split(/\r?\n/).filter(function(l){return l.trim()});
+      if(lines.length<2){showToast('קובץ ריק או לא תקין');return}
+      var headers=parseCSVLine(lines[0]);
+      // Map header indices
+      var hMap={};
+      for(var i=0;i<headers.length;i++)hMap[headers[i].trim()]=i;
+      var gc=function(row,name){var idx=hMap[name];return idx!==undefined?row[idx]||'':''};
+      var existing=lsGet();
+      var added=0,updated=0;
+      for(var r=1;r<lines.length;r++){
+        var row=parseCSVLine(lines[r]);
+        if(!row.length)continue;
+        var fn=gc(row,'שם פרטי').trim();
+        var ln=gc(row,'שם משפחה').trim();
+        var ph=gc(row,'טלפון').trim();
+        if(!fn&&!ln)continue;
+        // Collect children
+        var children=[];
+        for(var ci=1;ci<=20;ci++){
+          var cname=gc(row,'ילד'+ci+' שם').trim();
+          if(!cname)break;
+          children.push({name:cname,gender:gc(row,'ילד'+ci+' מין'),gd:gc(row,'ילד'+ci+' ת.לידה'),parasha:gc(row,'ילד'+ci+' פרשה'),hd:'',hm:'',hy:'',wantsBM:false,readP:'',readH:''});
+        }
+        // Collect yahrzeits
+        var yahrzeits=[];
+        for(var yi=1;yi<=10;yi++){
+          var yname=gc(row,'יארצייט'+yi+' שם').trim();
+          if(!yname)break;
+          yahrzeits.push({name:yname,hd:gc(row,'יארצייט'+yi+' יום'),hm:gc(row,'יארצייט'+yi+' חודש'),hy:gc(row,'יארצייט'+yi+' שנה'),lead:gc(row,'יארצייט'+yi+' חזן'),haft:gc(row,'יארצייט'+yi+' הפטרה'),gd:''});
+        }
+        // Volunteering
+        var volStr=gc(row,'התנדבות');
+        var vols=volStr?volStr.split(/[;,]/).map(function(v){return v.trim()}).filter(Boolean):[];
+        // Spouse
+        var spName=gc(row,'שם בן/בת זוג').trim();
+        var spouse=spName?{name:spName,phone:gc(row,'טלפון בן/בת זוג'),email:gc(row,'דוא"ל בן/בת זוג')}:null;
+        var paid=gc(row,'דמי חבר שולם').trim();
+        var isDuty=gc(row,'תורן').trim();
+        var data={
+          firstName:fn,lastName:ln,
+          fatherName:gc(row,'שם האב'),motherName:gc(row,'שם האם'),
+          torahName:gc(row,'שם לעלייה לתורה'),
+          phone:ph,email:gc(row,'דוא"ל'),address:gc(row,'כתובת'),
+          spouse:spouse,volunteering:vols,children:children,yahrzeits:yahrzeits,
+          dutyRoster:isDuty==='כן',
+          membershipPaid:paid==='כן',
+          membershipPaidDate:gc(row,'תאריך תשלום'),
+          paymentMethod:gc(row,'אמצעי תשלום'),
+          paymentAmount:gc(row,'סכום'),
+          paymentNotes:gc(row,'הערות תשלום')
+        };
+        // Find existing by name+phone match
+        var match=existing.findIndex(function(m){return m.firstName===fn&&m.lastName===ln&&m.phone===ph});
+        if(match>=0){
+          data.id=existing[match].id;
+          data.timestamp=existing[match].timestamp;
+          existing[match]=Object.assign({},existing[match],data);
+          updated++;
+        }else{
+          data.id=Date.now()+'_'+Math.random().toString(36).slice(2,7)+'_'+r;
+          data.timestamp=new Date().toISOString();
+          existing.push(data);
+          added++;
+        }
+      }
+      lsSet(existing);
+      showToast('ייבוא הושלם: '+added+' נוספו, '+updated+' עודכנו');
+      renderML();
+    }catch(err){
+      console.error('Import error:',err);
+      showToast('שגיאה בייבוא: '+err.message);
+    }
+  };
+  reader.readAsText(file,'UTF-8');
+  event.target.value='';
 }
 
 // ── Demo Data ────────────────────────────────────────────
