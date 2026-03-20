@@ -877,20 +877,24 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     <div id="at-ali" style="display:none"></div>
     <div id="at-ann" style="display:none"></div>
     <div id="at-mbr" style="display:none">
-      <div class="mbr-config" style="background:var(--c2);border-radius:10px;padding:1rem;margin-bottom:1rem;border:1px solid var(--bd2)">
-        <h3 style="font-size:.9rem;margin-bottom:.6rem">⚙ הגדרות דמי חבר</h3>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
-          <div class="ff" style="flex:1;min-width:120px"><label style="font-size:.75rem">שנת גבייה</label><input type="text" id="mbr-year-cfg" placeholder="תשפ״ו" style="padding:6px 10px;font-size:.85rem"></div>
-          <div class="ff" style="flex:2;min-width:180px"><label style="font-size:.75rem">קישור לתשלום</label><input type="text" id="mbr-link-cfg" placeholder="https://..." dir="ltr" style="text-align:left;padding:6px 10px;font-size:.85rem"></div>
-          <button class="abt" onclick="saveMbrCfg()" style="padding:6px 14px;font-size:.8rem;white-space:nowrap">💾 שמור</button>
+      <div style="margin-bottom:.8rem">
+        <button class="abt" onclick="toggleCollapse('mbr-cfg-body')" style="width:100%;text-align:right;font-size:.85rem;padding:8px 12px;border:1px solid var(--bd2);border-radius:8px;background:var(--c2)">⚙ הגדרות דמי חבר <span style="float:left">▾</span></button>
+        <div id="mbr-cfg-body" style="display:none;background:var(--c2);border-radius:0 0 10px 10px;padding:1rem;border:1px solid var(--bd2);border-top:0">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
+            <div class="ff" style="flex:1;min-width:120px"><label style="font-size:.75rem">שנת גבייה</label><input type="text" id="mbr-year-cfg" placeholder="תשפ״ו" style="padding:6px 10px;font-size:.85rem"></div>
+            <div class="ff" style="flex:2;min-width:180px"><label style="font-size:.75rem">קישור לתשלום</label><input type="text" id="mbr-link-cfg" placeholder="https://..." dir="ltr" style="text-align:left;padding:6px 10px;font-size:.85rem"></div>
+            <button class="abt" onclick="saveMbrCfg()" style="padding:6px 14px;font-size:.8rem;white-space:nowrap">💾 שמור</button>
+          </div>
         </div>
       </div>
-      <div id="mbr-stats" style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap"></div>
-      <div class="msg-editor">
-        <h3 style="font-size:.9rem;margin-bottom:.5rem">📝 עריכת הודעת תזכורת</h3>
-        <textarea id="mbr-msg-tpl"></textarea>
-        <div class="placeholders">משתנים זמינים: <strong>{name}</strong> = שם המתפלל, <strong>{year}</strong> = שנת גבייה, <strong>{link}</strong> = קישור תשלום</div>
-        <button class="abt" onclick="saveMsgTpl()" style="margin-top:.5rem;font-size:.8rem">💾 שמור הודעה</button>
+      <div id="mbr-stats" style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;cursor:pointer"></div>
+      <div style="margin-bottom:.8rem">
+        <button class="abt" onclick="toggleCollapse('msg-editor-body')" style="width:100%;text-align:right;font-size:.85rem;padding:8px 12px;border:1px solid var(--bd2);border-radius:8px;background:var(--c2)">📝 עריכת הודעת תזכורת <span style="float:left">▾</span></button>
+        <div id="msg-editor-body" class="msg-editor" style="display:none;border-radius:0 0 10px 10px;border-top:0">
+          <textarea id="mbr-msg-tpl"></textarea>
+          <div class="placeholders">משתנים זמינים: <strong>{name}</strong> = שם המתפלל, <strong>{year}</strong> = שנת גבייה, <strong>{link}</strong> = קישור תשלום</div>
+          <button class="abt" onclick="saveMsgTpl()" style="margin-top:.5rem;font-size:.8rem">💾 שמור הודעה</button>
+        </div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-wrap:wrap;gap:8px">
         <h3 style="font-size:.95rem;margin:0">רשימת מתפללים</h3>
@@ -2452,16 +2456,16 @@ function togglePayment(id){
   var m=getM(id);if(!m)return;
   if(m.membershipPaid){
     if(!confirm('לבטל את סימון התשלום?'))return;
-    var a=lsGet();var i=a.findIndex(function(x){return x.id===id});
-    if(i>=0){a[i].membershipPaid=false;a[i].membershipPaidDate='';a[i].paymentMethod='';a[i].paymentAmount='';a[i].paymentNotes='';lsSet(a);showMemberDetail(a[i]);renderML()}
+    updM(id,{membershipPaid:false,membershipPaidDate:'',paymentMethod:'',paymentAmount:'',paymentNotes:''});
+    showMemberDetail(getM(id));renderML();
   }else{openPayModal(id,'detail')}
 }
 function togglePaymentFromList(id){
   var m=getM(id);if(!m)return;
   if(m.membershipPaid){
     if(!confirm('לבטל את סימון התשלום?'))return;
-    var a=lsGet();var i=a.findIndex(function(x){return x.id===id});
-    if(i>=0){a[i].membershipPaid=false;a[i].membershipPaidDate='';a[i].paymentMethod='';a[i].paymentAmount='';a[i].paymentNotes='';lsSet(a);renderMbrTab();renderML()}
+    updM(id,{membershipPaid:false,membershipPaidDate:'',paymentMethod:'',paymentAmount:'',paymentNotes:''});
+    renderMbrTab();renderML();
   }else{openPayModal(id,'list')}
 }
 function openPayModal(id,source){
@@ -2480,43 +2484,77 @@ function confirmPayment(){
   var method=document.getElementById('pay-method').value;
   var amount=document.getElementById('pay-amount').value.trim();
   var notes=document.getElementById('pay-notes').value.trim();
-  var a=lsGet();var i=a.findIndex(function(x){return x.id===id});
-  if(i>=0){
-    var dateStr=date?new Date(date+'T12:00:00').toLocaleDateString('he-IL'):new Date().toLocaleDateString('he-IL');
-    a[i].membershipPaid=true;
-    a[i].membershipPaidDate=dateStr;
-    a[i].paymentMethod=method;
-    a[i].paymentAmount=amount;
-    a[i].paymentNotes=notes;
-    lsSet(a);
-  }
+  var dateStr=date?new Date(date+'T12:00:00').toLocaleDateString('he-IL'):new Date().toLocaleDateString('he-IL');
+  updM(id,{membershipPaid:true,membershipPaidDate:dateStr,paymentMethod:method,paymentAmount:amount,paymentNotes:notes});
   closePayModal();
+  var m=getM(id);
   var src=document.getElementById('pay-modal').dataset.source;
-  if(src==='detail'){showMemberDetail(a[i]);renderML()}
+  if(src==='detail'){if(m)showMemberDetail(m);renderML()}
   else{renderMbrTab();renderML()}
 }
+function toggleCollapse(elId){
+  var el=document.getElementById(elId);
+  if(el)el.style.display=el.style.display==='none'?'block':'none';
+}
+function showMbrFamily(id){
+  var m=getM(id);if(!m)return;
+  var h='<div style="padding:.5rem"><h2 style="margin-bottom:.8rem">👨‍👩‍👧‍👦 '+es(m.firstName+' '+m.lastName)+' — הרכב משפחתי</h2>';
+  // Spouse
+  if(m.spouse&&m.spouse.name){
+    h+='<div style="background:var(--c2);border-radius:8px;padding:.8rem;margin-bottom:.8rem;border:1px solid var(--bd2)">';
+    h+='<div style="font-weight:600;margin-bottom:.3rem">💍 בן/בת זוג</div>';
+    h+='<div>'+es(m.spouse.name)+'</div>';
+    if(m.spouse.phone)h+='<div style="font-size:.85rem;color:var(--ink3)">📱 '+es(m.spouse.phone)+'</div>';
+    if(m.spouse.email)h+='<div style="font-size:.85rem;color:var(--ink3)">✉ '+es(m.spouse.email)+'</div>';
+    h+='</div>';
+  }else{
+    h+='<div style="color:var(--ink3);font-size:.85rem;margin-bottom:.8rem">💍 לא צוין בן/בת זוג</div>';
+  }
+  // Children
+  if(m.children&&m.children.length){
+    h+='<div style="font-weight:600;margin-bottom:.5rem">👶 ילדים ('+m.children.length+')</div>';
+    for(var i=0;i<m.children.length;i++){
+      var ch=m.children[i];
+      var age='';
+      if(ch.gd){var bd=new Date(ch.gd);var now=new Date();var a=now.getFullYear()-bd.getFullYear();if(now.getMonth()<bd.getMonth()||(now.getMonth()===bd.getMonth()&&now.getDate()<bd.getDate()))a--;if(a>=0)age='גיל '+a}
+      var info=[];if(ch.gender)info.push(ch.gender);if(age)info.push(age);if(ch.parasha)info.push('פרשה: '+ch.parasha);
+      h+='<div style="background:var(--c2);border-radius:8px;padding:.6rem .8rem;margin-bottom:4px;border:1px solid var(--bd2);display:flex;align-items:center;gap:8px">';
+      h+='<span style="font-size:1.2rem">'+(ch.gender==='נקבה'?'👧':'👦')+'</span>';
+      h+='<div><div style="font-weight:500">'+es(ch.name)+'</div>';
+      if(info.length)h+='<div style="font-size:.8rem;color:var(--ink3)">'+es(info.join(' · '))+'</div>';
+      h+='</div></div>';
+    }
+  }else{
+    h+='<div style="color:var(--ink3);font-size:.85rem">👶 לא צוינו ילדים</div>';
+  }
+  h+='<div style="margin-top:1rem;text-align:center"><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
+  document.getElementById('md-card').innerHTML=h;
+  document.getElementById('md-ovl').classList.add('show');
+}
+var mbrTabFilter='all';
+function setMbrFilter(f){mbrTabFilter=f;renderMbrTab()}
 function renderMbrTab(){
   var s=getMbrSettings();
-  // Config fields
   var yc=document.getElementById('mbr-year-cfg');if(yc)yc.value=s.year||'';
   var lc=document.getElementById('mbr-link-cfg');if(lc)lc.value=s.link||'';
-  // Message template
   var tpl=document.getElementById('mbr-msg-tpl');
   if(tpl&&!tpl.dataset.loaded){tpl.value=getMsgTpl();tpl.dataset.loaded='1'}
   var ms=getMs();
   var paid=ms.filter(function(m){return m.membershipPaid});
   var unpaid=ms.filter(function(m){return!m.membershipPaid});
-  var yearLabel=s.year||'השנה';
-  // Stats
+  // Stats - clickable
   var st=document.getElementById('mbr-stats');
-  st.innerHTML='<div style="flex:1;min-width:100px;background:rgba(30,125,75,.1);border-radius:10px;padding:.8rem;text-align:center"><div style="font-size:1.5rem;font-weight:700;color:#1e7d4b">'+paid.length+'</div><div style="font-size:.75rem;color:var(--ink3)">שילמו</div></div>'+
-    '<div style="flex:1;min-width:100px;background:rgba(192,57,43,.1);border-radius:10px;padding:.8rem;text-align:center"><div style="font-size:1.5rem;font-weight:700;color:#c0392b">'+unpaid.length+'</div><div style="font-size:.75rem;color:var(--ink3)">טרם שילמו</div></div>'+
-    '<div style="flex:1;min-width:100px;background:rgba(200,168,75,.1);border-radius:10px;padding:.8rem;text-align:center"><div style="font-size:1.5rem;font-weight:700;color:var(--gold)">'+ms.length+'</div><div style="font-size:.75rem;color:var(--ink3)">סה"כ</div></div>';
-  // Member list
+  var aF=mbrTabFilter==='all',pF=mbrTabFilter==='paid',uF=mbrTabFilter==='unpaid';
+  st.innerHTML='<div onclick="setMbrFilter(\'paid\')" style="flex:1;min-width:100px;background:rgba(30,125,75,'+(pF?'.25':'.1')+');border-radius:10px;padding:.8rem;text-align:center;border:2px solid '+(pF?'#1e7d4b':'transparent')+';transition:all .2s"><div style="font-size:1.5rem;font-weight:700;color:#1e7d4b">'+paid.length+'</div><div style="font-size:.75rem;color:var(--ink3)">שילמו</div></div>'+
+    '<div onclick="setMbrFilter(\'unpaid\')" style="flex:1;min-width:100px;background:rgba(192,57,43,'+(uF?'.25':'.1')+');border-radius:10px;padding:.8rem;text-align:center;border:2px solid '+(uF?'#c0392b':'transparent')+';transition:all .2s"><div style="font-size:1.5rem;font-weight:700;color:#c0392b">'+unpaid.length+'</div><div style="font-size:.75rem;color:var(--ink3)">טרם שילמו</div></div>'+
+    '<div onclick="setMbrFilter(\'all\')" style="flex:1;min-width:100px;background:rgba(200,168,75,'+(aF?'.25':'.1')+');border-radius:10px;padding:.8rem;text-align:center;border:2px solid '+(aF?'var(--gold)':'transparent')+';transition:all .2s"><div style="font-size:1.5rem;font-weight:700;color:var(--gold)">'+ms.length+'</div><div style="font-size:.75rem;color:var(--ink3)">סה"כ</div></div>';
+  // Filter
+  var sorted;
+  if(mbrTabFilter==='paid')sorted=paid;
+  else if(mbrTabFilter==='unpaid')sorted=unpaid;
+  else sorted=unpaid.concat(paid);
   var list=document.getElementById('mbr-list');
-  // Show unpaid first, then paid
-  var sorted=unpaid.concat(paid);
-  if(!sorted.length){list.innerHTML='<div style="text-align:center;color:var(--ink3);padding:2rem">אין מתפללים רשומים</div>';return}
+  if(!sorted.length){list.innerHTML='<div style="text-align:center;color:var(--ink3);padding:2rem">'+(mbrTabFilter==='paid'?'אף אחד לא שילם עדיין':mbrTabFilter==='unpaid'?'כולם שילמו! 🎉':'אין מתפללים רשומים')+'</div>';return}
   list.innerHTML=sorted.map(function(m){
     var isPaid=m.membershipPaid;
     var init=(m.firstName||'').charAt(0)+(m.lastName||'').charAt(0);
@@ -2527,11 +2565,16 @@ function renderMbrTab(){
     var statusHtml=isPaid?
       '<span class="paid-tag" style="font-size:.8rem;padding:3px 10px">✓ שולם'+(payInfo.length?' · '+payInfo.join(' · '):'')+'</span>':
       '<span class="unpaid-tag" style="font-size:.8rem;padding:3px 10px">✗ טרם שולם</span>';
-    var actionsHtml='<button style="font-size:.75rem;padding:4px 10px;border:1px solid '+(isPaid?'#c0392b':'#1e7d4b')+';color:'+(isPaid?'#c0392b':'#1e7d4b')+';border-radius:6px;background:none;cursor:pointer;font-family:inherit" onclick="togglePaymentFromList(\''+m.id+'\')">'+(isPaid?'ביטול':'סמן שולם')+'</button>';
+    var actionsHtml='<button style="font-size:.75rem;padding:4px 10px;border:1px solid '+(isPaid?'#c0392b':'#1e7d4b')+';color:'+(isPaid?'#c0392b':'#1e7d4b')+';border-radius:6px;background:none;cursor:pointer;font-family:inherit" onclick="event.stopPropagation();togglePaymentFromList(\''+m.id+'\')">'+(isPaid?'ביטול':'סמן שולם')+'</button>';
     if(!isPaid){
-      actionsHtml+=' <button style="font-size:.75rem;padding:4px 10px;border:1px solid var(--gold);color:var(--gold);border-radius:6px;background:none;cursor:pointer;font-family:inherit" onclick="sendReminder(\''+m.id+'\')">📨 תזכורת</button>';
+      actionsHtml+=' <button style="font-size:.75rem;padding:4px 10px;border:1px solid var(--gold);color:var(--gold);border-radius:6px;background:none;cursor:pointer;font-family:inherit" onclick="event.stopPropagation();sendReminder(\''+m.id+'\')">📨 תזכורת</button>';
     }
-    return '<div class="mc" style="margin-bottom:6px;border-right:3px solid '+(isPaid?'#1e7d4b':'#c0392b')+'"><div class="mav" style="background:'+(isPaid?'#1e7d4b':'#c0392b')+'">'+es(init)+'</div><div class="mi" style="flex:1"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone||'')+'</div></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+statusHtml+actionsHtml+'</div></div>';
+    // Family info line
+    var famParts=[];
+    if(m.spouse&&m.spouse.name)famParts.push('👩 '+es(m.spouse.name));
+    if(m.children&&m.children.length)famParts.push('👶 '+m.children.length+' ילדים');
+    var famLine=famParts.length?'<div style="font-size:.75rem;color:var(--ink3);margin-top:2px">'+famParts.join(' · ')+'</div>':'';
+    return '<div class="mc" style="margin-bottom:6px;border-right:3px solid '+(isPaid?'#1e7d4b':'#c0392b')+';cursor:pointer" onclick="showMbrFamily(\''+m.id+'\')"><div class="mav" style="background:'+(isPaid?'#1e7d4b':'#c0392b')+'">'+es(init)+'</div><div class="mi" style="flex:1"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone||'')+famLine+'</div></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+statusHtml+actionsHtml+'</div></div>';
   }).join('');
 }
 var DEFAULT_MSG_TPL='שלום {name} היקר/ה,\n\nמקווים שהכל טוב ושמחים שאת/ה חלק מקהילתנו! 🙏\n\nרצינו להזכיר בנעימות שדמי החבר לשנת {year} טרם הוסדרו.\nהתשלום עוזר לנו להמשיך לתחזק את בית הכנסת ולקיים פעילויות לטובת כל הקהילה.\n\nניתן לשלם בקלות בקישור:\n{link}\n\nאפשרויות תשלום: אשראי, העברה בנקאית, ביט, מזומן.\nניתן גם לפרוס עד 4 תשלומים.\n\nתודה רבה על השותפות! ❤️\nקהילת מבשר ציון';
@@ -2587,32 +2630,77 @@ function getDutyPair(weekOffset){
   var tp=Math.ceil(roster.length/2);var pi=wi%tp;
   return[roster[(pi*2)%roster.length],roster[(pi*2+1)%roster.length]];
 }
+var DUTY_SWAPS_KEY='mbz_duty_swaps';
+function getDutySwaps(){try{return JSON.parse(localStorage.getItem(DUTY_SWAPS_KEY)||'{}')}catch(e){return{}}}
+function saveDutySwaps(s){localStorage.setItem(DUTY_SWAPS_KEY,JSON.stringify(s))}
+function getDutyPairWithSwaps(weekOffset){
+  var pair=getDutyPair(weekOffset);
+  var d=new Date();d.setDate(d.getDate()+weekOffset*7);
+  var sh=getUpcomingShabbat(d);
+  var key=sh.toISOString().slice(0,10);
+  var swaps=getDutySwaps();
+  var roster=getDutyRoster();
+  if(swaps[key]){
+    var sw=swaps[key];
+    if(sw[0]){var r=roster.find(function(m){return m.id===sw[0]});if(r)pair[0]=r}
+    if(sw[1]){var r=roster.find(function(m){return m.id===sw[1]});if(r)pair[1]=r}
+  }
+  return pair;
+}
+function swapDuty(weekOffset,slot){
+  var roster=getDutyRoster();if(roster.length<2)return;
+  var pair=getDutyPairWithSwaps(weekOffset);
+  var currentId=pair[slot]?pair[slot].id:'';
+  var h='<div style="padding:.5rem"><h2 style="margin-bottom:.8rem">🔄 החלף תורן</h2>';
+  h+='<p style="margin-bottom:.8rem;font-size:.9rem;color:var(--ink3)">בחר תורן חלופי:</p>';
+  roster.forEach(function(m){
+    var isCurrent=m.id===currentId;
+    h+='<div class="mc" style="margin-bottom:4px;cursor:pointer;opacity:'+(isCurrent?'.5':'1')+'" onclick="'+(isCurrent?'':'confirmSwap('+weekOffset+','+slot+',\''+m.id+'\')')+'"><div class="mav">'+es((m.firstName||'').charAt(0)+(m.lastName||'').charAt(0))+'</div><div class="mi"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone)+(isCurrent?' (נוכחי)':'')+'</div></div></div>';
+  });
+  var d=new Date();d.setDate(d.getDate()+weekOffset*7);
+  var sh=getUpcomingShabbat(d);var key=sh.toISOString().slice(0,10);
+  h+='<div style="margin-top:.8rem;display:flex;gap:8px;justify-content:center"><button class="md-btn-close" onclick="resetSwap(\''+key+'\','+slot+')">↩ אפס לרוטציה</button><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
+  document.getElementById('md-card').innerHTML=h;
+  document.getElementById('md-ovl').classList.add('show');
+}
+function confirmSwap(weekOffset,slot,newId){
+  var d=new Date();d.setDate(d.getDate()+weekOffset*7);
+  var sh=getUpcomingShabbat(d);var key=sh.toISOString().slice(0,10);
+  var swaps=getDutySwaps();
+  if(!swaps[key])swaps[key]={};
+  swaps[key][slot]=newId;
+  saveDutySwaps(swaps);
+  closeMD();renderDutyTab();
+}
+function resetSwap(key,slot){
+  var swaps=getDutySwaps();
+  if(swaps[key]){delete swaps[key][slot];if(!swaps[key][0]&&!swaps[key][1])delete swaps[key]}
+  saveDutySwaps(swaps);
+  closeMD();renderDutyTab();
+}
 function renderDutyTab(){
   var roster=getDutyRoster();
-  // Hero card
   var hc=document.getElementById('duty-hero-card');
   if(roster.length>=2){
-    var pair=getDutyPair(0);var sh=getUpcomingShabbat(new Date());
+    var pair=getDutyPairWithSwaps(0);var sh=getUpcomingShabbat(new Date());
     var ds=sh.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-    hc.innerHTML='<div class="duty-hero"><h3>📅 תורנים לשבת הקרובה — '+ds+'</h3><div class="duty-names">'+es(pair[0].firstName+' '+pair[0].lastName)+'  &amp;  '+es(pair[1].firstName+' '+pair[1].lastName)+'</div><div class="duty-phones">'+es(pair[0].phone)+' | '+es(pair[1].phone)+'</div></div>';
+    hc.innerHTML='<div class="duty-hero"><h3>📅 תורנים לשבת הקרובה — '+ds+'</h3><div class="duty-names"><span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty(0,0)">'+es(pair[0].firstName+' '+pair[0].lastName)+'</span>  &amp;  <span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty(0,1)">'+es(pair[1].firstName+' '+pair[1].lastName)+'</span></div><div class="duty-phones">'+es(pair[0].phone)+' | '+es(pair[1].phone)+'</div></div>';
   }else if(roster.length===1){
     hc.innerHTML='<div class="duty-hero" style="background:linear-gradient(135deg,#d97706,#f59e0b)"><h3>⚠ יש רק תורן אחד</h3><div class="duty-names">'+es(roster[0].firstName+' '+roster[0].lastName)+'</div></div>';
   }else{
     hc.innerHTML='<div class="duty-hero" style="background:#6b7280"><h3>אין תורנים ברשימה</h3><p style="margin-top:.5rem;opacity:.9;font-size:.85rem">הוסף תורנים דרך צפייה במתפלל ← כפתור "הוסף לרשימה"</p></div>';
   }
-  // 8-week table
   var body=document.getElementById('duty-body');var h='';
   for(var w=0;w<8;w++){
     var d=new Date();d.setDate(d.getDate()+w*7);
     var sh=getUpcomingShabbat(d);
     var ds=sh.toLocaleDateString('he-IL',{day:'numeric',month:'long'});
-    var pair=getDutyPair(w);
-    var n1=pair[0]?es(pair[0].firstName+' '+pair[0].lastName):'—';
-    var n2=pair[1]?es(pair[1].firstName+' '+pair[1].lastName):'—';
+    var pair=getDutyPairWithSwaps(w);
+    var n1=pair[0]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty('+w+',0)">'+es(pair[0].firstName+' '+pair[0].lastName)+'</span>':'—';
+    var n2=pair[1]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty('+w+',1)">'+es(pair[1].firstName+' '+pair[1].lastName)+'</span>':'—';
     h+='<tr'+(w===0?' class="current"':'')+'><td>'+ds+(w===0?' (השבת)':'')+'</td><td>'+n1+'</td><td>'+n2+'</td></tr>';
   }
   body.innerHTML=h||'<tr><td colspan="3" style="text-align:center;color:var(--ink3);padding:1.5rem">אין תורנים</td></tr>';
-  // Roster list
   var rl=document.getElementById('roster-list');
   if(roster.length){
     rl.innerHTML=roster.map(function(m,i){return'<div class="mc" style="margin-bottom:6px"><div class="mav">'+(i+1)+'</div><div class="mi"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone)+'</div></div></div>'}).join('');
