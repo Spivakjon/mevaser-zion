@@ -647,7 +647,6 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 </div>
 <p style="margin:.5rem 0"><strong>לשאלות ודיון באפשרויות תשלום:</strong><br>גזבר — <a href="mailto:gizbar@mevaser.org.il">gizbar@mevaser.org.il</a> (חשאיות מירבית)<br>גבאי — <a href="mailto:gabbai@mevaser.org.il">gabbai@mevaser.org.il</a></p>
 <p style="font-size:.8rem;color:var(--ink3);margin-top:.5rem">תרומות לעמותה מוכרות לצרכי מס בארץ (סעיף 46) ודרך PEF בארה"ב.</p>
-</ul>
 </div>
 </div>
 
@@ -2608,21 +2607,15 @@ function initMbrPrompt(){
   }
 }
 function scrollToPayInfo(){
-  // Open the master accordion and the payment accordion, then scroll
-  var master=document.getElementById('info-master-body');
+  // Open the master accordion and the payment accordion using class toggle (not inline style)
   var masterAcc=document.getElementById('iacc-master');
-  if(master)master.style.display='block';
   if(masterAcc)masterAcc.classList.add('open');
   var payAcc=document.getElementById('iacc-1');
-  if(payAcc){
-    var body=payAcc.querySelector('.info-acc-body');
-    if(body)body.style.display='block';
-    payAcc.classList.add('open');
-    setTimeout(function(){
-      var el=document.getElementById('pay-info-section');
-      if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
-    },100);
-  }
+  if(payAcc)payAcc.classList.add('open');
+  setTimeout(function(){
+    var el=document.getElementById('pay-info-section');
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  },150);
 }
 function membershipAnswer(paid){
   window._mbrPaidStatus=paid;
