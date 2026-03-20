@@ -595,7 +595,10 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 <div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name" data-i18n="orgName">עמותת מבשר ציון</div><div class="logo-sub" data-i18n="logoSub">בית הכנסת · רח׳ הצופית 23 · תל מונד</div></div></div>
 <div class="week-card" id="week-card"><div class="wk-head"><span class="wk-par" data-i18n="weekLoading">📅 טוען פרשת השבוע...</span></div></div>
 <div id="announcements-public"></div>
-<div class="reg-btn-wrap"><button class="reg-btn" onclick="toggleReg()" data-i18n="registerBtn">📝 הרשמה</button></div>
+<div class="reg-btn-wrap" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+  <button class="reg-btn" onclick="toggleReg()" data-i18n="registerBtn">📝 הרשמה</button>
+  <button class="reg-btn" id="pub-pay-btn" onclick="scrollToPayInfo()" style="background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg1)">💳 דמי חבר ותשלום</button>
+</div>
 
 <div class="info-section" id="info-section">
 <div class="info-welcome">
@@ -622,15 +625,27 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 </div>
 
 <div class="info-acc" id="iacc-1">
-<div class="info-acc-head" onclick="toggleAcc(this)"><span>💰 דמי חבר</span><span class="acc-arrow">▾</span></div>
-<div class="info-acc-body">
+<div class="info-acc-head" onclick="toggleAcc(this)"><span>💰 דמי חבר ותשלום</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-body" id="pay-info-section">
+<p style="margin-bottom:.6rem">בית הכנסת אינו זוכה לתמיכה ממשלתית או עירונית כלשהי — הוא נבנה ומתוחזק באופן מלא מכספי החברים, קרי — <strong>אתם</strong>.</p>
 <ul>
-<li>הקהילה אינה מקבלת תמיכה ממשלתית — נבנתה כולה על ידי חבריה</li>
-<li><strong>דמי הצטרפות:</strong> מינימום 15,000 ₪</li>
-<li><strong>דמי חבר שנתיים למשפחה:</strong> נקבעים על ידי הועד, כולל מקומות לימים הנוראים</li>
-<li><strong>אפשרויות תשלום:</strong> הוראת קבע, העברה בנקאית, צ'קים, כרטיסי אשראי, PayPal</li>
-<li><strong>גזבר:</strong> <a href="mailto:gizbar@mevaser.org.il">gizbar@mevaser.org.il</a></li>
-<li><strong>גבאי:</strong> <a href="mailto:gabbai@mevaser.org.il">gabbai@mevaser.org.il</a></li>
+<li><strong>דמי הצטרפות:</strong> מינימום 15,000 ₪ (לתחזוקה שוטפת ופיתוח הבניין)</li>
+<li><strong>מס שנתי למשפחה:</strong> נקבע מדי שנה ע"י הוועד, כולל מקומות ישיבה לימים הנוראים לבני משפחה מדרגה ראשונה</li>
+</ul>
+<p style="margin:.6rem 0"><strong>אפשרויות תשלום:</strong></p>
+<ul>
+<li>כרטיס אשראי — דרך הקישור למטה, או בטלפון <a href="tel:073-7057470">073-7057470</a> / WhatsApp <a href="https://wa.me/972552778750">055-2778750</a></li>
+<li>העברה בנקאית — בנק הפועלים (12), חשבון 136503, סניף 448, לפקודת "קהילת מבשרת ציון"</li>
+<li>הוראת קבע / המחאות / מזומן — במשרד הקהילה</li>
+<li>PayPal</li>
+</ul>
+<p style="margin:.5rem 0">ניתן לפרוס את כל התשלומים. ניתן גם לשלם דמי חבר עבור 3 שנים מראש.</p>
+<p style="margin:.5rem 0;font-style:italic;color:var(--ink3)">אם אין ביכולתכם לשלם את מלוא דמי החברות, שלמו כל סכום אותו אתם יכולים.</p>
+<div style="text-align:center;margin:1rem 0">
+  <a id="pub-pay-link" href="#" target="_blank" class="pay-link" style="display:inline-block;padding:12px 36px;font-size:1.05rem">💳 לחץ כאן לתשלום</a>
+</div>
+<p style="margin:.5rem 0"><strong>לשאלות ודיון באפשרויות תשלום:</strong><br>גזבר — <a href="mailto:gizbar@mevaser.org.il">gizbar@mevaser.org.il</a> (חשאיות מירבית)<br>גבאי — <a href="mailto:gabbai@mevaser.org.il">gabbai@mevaser.org.il</a></p>
+<p style="font-size:.8rem;color:var(--ink3);margin-top:.5rem">תרומות לעמותה מוכרות לצרכי מס בארץ (סעיף 46) ודרך PEF בארה"ב.</p>
 </ul>
 </div>
 </div>
@@ -2566,10 +2581,33 @@ function initMbrPrompt(){
   var ppy=document.getElementById('payment-year');if(ppy)ppy.textContent=year;
   var plb=document.getElementById('payment-link-btn');
   if(plb){plb.href=link||'#';if(!link)plb.style.display='none';else plb.style.display=''}
+  // Public payment link in info section
+  var pubPay=document.getElementById('pub-pay-link');
+  if(pubPay){pubPay.href=link||'#';if(!link)pubPay.style.display='none';else pubPay.style.display=''}
+  // Public pay button visibility
+  var pubPayBtn=document.getElementById('pub-pay-btn');
+  if(pubPayBtn){if(!link&&!s.year)pubPayBtn.style.display='none';else pubPayBtn.style.display=''}
   // If no year or link configured, skip prompt and show form directly
   if(!s.year&&!s.link){
     document.getElementById('membership-prompt-card').style.display='none';
     document.getElementById('main-card').style.display='';
+  }
+}
+function scrollToPayInfo(){
+  // Open the master accordion and the payment accordion, then scroll
+  var master=document.getElementById('info-master-body');
+  var masterAcc=document.getElementById('iacc-master');
+  if(master)master.style.display='block';
+  if(masterAcc)masterAcc.classList.add('open');
+  var payAcc=document.getElementById('iacc-1');
+  if(payAcc){
+    var body=payAcc.querySelector('.info-acc-body');
+    if(body)body.style.display='block';
+    payAcc.classList.add('open');
+    setTimeout(function(){
+      var el=document.getElementById('pay-info-section');
+      if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+    },100);
   }
 }
 function membershipAnswer(paid){
