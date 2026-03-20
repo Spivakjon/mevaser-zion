@@ -507,27 +507,27 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 <body>
 <div class="top-actions">
   <button onclick="openSelfEdit()" data-i18n="editMyDetails">📝 עריכת הפרטים שלי</button>
-  <button onclick="openAdm()">🔒 ניהול</button>
+  <button onclick="openAdm()" data-i18n="adminBtn">🔒 ניהול</button>
   <button onclick="toggleTheme()" id="theme-toggle-btn">☀️</button>
   <div class="lang-toggle" id="lang-toggle">
     <button class="active" onclick="setLang('he')">עב</button>
     <button onclick="setLang('en')">EN</button>
   </div>
 </div>
-<div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name">עמותת מבשר ציון</div><div class="logo-sub">בית הכנסת · רח׳ הצופית 23 · תל מונד</div></div></div>
-<div class="week-card" id="week-card"><div class="wk-head"><span class="wk-par">📅 טוען פרשת השבוע...</span></div></div>
+<div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name" data-i18n="orgName">עמותת מבשר ציון</div><div class="logo-sub" data-i18n="logoSub">בית הכנסת · רח׳ הצופית 23 · תל מונד</div></div></div>
+<div class="week-card" id="week-card"><div class="wk-head"><span class="wk-par" data-i18n="weekLoading">📅 טוען פרשת השבוע...</span></div></div>
 <div id="announcements-public"></div>
-<div class="reg-btn-wrap"><button class="reg-btn" onclick="toggleReg()">📝 הרשמה לקהילה</button></div>
+<div class="reg-btn-wrap"><button class="reg-btn" onclick="toggleReg()" data-i18n="registerBtn">📝 הרשמה לקהילה</button></div>
 
 <div class="info-section" id="info-section">
 <div class="info-welcome">
-<h2>🕍 קהילת מבשר ציון — תל מונד</h2>
-<p>קהילה דתית-לאומית אנגלו-סקסית פעילה ותוססת.<br>כאן תוכלו להירשם לבית הכנסת, לצפות במידע על אירועי השבוע, ולנהל את פרטיכם בקהילה.</p>
+<h2 data-i18n="welcomeTitle">🕍 קהילת מבשר ציון — תל מונד</h2>
+<p data-i18n="welcomeText">קהילה דתית-לאומית אנגלו-סקסית פעילה ותוססת.<br>כאן תוכלו להירשם לבית הכנסת, לצפות במידע על אירועי השבוע, ולנהל את פרטיכם בקהילה.</p>
 <p style="margin-top:.4rem"><a href="https://mevaser.org.il" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(200,168,75,.4)">mevaser.org.il ↗</a></p>
 </div>
 
 <div class="info-acc" id="iacc-master">
-<div class="info-acc-head" onclick="toggleMasterAcc(this)"><span>📋 מידע על הקהילה ותל מונד</span><span class="acc-arrow">▾</span></div>
+<div class="info-acc-head" onclick="toggleMasterAcc(this)"><span data-i18n="communityInfo">📋 מידע על הקהילה ותל מונד</span><span class="acc-arrow">▾</span></div>
 <div class="info-acc-body info-master-body" id="info-master-body">
 
 <div class="info-acc" id="iacc-0">
@@ -696,26 +696,26 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 </div>
 
 <div class="main-card reg-collapsed" id="main-card">
-  <div class="sv" id="sv"><div class="s-icon">✓</div><div class="s-title">הרישום נשמר בהצלחה!</div><div class="s-body">פרטיך נשמרו בתיק הקהילה.<br>נשמח לראותך בקרב מתפללי בית הכנסת.</div><div class="s-btns"><button class="btn-new" onclick="resetForm()">רישום חדש</button><button class="btn-adm" onclick="openAdm()">ממשק מנהל</button></div></div>
+  <div class="sv" id="sv"><div class="s-icon">✓</div><div class="s-title" data-i18n="successTitle">הרישום נשמר בהצלחה!</div><div class="s-body" data-i18n="successBody">פרטיך נשמרו בתיק הקהילה.<br>נשמח לראותך בקרב מתפללי בית הכנסת.</div><div class="s-btns"><button class="btn-new" onclick="resetForm()" data-i18n="newReg">רישום חדש</button><button class="btn-adm" onclick="openAdm()" data-i18n="adminBtn">ממשק מנהל</button></div></div>
   <div id="fv">
     <div class="sh"><span>👤</span><span class="sh-t" data-i18n="contactDetails">פרטי קשר ומשפחה</span></div>
     <div class="sec">
-      <div class="g3" style="margin-bottom:.7rem"><div class="ff"><label data-i18n="firstName">שם פרטי <span class="req">*</span></label><input id="fn" placeholder="משה" oninput="autoTorah()"><div class="emsg">שדה חובה</div></div><div class="ff"><label data-i18n="lastName">שם משפחה <span class="req">*</span></label><input id="ln" placeholder="כהן" oninput="autoTorah()"><div class="emsg">שדה חובה</div></div><div class="ff"><label data-i18n="fatherName">שם האב <span class="req">*</span></label><input id="fa" placeholder="אברהם" oninput="autoTorah()"><div class="emsg">שדה חובה</div></div></div>
-      <div class="g3"><div class="ff"><label data-i18n="motherName">שם האם</label><input id="mo" placeholder="שרה"></div><div class="ff"><label data-i18n="torahName">שם מלא לעלייה לתורה</label><input id="tr" placeholder="משה בן אברהם"></div><div class="ff"><label data-i18n="phone">טלפון <span class="req">*</span></label><input id="ph" type="tel" placeholder="050-1234567" dir="ltr"><div class="emsg">שדה חובה</div></div></div>
+      <div class="g3" style="margin-bottom:.7rem"><div class="ff"><label data-i18n="firstName">שם פרטי <span class="req">*</span></label><input id="fn" placeholder="משה" data-i18n-placeholder="phFirstName" oninput="autoTorah()"><div class="emsg" data-i18n="fieldRequired">שדה חובה</div></div><div class="ff"><label data-i18n="lastName">שם משפחה <span class="req">*</span></label><input id="ln" placeholder="כהן" data-i18n-placeholder="phLastName" oninput="autoTorah()"><div class="emsg" data-i18n="fieldRequired">שדה חובה</div></div><div class="ff"><label data-i18n="fatherName">שם האב <span class="req">*</span></label><input id="fa" placeholder="אברהם" data-i18n-placeholder="phFatherName" oninput="autoTorah()"><div class="emsg" data-i18n="fieldRequired">שדה חובה</div></div></div>
+      <div class="g3"><div class="ff"><label data-i18n="motherName">שם האם</label><input id="mo" placeholder="שרה" data-i18n-placeholder="phMotherName"></div><div class="ff"><label data-i18n="torahName">שם מלא לעלייה לתורה</label><input id="tr" placeholder="משה בן אברהם" data-i18n-placeholder="phTorahName"></div><div class="ff"><label data-i18n="phone">טלפון <span class="req">*</span></label><input id="ph" type="tel" placeholder="050-1234567" dir="ltr"><div class="emsg" data-i18n="fieldRequired">שדה חובה</div></div></div>
       <div class="g2" style="margin-top:.7rem"><div class="ff"><label data-i18n="email">דואר אלקטרוני</label><input id="em" type="email" placeholder="shalom@gmail.com" dir="ltr"></div><div style="display:contents"></div></div>
       <div style="margin-top:.7rem"><label style="font-size:.75rem;font-weight:600;color:var(--ink2);display:block;margin-bottom:.35rem" data-i18n="address">כתובת מגורים</label>
         <div class="g4">
-          <div class="ff"><label data-i18n="street">רחוב</label><input id="ad-street" placeholder="הרצל"></div>
+          <div class="ff"><label data-i18n="street">רחוב</label><input id="ad-street" placeholder="הרצל" data-i18n-placeholder="phStreet"></div>
           <div class="ff"><label data-i18n="houseNum">מספר בית</label><input id="ad-num" placeholder="12"></div>
           <div class="ff"><label data-i18n="apartment">דירה</label><input id="ad-apt" placeholder=""></div>
-          <div class="ff"><label data-i18n="city">ישוב</label><input id="ad-city" placeholder="תל מונד" value="תל מונד"></div>
+          <div class="ff"><label data-i18n="city">ישוב</label><input id="ad-city" placeholder="תל מונד" data-i18n-placeholder="phCity" value="תל מונד"></div>
         </div>
       </div>
     </div>
     <div class="sh"><span>👨‍👧‍👦</span><span class="sh-t" data-i18n="children">ילדים</span></div>
     <div class="sec"><div id="cw"></div><button class="badd" id="badd-c" onclick="addCh()" data-i18n="addChild">+ הוסף ילד</button></div>
     <div class="sh"><span>🙏</span><span class="sh-t" data-i18n="volunteering">תחומי התנדבות</span></div>
-    <div class="sec"><div class="cb-row"><label class="cbl" id="cb1"><input type="checkbox" id="v1" onchange="tCb('cb1','v1')"> קניות לקידוש שבת</label><label class="cbl" id="cb2"><input type="checkbox" id="v2" onchange="tCb('cb2','v2')"> סידור וארגון הקידוש</label><label class="cbl" id="cb3"><input type="checkbox" id="v3" onchange="tCb('cb3','v3')"> העברת דבר תורה</label></div></div>
+    <div class="sec"><div class="cb-row"><label class="cbl" id="cb1"><input type="checkbox" id="v1" onchange="tCb('cb1','v1')"> <span data-i18n="vol1">קניות לקידוש שבת</span></label><label class="cbl" id="cb2"><input type="checkbox" id="v2" onchange="tCb('cb2','v2')"> <span data-i18n="vol2">סידור וארגון הקידוש</span></label><label class="cbl" id="cb3"><input type="checkbox" id="v3" onchange="tCb('cb3','v3')"> <span data-i18n="vol3">העברת דבר תורה</span></label></div></div>
     <div class="sh"><span>🕯</span><span class="sh-t" data-i18n="yahrzeits">ימי זיכרון (יארצייט)</span></div>
     <div class="sec"><div id="yw"></div><button class="badd" onclick="addYr()" data-i18n="addYahrzeit">+ הוסף יום זיכרון</button></div>
     <div class="fmsg" id="fmsg"></div>
@@ -779,23 +779,23 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 <!-- Self-Edit Modal -->
 <div class="se-ovl" id="se-ovl" onclick="if(event.target===this)closeSelfEdit()">
   <div class="se-card">
-    <h2>📝 עריכת הפרטים שלי</h2>
-    <p>הזן את הפרטים הבאים לזיהוי</p>
+    <h2 data-i18n="selfEditTitle">📝 עריכת הפרטים שלי</h2>
+    <p data-i18n="selfEditSubtitle">הזן את הפרטים הבאים לזיהוי</p>
     <div class="ff">
-      <label>טלפון</label>
+      <label data-i18n="selfEditPhone">טלפון</label>
       <input type="tel" id="se-phone" placeholder="050-1234567" dir="ltr">
     </div>
     <div class="ff">
-      <label>שם מלא (שם פרטי + שם משפחה)</label>
-      <input type="text" id="se-name" placeholder="משה כהן">
+      <label data-i18n="selfEditName">שם מלא (שם פרטי + שם משפחה)</label>
+      <input type="text" id="se-name" placeholder="משה כהן" data-i18n-placeholder="selfEditNamePh">
     </div>
     <div class="ff">
-      <label>שם האב</label>
-      <input type="text" id="se-father" placeholder="אברהם">
+      <label data-i18n="selfEditFather">שם האב</label>
+      <input type="text" id="se-father" placeholder="אברהם" data-i18n-placeholder="selfEditFatherPh">
     </div>
-    <button class="se-btn" onclick="doSelfEdit()">חפש</button>
-    <button class="se-close" onclick="closeSelfEdit()">סגור</button>
-    <div class="se-err" id="se-err">לא נמצא מתפלל עם פרטים אלו</div>
+    <button class="se-btn" onclick="doSelfEdit()" data-i18n="selfEditSearch">חפש</button>
+    <button class="se-close" onclick="closeSelfEdit()" data-i18n="selfEditClose">סגור</button>
+    <div class="se-err" id="se-err" data-i18n="selfEditErrNotFound">לא נמצא מתפלל עם פרטים אלו</div>
   </div>
 </div>
 
@@ -1028,7 +1028,7 @@ function chH(i){const c=CH[i];const bmOn=c.wantsBM?'show':'';
   return`<div class="ic" id="ci-${i}">
 <div class="ic-head"><span class="ic-title">ילד ${i+1}${c.name?' — '+es(c.name):''}</span><button class="brm" onclick="remCh(${i})">✕</button></div>
 <div class="g3" style="margin-bottom:.65rem">
-  <div class="ff"><label>שם פרטי <span class="req">*</span></label><input id="cn-${i}" value="${es(c.name)}" placeholder="שם פרטי" onchange="CH[${i}].name=this.value;rChT(${i})"><div class="emsg">שדה חובה</div></div>
+  <div class="ff"><label>שם פרטי <span class="req">*</span></label><input id="cn-${i}" value="${es(c.name)}" placeholder="שם פרטי" onchange="CH[${i}].name=this.value;rChT(${i})"><div class="emsg" data-i18n="fieldRequired">שדה חובה</div></div>
   <div class="ff"><label>מין</label><select id="cg-${i}" onchange="CH[${i}].gender=this.value"><option value="">בחר</option><option value="זכר"${c.gender==='זכר'?' selected':''}>זכר</option><option value="נקבה"${c.gender==='נקבה'?' selected':''}>נקבה</option></select></div>
   <div><div style="font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.25rem">תאריך לידה</div>${dbH('c'+i,{hd:c.hd,hm:c.hm,hy:c.hy,gd:c.gd,mode:c.mode})}</div>
 </div>
@@ -1098,7 +1098,7 @@ async function calcBM(i){
   btn.disabled=false;btn.textContent='📖 חשב פרשת בר מצווה ←';}
 
 // ── Yahrzeits ───────────────────────────────────────────
-function yrH(i){const y=YR[i];return`<div class="ic" id="yi-${i}"><div class="ic-head"><span class="ic-title">יום זיכרון ${i+1}${y.name?' — '+es(y.name):''}</span><button class="brm" onclick="remYr(${i})">✕</button></div><div class="g2" style="margin-bottom:.65rem"><div class="ff"><label>שם הנפטר <span class="req">*</span></label><input id="yn-${i}" value="${es(y.name)}" placeholder="שם הנפטר" onchange="YR[${i}].name=this.value;rYrT(${i})"><div class="emsg">שדה חובה</div></div><div><div style="font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.25rem">תאריך הפטירה</div>${dbH('y'+i,{hd:y.hd,hm:y.hm,hy:y.hy,gd:y.gd,mode:y.mode},true)}</div></div><div class="g2"><div class="ff"><label>לפני התיבה ביארצייט?</label><select id="yl-${i}" onchange="YR[${i}].lead=this.value"><option value="">לא צוין</option><option value="כן"${y.lead==='כן'?' selected':''}>כן</option><option value="לא"${y.lead==='לא'?' selected':''}>לא</option></select></div><div class="ff"><label>קריאת הפטרה ביארצייט?</label><select id="yh-${i}" onchange="YR[${i}].haft=this.value"><option value="">לא צוין</option><option value="כן"${y.haft==='כן'?' selected':''}>כן</option><option value="לא"${y.haft==='לא'?' selected':''}>לא</option></select></div></div></div>`}
+function yrH(i){const y=YR[i];return`<div class="ic" id="yi-${i}"><div class="ic-head"><span class="ic-title">יום זיכרון ${i+1}${y.name?' — '+es(y.name):''}</span><button class="brm" onclick="remYr(${i})">✕</button></div><div class="g2" style="margin-bottom:.65rem"><div class="ff"><label>שם הנפטר <span class="req">*</span></label><input id="yn-${i}" value="${es(y.name)}" placeholder="שם הנפטר" onchange="YR[${i}].name=this.value;rYrT(${i})"><div class="emsg" data-i18n="fieldRequired">שדה חובה</div></div><div><div style="font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.25rem">תאריך הפטירה</div>${dbH('y'+i,{hd:y.hd,hm:y.hm,hy:y.hy,gd:y.gd,mode:y.mode},true)}</div></div><div class="g2"><div class="ff"><label>לפני התיבה ביארצייט?</label><select id="yl-${i}" onchange="YR[${i}].lead=this.value"><option value="">לא צוין</option><option value="כן"${y.lead==='כן'?' selected':''}>כן</option><option value="לא"${y.lead==='לא'?' selected':''}>לא</option></select></div><div class="ff"><label>קריאת הפטרה ביארצייט?</label><select id="yh-${i}" onchange="YR[${i}].haft=this.value"><option value="">לא צוין</option><option value="כן"${y.haft==='כן'?' selected':''}>כן</option><option value="לא"${y.haft==='לא'?' selected':''}>לא</option></select></div></div></div>`}
 function rYrT(i){const el=document.querySelector(`#yi-${i} .ic-title`);if(el)el.textContent=`יום זיכרון ${i+1}${YR[i].name?' — '+YR[i].name:''}`}
 function renderYR(){document.getElementById('yw').innerHTML=YR.map((_,i)=>yrH(i)).join('')}
 function addYr(){YR.push(bY());renderYR();document.getElementById(`yi-${YR.length-1}`).scrollIntoView({behavior:'smooth'})}
@@ -1281,8 +1281,9 @@ function doSelfEdit(){
   var name=document.getElementById('se-name').value.trim();
   var father=document.getElementById('se-father').value.trim();
   var errEl=document.getElementById('se-err');
+  var dict=I18N[curLang]||I18N.he;
   if(!phone||!name||!father){
-    errEl.textContent='אנא הזן טלפון, שם מלא ושם האב';
+    errEl.textContent=dict.selfEditErrEmpty||'אנא הזן טלפון, שם מלא ושם האב';
     errEl.style.display='block';
     return;
   }
@@ -1298,9 +1299,9 @@ function doSelfEdit(){
   if(!match){
     var phoneMatch=ms.find(function(m){return normalizePhone(m.phone||'')===np});
     if(phoneMatch){
-      errEl.textContent='הטלפון נמצא אך השם או שם האב אינם תואמים';
+      errEl.textContent=dict.selfEditErrName||'הטלפון נמצא אך השם או שם האב אינם תואמים';
     }else{
-      errEl.textContent='לא נמצא מתפלל עם פרטים אלו';
+      errEl.textContent=dict.selfEditErrNotFound||'לא נמצא מתפלל עם פרטים אלו';
     }
     errEl.style.display='block';
     return;
@@ -1783,7 +1784,42 @@ var I18N={
     volunteering:'תחומי התנדבות',
     yahrzeits:'ימי זיכרון (יארצייט)',
     addYahrzeit:'+ הוסף יום זיכרון',
-    save:'💾 שמור פרטים'
+    save:'💾 שמור פרטים',
+    orgName:'עמותת מבשר ציון',
+    logoSub:'בית הכנסת · רח׳ הצופית 23 · תל מונד',
+    registerBtn:'📝 הרשמה לקהילה',
+    welcomeTitle:'🕍 קהילת מבשר ציון — תל מונד',
+    welcomeText:'קהילה דתית-לאומית אנגלו-סקסית פעילה ותוססת.<br>כאן תוכלו להירשם לבית הכנסת, לצפות במידע על אירועי השבוע, ולנהל את פרטיכם בקהילה.',
+    communityInfo:'📋 מידע על הקהילה ותל מונד',
+    adminBtn:'🔒 ניהול',
+    selfEditTitle:'📝 עריכת הפרטים שלי',
+    selfEditSubtitle:'הזן את הפרטים הבאים לזיהוי',
+    selfEditPhone:'טלפון',
+    selfEditName:'שם מלא (שם פרטי + שם משפחה)',
+    selfEditFather:'שם האב',
+    selfEditSearch:'חפש',
+    selfEditClose:'סגור',
+    selfEditErrEmpty:'אנא הזן טלפון, שם מלא ושם האב',
+    selfEditErrName:'טלפון נמצא אך השם או שם האב אינם תואמים',
+    selfEditErrNotFound:'לא נמצא מתפלל עם פרטים אלו',
+    successTitle:'הרישום נשמר בהצלחה!',
+    successBody:'פרטיך נשמרו בתיק הקהילה.<br>נשמח לראותך בקרב מתפללי בית הכנסת.',
+    newReg:'רישום חדש',
+    fieldRequired:'שדה חובה',
+    vol1:'קניות לקידוש שבת',
+    vol2:'סידור וארגון הקידוש',
+    vol3:'העברת דבר תורה',
+    weekLoading:'📅 טוען פרשת השבוע...',
+    noEvents:'אין אירועים מיוחדים השבת',
+    selfEditNamePh:'משה כהן',
+    selfEditFatherPh:'אברהם',
+    phFirstName:'משה',
+    phLastName:'כהן',
+    phFatherName:'אברהם',
+    phMotherName:'שרה',
+    phTorahName:'משה בן אברהם',
+    phStreet:'הרצל',
+    phCity:'תל מונד'
   },
   en:{
     editMyDetails:'📝 Edit My Details',
@@ -1806,7 +1842,42 @@ var I18N={
     volunteering:'Volunteering',
     yahrzeits:'Memorial Days (Yahrzeit)',
     addYahrzeit:'+ Add Yahrzeit',
-    save:'💾 Save Details'
+    save:'💾 Save Details',
+    orgName:'Mevaser Zion Community',
+    logoSub:'Synagogue \u00b7 23 HaTzofit St. \u00b7 Tel Mond',
+    registerBtn:'📝 Register',
+    welcomeTitle:'🕍 Mevaser Zion Community \u2014 Tel Mond',
+    welcomeText:'An active Anglo-Saxon religious-Zionist community.<br>Register for the synagogue, view weekly events, and manage your details.',
+    communityInfo:'📋 Community & Tel Mond Info',
+    adminBtn:'🔒 Admin',
+    selfEditTitle:'📝 Edit My Details',
+    selfEditSubtitle:'Enter your details to identify',
+    selfEditPhone:'Phone',
+    selfEditName:'Full Name (First + Last)',
+    selfEditFather:'Father\'s Name',
+    selfEditSearch:'Search',
+    selfEditClose:'Close',
+    selfEditErrEmpty:'Please enter phone, full name and father\'s name',
+    selfEditErrName:'Phone found but name or father\'s name don\'t match',
+    selfEditErrNotFound:'No member found with these details',
+    successTitle:'Registration Saved!',
+    successBody:'Your details have been saved.<br>We look forward to seeing you at the synagogue.',
+    newReg:'New Registration',
+    fieldRequired:'Required field',
+    vol1:'Kiddush Shopping',
+    vol2:'Kiddush Setup',
+    vol3:'Divrei Torah',
+    weekLoading:'📅 Loading weekly parasha...',
+    noEvents:'No special events this Shabbat',
+    selfEditNamePh:'John Smith',
+    selfEditFatherPh:'Abraham',
+    phFirstName:'Moshe',
+    phLastName:'Cohen',
+    phFatherName:'Abraham',
+    phMotherName:'Sarah',
+    phTorahName:'Moshe ben Avraham',
+    phStreet:'Herzl',
+    phCity:'Tel Mond'
   }
 };
 var curLang='he';
@@ -1829,6 +1900,10 @@ function setLang(lang){
 }
 function applyLang(){
   var dict=I18N[curLang]||I18N.he;
+  var dir=curLang==='he'?'rtl':'ltr';
+  document.documentElement.setAttribute('dir',dir);
+  document.documentElement.setAttribute('lang',curLang);
+  document.body.style.direction=dir;
   document.querySelectorAll('[data-i18n]').forEach(function(el){
     var key=el.getAttribute('data-i18n');
     if(!dict[key])return;
@@ -1836,6 +1911,9 @@ function applyLang(){
     var reqSpan=el.querySelector('.req');
     if(reqSpan){
       el.innerHTML=dict[key]+' <span class="req">*</span>';
+    }else if(key==='welcomeText'||key==='successBody'){
+      // These keys contain HTML (<br> tags)
+      el.innerHTML=dict[key];
     }else{
       // For save button, check if it has child elements
       if(el.tagName==='BUTTON'&&el.id==='bsave'){
@@ -1844,6 +1922,11 @@ function applyLang(){
         el.textContent=dict[key];
       }
     }
+  });
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+    var key=el.getAttribute('data-i18n-placeholder');
+    if(dict[key])el.placeholder=dict[key];
   });
 }
 
@@ -1944,7 +2027,7 @@ async function loadWeekSummary(){
       }
       h+='</div>';
     }else{
-      h+='<div class="wk-none">אין אירועים מיוחדים השבת</div>';
+      h+='<div class="wk-none">'+((I18N[curLang]||I18N.he).noEvents||'אין אירועים מיוחדים השבת')+'</div>';
     }
     if(parName){
       h+='<a class="wk-link" href="'+CHBD+'" target="_blank" rel="noopener">📖 קרא את הפרשה ↗</a> ';
