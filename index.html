@@ -446,6 +446,7 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
   .stat-num{font-size:1rem}
   .stat-label{font-size:.62rem}
   .stabs{flex-wrap:wrap}
+  .settings-field input,.settings-field textarea{font-size:14px !important}
 }
 
 /* ===== SMALL MOBILE (max 380px) ===== */
@@ -461,6 +462,33 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
   .ic-title{font-size:.82rem}
   .main-card{margin:0 .3rem 1.2rem}
   .g4{grid-template-columns:1fr}
+}
+
+/* Settings panel */
+.settings-panel{max-width:700px;margin:0 auto}
+.settings-panel h2{color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:1.15rem;font-weight:700;margin-bottom:1.2rem;text-align:center}
+.settings-lang-toggle{display:flex;gap:.4rem;justify-content:center;margin-bottom:1.2rem}
+.settings-lang-btn{padding:.45rem 1.1rem;border-radius:8px;border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);font-family:'Heebo',sans-serif;font-size:.82rem;cursor:pointer;transition:all .18s;min-height:40px}
+.settings-lang-btn.active{background:rgba(255,255,255,.14);color:var(--gold2);border-color:var(--gold);font-weight:600}
+.settings-section{margin-bottom:1.4rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1rem 1.1rem .8rem}
+.settings-section h3{color:var(--gold3);font-family:'Frank Ruhl Libre',serif;font-size:.93rem;font-weight:700;margin-bottom:.85rem;padding-bottom:.45rem;border-bottom:1px solid rgba(255,255,255,.1)}
+.settings-field{display:flex;flex-direction:column;gap:.25rem;margin-bottom:.75rem}
+.settings-field:last-child{margin-bottom:0}
+.settings-field label{font-size:.76rem;font-weight:600;color:var(--gold2);opacity:.85}
+.settings-field input,.settings-field textarea{padding:.55rem .78rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;font-family:'Heebo',sans-serif;font-size:.88rem;color:#fff;background:rgba(0,0,0,.25);transition:border-color .2s,box-shadow .2s;direction:rtl;width:100%;min-height:42px}
+.settings-field textarea{resize:vertical;min-height:72px}
+.settings-field input:focus,.settings-field textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,168,75,.18);background:rgba(0,0,0,.35)}
+.settings-field input::placeholder,.settings-field textarea::placeholder{color:rgba(255,255,255,.25)}
+.settings-actions{display:flex;gap:.65rem;margin-top:1.4rem;flex-wrap:wrap}
+.settings-save-btn{flex:1;min-width:160px;padding:.72rem 1.2rem;background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 100%);color:var(--ink);border:none;border-radius:10px;font-family:'Frank Ruhl Libre',serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;min-height:48px}
+.settings-save-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.settings-reset-btn{padding:.72rem 1.2rem;background:transparent;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:10px;font-family:'Heebo',sans-serif;font-size:.85rem;cursor:pointer;transition:all .18s;min-height:48px}
+.settings-reset-btn:hover{border-color:var(--red);color:var(--red);background:rgba(192,57,43,.08)}
+.settings-msg{text-align:center;font-size:.82rem;margin-top:.65rem;min-height:1.2rem;font-weight:600}
+@media(max-width:600px){
+  .settings-section{padding:.8rem .7rem .6rem}
+  .settings-actions{flex-direction:column}
+  .settings-field input,.settings-field textarea{font-size:16px}
 }
 
 /* Registration collapse */
@@ -525,7 +553,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 <div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name" data-i18n="orgName">עמותת מבשר ציון</div><div class="logo-sub" data-i18n="logoSub">בית הכנסת · רח׳ הצופית 23 · תל מונד</div></div></div>
 <div class="week-card" id="week-card"><div class="wk-head"><span class="wk-par" data-i18n="weekLoading">📅 טוען פרשת השבוע...</span></div></div>
 <div id="announcements-public"></div>
-<div class="reg-btn-wrap"><button class="reg-btn" onclick="toggleReg()" data-i18n="registerBtn">📝 הרשמה לקהילה</button></div>
+<div class="reg-btn-wrap"><button class="reg-btn" onclick="toggleReg()" data-i18n="registerBtn">📝 הרשמה</button></div>
 
 <div class="info-section" id="info-section">
 <div class="info-welcome">
@@ -754,6 +782,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       <button class="stb" onclick="showAt('mem')">📋 מתפללים</button>
       <button class="stb" onclick="showAt('ali')">📜 עליות/קידוש</button>
       <button class="stb" onclick="showAt('ann')">📢 מודעות</button>
+      <button class="stb" onclick="showAt('settings')">⚙️ הגדרות</button>
     </div>
     <div id="at-cal">
     <div class="jnav" id="jnav">
@@ -781,6 +810,84 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     </div>
     <div id="at-ali" style="display:none"></div>
     <div id="at-ann" style="display:none"></div>
+    <div id="at-settings" style="display:none">
+      <div class="settings-panel">
+        <h2>עריכת טקסטים — כל מה שהמשתמש רואה</h2>
+        <div class="settings-lang-toggle">
+          <button class="settings-lang-btn active" onclick="switchSettingsLang('he')">עברית</button>
+          <button class="settings-lang-btn" onclick="switchSettingsLang('en')">English</button>
+        </div>
+        <div id="settings-fields-he">
+          <div class="settings-section"><h3>כללי</h3>
+            <div class="settings-field"><label>שם הארגון</label><input type="text" data-stkey="orgName"></div>
+            <div class="settings-field"><label>כותרת תחתונה</label><input type="text" data-stkey="logoSub"></div>
+            <div class="settings-field"><label>כותרת ברוכים הבאים</label><input type="text" data-stkey="welcomeTitle"></div>
+            <div class="settings-field"><label>טקסט ברוכים הבאים</label><textarea data-stkey="welcomeText"></textarea></div>
+            <div class="settings-field"><label>כפתור הרשמה</label><input type="text" data-stkey="registerBtn"></div>
+          </div>
+          <div class="settings-section"><h3>טופס רישום</h3>
+            <div class="settings-field"><label>כותרת פרטי קשר</label><input type="text" data-stkey="contactDetails"></div>
+            <div class="settings-field"><label>שם פרטי</label><input type="text" data-stkey="firstName"></div>
+            <div class="settings-field"><label>שם משפחה</label><input type="text" data-stkey="lastName"></div>
+            <div class="settings-field"><label>שם האב</label><input type="text" data-stkey="fatherName"></div>
+            <div class="settings-field"><label>שם האם</label><input type="text" data-stkey="motherName"></div>
+            <div class="settings-field"><label>שם לעלייה לתורה</label><input type="text" data-stkey="torahName"></div>
+            <div class="settings-field"><label>טלפון</label><input type="text" data-stkey="phone"></div>
+            <div class="settings-field"><label>דוא"ל</label><input type="text" data-stkey="email"></div>
+            <div class="settings-field"><label>כתובת</label><input type="text" data-stkey="address"></div>
+            <div class="settings-field"><label>ילדים</label><input type="text" data-stkey="children"></div>
+            <div class="settings-field"><label>התנדבות</label><input type="text" data-stkey="volunteering"></div>
+            <div class="settings-field"><label>יארצייטים</label><input type="text" data-stkey="yahrzeits"></div>
+            <div class="settings-field"><label>כפתור שמירה</label><input type="text" data-stkey="save"></div>
+          </div>
+          <div class="settings-section"><h3>הודעות הצלחה</h3>
+            <div class="settings-field"><label>כותרת הצלחה</label><input type="text" data-stkey="successTitle"></div>
+            <div class="settings-field"><label>טקסט הצלחה</label><textarea data-stkey="successBody"></textarea></div>
+          </div>
+          <div class="settings-section"><h3>כפתורים</h3>
+            <div class="settings-field"><label>עריכת פרטים</label><input type="text" data-stkey="editMyDetails"></div>
+            <div class="settings-field"><label>ניהול</label><input type="text" data-stkey="adminBtn"></div>
+          </div>
+        </div>
+        <div id="settings-fields-en" style="display:none">
+          <div class="settings-section"><h3>General</h3>
+            <div class="settings-field"><label>Organization Name</label><input type="text" data-stkey-en="orgName"></div>
+            <div class="settings-field"><label>Logo Subtitle</label><input type="text" data-stkey-en="logoSub"></div>
+            <div class="settings-field"><label>Welcome Title</label><input type="text" data-stkey-en="welcomeTitle"></div>
+            <div class="settings-field"><label>Welcome Text</label><textarea data-stkey-en="welcomeText"></textarea></div>
+            <div class="settings-field"><label>Register Button</label><input type="text" data-stkey-en="registerBtn"></div>
+          </div>
+          <div class="settings-section"><h3>Registration Form</h3>
+            <div class="settings-field"><label>Contact Details Title</label><input type="text" data-stkey-en="contactDetails"></div>
+            <div class="settings-field"><label>First Name</label><input type="text" data-stkey-en="firstName"></div>
+            <div class="settings-field"><label>Last Name</label><input type="text" data-stkey-en="lastName"></div>
+            <div class="settings-field"><label>Father's Name</label><input type="text" data-stkey-en="fatherName"></div>
+            <div class="settings-field"><label>Mother's Name</label><input type="text" data-stkey-en="motherName"></div>
+            <div class="settings-field"><label>Torah Name</label><input type="text" data-stkey-en="torahName"></div>
+            <div class="settings-field"><label>Phone</label><input type="text" data-stkey-en="phone"></div>
+            <div class="settings-field"><label>Email</label><input type="text" data-stkey-en="email"></div>
+            <div class="settings-field"><label>Address</label><input type="text" data-stkey-en="address"></div>
+            <div class="settings-field"><label>Children</label><input type="text" data-stkey-en="children"></div>
+            <div class="settings-field"><label>Volunteering</label><input type="text" data-stkey-en="volunteering"></div>
+            <div class="settings-field"><label>Yahrzeits</label><input type="text" data-stkey-en="yahrzeits"></div>
+            <div class="settings-field"><label>Save Button</label><input type="text" data-stkey-en="save"></div>
+          </div>
+          <div class="settings-section"><h3>Success Messages</h3>
+            <div class="settings-field"><label>Success Title</label><input type="text" data-stkey-en="successTitle"></div>
+            <div class="settings-field"><label>Success Body</label><textarea data-stkey-en="successBody"></textarea></div>
+          </div>
+          <div class="settings-section"><h3>Buttons</h3>
+            <div class="settings-field"><label>Edit My Details</label><input type="text" data-stkey-en="editMyDetails"></div>
+            <div class="settings-field"><label>Admin Button</label><input type="text" data-stkey-en="adminBtn"></div>
+          </div>
+        </div>
+        <div class="settings-actions">
+          <button class="settings-save-btn" onclick="saveCustomTexts()">שמור שינויים</button>
+          <button class="settings-reset-btn" onclick="resetCustomTexts()">איפוס לברירת מחדל</button>
+        </div>
+        <div class="settings-msg" id="settings-msg"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1416,17 +1523,19 @@ let calSt=gSh(),curAt='cal';
 function showAt(t){
   curAt=t;
   document.querySelectorAll('.stb').forEach(function(b,i){
-    b.classList.toggle('active',(i===0&&t==='cal')||(i===1&&t==='mem')||(i===2&&t==='ali')||(i===3&&t==='ann'));
+    b.classList.toggle('active',(i===0&&t==='cal')||(i===1&&t==='mem')||(i===2&&t==='ali')||(i===3&&t==='ann')||(i===4&&t==='settings'));
   });
   document.getElementById('at-cal').style.display=t==='cal'?'block':'none';
   document.getElementById('at-mem').style.display=t==='mem'?'block':'none';
   document.getElementById('at-ali').style.display=t==='ali'?'block':'none';
   document.getElementById('at-ann').style.display=t==='ann'?'block':'none';
+  document.getElementById('at-settings').style.display=t==='settings'?'block':'none';
   if(t==='mem')renderML();
   if(t==='ali')renderAliyotAdmin();
   if(t==='ann')renderAnnAdmin();
+  if(t==='settings')populateSettingsFields();
 }
-function loadAdm(){initJNav();collapseJnavOnMobile();if(curAt==='cal')renderCal();else if(curAt==='mem')renderML();else if(curAt==='ali')renderAliyotAdmin();else if(curAt==='ann')renderAnnAdmin();}
+function loadAdm(){initJNav();collapseJnavOnMobile();if(curAt==='cal')renderCal();else if(curAt==='mem')renderML();else if(curAt==='ali')renderAliyotAdmin();else if(curAt==='ann')renderAnnAdmin();else if(curAt==='settings')populateSettingsFields();}
 function calNav(w){if(w===0){calSt=gSh();}else{calSt=new Date(calSt);calSt.setDate(calSt.getDate()+w*7);}renderCal()}
 async function renderCal(){
   const grid=document.getElementById('cal-grid');const shs=[];const d=new Date(calSt);
@@ -1795,7 +1904,7 @@ var I18N={
     save:'💾 שמור פרטים',
     orgName:'עמותת מבשר ציון',
     logoSub:'בית הכנסת · רח׳ הצופית 23 · תל מונד',
-    registerBtn:'📝 הרשמה לקהילה',
+    registerBtn:'📝 הרשמה',
     welcomeTitle:'🕍 קהילת מבשר ציון — תל מונד',
     welcomeText:'ברוכים הבאים! אנו שמחים לראותכם כחלק מקהילתנו.<br>באתר זה תוכלו להירשם כחברי בית הכנסת, להתעדכן באירועי השבוע הקרוב ולנהל את פרטיכם האישיים.',
     communityInfo:'📋 מידע על הקהילה ותל מונד',
@@ -2099,7 +2208,63 @@ function toggleMasterAcc(el){
   acc.classList.toggle('open');
 }
 
+// ── Settings / Custom Texts ──────────────────────────────
+var settingsLang='he';
+function switchSettingsLang(lang){
+  settingsLang=lang;
+  document.getElementById('settings-fields-he').style.display=lang==='he'?'block':'none';
+  document.getElementById('settings-fields-en').style.display=lang==='en'?'block':'none';
+  document.querySelectorAll('.settings-lang-btn').forEach(function(b){
+    b.classList.toggle('active',(b.textContent.trim()==='עברית'&&lang==='he')||(b.textContent.trim()==='English'&&lang==='en'));
+  });
+}
+function populateSettingsFields(){
+  var heDict=I18N.he;
+  var enDict=I18N.en;
+  document.querySelectorAll('[data-stkey]').forEach(function(el){
+    var key=el.getAttribute('data-stkey');
+    if(heDict[key]!=null)el.value=heDict[key];
+  });
+  document.querySelectorAll('[data-stkey-en]').forEach(function(el){
+    var key=el.getAttribute('data-stkey-en');
+    if(enDict[key]!=null)el.value=enDict[key];
+  });
+}
+function saveCustomTexts(){
+  var custom=JSON.parse(localStorage.getItem('mbz_custom_texts')||'{"he":{},"en":{}}');
+  document.querySelectorAll('[data-stkey]').forEach(function(el){
+    var key=el.getAttribute('data-stkey');
+    custom.he[key]=el.value;
+  });
+  document.querySelectorAll('[data-stkey-en]').forEach(function(el){
+    var key=el.getAttribute('data-stkey-en');
+    custom.en[key]=el.value;
+  });
+  localStorage.setItem('mbz_custom_texts',JSON.stringify(custom));
+  mergeCustomTexts();
+  applyLang();
+  var msg=document.getElementById('settings-msg');
+  msg.style.color='var(--grn)';
+  msg.textContent='השינויים נשמרו בהצלחה!';
+  setTimeout(function(){msg.textContent=''},3000);
+}
+function resetCustomTexts(){
+  if(!confirm('האם לאפס את כל הטקסטים לברירת מחדל?'))return;
+  localStorage.removeItem('mbz_custom_texts');
+  location.reload();
+}
+function mergeCustomTexts(){
+  var raw=localStorage.getItem('mbz_custom_texts');
+  if(!raw)return;
+  try{
+    var custom=JSON.parse(raw);
+    if(custom.he){for(var k in custom.he){if(custom.he[k]!=='')I18N.he[k]=custom.he[k];}}
+    if(custom.en){for(var k in custom.en){if(custom.en[k]!=='')I18N.en[k]=custom.en[k];}}
+  }catch(e){}
+}
+
 // ── Init ─────────────────────────────────────────────────
+mergeCustomTexts();
 initTheme();
 initLang();
 initForm();
