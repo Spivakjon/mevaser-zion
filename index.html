@@ -2856,26 +2856,51 @@ function getDutyPairWithSwaps(weekOffset){
   var roster=getDutyRoster();
   if(swaps[key]){
     var sw=swaps[key];
-    if(sw[0]){var r=roster.find(function(m){return m.id===sw[0]});if(r)pair[0]=r}
-    if(sw[1]){var r=roster.find(function(m){return m.id===sw[1]});if(r)pair[1]=r}
+    if(sw[0]){
+      if(typeof sw[0]==='object'&&sw[0].plus1){pair[0]={firstName:sw[0].name,lastName:'(+1)',phone:'—',id:'plus1_0',_plus1:true}}
+      else{var r=roster.find(function(m){return m.id===sw[0]});if(r)pair[0]=r}
+    }
+    if(sw[1]){
+      if(typeof sw[1]==='object'&&sw[1].plus1){pair[1]={firstName:sw[1].name,lastName:'(+1)',phone:'—',id:'plus1_1',_plus1:true}}
+      else{var r=roster.find(function(m){return m.id===sw[1]});if(r)pair[1]=r}
+    }
   }
   return pair;
 }
 function swapDuty(weekOffset,slot){
-  var roster=getDutyRoster();if(roster.length<2)return;
+  var roster=getDutyRoster();
   var pair=getDutyPairWithSwaps(weekOffset);
   var currentId=pair[slot]?pair[slot].id:'';
-  var h='<div style="padding:.5rem"><h2 style="margin-bottom:.8rem">🔄 החלף תורן</h2>';
-  h+='<p style="margin-bottom:.8rem;font-size:.9rem;color:var(--ink3)">בחר תורן חלופי:</p>';
-  roster.forEach(function(m){
-    var isCurrent=m.id===currentId;
-    h+='<div class="mc" style="margin-bottom:4px;cursor:pointer;opacity:'+(isCurrent?'.5':'1')+'" onclick="'+(isCurrent?'':'confirmSwap('+weekOffset+','+slot+',\''+m.id+'\')')+'"><div class="mav">'+es((m.firstName||'').charAt(0)+(m.lastName||'').charAt(0))+'</div><div class="mi"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone)+(isCurrent?' (נוכחי)':'')+'</div></div></div>';
-  });
   var d=new Date();d.setDate(d.getDate()+weekOffset*7);
   var sh=getUpcomingShabbat(d);var key=sh.toISOString().slice(0,10);
+  var h='<div style="padding:.5rem"><h2 style="margin-bottom:.8rem">🔄 החלף תורן</h2>';
+  // +1 option - assign someone by name who is not in roster
+  h+='<div style="background:var(--c2);border-radius:8px;padding:.7rem;margin-bottom:.8rem;border:1px solid var(--bd2)">';
+  h+='<div style="font-size:.8rem;font-weight:600;margin-bottom:.4rem">➕ שיבוץ +1 (אורח / לא ברשימה)</div>';
+  h+='<div style="display:flex;gap:6px"><input type="text" id="duty-plus1-name" placeholder="שם מלא..." style="flex:1;padding:6px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:.85rem"><button onclick="confirmSwapPlus1('+weekOffset+','+slot+')" style="padding:6px 12px;background:var(--gold);color:var(--bg1);border:none;border-radius:6px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap">שבץ +1</button></div>';
+  h+='</div>';
+  if(roster.length){
+    h+='<p style="margin-bottom:.5rem;font-size:.85rem;color:var(--ink3)">או בחר מרשימת התורנים:</p>';
+    roster.forEach(function(m){
+      var isCurrent=m.id===currentId;
+      h+='<div class="mc" style="margin-bottom:4px;cursor:pointer;opacity:'+(isCurrent?'.5':'1')+'" onclick="'+(isCurrent?'':'confirmSwap('+weekOffset+','+slot+',\''+m.id+'\')')+'"><div class="mav">'+es((m.firstName||'').charAt(0)+(m.lastName||'').charAt(0))+'</div><div class="mi"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone)+(isCurrent?' (נוכחי)':'')+'</div></div></div>';
+    });
+  }
   h+='<div style="margin-top:.8rem;display:flex;gap:8px;justify-content:center"><button class="md-btn-close" onclick="resetSwap(\''+key+'\','+slot+')">↩ אפס לרוטציה</button><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
   document.getElementById('md-card').innerHTML=h;
   document.getElementById('md-ovl').classList.add('show');
+}
+function confirmSwapPlus1(weekOffset,slot){
+  var name=document.getElementById('duty-plus1-name').value.trim();
+  if(!name)return alert('הזן שם');
+  var d=new Date();d.setDate(d.getDate()+weekOffset*7);
+  var sh=getUpcomingShabbat(d);var key=sh.toISOString().slice(0,10);
+  var swaps=getDutySwaps();
+  if(!swaps[key])swaps[key]={};
+  // Store as object with name for +1 guests
+  swaps[key][slot]={plus1:true,name:name};
+  saveDutySwaps(swaps);
+  closeMD();renderDutyTab();
 }
 function confirmSwap(weekOffset,slot,newId){
   var d=new Date();d.setDate(d.getDate()+weekOffset*7);
@@ -2922,6 +2947,20 @@ function renderDutyTab(){
     rl.innerHTML='<div style="text-align:center;color:var(--ink3);padding:1.5rem">אין תורנים ברשימה</div>';
   }
 }
+
+// ── Demo Data ────────────────────────────────────────────
+function loadDemoData(){
+  if(lsGet().length>0)return; // Don't overwrite existing data
+  var demos=[
+    {id:'demo_1',firstName:'דוד',lastName:'לוי',fatherName:'אברהם',motherName:'שרה',torahName:'דוד בן אברהם למשפחת לוי',phone:'050-1234567',email:'david.levi@gmail.com',address:'הצופית 10, תל מונד',spouse:{name:'רחל',phone:'050-1234568',email:'rachel.levi@gmail.com'},children:[{name:'יונתן',gender:'זכר',gd:'2015-03-12',hd:'',hm:'',hy:'',wantsBM:false,parasha:'',readP:'',readH:''},{name:'נועה',gender:'נקבה',gd:'2018-07-22',hd:'',hm:'',hy:'',wantsBM:false,parasha:'',readP:'',readH:''},{name:'עידו',gender:'זכר',gd:'2021-01-05',hd:'',hm:'',hy:'',wantsBM:false,parasha:'',readP:'',readH:''}],volunteering:['קניות לקידוש','דבר תורה'],yahrzeits:[{name:'יעקב לוי',hd:'15',hm:'7',hy:'5780',gd:'',lead:'כן',haft:'לא'}],membershipPaid:true,membershipPaidDate:'15.1.2026',paymentMethod:'אשראי',paymentAmount:'1200',dutyRoster:true,timestamp:new Date().toISOString()},
+    {id:'demo_2',firstName:'משה',lastName:'כהן',fatherName:'יצחק',motherName:'לאה',torahName:'משה בן יצחק למשפחת כהן',phone:'052-9876543',email:'moshe.cohen@walla.co.il',address:'הדקל 25, תל מונד',spouse:{name:'מיכל',phone:'052-9876544',email:''},children:[{name:'אליהו',gender:'זכר',gd:'2013-09-18',hd:'',hm:'',hy:'',wantsBM:true,parasha:'וירא',readP:'כן',readH:'כן'},{name:'תמר',gender:'נקבה',gd:'2016-12-03',hd:'',hm:'',hy:'',wantsBM:false,parasha:'',readP:'',readH:''}],volunteering:['סידור קידוש'],yahrzeits:[],membershipPaid:false,dutyRoster:true,timestamp:new Date().toISOString()},
+    {id:'demo_3',firstName:'יוסף',lastName:'אברהמי',fatherName:'שמעון',motherName:'דינה',torahName:'יוסף בן שמעון למשפחת אברהמי',phone:'054-5551234',email:'yosef.a@outlook.com',address:'התמר 8, תל מונד',spouse:{name:'הדס',phone:'054-5551235',email:'hadas.a@outlook.com'},children:[{name:'שירה',gender:'נקבה',gd:'2010-05-14',hd:'',hm:'',hy:'',wantsBM:false,parasha:'',readP:'',readH:''},{name:'אורי',gender:'זכר',gd:'2012-11-28',hd:'',hm:'',hy:'',wantsBM:true,parasha:'בשלח',readP:'כן',readH:'לא'},{name:'עדי',gender:'נקבה',gd:'2017-04-09',hd:'',hm:'',hy:'',wantsBM:false,parasha:'',readP:'',readH:''},{name:'רועי',gender:'זכר',gd:'2020-08-15',hd:'',hm:'',hy:'',wantsBM:false,parasha:'',readP:'',readH:''}],volunteering:['דבר תורה'],yahrzeits:[{name:'חנה אברהמי',hd:'3',hm:'1',hy:'5782',gd:'',lead:'לא',haft:'כן'},{name:'שמעון אברהמי',hd:'21',hm:'5',hy:'5770',gd:'',lead:'כן',haft:'לא'}],membershipPaid:true,membershipPaidDate:'3.10.2025',paymentMethod:'העברה בנקאית',paymentAmount:'1500',dutyRoster:true,timestamp:new Date().toISOString()},
+    {id:'demo_4',firstName:'אלון',lastName:'ברנד',fatherName:'מנחם',motherName:'',torahName:'אלון בן מנחם למשפחת ברנד',phone:'058-7772233',email:'',address:'השקד 15, תל מונד',spouse:{name:'נורית',phone:'058-7772234',email:'nurit.brand@gmail.com'},children:[{name:'מאיר',gender:'זכר',gd:'2019-02-20',hd:'',hm:'',hy:'',wantsBM:false,parasha:'',readP:'',readH:''}],volunteering:[],yahrzeits:[],membershipPaid:false,dutyRoster:false,timestamp:new Date().toISOString()},
+    {id:'demo_5',firstName:'דניאל',lastName:'גולדשטיין',fatherName:'ראובן',motherName:'פנינה',torahName:'דניאל בן ראובן למשפחת גולדשטיין',phone:'053-4445566',email:'daniel.g@tech.co.il',address:'מצדה 3, תל מונד',spouse:{name:'',phone:'',email:''},children:[],volunteering:['קניות לקידוש','סידור קידוש','דבר תורה'],yahrzeits:[{name:'ראובן גולדשטיין',hd:'10',hm:'4',hy:'5783',gd:'',lead:'כן',haft:'כן'}],membershipPaid:true,membershipPaidDate:'20.9.2025',paymentMethod:'ביט/פייבוקס',paymentAmount:'800',paymentNotes:'3 תשלומים',dutyRoster:true,timestamp:new Date().toISOString()}
+  ];
+  lsSet(demos);
+}
+loadDemoData();
 
 // ── Init ─────────────────────────────────────────────────
 mergeCustomTexts();
