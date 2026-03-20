@@ -18,6 +18,27 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent;scroll-behavior:smooth}
 body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction:rtl;background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 50%,var(--bg3) 100%);background-attachment:fixed;color:var(--ink);overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:0 env(safe-area-inset-right,0px) 0 env(safe-area-inset-left,0px)}
+
+/* Light mode */
+body.light-mode{background:linear-gradient(135deg,#f0f2f5 0%,#e8eaed 50%,#f5f5f5 100%);--bg1:#f0f2f5;--bg2:#e8eaed;--bg3:#f5f5f5}
+body.light-mode .logo-name{color:var(--ink)}
+body.light-mode .logo-sub{color:var(--ink3)}
+body.light-mode .top-actions button{color:var(--ink3)}
+body.light-mode .top-actions button:hover,body.light-mode .top-actions button:active{color:var(--ink);background:rgba(0,0,0,.06)}
+body.light-mode .week-card{background:rgba(255,255,255,.85);border-color:var(--bd)}
+body.light-mode .wk-par{color:var(--gold)}
+body.light-mode .wk-date{color:var(--ink3)}
+body.light-mode .wk-heb{color:var(--ink2)}
+body.light-mode .wk-ev{background:rgba(0,0,0,.04);color:var(--ink2)}
+body.light-mode .wk-ev-name{color:var(--ink)}
+body.light-mode .wk-none{color:var(--ink3)}
+body.light-mode .wk-link{color:var(--gold);border-color:var(--bd)}
+body.light-mode .ann-card{background:rgba(255,255,255,.9);border-color:var(--bd)}
+body.light-mode .ann-title{color:var(--ink)}
+body.light-mode .ann-body{color:var(--ink2)}
+body.light-mode .ann-date{color:var(--ink3)}
+body.light-mode .ann-head{color:var(--ink)}
+
 .logo-area{text-align:center;padding:1rem 1rem 1rem}
 .logo-wrap{display:inline-flex;flex-direction:column;align-items:center;gap:.5rem}
 .logo-box{width:112px;height:112px;background:#fff;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(0,0,0,.3),0 0 0 2px var(--gold);position:relative;overflow:hidden;padding:8px}
@@ -30,11 +51,13 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
 .sec{padding:1.2rem 1.5rem}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7rem}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:.7rem}
 .ff{display:flex;flex-direction:column;gap:.25rem}
 .ff label{font-size:.75rem;font-weight:600;color:var(--ink2)}
 .req{color:var(--red)}
-.ff input,.ff select{padding:.62rem .82rem;border:1.5px solid var(--bd);border-radius:9px;font-family:'Heebo',sans-serif;font-size:16px;color:var(--ink);background:var(--c2);transition:border-color .2s,box-shadow .2s;direction:rtl;-webkit-appearance:none;appearance:none;width:100%;min-height:44px}
-.ff input:focus,.ff select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,168,75,.14);background:#fff}
+.ff input,.ff select,.ff textarea{padding:.62rem .82rem;border:1.5px solid var(--bd);border-radius:9px;font-family:'Heebo',sans-serif;font-size:16px;color:var(--ink);background:var(--c2);transition:border-color .2s,box-shadow .2s;direction:rtl;-webkit-appearance:none;appearance:none;width:100%;min-height:44px}
+.ff textarea{resize:vertical;min-height:60px}
+.ff input:focus,.ff select:focus,.ff textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,168,75,.14);background:#fff}
 .ff.err input,.ff.err select{border-color:var(--red)}
 .emsg{font-size:.71rem;color:var(--red);display:none}
 .ff.err .emsg{display:block}
@@ -80,9 +103,17 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
 .s-btns button{padding:.65rem 1.35rem;border:none;border-radius:10px;font-family:'Heebo',sans-serif;font-size:.87rem;font-weight:600;cursor:pointer;min-height:44px}
 .btn-new{background:var(--ink);color:var(--gold2)}
 .btn-adm{background:var(--gold);color:var(--ink)}
-.top-actions{display:flex;justify-content:center;gap:.5rem;padding:calc(.6rem + env(safe-area-inset-top,0px)) .75rem .1rem;direction:rtl}
+.top-actions{display:flex;justify-content:center;gap:.5rem;padding:calc(.6rem + env(safe-area-inset-top,0px)) .75rem .1rem;direction:rtl;align-items:center}
 .top-actions button{background:transparent;border:none;color:rgba(255,255,255,.4);font-family:'Heebo',sans-serif;font-size:.72rem;cursor:pointer;padding:.3rem .55rem;border-radius:6px;transition:all .2s}
 .top-actions button:hover,.top-actions button:active{color:rgba(255,255,255,.7);background:rgba(255,255,255,.08)}
+body.light-mode .top-actions button{color:var(--ink3)}
+body.light-mode .top-actions button:hover{color:var(--ink);background:rgba(0,0,0,.06)}
+.lang-toggle{display:inline-flex;gap:2px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden;margin:0 .2rem}
+.lang-toggle button{padding:.25rem .45rem;font-size:.68rem;border:none;background:transparent;color:rgba(255,255,255,.4);cursor:pointer;font-family:'Heebo',sans-serif;transition:all .15s}
+.lang-toggle button.active{background:rgba(255,255,255,.15);color:var(--gold2);font-weight:700}
+body.light-mode .lang-toggle{background:rgba(0,0,0,.06)}
+body.light-mode .lang-toggle button{color:var(--ink3)}
+body.light-mode .lang-toggle button.active{background:rgba(0,0,0,.1);color:var(--gold)}
 #adm-ovl{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;overflow-y:auto;background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 50%,var(--bg3) 100%);-webkit-overflow-scrolling:touch}
 .adm-x{position:fixed;top:calc(.9rem + env(safe-area-inset-top,0px));left:calc(.9rem + env(safe-area-inset-left,0px));background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);color:#fff;width:42px;height:42px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;z-index:10}
 .adm-x:hover{background:rgba(255,255,255,.18)}
@@ -183,6 +214,7 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
 .mbtn-gold{background:var(--gold);color:var(--ink)}
 .mbtn-dark{background:var(--ink);color:var(--gold2)}
 .mbtn-gray{background:#f3f4f6;color:var(--ink3)}
+.mbtn-grn{background:var(--grn);color:#fff}
 .mhint{font-size:.72rem;color:var(--ink3);margin-top:-.25rem;margin-bottom:.55rem}
 
 /* This Week card */
@@ -199,6 +231,61 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
 .wk-none{font-size:.78rem;color:rgba(255,255,255,.3);padding:.3rem 0}
 .wk-link{display:inline-block;margin-top:.45rem;font-size:.72rem;color:var(--gold);text-decoration:none;border:1px solid rgba(200,168,75,.25);border-radius:6px;padding:.2rem .55rem;transition:all .15s}
 .wk-link:hover{background:rgba(200,168,75,.12);color:var(--gold2)}
+
+/* Announcements card */
+.ann-card{max-width:760px;margin:0 auto .85rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(200,168,75,.25);border-radius:14px;padding:.85rem 1rem;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.ann-head{font-family:'Frank Ruhl Libre',serif;font-size:1rem;font-weight:700;color:var(--gold2);margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}
+.ann-item{background:rgba(255,255,255,.06);border-radius:8px;padding:.55rem .7rem;margin-bottom:.4rem}
+.ann-item:last-child{margin-bottom:0}
+.ann-title{font-weight:700;color:#fff;font-size:.88rem;margin-bottom:.2rem}
+.ann-body{color:rgba(255,255,255,.7);font-size:.8rem;line-height:1.5}
+.ann-date{color:rgba(255,255,255,.35);font-size:.68rem;margin-top:.2rem}
+body.light-mode .ann-item{background:rgba(0,0,0,.03)}
+
+/* Stats dashboard */
+.stats-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.stat-card{flex:1;min-width:100px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.14);border-radius:10px;padding:.6rem .7rem;text-align:center}
+.stat-icon{font-size:1.2rem;margin-bottom:.2rem}
+.stat-num{font-family:'Frank Ruhl Libre',serif;font-size:1.3rem;font-weight:700;color:var(--gold2)}
+.stat-label{font-size:.68rem;color:rgba(255,255,255,.5);margin-top:.1rem}
+
+/* Filter pills */
+.filter-pills{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.65rem}
+.fpill{padding:.35rem .7rem;border-radius:20px;font-size:.75rem;font-family:'Heebo',sans-serif;cursor:pointer;border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);transition:all .15s;min-height:36px;display:inline-flex;align-items:center}
+.fpill:hover{border-color:var(--gold);color:var(--gold2)}
+.fpill.active{background:rgba(200,168,75,.2);border-color:var(--gold);color:var(--gold2);font-weight:600}
+
+/* Aliyot section in admin */
+.aliyot-section{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:12px;padding:1rem;margin-bottom:1rem}
+.aliyot-section h3{color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:.95rem;font-weight:700;margin-bottom:.7rem}
+.aliyot-slot{display:flex;align-items:center;gap:.55rem;margin-bottom:.45rem;flex-wrap:wrap}
+.aliyot-label{min-width:70px;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.6)}
+.aliyot-slot input{flex:1;padding:.48rem .65rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:16px;direction:rtl;min-height:44px;min-width:0}
+.aliyot-slot input:focus{outline:none;border-color:var(--gold)}
+.aliyot-slot input::placeholder{color:rgba(255,255,255,.3)}
+.kiddush-section{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:12px;padding:1rem;margin-bottom:1rem}
+.kiddush-section h3{color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:.95rem;font-weight:700;margin-bottom:.7rem}
+.kiddush-section input,.kiddush-section textarea{width:100%;padding:.48rem .65rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:16px;direction:rtl;min-height:44px}
+.kiddush-section textarea{min-height:60px;resize:vertical}
+.kiddush-section input:focus,.kiddush-section textarea:focus{outline:none;border-color:var(--gold)}
+.kiddush-section input::placeholder,.kiddush-section textarea::placeholder{color:rgba(255,255,255,.3)}
+.save-aliyot-btn{background:var(--gold);color:var(--ink);border:none;border-radius:8px;padding:.55rem 1.2rem;font-family:'Heebo',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;min-height:44px;margin-top:.5rem;transition:all .15s}
+.save-aliyot-btn:hover{background:var(--gold2)}
+
+/* Announcements admin */
+.ann-admin{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:12px;padding:1rem;margin-bottom:1rem}
+.ann-admin h3{color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:.95rem;font-weight:700;margin-bottom:.7rem}
+.ann-admin input,.ann-admin textarea{width:100%;padding:.48rem .65rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:16px;direction:rtl;min-height:44px;margin-bottom:.45rem}
+.ann-admin textarea{min-height:70px;resize:vertical}
+.ann-admin input:focus,.ann-admin textarea:focus{outline:none;border-color:var(--gold)}
+.ann-admin input::placeholder,.ann-admin textarea::placeholder{color:rgba(255,255,255,.3)}
+.ann-list-item{background:rgba(255,255,255,.07);border-radius:8px;padding:.6rem .75rem;margin-bottom:.4rem;display:flex;align-items:flex-start;gap:.5rem}
+.ann-list-item .ann-list-text{flex:1}
+.ann-list-item .ann-list-title{color:#fff;font-weight:700;font-size:.85rem}
+.ann-list-item .ann-list-body{color:rgba(255,255,255,.6);font-size:.78rem;margin-top:.15rem}
+.ann-list-item .ann-list-date{color:rgba(255,255,255,.35);font-size:.66rem;margin-top:.15rem}
+.ann-del-btn{background:rgba(192,57,43,.2);border:1.5px solid rgba(192,57,43,.4);color:#f87171;border-radius:7px;padding:.3rem .6rem;font-size:.72rem;cursor:pointer;font-family:'Heebo',sans-serif;min-height:32px;flex-shrink:0;transition:all .15s}
+.ann-del-btn:hover{background:var(--red);color:#fff}
 
 /* Member detail view */
 .md-ovl{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1500;background:rgba(0,0,0,.55);-webkit-overflow-scrolling:touch;justify-content:center;align-items:flex-start;padding:2rem .75rem;overflow-y:auto}
@@ -263,19 +350,31 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
 .sync-status.disconnected{background:rgba(192,57,43,.1);color:#e88}
 .sync-status.syncing{background:rgba(200,168,75,.15);color:var(--gold2)}
 
+/* Autocomplete dropdown for aliyot */
+.ac-list{position:absolute;top:100%;right:0;left:0;background:#1a2744;border:1.5px solid rgba(200,168,75,.3);border-radius:8px;max-height:160px;overflow-y:auto;z-index:100;display:none}
+.ac-list.show{display:block}
+.ac-item{padding:.4rem .65rem;color:#fff;font-size:.82rem;cursor:pointer;transition:background .12s}
+.ac-item:hover{background:rgba(200,168,75,.2)}
+.ac-wrap{position:relative}
+
 /* ===== TABLET (max 768px) ===== */
 @media(max-width:768px){
   .g3{grid-template-columns:1fr 1fr}
+  .g4{grid-template-columns:1fr 1fr}
   .main-card{margin:0 .75rem 1.5rem;border-radius:16px}
   .hrow{grid-template-columns:50px 1fr 110px}
   .adm-pnl{padding:1.2rem .75rem 3rem}
   .wpar{font-size:.88rem}
   .logo-name{font-size:1.55rem}
+  .stats-row{gap:.35rem}
+  .stat-card{min-width:80px;padding:.45rem .5rem}
+  .stat-num{font-size:1.1rem}
 }
 
 /* ===== MOBILE (max 600px) ===== */
 @media(max-width:600px){
   .g2,.g3{grid-template-columns:1fr}
+  .g4{grid-template-columns:1fr 1fr}
   .main-card{margin:0 .45rem 1.5rem;border-radius:14px}
   .sec{padding:1rem .85rem}
   .sh{padding:.55rem 1rem}
@@ -333,6 +432,12 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
   .week-card{margin:0 .45rem .85rem;padding:.75rem .7rem}
   .wk-par{font-size:.95rem}
   .wk-head{flex-wrap:wrap}
+  .ann-card{margin:0 .45rem .85rem;padding:.75rem .7rem}
+  .stats-row{gap:.3rem}
+  .stat-card{min-width:70px;padding:.4rem .35rem}
+  .stat-num{font-size:1rem}
+  .stat-label{font-size:.62rem}
+  .stabs{flex-wrap:wrap}
 }
 
 /* ===== SMALL MOBILE (max 380px) ===== */
@@ -347,30 +452,49 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
   .adm-title{font-size:1.05rem}
   .ic-title{font-size:.82rem}
   .main-card{margin:0 .3rem 1.2rem}
+  .g4{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
-<div class="top-actions"><button onclick="openSelfEdit()">📝 עריכת הפרטים שלי</button><button onclick="openAdm()">🔒 ניהול</button></div>
-<div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name">עמותת מבשר ציון</div><div class="logo-sub">שלום וברוך הבא! אנא מלא את פרטיך ונשמח לשמור על קשר</div></div></div>
+<div class="top-actions">
+  <button onclick="openSelfEdit()" data-i18n="editMyDetails">📝 עריכת הפרטים שלי</button>
+  <button onclick="openAdm()">🔒 ניהול</button>
+  <button onclick="toggleTheme()" id="theme-toggle-btn">☀️</button>
+  <div class="lang-toggle" id="lang-toggle">
+    <button class="active" onclick="setLang('he')">עב</button>
+    <button onclick="setLang('fr')">FR</button>
+    <button onclick="setLang('en')">EN</button>
+  </div>
+</div>
+<div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name">עמותת מבשר ציון</div><div class="logo-sub" data-i18n="welcome">שלום וברוך הבא! אנא מלא את פרטיך ונשמח לשמור על קשר</div></div></div>
 <div class="week-card" id="week-card"><div class="wk-head"><span class="wk-par">📅 טוען פרשת השבוע...</span></div></div>
+<div id="announcements-public"></div>
 <div class="main-card" id="main-card">
   <div class="sv" id="sv"><div class="s-icon">✓</div><div class="s-title">הרישום נשמר בהצלחה!</div><div class="s-body">פרטיך נשמרו בתיק הקהילה.<br>נשמח לראותך בקרב מתפללי בית הכנסת.</div><div class="s-btns"><button class="btn-new" onclick="resetForm()">רישום חדש</button><button class="btn-adm" onclick="openAdm()">ממשק מנהל</button></div></div>
   <div id="fv">
-    <div class="sh"><span>👤</span><span class="sh-t">פרטי קשר ומשפחה</span></div>
+    <div class="sh"><span>👤</span><span class="sh-t" data-i18n="contactDetails">פרטי קשר ומשפחה</span></div>
     <div class="sec">
-      <div class="g3" style="margin-bottom:.7rem"><div class="ff"><label>שם פרטי <span class="req">*</span></label><input id="fn" placeholder="משה" oninput="autoTorah()"><div class="emsg">שדה חובה</div></div><div class="ff"><label>שם משפחה <span class="req">*</span></label><input id="ln" placeholder="כהן" oninput="autoTorah()"><div class="emsg">שדה חובה</div></div><div class="ff"><label>שם האב <span class="req">*</span></label><input id="fa" placeholder="אברהם" oninput="autoTorah()"><div class="emsg">שדה חובה</div></div></div>
-      <div class="g3"><div class="ff"><label>שם האם</label><input id="mo" placeholder="שרה"></div><div class="ff"><label>שם מלא לעלייה לתורה</label><input id="tr" placeholder="משה בן אברהם"></div><div class="ff"><label>טלפון <span class="req">*</span></label><input id="ph" type="tel" placeholder="050-1234567" dir="ltr"><div class="emsg">שדה חובה</div></div></div>
-      <div class="g2" style="margin-top:.7rem"><div class="ff"><label>דואר אלקטרוני</label><input id="em" type="email" placeholder="shalom@gmail.com" dir="ltr"></div><div class="ff"><label>כתובת מגורים</label><input id="ad" placeholder="רחוב, מספר, עיר"></div></div>
+      <div class="g3" style="margin-bottom:.7rem"><div class="ff"><label data-i18n="firstName">שם פרטי <span class="req">*</span></label><input id="fn" placeholder="משה" oninput="autoTorah()"><div class="emsg">שדה חובה</div></div><div class="ff"><label data-i18n="lastName">שם משפחה <span class="req">*</span></label><input id="ln" placeholder="כהן" oninput="autoTorah()"><div class="emsg">שדה חובה</div></div><div class="ff"><label data-i18n="fatherName">שם האב <span class="req">*</span></label><input id="fa" placeholder="אברהם" oninput="autoTorah()"><div class="emsg">שדה חובה</div></div></div>
+      <div class="g3"><div class="ff"><label data-i18n="motherName">שם האם</label><input id="mo" placeholder="שרה"></div><div class="ff"><label data-i18n="torahName">שם מלא לעלייה לתורה</label><input id="tr" placeholder="משה בן אברהם"></div><div class="ff"><label data-i18n="phone">טלפון <span class="req">*</span></label><input id="ph" type="tel" placeholder="050-1234567" dir="ltr"><div class="emsg">שדה חובה</div></div></div>
+      <div class="g2" style="margin-top:.7rem"><div class="ff"><label data-i18n="email">דואר אלקטרוני</label><input id="em" type="email" placeholder="shalom@gmail.com" dir="ltr"></div><div style="display:contents"></div></div>
+      <div style="margin-top:.7rem"><label style="font-size:.75rem;font-weight:600;color:var(--ink2);display:block;margin-bottom:.35rem" data-i18n="address">כתובת מגורים</label>
+        <div class="g4">
+          <div class="ff"><label data-i18n="street">רחוב</label><input id="ad-street" placeholder="הרצל"></div>
+          <div class="ff"><label data-i18n="houseNum">מספר בית</label><input id="ad-num" placeholder="12"></div>
+          <div class="ff"><label data-i18n="apartment">דירה</label><input id="ad-apt" placeholder=""></div>
+          <div class="ff"><label data-i18n="city">ישוב</label><input id="ad-city" placeholder="תל מונד" value="תל מונד"></div>
+        </div>
+      </div>
     </div>
-    <div class="sh"><span>👨‍👧‍👦</span><span class="sh-t">ילדים</span></div>
-    <div class="sec"><div id="cw"></div><button class="badd" id="badd-c" onclick="addCh()">+ הוסף ילד</button></div>
-    <div class="sh"><span>🙏</span><span class="sh-t">תחומי התנדבות</span></div>
+    <div class="sh"><span>👨‍👧‍👦</span><span class="sh-t" data-i18n="children">ילדים</span></div>
+    <div class="sec"><div id="cw"></div><button class="badd" id="badd-c" onclick="addCh()" data-i18n="addChild">+ הוסף ילד</button></div>
+    <div class="sh"><span>🙏</span><span class="sh-t" data-i18n="volunteering">תחומי התנדבות</span></div>
     <div class="sec"><div class="cb-row"><label class="cbl" id="cb1"><input type="checkbox" id="v1" onchange="tCb('cb1','v1')"> קניות לקידוש שבת</label><label class="cbl" id="cb2"><input type="checkbox" id="v2" onchange="tCb('cb2','v2')"> סידור וארגון הקידוש</label><label class="cbl" id="cb3"><input type="checkbox" id="v3" onchange="tCb('cb3','v3')"> העברת דבר תורה</label></div></div>
-    <div class="sh"><span>🕯</span><span class="sh-t">ימי זיכרון (יארצייט)</span></div>
-    <div class="sec"><div id="yw"></div><button class="badd" onclick="addYr()">+ הוסף יום זיכרון</button></div>
+    <div class="sh"><span>🕯</span><span class="sh-t" data-i18n="yahrzeits">ימי זיכרון (יארצייט)</span></div>
+    <div class="sec"><div id="yw"></div><button class="badd" onclick="addYr()" data-i18n="addYahrzeit">+ הוסף יום זיכרון</button></div>
     <div class="fmsg" id="fmsg"></div>
-    <button class="bsave" id="bsave" onclick="submitForm()"><span>💾</span> שמור פרטים</button>
+    <button class="bsave" id="bsave" onclick="submitForm()" data-i18n="save"><span>💾</span> שמור פרטים</button>
   </div>
 </div>
 <div id="adm-ovl">
@@ -378,6 +502,7 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
   <div id="adm-lg" class="lg-wrap"><div class="lg-card"><div style="font-size:2.4rem;margin-bottom:.65rem">🔐</div><h2>ממשק מנהל</h2><p>הזן סיסמה לגישה לפאנל הניהול</p><input type="password" id="pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLg()"><button class="blg" onclick="doLg()">כניסה לממשק</button><div class="lg-err" id="pw-err">סיסמה שגויה</div></div></div>
   <div class="adm-pnl" id="adm-pnl">
     <div class="adm-hdr"><span class="adm-title">🕍 ממשק ניהול — קהילת מבשר ציון</span><div class="adm-acts"><button class="abt" onclick="doSync()">🔄 סנכרן</button><button class="abt" onclick="expData()">💾 ייצוא</button><button class="abt" onclick="impData()">📂 שחזור</button><button class="abt" onclick="doLo()">יציאה ✕</button></div></div>
+    <div id="stats-dashboard" class="stats-row"></div>
     <div id="sheets-banner" class="sheets-banner" style="display:none"><span class="sheets-banner-text">Google Sheets לא מחובר — הנתונים נשמרים מקומית בלבד</span><button class="sheets-banner-btn" onclick="toggleSheetsCfg()">הגדר חיבור</button></div>
     <div id="sheets-cfg" class="sheets-cfg">
       <h3>הגדרת חיבור Google Sheets</h3>
@@ -391,7 +516,12 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
       </div>
     </div>
     <div id="sync-status" class="sync-status" style="display:none"></div>
-    <div class="stabs"><button class="stb active" onclick="showAt('cal')">📅 לוח שבועי</button><button class="stb" onclick="showAt('mem')">📋 מתפללים</button></div>
+    <div class="stabs">
+      <button class="stb active" onclick="showAt('cal')">📅 לוח שבועי</button>
+      <button class="stb" onclick="showAt('mem')">📋 מתפללים</button>
+      <button class="stb" onclick="showAt('ali')">📜 עליות/קידוש</button>
+      <button class="stb" onclick="showAt('ann')">📢 מודעות</button>
+    </div>
     <div id="at-cal">
     <div class="jnav" id="jnav">
       <div class="jnav-title" onclick="toggleJnav()">⏩ קפוץ לתאריך <span class="jtgl">▾</span></div>
@@ -406,7 +536,18 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
       </div>
     </div>
     <div class="cnav-row"><button class="cnv" onclick="calNav(-4)">← 4 שבועות</button><button class="cnv" onclick="calNav(0)">היום</button><div class="cnav-title" id="cal-ttl"></div><button class="cnv" onclick="calNav(4)">4 שבועות →</button></div><div id="cal-grid"></div></div>
-    <div id="at-mem" style="display:none"><div class="m-top"><span class="m-cnt" id="mcnt">0 מתפללים</span><input class="m-srch" type="text" placeholder="חיפוש שם..." oninput="filtM(this.value)"></div><div id="ml"></div></div>
+    <div id="at-mem" style="display:none">
+      <div class="m-top"><span class="m-cnt" id="mcnt">0 מתפללים</span><input class="m-srch" id="m-srch-input" type="text" placeholder="חיפוש שם..." oninput="filtM(this.value)"></div>
+      <div class="filter-pills" id="filter-pills">
+        <button class="fpill active" onclick="setFilter('all')">הכל</button>
+        <button class="fpill" onclick="setFilter('vol')">מתנדבים</button>
+        <button class="fpill" onclick="setFilter('kids')">יש ילדים</button>
+        <button class="fpill" onclick="setFilter('yr')">יש יארצייט</button>
+      </div>
+      <div id="ml"></div>
+    </div>
+    <div id="at-ali" style="display:none"></div>
+    <div id="at-ann" style="display:none"></div>
   </div>
 </div>
 
@@ -441,6 +582,8 @@ body{font-family:'Heebo',sans-serif;min-height:100vh;min-height:100dvh;direction
     <div class="mhint">להדבקה בכל אפליקציה</div>
     <button class="mbtn mbtn-dark" onclick="expTab()">🔗 פתח בטאב חדש</button>
     <div class="mhint">לשמירה: □↑ → "שמור ב-Files"</div>
+    <button class="mbtn mbtn-grn" onclick="expCSV()">📊 ייצוא לאקסל (CSV)</button>
+    <div class="mhint">קובץ CSV עם כל הנתונים</div>
     <button class="mbtn mbtn-gray" onclick="document.getElementById('exp-modal').classList.remove('show')">סגור</button>
   </div>
 </div>
@@ -467,7 +610,6 @@ const PW='Nir2026',SK='mbz_v5',CHBD='https://www.chabad.org.il/ParashotArticles/
 const HM=[{n:'תשרי',v:7,e:'Tishrei'},{n:'חשון',v:8,e:'Cheshvan'},{n:'כסלו',v:9,e:'Kislev'},{n:'טבת',v:10,e:'Tevet'},{n:'שבט',v:11,e:'Shevat'},{n:'אדר א׳',v:12,e:'Adar I'},{n:'אדר ב׳',v:13,e:'Adar II'},{n:'ניסן',v:1,e:'Nisan'},{n:'אייר',v:2,e:'Iyar'},{n:'סיון',v:3,e:'Sivan'},{n:'תמוז',v:4,e:'Tamuz'},{n:'אב',v:5,e:'Av'},{n:'אלול',v:6,e:'Elul'}];
 const HD=['','א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב','יג','יד','טו','טז','יז','יח','יט','כ','כא','כב','כג','כד','כה','כו','כז','כח','כט','ל'];
 function hy2s(y){const T=[[400,'ת'],[300,'ש'],[200,'ר'],[100,'ק'],[90,'צ'],[80,'פ'],[70,'ע'],[60,'ס'],[50,'נ'],[40,'מ'],[30,'ל'],[20,'כ'],[10,'י'],[9,'ט'],[8,'ח'],[7,'ז'],[6,'ו'],[5,'ה'],[4,'ד'],[3,'ג'],[2,'ב'],[1,'א']];let n=y%1000,s='';for(const[v,l]of T){while(n>=v){if(n===15){s+='טו';n=0;break}if(n===16){s+='טז';n=0;break}s+=l;n-=v}if(!n)break}return s.length===1?s+"'":s.slice(0,-1)+'"'+s.slice(-1)}
-// Map Hebcal API month names (which vary) to our canonical values
 var _hmAlias={'Iyyar':2,'Sh\'vat':11,'Shvat':11,'Adar':12};
 function hmn(v){var f=HM.find(function(m){return m.v==v||m.e===v});if(f)return f.n;if(_hmAlias[v]!==undefined){var f2=HM.find(function(m){return m.v===_hmAlias[v]});if(f2)return f2.n}return v}
 function normHm(raw){var found=HM.find(function(m){return m.v==raw||m.e===raw});if(found)return found.v;if(_hmAlias[raw]!==undefined)return _hmAlias[raw];return raw}
@@ -602,8 +744,58 @@ function saveToState(p,hd,hm,hy,gd){
 let eid=null,CH=[],YR=[];
 const bC=()=>({name:'',gender:'',hd:'',hm:'',hy:'',gd:'',mode:'heb',wantsBM:false,parasha:'',barDate:'',readP:'',readH:''});
 const bY=()=>({name:'',hd:'',hm:'',hy:'',gd:'',mode:'heb',lead:'',haft:''});
+
+// ── Address helpers ─────────────────────────────────────
+function combineAddress(){
+  var street=(document.getElementById('ad-street').value||'').trim();
+  var num=(document.getElementById('ad-num').value||'').trim();
+  var apt=(document.getElementById('ad-apt').value||'').trim();
+  var city=(document.getElementById('ad-city').value||'').trim();
+  var parts=[];
+  if(street)parts.push('רחוב '+street);
+  if(num)parts.push('מספר '+num);
+  if(apt)parts.push('דירה '+apt);
+  var addr=parts.join(' ');
+  if(city)addr=addr?(addr+', '+city):city;
+  return addr;
+}
+function parseAddress(addr){
+  if(!addr)return{street:'',num:'',apt:'',city:'תל מונד'};
+  // Try to parse structured format: "רחוב X מספר Y דירה Z, ישוב"
+  var city='תל מונד',mainPart=addr,street='',num='',apt='';
+  var commaIdx=addr.lastIndexOf(',');
+  if(commaIdx>=0){
+    city=addr.slice(commaIdx+1).trim()||'תל מונד';
+    mainPart=addr.slice(0,commaIdx).trim();
+  }
+  var streetMatch=mainPart.match(/רחוב\s+([^\s]+(?:\s+[^\s]+)*?)(?=\s+מספר|\s+דירה|$)/);
+  var numMatch=mainPart.match(/מספר\s+(\S+)/);
+  var aptMatch=mainPart.match(/דירה\s+(\S+)/);
+  if(streetMatch)street=streetMatch[1];
+  if(numMatch)num=numMatch[1];
+  if(aptMatch)apt=aptMatch[1];
+  // Backward compat: if nothing matched, put entire mainPart in street
+  if(!street&&!num&&!apt&&mainPart)street=mainPart;
+  return{street:street,num:num,apt:apt,city:city};
+}
+
 function initForm(m=null){_torahManual=!!m;eid=m?m.id:null;CH=m?JSON.parse(JSON.stringify(m.children||[])):[];YR=m?JSON.parse(JSON.stringify(m.yahrzeits||[])):[];
-  if(m){['fn','ln','fa','mo','tr','ph','em','ad'].forEach((id,i)=>document.getElementById(id).value=[m.firstName,m.lastName,m.fatherName,m.motherName,m.torahName,m.phone,m.email,m.address][i]||'');['v1','v2','v3'].forEach((id,i)=>{const k=['קניות לקידוש','סידור קידוש','דבר תורה'][i];document.getElementById(id).checked=(m.volunteering||[]).includes(k)});['cb1','cb2','cb3'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',document.getElementById(`v${i+1}`).checked))}
+  if(m){
+    ['fn','ln','fa','mo','tr','ph','em'].forEach((id,i)=>document.getElementById(id).value=[m.firstName,m.lastName,m.fatherName,m.motherName,m.torahName,m.phone,m.email][i]||'');
+    // Parse address into components
+    var ap=parseAddress(m.address||'');
+    document.getElementById('ad-street').value=ap.street;
+    document.getElementById('ad-num').value=ap.num;
+    document.getElementById('ad-apt').value=ap.apt;
+    document.getElementById('ad-city').value=ap.city;
+    ['v1','v2','v3'].forEach((id,i)=>{const k=['קניות לקידוש','סידור קידוש','דבר תורה'][i];document.getElementById(id).checked=(m.volunteering||[]).includes(k)});['cb1','cb2','cb3'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',document.getElementById(`v${i+1}`).checked))
+  } else {
+    // Reset address fields
+    document.getElementById('ad-street').value='';
+    document.getElementById('ad-num').value='';
+    document.getElementById('ad-apt').value='';
+    document.getElementById('ad-city').value='תל מונד';
+  }
   renderCH();renderYR()}
 
 // ── Children ────────────────────────────────────────────
@@ -703,13 +895,12 @@ function autoTorah(){
     tr.value='';
   }
 }
-// If user manually edits torah name, stop auto-filling
 document.addEventListener('DOMContentLoaded',function(){
   var trEl=document.getElementById('tr');
   if(trEl)trEl.addEventListener('input',function(){_torahManual=true});
 });
 
-// ── Checkbox toggle (iOS-safe: onchange on input, not onclick on label) ──
+// ── Checkbox toggle ──
 function tCb(lblId,cbId){
   const lbl=document.getElementById(lblId);
   const cb=document.getElementById(cbId);
@@ -721,8 +912,8 @@ function colCh(i){const c={...CH[i]};['hd','hm','hy'].forEach(k=>{const el=docum
 function colYr(i){const y={...YR[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`y${i}-${k}`);if(el)y[k]=el.value});const gi=document.getElementById(`y${i}-gd`);if(gi)y.gd=gi.value;const ni=document.getElementById(`yn-${i}`);if(ni)y.name=ni.value.trim();const yl=document.getElementById(`yl-${i}`);if(yl)y.lead=yl.value;const yh=document.getElementById(`yh-${i}`);if(yh)y.haft=yh.value;return y}
 function reqF(id){const el=document.getElementById(id);const ok=el&&el.value.trim().length>0;const ff=el?el.closest('.ff'):null;if(ff)ff.classList.toggle('err',!ok);return ok}
 
-async function submitForm(){if(!['fn','ln','ph'].map(reqF).every(Boolean))return;const vols=[];if(document.getElementById('v1').checked)vols.push('קניות לקידוש');if(document.getElementById('v2').checked)vols.push('סידור קידוש');if(document.getElementById('v3').checked)vols.push('דבר תורה');const data={firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),address:document.getElementById('ad').value.trim(),volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
-function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em','ad'].forEach(id=>document.getElementById(id).value='');['v1','v2','v3'].forEach(id=>{document.getElementById(id).checked=false});['cb1','cb2','cb3'].forEach(id=>document.getElementById(id).classList.remove('on'));initForm();window.scrollTo(0,0)}
+async function submitForm(){if(!['fn','ln','ph'].map(reqF).every(Boolean))return;const vols=[];if(document.getElementById('v1').checked)vols.push('קניות לקידוש');if(document.getElementById('v2').checked)vols.push('סידור קידוש');if(document.getElementById('v3').checked)vols.push('דבר תורה');const data={firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),address:combineAddress(),volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
+function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em'].forEach(id=>document.getElementById(id).value='');document.getElementById('ad-street').value='';document.getElementById('ad-num').value='';document.getElementById('ad-apt').value='';document.getElementById('ad-city').value='תל מונד';['v1','v2','v3'].forEach(id=>{document.getElementById(id).checked=false});['cb1','cb2','cb3'].forEach(id=>document.getElementById(id).classList.remove('on'));initForm();window.scrollTo(0,0)}
 
 // ── Storage: localStorage + Google Sheets ───────────────
 let SHEETS_URL=localStorage.getItem('mbz_sheets_url')||'';
@@ -783,7 +974,6 @@ async function doSync(){
     toggleSheetsCfg();
     return;
   }
-  // First push all local data to Sheets
   updateSyncStatus('syncing','שולח נתונים...');
   try{
     await sheetsPost({action:'sync',members:lsGet()});
@@ -898,7 +1088,7 @@ function doSelfEdit(){
   showToast('הפרטים נטענו — ערוך ולחץ שמור');
 }
 
-// ── Export / Import (iOS-safe — no <a download>) ────────
+// ── Export / Import (iOS-safe) ────────
 let _expJSON='';
 function expData(){
   _expJSON=JSON.stringify(getMs(),null,2);
@@ -923,6 +1113,47 @@ function expTab(){
   }
   document.getElementById('exp-modal').classList.remove('show');
 }
+// ── CSV Export ───────────────────────────────────────────
+function expCSV(){
+  var ms=getMs();
+  var BOM='\uFEFF';
+  var headers=['שם פרטי','שם משפחה','שם האב','טלפון','דוא"ל','כתובת','ילדים','יארצייטים'];
+  var rows=[headers.join(',')];
+  for(var i=0;i<ms.length;i++){
+    var m=ms[i];
+    var kids=(m.children||[]).map(function(c){return c.name}).filter(Boolean).join('; ');
+    var yrs=(m.yahrzeits||[]).map(function(y){return y.name}).filter(Boolean).join('; ');
+    var row=[
+      csvCell(m.firstName),csvCell(m.lastName),csvCell(m.fatherName),
+      csvCell(m.phone),csvCell(m.email),csvCell(m.address),
+      csvCell(kids),csvCell(yrs)
+    ];
+    rows.push(row.join(','));
+  }
+  var csv=BOM+rows.join('\r\n');
+  // Try blob download, fallback to new tab for iOS
+  try{
+    var blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;a.download='mevaser_zion_members.csv';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('קובץ CSV הורד בהצלחה');
+  }catch(e){
+    // Fallback: open in new tab
+    var w=window.open('','_blank');
+    if(w){w.document.write('<pre>'+csv.replace(/</g,'&lt;')+'</pre>');w.document.close()}
+  }
+  document.getElementById('exp-modal').classList.remove('show');
+}
+function csvCell(val){
+  val=String(val||'');
+  if(val.indexOf(',')>=0||val.indexOf('"')>=0||val.indexOf('\n')>=0)
+    return '"'+val.replace(/"/g,'""')+'"';
+  return val;
+}
+
 function impData(){document.getElementById('imp-file').value='';document.getElementById('imp-modal').classList.add('show')}
 function doImpFile(){
   const fileEl=document.getElementById('imp-file');
@@ -944,11 +1175,23 @@ function doImpFile(){
 // ── Admin ───────────────────────────────────────────────
 function openAdm(){document.getElementById('adm-ovl').style.display='block';document.body.style.overflow='hidden'}
 function closeAdm(){document.getElementById('adm-ovl').style.display='none';document.body.style.overflow=''}
-function doLg(){const p=document.getElementById('pw').value,err=document.getElementById('pw-err');if(p===PW){err.style.display='none';document.getElementById('adm-lg').style.display='none';document.getElementById('adm-pnl').style.display='block';calSt=gSh();initSheetsUI();loadAdm();}else{err.style.display='block';document.getElementById('pw').value=''}}
+function doLg(){const p=document.getElementById('pw').value,err=document.getElementById('pw-err');if(p===PW){err.style.display='none';document.getElementById('adm-lg').style.display='none';document.getElementById('adm-pnl').style.display='block';calSt=gSh();initSheetsUI();renderStats();loadAdm();}else{err.style.display='block';document.getElementById('pw').value=''}}
 function doLo(){document.getElementById('adm-pnl').style.display='none';document.getElementById('adm-lg').style.display='block';document.getElementById('pw').value=''}
 let calSt=gSh(),curAt='cal';
-function showAt(t){curAt=t;document.querySelectorAll('.stb').forEach((b,i)=>b.classList.toggle('active',(i===0&&t==='cal')||(i===1&&t==='mem')));document.getElementById('at-cal').style.display=t==='cal'?'block':'none';document.getElementById('at-mem').style.display=t==='mem'?'block':'none';if(t==='mem')renderML()}
-function loadAdm(){initJNav();collapseJnavOnMobile();if(curAt==='cal')renderCal();else renderML()}
+function showAt(t){
+  curAt=t;
+  document.querySelectorAll('.stb').forEach(function(b,i){
+    b.classList.toggle('active',(i===0&&t==='cal')||(i===1&&t==='mem')||(i===2&&t==='ali')||(i===3&&t==='ann'));
+  });
+  document.getElementById('at-cal').style.display=t==='cal'?'block':'none';
+  document.getElementById('at-mem').style.display=t==='mem'?'block':'none';
+  document.getElementById('at-ali').style.display=t==='ali'?'block':'none';
+  document.getElementById('at-ann').style.display=t==='ann'?'block':'none';
+  if(t==='mem')renderML();
+  if(t==='ali')renderAliyotAdmin();
+  if(t==='ann')renderAnnAdmin();
+}
+function loadAdm(){initJNav();collapseJnavOnMobile();if(curAt==='cal')renderCal();else if(curAt==='mem')renderML();else if(curAt==='ali')renderAliyotAdmin();else if(curAt==='ann')renderAnnAdmin();}
 function calNav(w){if(w===0){calSt=gSh();}else{calSt=new Date(calSt);calSt.setDate(calSt.getDate()+w*7);}renderCal()}
 async function renderCal(){
   const grid=document.getElementById('cal-grid');const shs=[];const d=new Date(calSt);
@@ -988,8 +1231,26 @@ function renderWR(sh,parInfo,hd2,evs){
     `<div class="evi"><span class="etag t-yr">יארצייט</span><div class="evb"><div class="en">${es(x.dec)}</div><div class="es">לזכרו של: ${es(x.mem)}${x.lead?' | לפני התיבה: '+es(x.lead):''}${x.haft?' | הפטרה: '+es(x.haft):''}${x.dh?' | '+es(x.dh):''}</div></div></div>`).join('')||'<div style="padding:.45rem 0;color:var(--ink3);font-size:.79rem">אין אירועים השבוע</div>';
   row.innerHTML=`<div class="wh" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.parentElement.classList.contains('open')?'block':'none'"><div class="wdates"><span class="wheb">שבת ${hs}</span><span class="wgreg">${sh.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})}</span></div><div class="wpar">${pLabel} <a href="${CHBD}" target="_blank" rel="noopener">קרא בחב"ד ↗</a></div><div class="wbdgs">${hasBM?`<span class="wbdg bdg-bm">✡ ${evs.filter(x=>x.t==='bm').length} בר מצווה</span>`:''}${hasY?`<span class="wbdg bdg-yr">🕯 ${evs.filter(x=>x.t==='yr').length} יארצייט</span>`:''}</div><div class="wtgl">▾</div></div><div class="wevs"${evs.length?' style="display:block"':''}>${eH}</div>`;
   if(evs.length)row.classList.add('open');}
-let mflt='';
-function renderML(f=mflt){mflt=f.toLowerCase();const ms=getMs().filter(m=>!mflt||(m.firstName+' '+m.lastName+' '+m.torahName).toLowerCase().includes(mflt));const el=document.getElementById('mcnt');if(el)el.textContent=`${ms.length} מתפלל${ms.length!==1?'ים':''}`;const list=document.getElementById('ml');if(!list)return;if(!ms.length){list.innerHTML='<div class="no-m">אין מתפללים רשומים עדיין</div>';return}list.innerHTML=ms.map(m=>{const init=(m.firstName[0]||'')+(m.lastName[0]||'');const sub=[m.phone,m.email,m.address].filter(Boolean).join(' · ');const tags=[];if((m.children||[]).length)tags.push(`${m.children.length} ילד${m.children.length>1?'ים':''}`);if((m.yahrzeits||[]).length)tags.push(`${m.yahrzeits.length} יארצייט`);if((m.volunteering||[]).length)tags.push('מתנדב');return`<div class="mc"><div class="mav">${es(init)}</div><div class="mi"><div class="mn">${es(m.firstName)} ${es(m.lastName)}</div><div class="ms2">${es(sub)}</div></div><div class="mts">${tags.map(t=>`<span class="mt2">${t}</span>`).join('')}</div><div class="mas"><button class="med" onclick="editMx('${m.id}')">צפיה</button><button class="mde" onclick="delMx('${m.id}')">מחק</button></div></div>`}).join('')}
+
+// ── Members list + filters ──────────────────────────────
+let mflt='',mFilterType='all';
+function setFilter(type){
+  mFilterType=type;
+  document.querySelectorAll('#filter-pills .fpill').forEach(function(b){
+    b.classList.toggle('active',b.getAttribute('onclick').indexOf("'"+type+"'")>=0);
+  });
+  renderML();
+}
+function renderML(f){
+  if(f!==undefined)mflt=f.toLowerCase();
+  var ms=getMs();
+  // Apply filter
+  if(mFilterType==='vol')ms=ms.filter(function(m){return(m.volunteering||[]).length>0});
+  else if(mFilterType==='kids')ms=ms.filter(function(m){return(m.children||[]).length>0});
+  else if(mFilterType==='yr')ms=ms.filter(function(m){return(m.yahrzeits||[]).length>0});
+  // Apply text search
+  if(mflt)ms=ms.filter(function(m){return(m.firstName+' '+m.lastName+' '+m.torahName).toLowerCase().indexOf(mflt)>=0});
+  const el=document.getElementById('mcnt');if(el)el.textContent=`${ms.length} מתפלל${ms.length!==1?'ים':''}`;const list=document.getElementById('ml');if(!list)return;if(!ms.length){list.innerHTML='<div class="no-m">אין מתפללים רשומים עדיין</div>';return}list.innerHTML=ms.map(m=>{const init=(m.firstName[0]||'')+(m.lastName[0]||'');const sub=[m.phone,m.email,m.address].filter(Boolean).join(' · ');const tags=[];if((m.children||[]).length)tags.push(`${m.children.length} ילד${m.children.length>1?'ים':''}`);if((m.yahrzeits||[]).length)tags.push(`${m.yahrzeits.length} יארצייט`);if((m.volunteering||[]).length)tags.push('מתנדב');return`<div class="mc"><div class="mav">${es(init)}</div><div class="mi"><div class="mn">${es(m.firstName)} ${es(m.lastName)}</div><div class="ms2">${es(sub)}</div></div><div class="mts">${tags.map(t=>`<span class="mt2">${t}</span>`).join('')}</div><div class="mas"><button class="med" onclick="editMx('${m.id}')">צפיה</button><button class="mde" onclick="delMx('${m.id}')">מחק</button></div></div>`}).join('')}
 function filtM(v){renderML(v)}
 function editMx(id){var m=getM(id);if(!m)return;showMemberDetail(m)}
 function doEditMx(id){var m=getM(id);if(!m)return;closeMD();closeAdm();initForm(m);document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';window.scrollTo(0,0)}
@@ -1075,6 +1336,353 @@ async function jumpHeb(){
   const sh=gSh(new Date(g.y,g.m-1,g.d));
   calSt=sh;renderCal();
 }
+
+// ── Statistics Dashboard ─────────────────────────────────
+function renderStats(){
+  var ms=getMs();
+  var totalMembers=ms.length;
+  var totalChildren=0,totalYahrzeits=0,totalVolunteers=0,upcomingBM=[];
+  var now=new Date();
+  var threeMonthsLater=new Date(now);threeMonthsLater.setMonth(threeMonthsLater.getMonth()+3);
+  for(var i=0;i<ms.length;i++){
+    var m=ms[i];
+    totalChildren+=(m.children||[]).length;
+    totalYahrzeits+=(m.yahrzeits||[]).length;
+    if((m.volunteering||[]).length)totalVolunteers++;
+    for(var c=0;c<(m.children||[]).length;c++){
+      var ch=m.children[c];
+      if(ch.barDate){
+        var bd=new Date(ch.barDate+'T12:00:00');
+        if(bd>=now&&bd<=threeMonthsLater){
+          upcomingBM.push(ch.name+' ('+m.firstName+' '+m.lastName+')');
+        }
+      }
+    }
+  }
+  var h='';
+  h+='<div class="stat-card"><div class="stat-icon">👥</div><div class="stat-num">'+totalMembers+'</div><div class="stat-label">מתפללים</div></div>';
+  h+='<div class="stat-card"><div class="stat-icon">👶</div><div class="stat-num">'+totalChildren+'</div><div class="stat-label">ילדים</div></div>';
+  h+='<div class="stat-card"><div class="stat-icon">🕯</div><div class="stat-num">'+totalYahrzeits+'</div><div class="stat-label">יארצייטים</div></div>';
+  h+='<div class="stat-card"><div class="stat-icon">✡</div><div class="stat-num">'+upcomingBM.length+'</div><div class="stat-label">בר מצווה קרוב</div></div>';
+  h+='<div class="stat-card"><div class="stat-icon">🙏</div><div class="stat-num">'+totalVolunteers+'</div><div class="stat-label">מתנדבים</div></div>';
+  document.getElementById('stats-dashboard').innerHTML=h;
+}
+
+// ── Aliyot Management ────────────────────────────────────
+const ALIYOT_KEY='mbz_aliyot';
+const KIDDUSH_KEY='mbz_kiddush';
+const ALIYOT_NAMES=['כהן','לוי','שלישי','רביעי','חמישי','שישי','שביעי','מפטיר'];
+
+function getAliyot(){try{return JSON.parse(localStorage.getItem(ALIYOT_KEY)||'null')}catch(e){return null}}
+function setAliyot(data){localStorage.setItem(ALIYOT_KEY,JSON.stringify(data))}
+function getKiddush(){try{return JSON.parse(localStorage.getItem(KIDDUSH_KEY)||'null')}catch(e){return null}}
+function setKiddush(data){localStorage.setItem(KIDDUSH_KEY,JSON.stringify(data))}
+
+async function renderAliyotAdmin(){
+  var container=document.getElementById('at-ali');
+  var sh=gSh();
+  var shDate=d2s(sh);
+  var parInfo=null;
+  try{
+    parInfo=await getPar(sh);
+  }catch(e){}
+  var parName=parInfo?parInfo.name:'טוען...';
+  var ms=getMs();
+  var memberNames=ms.map(function(m){return m.firstName+' '+m.lastName});
+  var saved=getAliyot();
+  var slots={};
+  if(saved&&saved.date===shDate&&saved.slots)slots=saved.slots;
+  var kiddush=getKiddush();
+  var kWho='',kNotes='';
+  if(kiddush&&kiddush.date===shDate){kWho=kiddush.who||'';kNotes=kiddush.notes||''}
+
+  var h='<div class="aliyot-section"><h3>📜 עליות לתורה — שבת '+es(parName)+'</h3>';
+  h+='<div style="color:rgba(255,255,255,.45);font-size:.78rem;margin-bottom:.8rem">'+sh.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})+'</div>';
+  for(var i=0;i<ALIYOT_NAMES.length;i++){
+    var slotKey=ALIYOT_NAMES[i];
+    h+='<div class="aliyot-slot"><span class="aliyot-label">'+slotKey+'</span><div class="ac-wrap" style="flex:1"><input id="ali-'+i+'" placeholder="בחר מתפלל..." value="'+es(slots[slotKey]||'')+'" oninput="showAC(this,'+i+')" onfocus="showAC(this,'+i+')" autocomplete="off"><div class="ac-list" id="ac-'+i+'"></div></div></div>';
+  }
+  h+='<button class="save-aliyot-btn" onclick="saveAliyot()">💾 שמור עליות</button></div>';
+
+  h+='<div class="kiddush-section"><h3>🍷 קידוש השבת</h3>';
+  h+='<div style="margin-bottom:.4rem"><label style="font-size:.75rem;color:rgba(255,255,255,.5);font-weight:600">מי מביא קידוש?</label><div class="ac-wrap"><input id="kid-who" placeholder="בחר מתפלל..." value="'+es(kWho)+'" oninput="showACKid(this)" onfocus="showACKid(this)" autocomplete="off"><div class="ac-list" id="ac-kid"></div></div></div>';
+  h+='<div style="margin-bottom:.4rem"><label style="font-size:.75rem;color:rgba(255,255,255,.5);font-weight:600">הערות / אירוע מיוחד</label><textarea id="kid-notes" placeholder="לדוגמה: קידוש לכבוד בר מצווה">'+es(kNotes)+'</textarea></div>';
+  h+='<button class="save-aliyot-btn" onclick="saveKiddush()">💾 שמור קידוש</button></div>';
+
+  container.innerHTML=h;
+  // Store member names for autocomplete
+  container._memberNames=memberNames;
+}
+
+function showAC(input,idx){
+  var list=document.getElementById('ac-'+idx);
+  var names=document.getElementById('at-ali')._memberNames||[];
+  var val=input.value.trim().toLowerCase();
+  var filtered=val?names.filter(function(n){return n.toLowerCase().indexOf(val)>=0}):names;
+  if(!filtered.length||!val){list.classList.remove('show');list.innerHTML='';return}
+  list.innerHTML=filtered.slice(0,8).map(function(n){return'<div class="ac-item" onmousedown="pickAC('+idx+',\''+es(n)+'\')">'+es(n)+'</div>'}).join('');
+  list.classList.add('show');
+  // Close on blur
+  input.onblur=function(){setTimeout(function(){list.classList.remove('show')},200)};
+}
+function pickAC(idx,name){
+  document.getElementById('ali-'+idx).value=name;
+  document.getElementById('ac-'+idx).classList.remove('show');
+}
+function showACKid(input){
+  var list=document.getElementById('ac-kid');
+  var names=document.getElementById('at-ali')._memberNames||[];
+  var val=input.value.trim().toLowerCase();
+  var filtered=val?names.filter(function(n){return n.toLowerCase().indexOf(val)>=0}):names;
+  if(!filtered.length||!val){list.classList.remove('show');list.innerHTML='';return}
+  list.innerHTML=filtered.slice(0,8).map(function(n){return'<div class="ac-item" onmousedown="pickACKid(\''+es(n)+'\')">'+es(n)+'</div>'}).join('');
+  list.classList.add('show');
+  input.onblur=function(){setTimeout(function(){list.classList.remove('show')},200)};
+}
+function pickACKid(name){
+  document.getElementById('kid-who').value=name;
+  document.getElementById('ac-kid').classList.remove('show');
+}
+function saveAliyot(){
+  var sh=gSh();var shDate=d2s(sh);
+  var slots={};
+  for(var i=0;i<ALIYOT_NAMES.length;i++){
+    var el=document.getElementById('ali-'+i);
+    if(el&&el.value.trim())slots[ALIYOT_NAMES[i]]=el.value.trim();
+  }
+  setAliyot({date:shDate,slots:slots});
+  showToast('העליות נשמרו בהצלחה');
+}
+function saveKiddush(){
+  var sh=gSh();var shDate=d2s(sh);
+  var who=(document.getElementById('kid-who').value||'').trim();
+  var notes=(document.getElementById('kid-notes').value||'').trim();
+  setKiddush({date:shDate,who:who,notes:notes});
+  showToast('פרטי הקידוש נשמרו');
+}
+
+// ── Announcements Management ─────────────────────────────
+const ANN_KEY='mbz_announcements';
+function getAnnouncements(){try{return JSON.parse(localStorage.getItem(ANN_KEY)||'[]')}catch(e){return[]}}
+function setAnnouncements(arr){localStorage.setItem(ANN_KEY,JSON.stringify(arr))}
+
+function renderAnnAdmin(){
+  var container=document.getElementById('at-ann');
+  var anns=getAnnouncements();
+  var h='<div class="ann-admin"><h3>📢 הוסף מודעה חדשה</h3>';
+  h+='<input id="ann-title-input" placeholder="כותרת המודעה">';
+  h+='<textarea id="ann-body-input" placeholder="תוכן המודעה"></textarea>';
+  h+='<button class="save-aliyot-btn" onclick="addAnnouncement()">📢 פרסם מודעה</button></div>';
+  h+='<div class="ann-admin"><h3>📋 מודעות קיימות ('+anns.length+')</h3>';
+  if(!anns.length){
+    h+='<div style="color:rgba(255,255,255,.35);font-size:.82rem;padding:.5rem 0">אין מודעות</div>';
+  }else{
+    for(var i=0;i<anns.length;i++){
+      var a=anns[i];
+      h+='<div class="ann-list-item"><div class="ann-list-text"><div class="ann-list-title">'+es(a.title)+'</div><div class="ann-list-body">'+es(a.content)+'</div><div class="ann-list-date">'+es(a.date)+'</div></div><button class="ann-del-btn" onclick="delAnnouncement('+i+')">מחק</button></div>';
+    }
+  }
+  h+='</div>';
+  container.innerHTML=h;
+}
+function addAnnouncement(){
+  var title=(document.getElementById('ann-title-input').value||'').trim();
+  var body=(document.getElementById('ann-body-input').value||'').trim();
+  if(!title){showToast('אנא הזן כותרת');return}
+  var anns=getAnnouncements();
+  anns.unshift({title:title,content:body,date:new Date().toLocaleDateString('he-IL')});
+  setAnnouncements(anns);
+  renderAnnAdmin();
+  renderPublicAnnouncements();
+  showToast('המודעה פורסמה');
+}
+function delAnnouncement(idx){
+  var anns=getAnnouncements();
+  if(!confirm('מחק מודעה: '+anns[idx].title+'?'))return;
+  anns.splice(idx,1);
+  setAnnouncements(anns);
+  renderAnnAdmin();
+  renderPublicAnnouncements();
+  showToast('המודעה נמחקה');
+}
+function renderPublicAnnouncements(){
+  var container=document.getElementById('announcements-public');
+  var anns=getAnnouncements();
+  if(!anns.length){container.innerHTML='';return}
+  var h='<div class="ann-card"><div class="ann-head">📢 לוח מודעות</div>';
+  for(var i=0;i<anns.length;i++){
+    var a=anns[i];
+    h+='<div class="ann-item"><div class="ann-title">'+es(a.title)+'</div>'+(a.content?'<div class="ann-body">'+es(a.content)+'</div>':'')+'<div class="ann-date">'+es(a.date)+'</div></div>';
+  }
+  h+='</div>';
+  container.innerHTML=h;
+}
+
+// ── Dark/Light Mode Toggle ──────────────────────────────
+function initTheme(){
+  var saved=localStorage.getItem('mbz_theme');
+  if(saved==='light'){
+    document.body.classList.add('light-mode');
+    var btn=document.getElementById('theme-toggle-btn');
+    if(btn)btn.textContent='🌙';
+  }
+}
+function toggleTheme(){
+  var isLight=document.body.classList.toggle('light-mode');
+  localStorage.setItem('mbz_theme',isLight?'light':'dark');
+  var btn=document.getElementById('theme-toggle-btn');
+  if(btn)btn.textContent=isLight?'🌙':'☀️';
+}
+
+// ── Multi-language (i18n) ───────────────────────────────
+var I18N={
+  he:{
+    editMyDetails:'📝 עריכת הפרטים שלי',
+    welcome:'שלום וברוך הבא! אנא מלא את פרטיך ונשמח לשמור על קשר',
+    contactDetails:'פרטי קשר ומשפחה',
+    firstName:'שם פרטי',
+    lastName:'שם משפחה',
+    fatherName:'שם האב',
+    motherName:'שם האם',
+    torahName:'שם מלא לעלייה לתורה',
+    phone:'טלפון',
+    email:'דואר אלקטרוני',
+    address:'כתובת מגורים',
+    street:'רחוב',
+    houseNum:'מספר בית',
+    apartment:'דירה',
+    city:'ישוב',
+    children:'ילדים',
+    addChild:'+ הוסף ילד',
+    volunteering:'תחומי התנדבות',
+    yahrzeits:'ימי זיכרון (יארצייט)',
+    addYahrzeit:'+ הוסף יום זיכרון',
+    save:'💾 שמור פרטים'
+  },
+  fr:{
+    editMyDetails:'📝 Modifier mes informations',
+    welcome:'Bienvenue ! Veuillez remplir vos coordonnées',
+    contactDetails:'Coordonnées et famille',
+    firstName:'Prénom',
+    lastName:'Nom',
+    fatherName:'Nom du père',
+    motherName:'Nom de la mère',
+    torahName:'Nom complet pour la Torah',
+    phone:'Téléphone',
+    email:'E-mail',
+    address:'Adresse',
+    street:'Rue',
+    houseNum:'Numéro',
+    apartment:'Appartement',
+    city:'Ville',
+    children:'Enfants',
+    addChild:'+ Ajouter un enfant',
+    volunteering:'Bénévolat',
+    yahrzeits:'Jours de commémoration (Yahrzeit)',
+    addYahrzeit:'+ Ajouter un Yahrzeit',
+    save:'💾 Enregistrer'
+  },
+  en:{
+    editMyDetails:'📝 Edit My Details',
+    welcome:'Welcome! Please fill in your details and we will stay in touch',
+    contactDetails:'Contact & Family Details',
+    firstName:'First Name',
+    lastName:'Last Name',
+    fatherName:'Father\'s Name',
+    motherName:'Mother\'s Name',
+    torahName:'Full Name for Torah Aliyah',
+    phone:'Phone',
+    email:'Email',
+    address:'Home Address',
+    street:'Street',
+    houseNum:'House Number',
+    apartment:'Apartment',
+    city:'City',
+    children:'Children',
+    addChild:'+ Add Child',
+    volunteering:'Volunteering',
+    yahrzeits:'Memorial Days (Yahrzeit)',
+    addYahrzeit:'+ Add Yahrzeit',
+    save:'💾 Save Details'
+  }
+};
+var curLang='he';
+function initLang(){
+  var saved=localStorage.getItem('mbz_lang');
+  if(saved&&I18N[saved])curLang=saved;
+  applyLang();
+  // Highlight active lang button
+  document.querySelectorAll('#lang-toggle button').forEach(function(b){
+    b.classList.toggle('active',b.textContent.trim()===(curLang==='he'?'עב':curLang==='fr'?'FR':'EN'));
+  });
+}
+function setLang(lang){
+  curLang=lang;
+  localStorage.setItem('mbz_lang',lang);
+  applyLang();
+  document.querySelectorAll('#lang-toggle button').forEach(function(b){
+    b.classList.toggle('active',b.textContent.trim()===(lang==='he'?'עב':lang==='fr'?'FR':'EN'));
+  });
+}
+function applyLang(){
+  var dict=I18N[curLang]||I18N.he;
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key=el.getAttribute('data-i18n');
+    if(!dict[key])return;
+    // For labels with required marker, preserve the <span class="req">*</span>
+    var reqSpan=el.querySelector('.req');
+    if(reqSpan){
+      el.innerHTML=dict[key]+' <span class="req">*</span>';
+    }else{
+      // For save button, check if it has child elements
+      if(el.tagName==='BUTTON'&&el.id==='bsave'){
+        el.innerHTML='<span>💾</span> '+(dict[key].replace('💾 ','').replace('💾',''));
+      }else{
+        el.textContent=dict[key];
+      }
+    }
+  });
+}
+
+// ── Hebrew Birthday Check ────────────────────────────────
+async function getHebrewBirthdays(ms,sh){
+  var results=[];
+  // Get Hebrew date range for this week (Sunday to Shabbat)
+  var weekStart=new Date(sh);weekStart.setDate(weekStart.getDate()-6);
+  var weekDates=[];
+  for(var d=0;d<7;d++){
+    var dt=new Date(weekStart);dt.setDate(dt.getDate()+d);
+    weekDates.push(dt);
+  }
+  // Convert each day to Hebrew and collect day+month
+  var hebWeek=[];
+  for(var i=0;i<weekDates.length;i++){
+    var wd=weekDates[i];
+    var hc=await g2h(wd.getFullYear(),wd.getMonth()+1,wd.getDate());
+    if(hc)hebWeek.push({hd:hc.hd,hm:hc.hm});
+  }
+  // Check each child's Hebrew birthday
+  for(var mi=0;mi<ms.length;mi++){
+    var m=ms[mi];
+    for(var ci=0;ci<(m.children||[]).length;ci++){
+      var ch=m.children[ci];
+      if(!ch.hd||!ch.hm)continue;
+      var chd=+ch.hd,chm=+ch.hm;
+      for(var wi=0;wi<hebWeek.length;wi++){
+        if(hebWeek[wi].hd===chd&&hebWeek[wi].hm===chm){
+          results.push({
+            childName:ch.name,
+            parentName:m.firstName+' '+m.lastName,
+            gender:ch.gender
+          });
+          break;
+        }
+      }
+    }
+  }
+  return results;
+}
+
 // ── This Week Summary (public-facing) ────────────────────
 async function loadWeekSummary(){
   var card=document.getElementById('week-card');
@@ -1092,12 +1700,18 @@ async function loadWeekSummary(){
     var ms=getMs();
     var curHY=hd2?hd2.hy:5786;
     var evs=await getWkEvs(ms,sh,curHY);
+    // Hebrew birthdays
+    var birthdays=await getHebrewBirthdays(ms,sh);
+    // Aliyot and Kiddush
+    var aliyot=getAliyot();
+    var kiddush=getKiddush();
+
     var h='<div class="wk-head">';
     h+='<span class="wk-par">📖 '+(parName?es(parName):'שבת הקרובה')+'</span>';
     h+='<span class="wk-heb">שבת '+es(hebStr)+'</span>';
     h+='<span class="wk-date">'+sh.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})+'</span>';
     h+='</div>';
-    if(evs.length){
+    if(evs.length||birthdays.length||(aliyot&&aliyot.date===key)||(kiddush&&kiddush.date===key)){
       h+='<div class="wk-events">';
       for(var i=0;i<evs.length;i++){
         var e=evs[i];
@@ -1106,6 +1720,24 @@ async function loadWeekSummary(){
         }else{
           h+='<div class="wk-ev"><span class="wk-ev-icon">🕯</span><div class="wk-ev-text"><span class="wk-ev-name">יארצייט: '+es(e.dec)+'</span> לזכרו של '+es(e.mem)+(e.dh?' — '+es(e.dh):'')+'</div></div>';
         }
+      }
+      // Hebrew birthdays
+      for(var bi=0;bi<birthdays.length;bi++){
+        var bd=birthdays[bi];
+        h+='<div class="wk-ev"><span class="wk-ev-icon">🎂</span><div class="wk-ev-text">יום הולדת עברי: <span class="wk-ev-name">'+es(bd.childName)+'</span> '+(bd.gender==='נקבה'?'בת':'בן')+' '+es(bd.parentName)+'</div></div>';
+      }
+      // Aliyot summary
+      if(aliyot&&aliyot.date===key&&aliyot.slots){
+        var slotEntries=Object.entries(aliyot.slots);
+        if(slotEntries.length){
+          h+='<div class="wk-ev"><span class="wk-ev-icon">📜</span><div class="wk-ev-text"><span class="wk-ev-name">עליות לתורה:</span> ';
+          h+=slotEntries.map(function(s){return s[0]+': '+es(s[1])}).join(' | ');
+          h+='</div></div>';
+        }
+      }
+      // Kiddush summary
+      if(kiddush&&kiddush.date===key&&kiddush.who){
+        h+='<div class="wk-ev"><span class="wk-ev-icon">🍷</span><div class="wk-ev-text"><span class="wk-ev-name">קידוש:</span> '+es(kiddush.who)+(kiddush.notes?' — '+es(kiddush.notes):'')+'</div></div>';
       }
       h+='</div>';
     }else{
@@ -1120,8 +1752,13 @@ async function loadWeekSummary(){
     card.innerHTML='<div class="wk-head"><span class="wk-par">📅 לא ניתן לטעון</span></div>';
   }
 }
+
+// ── Init ─────────────────────────────────────────────────
+initTheme();
+initLang();
 initForm();
 loadWeekSummary();
+renderPublicAnnouncements();
 </script>
 </body>
 </html>
