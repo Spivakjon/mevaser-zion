@@ -808,8 +808,8 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
         </div>
       </div>
     </div>
-    <div class="sh"><span>💍</span><span class="sh-t">בן/בת זוג</span></div>
-    <div class="sec"><div class="spouse-sec"><div class="g3"><div class="ff"><label>שם פרטי</label><input id="sp-fn" placeholder="שם בן/בת הזוג"></div><div class="ff"><label>טלפון</label><input id="sp-ph" type="tel" placeholder="050-..." dir="ltr"></div><div class="ff"><label>דוא"ל</label><input id="sp-em" type="email" placeholder="email@..." dir="ltr"></div></div></div></div>
+    <div class="sh"><span>💍</span><span class="sh-t" data-i18n="spouseTitle">בן/בת זוג</span></div>
+    <div class="sec"><div class="spouse-sec"><div class="g3"><div class="ff"><label data-i18n="spouseName">שם בן/בת הזוג</label><input id="sp-fn" placeholder="שם בן/בת הזוג"></div><div class="ff"><label data-i18n="spousePhone">טלפון</label><input id="sp-ph" type="tel" placeholder="050-..." dir="ltr"></div><div class="ff"><label data-i18n="spouseEmail">דוא"ל</label><input id="sp-em" type="email" placeholder="email@..." dir="ltr"></div></div></div></div>
     <div class="sh"><span>👨‍👧‍👦</span><span class="sh-t" data-i18n="children">ילדים</span></div>
     <div class="sec"><div id="cw"></div><button class="badd" id="badd-c" onclick="addCh()" data-i18n="addChild">+ הוסף ילד</button></div>
     <div class="sh"><span>🙏</span><span class="sh-t" data-i18n="volunteering">תחומי התנדבות</span></div>
@@ -844,8 +844,8 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       <button class="stb" onclick="showAt('mem')">📋 מתפללים</button>
       <button class="stb" onclick="showAt('ali')">📜 עליות/קידוש</button>
       <button class="stb" onclick="showAt('ann')">📢 מודעות</button>
-      <button class="stb" onclick="showAt('mbr')">💳 דמי חבר</button>
-      <button class="stb" onclick="showAt('duty')">📋 תורנות</button>
+      <button class="stb" onclick="showAt('mbr')" data-i18n-text="mbrTabTitle">💳 דמי חבר</button>
+      <button class="stb" onclick="showAt('duty')" data-i18n-text="dutyTabTitle">📋 תורנות</button>
     </div>
     <div id="at-cal">
     <div class="jnav" id="jnav">
@@ -878,7 +878,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     <div id="at-ann" style="display:none"></div>
     <div id="at-mbr" style="display:none">
       <div style="margin-bottom:.8rem">
-        <button class="abt" onclick="toggleCollapse('mbr-cfg-body')" style="width:100%;text-align:right;font-size:.85rem;padding:8px 12px;border:1px solid var(--bd2);border-radius:8px;background:var(--c2)">⚙ הגדרות דמי חבר <span style="float:left">▾</span></button>
+        <button class="abt" onclick="toggleCollapse('mbr-cfg-body')" style="width:100%;text-align:right;font-size:.85rem;padding:8px 12px;border:1px solid var(--bd2);border-radius:8px;background:var(--c2)" data-i18n-text="mbrSettingsTitle">⚙ הגדרות דמי חבר <span style="float:left">▾</span></button>
         <div id="mbr-cfg-body" style="display:none;background:var(--c2);border-radius:0 0 10px 10px;padding:1rem;border:1px solid var(--bd2);border-top:0">
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
             <div class="ff" style="flex:1;min-width:120px"><label style="font-size:.75rem">שנת גבייה</label><input type="text" id="mbr-year-cfg" placeholder="תשפ״ו" style="padding:6px 10px;font-size:.85rem"></div>
@@ -889,7 +889,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       </div>
       <div id="mbr-stats" style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;cursor:pointer"></div>
       <div style="margin-bottom:.8rem">
-        <button class="abt" onclick="toggleCollapse('msg-editor-body')" style="width:100%;text-align:right;font-size:.85rem;padding:8px 12px;border:1px solid var(--bd2);border-radius:8px;background:var(--c2)">📝 עריכת הודעת תזכורת <span style="float:left">▾</span></button>
+        <button class="abt" onclick="toggleCollapse('msg-editor-body')" style="width:100%;text-align:right;font-size:.85rem;padding:8px 12px;border:1px solid var(--bd2);border-radius:8px;background:var(--c2)" data-i18n-text="mbrMsgEditorTitle">📝 עריכת הודעת תזכורת <span style="float:left">▾</span></button>
         <div id="msg-editor-body" class="msg-editor" style="display:none;border-radius:0 0 10px 10px;border-top:0">
           <textarea id="mbr-msg-tpl"></textarea>
           <div class="placeholders">משתנים זמינים: <strong>{name}</strong> = שם המתפלל, <strong>{year}</strong> = שנת גבייה, <strong>{link}</strong> = קישור תשלום</div>
@@ -898,15 +898,15 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-wrap:wrap;gap:8px">
         <h3 style="font-size:.95rem;margin:0">רשימת מתפללים</h3>
-        <button class="abt" onclick="sendBulkReminder()" style="font-size:.8rem">📨 שלח תזכורת לכל מי שלא שילם</button>
+        <button class="abt" onclick="sendBulkReminder()" style="font-size:.8rem" data-i18n-text="mbrBulkBtn">📨 שלח תזכורת לכל מי שלא שילם</button>
       </div>
       <div id="mbr-list"></div>
     </div>
     <div id="at-duty" style="display:none">
       <div id="duty-hero-card"></div>
-      <h3 style="margin:1rem 0 .6rem;font-size:.95rem">📅 לוח תורנויות — 8 שבועות הקרובים</h3>
-      <table class="duty-tbl"><thead><tr><th>תאריך שבת</th><th>תורן 1</th><th>תורן 2</th></tr></thead><tbody id="duty-body"></tbody></table>
-      <h3 style="margin:1rem 0 .6rem;font-size:.95rem">👥 רשימת תורנים</h3>
+      <h3 style="margin:1rem 0 .6rem;font-size:.95rem" data-i18n-text="dutyScheduleTitle">📅 לוח תורנויות — 8 שבועות הקרובים</h3>
+      <table class="duty-tbl"><thead><tr><th data-i18n-text="dutyColDate">תאריך שבת</th><th data-i18n-text="dutyCol1">תורן 1</th><th data-i18n-text="dutyCol2">תורן 2</th></tr></thead><tbody id="duty-body"></tbody></table>
+      <h3 style="margin:1rem 0 .6rem;font-size:.95rem" data-i18n-text="dutyRosterTitle">👥 רשימת תורנים</h3>
       <div id="roster-list"></div>
     </div>
     <div id="at-settings" style="display:none">
@@ -939,6 +939,10 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
             <div class="settings-field"><label>יארצייטים</label><input type="text" data-stkey="yahrzeits"></div>
             <div class="settings-field"><label>כפתור שמירה</label><input type="text" data-stkey="save"></div>
           </div>
+          <div class="settings-section"><h3>בן/בת זוג</h3>
+            <div class="settings-field"><label>כותרת</label><input type="text" data-stkey="spouseTitle"></div>
+            <div class="settings-field"><label>שם</label><input type="text" data-stkey="spouseName"></div>
+          </div>
           <div class="settings-section"><h3>הודעות הצלחה</h3>
             <div class="settings-field"><label>כותרת הצלחה</label><input type="text" data-stkey="successTitle"></div>
             <div class="settings-field"><label>טקסט הצלחה</label><textarea data-stkey="successBody"></textarea></div>
@@ -946,6 +950,26 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
           <div class="settings-section"><h3>כפתורים</h3>
             <div class="settings-field"><label>עריכת פרטים</label><input type="text" data-stkey="editMyDetails"></div>
             <div class="settings-field"><label>ניהול</label><input type="text" data-stkey="adminBtn"></div>
+          </div>
+          <div class="settings-section"><h3>ממשק מנהל — דמי חבר</h3>
+            <div class="settings-field"><label>כותרת טאב</label><input type="text" data-stkey="mbrTabTitle"></div>
+            <div class="settings-field"><label>כותרת הגדרות</label><input type="text" data-stkey="mbrSettingsTitle"></div>
+            <div class="settings-field"><label>כותרת עורך הודעה</label><input type="text" data-stkey="mbrMsgEditorTitle"></div>
+            <div class="settings-field"><label>תווית שילמו</label><input type="text" data-stkey="mbrPaidLabel"></div>
+            <div class="settings-field"><label>תווית טרם שילמו</label><input type="text" data-stkey="mbrUnpaidLabel"></div>
+            <div class="settings-field"><label>כפתור תזכורת</label><input type="text" data-stkey="mbrBulkBtn"></div>
+            <div class="settings-field"><label>כותרת חלון תשלום</label><input type="text" data-stkey="payModalTitle"></div>
+            <div class="settings-field"><label>כפתור אישור תשלום</label><input type="text" data-stkey="payConfirmBtn"></div>
+          </div>
+          <div class="settings-section"><h3>ממשק מנהל — תורנות</h3>
+            <div class="settings-field"><label>כותרת טאב</label><input type="text" data-stkey="dutyTabTitle"></div>
+            <div class="settings-field"><label>כותרת שבת קרובה</label><input type="text" data-stkey="dutyHeroTitle"></div>
+            <div class="settings-field"><label>כותרת לוח</label><input type="text" data-stkey="dutyScheduleTitle"></div>
+            <div class="settings-field"><label>כותרת רשימת תורנים</label><input type="text" data-stkey="dutyRosterTitle"></div>
+          </div>
+          <div class="settings-section"><h3>ממשק מנהל — משפחה</h3>
+            <div class="settings-field"><label>כותרת הרכב משפחתי</label><input type="text" data-stkey="familyViewTitle"></div>
+            <div class="settings-field"><label>כותרת תזכורות</label><input type="text" data-stkey="reminderListTitle"></div>
           </div>
         </div>
         <div id="settings-fields-en" style="display:none">
@@ -1041,11 +1065,11 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 <!-- Payment Modal -->
 <div class="pay-modal-ovl" id="pay-modal" style="display:none" onclick="if(event.target===this)closePayModal()">
   <div class="pay-modal">
-    <h3>💳 סימון תשלום</h3>
-    <div class="ff"><label>תאריך תשלום</label><input type="date" id="pay-date"></div>
-    <div class="ff"><label>אמצעי תשלום</label><select id="pay-method"><option value="אשראי" selected>אשראי</option><option value="העברה בנקאית">העברה בנקאית</option><option value="מזומן">מזומן</option><option value="המחאה">המחאה</option><option value="הוראת קבע">הוראת קבע</option><option value="ביט/פייבוקס">ביט/פייבוקס</option></select></div>
-    <div class="ff"><label>סכום (אופציונלי)</label><input type="text" id="pay-amount" placeholder="₪" dir="ltr"></div>
-    <div class="ff"><label>הערות</label><input type="text" id="pay-notes" placeholder="תשלום ב-4 תשלומים..."></div>
+    <h3 data-i18n="payModalTitle">💳 סימון תשלום</h3>
+    <div class="ff"><label data-i18n="payDateLabel">תאריך תשלום</label><input type="date" id="pay-date"></div>
+    <div class="ff"><label data-i18n="payMethodLabel">אמצעי תשלום</label><select id="pay-method"><option value="אשראי" selected>אשראי</option><option value="העברה בנקאית">העברה בנקאית</option><option value="מזומן">מזומן</option><option value="המחאה">המחאה</option><option value="הוראת קבע">הוראת קבע</option><option value="ביט/פייבוקס">ביט/פייבוקס</option></select></div>
+    <div class="ff"><label data-i18n="payAmountLabel">סכום (אופציונלי)</label><input type="text" id="pay-amount" placeholder="₪" dir="ltr"></div>
+    <div class="ff"><label data-i18n="payNotesLabel">הערות</label><input type="text" id="pay-notes" placeholder="תשלום ב-4 תשלומים..."></div>
     <input type="hidden" id="pay-member-id">
     <div class="pm-btns">
       <button onclick="confirmPayment()" style="background:#1e7d4b;color:#fff">✓ אשר תשלום</button>
@@ -1717,7 +1741,25 @@ function renderML(f){
   else if(mFilterType==='unpaid')ms=ms.filter(function(m){return!m.membershipPaid});
   // Apply text search
   if(mflt)ms=ms.filter(function(m){return(m.firstName+' '+m.lastName+' '+m.torahName).toLowerCase().indexOf(mflt)>=0});
-  const el=document.getElementById('mcnt');if(el)el.textContent=`${ms.length} מתפלל${ms.length!==1?'ים':''}`;const list=document.getElementById('ml');if(!list)return;if(!ms.length){list.innerHTML='<div class="no-m">אין מתפללים רשומים עדיין</div>';return}list.innerHTML=ms.map(m=>{const init=(m.firstName[0]||'')+(m.lastName[0]||'');const sub=[m.phone,m.email,m.address].filter(Boolean).join(' · ');const tags=[];if(m.membershipPaid){var pi=[];if(m.membershipPaidDate)pi.push(es(m.membershipPaidDate));if(m.paymentMethod)pi.push(es(m.paymentMethod));tags.push('<span class="paid-tag">שילם'+(pi.length?' · '+pi.join(' · '):'')+'</span>')}else{tags.push('<span class="unpaid-tag">לא שילם</span>')}if(m.dutyRoster)tags.push('<span class="duty-tag">תורן</span>');if((m.children||[]).length)tags.push(`${m.children.length} ילד${m.children.length>1?'ים':''}`);if((m.yahrzeits||[]).length)tags.push(`${m.yahrzeits.length} יארצייט`);if((m.volunteering||[]).length)tags.push('מתנדב');return`<div class="mc"><div class="mav">${es(init)}</div><div class="mi"><div class="mn">${es(m.firstName)} ${es(m.lastName)}</div><div class="ms2">${es(sub)}</div></div><div class="mts">${tags.map(t=>`<span class="mt2">${t}</span>`).join('')}</div><div class="mas"><button class="med" onclick="editMx('${m.id}')">צפיה</button><button class="mde" onclick="delMx('${m.id}')">מחק</button></div></div>`}).join('')}
+  const el=document.getElementById('mcnt');if(el)el.textContent=`${ms.length} משפח${ms.length!==1?'ות':'ה'}`;const list=document.getElementById('ml');if(!list)return;if(!ms.length){list.innerHTML='<div class="no-m">אין מתפללים רשומים עדיין</div>';return}list.innerHTML=ms.map(m=>{const init=(m.firstName[0]||'')+(m.lastName[0]||'');
+    // Family summary
+    var famParts=[];
+    if(m.spouse&&m.spouse.name)famParts.push('👩 '+es(m.spouse.name));
+    var kidCount=(m.children||[]).length;
+    if(kidCount)famParts.push('👶 '+kidCount);
+    var famLine=famParts.length?'<div style="font-size:.78rem;color:var(--ink3);margin-top:1px">'+famParts.join(' · ')+'</div>':'';
+    // Children names preview
+    var kidNames='';
+    if(kidCount){var names=(m.children||[]).map(function(c){return c.name}).filter(Boolean).slice(0,4);if(names.length)kidNames='<div style="font-size:.72rem;color:var(--ink3)">'+es(names.join(', '))+(kidCount>4?' ...':'')+'</div>'}
+    // Tags
+    const tags=[];
+    if(m.membershipPaid)tags.push('<span class="paid-tag">שילם</span>');else tags.push('<span class="unpaid-tag">לא שילם</span>');
+    if(m.dutyRoster)tags.push('<span class="duty-tag">תורן</span>');
+    if((m.yahrzeits||[]).length)tags.push(`<span class="mt2">${m.yahrzeits.length} יארצייט</span>`);
+    if((m.volunteering||[]).length)tags.push('<span class="mt2">מתנדב</span>');
+    // Duty toggle
+    var dutyToggle='<label style="display:flex;align-items:center;gap:4px;font-size:.72rem;color:var(--ink3);cursor:pointer;white-space:nowrap" onclick="event.stopPropagation()"><input type="checkbox" '+(m.dutyRoster?'checked':'')+' onchange="toggleMbrField(\''+m.id+'\',\'dutyRoster\');renderML()"> תורן</label>';
+    return`<div class="mc" style="cursor:pointer" onclick="showMemberDetail(getM('${m.id}'))"><div class="mav">${es(init)}</div><div class="mi"><div class="mn">${es(m.firstName)} ${es(m.lastName)}</div><div class="ms2">${es(m.phone||'')}${famLine}${kidNames}</div></div><div class="mts">${tags.join('')}</div><div class="mas">${dutyToggle}<button class="med" onclick="event.stopPropagation();doEditMx('${m.id}')">✏️ עריכה</button><button class="mde" onclick="event.stopPropagation();delMx('${m.id}')">מחק</button></div></div>`}).join('')}
 function filtM(v){renderML(v)}
 function editMx(id){var m=getM(id);if(!m)return;showMemberDetail(m)}
 function doEditMx(id){var m=getM(id);if(!m)return;closeMD();closeAdm();initForm(m);document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';document.getElementById('main-card').classList.remove('reg-collapsed');window.scrollTo(0,0)}
@@ -2079,7 +2121,36 @@ var I18N={
     phMotherName:'שרה',
     phTorahName:'משה בן אברהם',
     phStreet:'הרצל',
-    phCity:'תל מונד'
+    phCity:'תל מונד',
+    spouseTitle:'בן/בת זוג',
+    spouseName:'שם בן/בת הזוג',
+    spousePhone:'טלפון',
+    spouseEmail:'דוא"ל',
+    mbrTabTitle:'דמי חבר',
+    mbrSettingsTitle:'הגדרות דמי חבר',
+    mbrYearLabel:'שנת גבייה',
+    mbrLinkLabel:'קישור לתשלום',
+    mbrMsgEditorTitle:'עריכת הודעת תזכורת',
+    mbrPaidLabel:'שילמו',
+    mbrUnpaidLabel:'טרם שילמו',
+    mbrTotalLabel:'סה"כ',
+    mbrListTitle:'רשימת מתפללים',
+    mbrBulkBtn:'שלח תזכורת לכל מי שלא שילם',
+    dutyTabTitle:'תורנות שבועית',
+    dutyHeroTitle:'תורנים לשבת הקרובה',
+    dutyScheduleTitle:'לוח תורנויות — 8 שבועות הקרובים',
+    dutyRosterTitle:'רשימת תורנים',
+    dutyColDate:'תאריך שבת',
+    dutyCol1:'תורן 1',
+    dutyCol2:'תורן 2',
+    familyViewTitle:'הרכב משפחתי',
+    payModalTitle:'סימון תשלום',
+    payDateLabel:'תאריך תשלום',
+    payMethodLabel:'אמצעי תשלום',
+    payAmountLabel:'סכום (אופציונלי)',
+    payNotesLabel:'הערות',
+    payConfirmBtn:'אשר תשלום',
+    reminderListTitle:'שליחת תזכורות'
   },
   en:{
     editMyDetails:'📝 Edit My Details',
@@ -2137,7 +2208,36 @@ var I18N={
     phMotherName:'Sarah',
     phTorahName:'Moshe ben Avraham',
     phStreet:'Herzl',
-    phCity:'Tel Mond'
+    phCity:'Tel Mond',
+    spouseTitle:'Spouse',
+    spouseName:'Spouse Name',
+    spousePhone:'Phone',
+    spouseEmail:'Email',
+    mbrTabTitle:'Membership',
+    mbrSettingsTitle:'Membership Settings',
+    mbrYearLabel:'Billing Year',
+    mbrLinkLabel:'Payment Link',
+    mbrMsgEditorTitle:'Edit Reminder Message',
+    mbrPaidLabel:'Paid',
+    mbrUnpaidLabel:'Unpaid',
+    mbrTotalLabel:'Total',
+    mbrListTitle:'Members List',
+    mbrBulkBtn:'Send reminder to all unpaid',
+    dutyTabTitle:'Weekly Duty',
+    dutyHeroTitle:'This Week\'s Duty',
+    dutyScheduleTitle:'Duty Schedule — Next 8 Weeks',
+    dutyRosterTitle:'Duty Roster',
+    dutyColDate:'Shabbat Date',
+    dutyCol1:'Duty 1',
+    dutyCol2:'Duty 2',
+    familyViewTitle:'Family Details',
+    payModalTitle:'Mark Payment',
+    payDateLabel:'Payment Date',
+    payMethodLabel:'Payment Method',
+    payAmountLabel:'Amount (optional)',
+    payNotesLabel:'Notes',
+    payConfirmBtn:'Confirm Payment',
+    reminderListTitle:'Send Reminders'
   }
 };
 var curLang='he';
@@ -2187,6 +2287,16 @@ function applyLang(){
   document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
     var key=el.getAttribute('data-i18n-placeholder');
     if(dict[key])el.placeholder=dict[key];
+  });
+  // Update data-i18n-text (textContent only, for admin panels)
+  document.querySelectorAll('[data-i18n-text]').forEach(function(el){
+    var key=el.getAttribute('data-i18n-text');
+    if(dict[key]){
+      // Preserve trailing toggle arrows
+      var arrow=el.querySelector('span[style*="float"]');
+      if(arrow)el.innerHTML=dict[key]+' '+arrow.outerHTML;
+      else el.textContent=dict[key];
+    }
   });
 }
 
@@ -2545,9 +2655,10 @@ function renderMbrTab(){
   // Stats - clickable
   var st=document.getElementById('mbr-stats');
   var aF=mbrTabFilter==='all',pF=mbrTabFilter==='paid',uF=mbrTabFilter==='unpaid';
-  st.innerHTML='<div onclick="setMbrFilter(\'paid\')" style="flex:1;min-width:100px;background:rgba(30,125,75,'+(pF?'.25':'.1')+');border-radius:10px;padding:.8rem;text-align:center;border:2px solid '+(pF?'#1e7d4b':'transparent')+';transition:all .2s"><div style="font-size:1.5rem;font-weight:700;color:#1e7d4b">'+paid.length+'</div><div style="font-size:.75rem;color:var(--ink3)">שילמו</div></div>'+
-    '<div onclick="setMbrFilter(\'unpaid\')" style="flex:1;min-width:100px;background:rgba(192,57,43,'+(uF?'.25':'.1')+');border-radius:10px;padding:.8rem;text-align:center;border:2px solid '+(uF?'#c0392b':'transparent')+';transition:all .2s"><div style="font-size:1.5rem;font-weight:700;color:#c0392b">'+unpaid.length+'</div><div style="font-size:.75rem;color:var(--ink3)">טרם שילמו</div></div>'+
-    '<div onclick="setMbrFilter(\'all\')" style="flex:1;min-width:100px;background:rgba(200,168,75,'+(aF?'.25':'.1')+');border-radius:10px;padding:.8rem;text-align:center;border:2px solid '+(aF?'var(--gold)':'transparent')+';transition:all .2s"><div style="font-size:1.5rem;font-weight:700;color:var(--gold)">'+ms.length+'</div><div style="font-size:.75rem;color:var(--ink3)">סה"כ</div></div>';
+  var dict=I18N[curLang]||I18N.he;
+  st.innerHTML='<div onclick="setMbrFilter(\'paid\')" style="flex:1;min-width:100px;background:rgba(30,125,75,'+(pF?'.25':'.1')+');border-radius:10px;padding:.8rem;text-align:center;border:2px solid '+(pF?'#1e7d4b':'transparent')+';transition:all .2s"><div style="font-size:1.5rem;font-weight:700;color:#1e7d4b">'+paid.length+'</div><div style="font-size:.75rem;color:var(--ink3)">'+es(dict.mbrPaidLabel)+'</div></div>'+
+    '<div onclick="setMbrFilter(\'unpaid\')" style="flex:1;min-width:100px;background:rgba(192,57,43,'+(uF?'.25':'.1')+');border-radius:10px;padding:.8rem;text-align:center;border:2px solid '+(uF?'#c0392b':'transparent')+';transition:all .2s"><div style="font-size:1.5rem;font-weight:700;color:#c0392b">'+unpaid.length+'</div><div style="font-size:.75rem;color:var(--ink3)">'+es(dict.mbrUnpaidLabel)+'</div></div>'+
+    '<div onclick="setMbrFilter(\'all\')" style="flex:1;min-width:100px;background:rgba(200,168,75,'+(aF?'.25':'.1')+');border-radius:10px;padding:.8rem;text-align:center;border:2px solid '+(aF?'var(--gold)':'transparent')+';transition:all .2s"><div style="font-size:1.5rem;font-weight:700;color:var(--gold)">'+ms.length+'</div><div style="font-size:.75rem;color:var(--ink3)">'+es(dict.mbrTotalLabel)+'</div></div>';
   // Filter
   var sorted;
   if(mbrTabFilter==='paid')sorted=paid;
