@@ -585,6 +585,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 <body>
 <div class="top-actions">
   <button onclick="openSelfEdit()" data-i18n="editMyDetails">📝 עריכת הפרטים שלי</button>
+  <button onclick="scrollToPayInfo()" id="top-pay-btn" style="color:var(--gold)">💳 תשלום</button>
   <button onclick="openAdm()" data-i18n="adminBtn">🔒 ניהול</button>
   <button onclick="toggleTheme()" id="theme-toggle-btn">☀️</button>
   <div class="lang-toggle" id="lang-toggle">
@@ -906,11 +907,18 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       </div>
       <div id="mbr-stats" style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;cursor:pointer"></div>
       <div style="margin-bottom:.8rem">
-        <button class="abt" onclick="toggleCollapse('msg-editor-body')" style="width:100%;text-align:right;font-size:.85rem;padding:8px 12px;border:1px solid var(--bd2);border-radius:8px;background:var(--c2)" data-i18n-text="mbrMsgEditorTitle">📝 עריכת הודעת תזכורת <span style="float:left">▾</span></button>
+        <button class="abt" onclick="toggleCollapse('msg-editor-body')" style="width:100%;text-align:right;font-size:.85rem;padding:8px 12px;border:1px solid var(--bd2);border-radius:8px;background:var(--c2)">📝 עריכת הודעות תזכורת <span style="float:left">▾</span></button>
         <div id="msg-editor-body" class="msg-editor" style="display:none;border-radius:0 0 10px 10px;border-top:0">
-          <textarea id="mbr-msg-tpl"></textarea>
-          <div class="placeholders">משתנים זמינים: <strong>{name}</strong> = שם המתפלל, <strong>{year}</strong> = שנת גבייה, <strong>{link}</strong> = קישור תשלום</div>
-          <button class="abt" onclick="saveMsgTpl()" style="margin-top:.5rem;font-size:.8rem">💾 שמור הודעה</button>
+          <div style="margin-bottom:1rem">
+            <h4 style="font-size:.85rem;margin-bottom:.4rem;color:var(--ink)">🔄 תזכורת חידוש — סוף שנה (השנה נגמרה, יש לשלם לשנה הבאה)</h4>
+            <textarea id="mbr-msg-tpl-renew" style="width:100%;min-height:100px;border:1.5px solid var(--bd);border-radius:8px;padding:10px;font-family:inherit;font-size:.85rem;direction:rtl;resize:vertical"></textarea>
+          </div>
+          <div style="margin-bottom:.5rem">
+            <h4 style="font-size:.85rem;margin-bottom:.4rem;color:var(--ink)">⚠ תזכורת חוב — טרם שולם (יש חוב פתוח)</h4>
+            <textarea id="mbr-msg-tpl-overdue" style="width:100%;min-height:100px;border:1.5px solid var(--bd);border-radius:8px;padding:10px;font-family:inherit;font-size:.85rem;direction:rtl;resize:vertical"></textarea>
+          </div>
+          <div class="placeholders" style="margin-bottom:.5rem">משתנים: <strong>{name}</strong> = שם, <strong>{year}</strong> = שנת גבייה, <strong>{link}</strong> = קישור תשלום</div>
+          <button class="abt" onclick="saveMsgTpls()" style="font-size:.8rem">💾 שמור הודעות</button>
         </div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-wrap:wrap;gap:8px">
@@ -920,7 +928,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       <div id="mbr-list"></div>
       <div style="margin-top:1.2rem">
         <button class="abt" onclick="toggleCollapse('mbr-info-body')" style="width:100%;text-align:right;font-size:.85rem;padding:8px 12px;border:1px solid var(--bd2);border-radius:8px;background:var(--c2)">📋 מידע על דמי חבר וחברות בקהילה <span style="float:left">▾</span></button>
-        <div id="mbr-info-body" style="display:none;background:var(--c2);border-radius:0 0 10px 10px;padding:1rem;border:1px solid var(--bd2);border-top:0;font-size:.85rem;line-height:1.7;color:var(--ink2)">
+        <div id="mbr-info-body" style="display:none;background:#fff;border-radius:0 0 10px 10px;padding:1rem;border:1px solid var(--bd2);border-top:0;font-size:.85rem;line-height:1.7;color:#333">
           <h4 style="color:var(--ink);margin-bottom:.5rem">💳 דמי חבר — קהילת מבשר ציון</h4>
           <p>בית הכנסת אינו זוכה לתמיכה ממשלתית או עירונית כלשהי. הוא נבנה ומתוחזק באופן מלא מכספי החברים.</p>
           <p style="margin-top:.5rem"><strong>דמי החבר כוללים:</strong></p>
@@ -1185,16 +1193,17 @@ async function h2g(hy,hm,hd){
 }
 async function fetchParashot(startD,endD){
   const s=d2s(startD),e2=d2s(endD);
-  const url=`https://www.hebcal.com/hebcal?cfg=json&v=1&s=on&maj=on&ss=on&i=on&leyning=off&lg=he&start=${s}&end=${e2}`;
+  const lg=curLang==='en'?'s':'he';
+  const url=`https://www.hebcal.com/hebcal?cfg=json&v=1&s=on&maj=on&ss=on&i=on&leyning=off&lg=${lg}&start=${s}&end=${e2}`;
   const r=await hf(url);
   const map={};
   if(!r||!r.items)return map;
   for(const it of r.items){
     const dt=it.date?it.date.slice(0,10):'';if(!dt)continue;
     if(!map[dt])map[dt]={parasha:'',holiday:'',special:''};
-    if(it.category==='parashat')map[dt].parasha=it.hebrew||it.title||'';
-    else if(it.category==='holiday'&&it.subcat==='major')map[dt].holiday=it.hebrew||it.title||'';
-    else if(it.category==='holiday'&&it.subcat==='special')map[dt].special=it.hebrew||it.title||'';
+    if(it.category==='parashat')map[dt].parasha=(curLang==='en'?it.title:it.hebrew)||it.title||'';
+    else if(it.category==='holiday'&&it.subcat==='major')map[dt].holiday=(curLang==='en'?it.title:it.hebrew)||it.title||'';
+    else if(it.category==='holiday'&&it.subcat==='special')map[dt].special=(curLang==='en'?it.title:it.hebrew)||it.title||'';
   }
   return map;
 }
@@ -2309,6 +2318,8 @@ function setLang(lang){
   document.querySelectorAll('#lang-toggle button').forEach(function(b){
     b.classList.toggle('active',b.textContent.trim()===(lang==='he'?'עב':'EN'));
   });
+  // Reload week card with new language
+  loadWeekSummary();
 }
 function applyLang(){
   var dict=I18N[curLang]||I18N.he;
@@ -2394,7 +2405,8 @@ async function getHebrewBirthdays(ms,sh){
 // ── Shabbat Times (Tel Mond) ─────────────────────────────
 async function getShabbatTimes(){
   try{
-    var url='https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude=32.258&longitude=34.917&tzid=Asia/Jerusalem&m=50&lg=he&i=on';
+    var lg=curLang==='en'?'s':'he';
+    var url='https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude=32.258&longitude=34.917&tzid=Asia/Jerusalem&m=50&lg='+lg+'&i=on';
     var r=await hf(url);
     if(!r||!r.items)return null;
     var times={candles:'',havdalah:'',parashaLink:''};
@@ -2438,16 +2450,18 @@ async function loadWeekSummary(){
     var aliyot=getAliyot();
     var kiddush=getKiddush();
 
+    var isEn=curLang==='en';
+    var locale=isEn?'en-IL':'he-IL';
     var h='<div class="wk-head">';
-    h+='<span class="wk-par">📖 '+(parName?es(parName):'שבת הקרובה')+'</span>';
-    h+='<span class="wk-heb">שבת '+es(hebStr)+'</span>';
-    h+='<span class="wk-date">'+sh.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})+'</span>';
+    h+='<span class="wk-par">📖 '+(parName?es(parName):(isEn?'This Shabbat':'שבת הקרובה'))+'</span>';
+    h+='<span class="wk-heb">'+(isEn?'Shabbat ':'שבת ')+es(hebStr)+'</span>';
+    h+='<span class="wk-date">'+sh.toLocaleDateString(locale,{day:'numeric',month:'long',year:'numeric'})+'</span>';
     h+='</div>';
     // Shabbat times
     if(shTimes&&(shTimes.candles||shTimes.havdalah)){
       h+='<div class="wk-times">';
-      if(shTimes.candles)h+='<span class="wk-time">🕯️ הדלקת נרות: <strong>'+shTimes.candles+'</strong></span>';
-      if(shTimes.havdalah)h+='<span class="wk-time">✨ צאת שבת: <strong>'+shTimes.havdalah+'</strong></span>';
+      if(shTimes.candles)h+='<span class="wk-time">🕯️ '+(isEn?'Candle Lighting':'הדלקת נרות')+': <strong>'+shTimes.candles+'</strong></span>';
+      if(shTimes.havdalah)h+='<span class="wk-time">✨ '+(isEn?'Havdalah':'צאת שבת')+': <strong>'+shTimes.havdalah+'</strong></span>';
       h+='</div>';
     }
     if(evs.length||birthdays.length||(aliyot&&aliyot.date===key)||(kiddush&&kiddush.date===key)){
@@ -2723,7 +2737,10 @@ function renderMbrTab(){
   var yc=document.getElementById('mbr-year-cfg');if(yc)yc.value=s.year||'';
   var lc=document.getElementById('mbr-link-cfg');if(lc)lc.value=s.link||'';
   var tpl=document.getElementById('mbr-msg-tpl');
-  if(tpl&&!tpl.dataset.loaded){tpl.value=getMsgTpl();tpl.dataset.loaded='1'}
+  var tplR=document.getElementById('mbr-msg-tpl-renew');
+  var tplO=document.getElementById('mbr-msg-tpl-overdue');
+  if(tplR&&!tplR.dataset.loaded){tplR.value=getMsgTpl('renew');tplR.dataset.loaded='1'}
+  if(tplO&&!tplO.dataset.loaded){tplO.value=getMsgTpl('overdue');tplO.dataset.loaded='1'}
   var ms=getMs();
   var paid=ms.filter(function(m){return m.membershipPaid});
   var unpaid=ms.filter(function(m){return!m.membershipPaid});
@@ -2753,8 +2770,9 @@ function renderMbrTab(){
       '<span class="unpaid-tag" style="font-size:.8rem;padding:3px 10px">✗ טרם שולם</span>';
     var actionsHtml='<button style="font-size:.75rem;padding:4px 10px;border:1px solid '+(isPaid?'#c0392b':'#1e7d4b')+';color:'+(isPaid?'#c0392b':'#1e7d4b')+';border-radius:6px;background:none;cursor:pointer;font-family:inherit" onclick="event.stopPropagation();togglePaymentFromList(\''+m.id+'\')">'+(isPaid?'ביטול':'סמן שולם')+'</button>';
     if(!isPaid){
-      actionsHtml+=' <button style="font-size:.75rem;padding:4px 10px;border:1px solid var(--gold);color:var(--gold);border-radius:6px;background:none;cursor:pointer;font-family:inherit" onclick="event.stopPropagation();sendReminder(\''+m.id+'\')">📨 תזכורת</button>';
+      actionsHtml+=' <button style="font-size:.75rem;padding:4px 10px;border:1px solid #c0392b;color:#c0392b;border-radius:6px;background:none;cursor:pointer;font-family:inherit" onclick="event.stopPropagation();sendReminder(\''+m.id+'\',\'overdue\')">⚠ חוב</button>';
     }
+    actionsHtml+=' <button style="font-size:.75rem;padding:4px 10px;border:1px solid var(--gold);color:var(--gold);border-radius:6px;background:none;cursor:pointer;font-family:inherit" onclick="event.stopPropagation();sendReminder(\''+m.id+'\',\'renew\')">🔄 חידוש</button>';
     // Family info line
     var famParts=[];
     if(m.spouse&&m.spouse.name)famParts.push('👩 '+es(m.spouse.name));
@@ -2763,18 +2781,23 @@ function renderMbrTab(){
     return '<div class="mc" style="margin-bottom:6px;border-right:3px solid '+(isPaid?'#1e7d4b':'#c0392b')+';cursor:pointer" onclick="showMbrFamily(\''+m.id+'\')"><div class="mav" style="background:'+(isPaid?'#1e7d4b':'#c0392b')+'">'+es(init)+'</div><div class="mi" style="flex:1"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone||'')+famLine+'</div></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+statusHtml+actionsHtml+'</div></div>';
   }).join('');
 }
-var DEFAULT_MSG_TPL='שלום {name} היקר/ה,\n\nמקווים שהכל טוב ושמחים שאת/ה חלק מקהילת מבשר ציון! 🙏\n\nכידוע, בית הכנסת שלנו אינו זוכה לתמיכה ממשלתית או עירונית — הוא נבנה ומתוחזק באופן מלא מכספי החברים.\n\nרצינו להזכיר בנעימות שדמי החבר לשנת {year} טרם הוסדרו.\n\nניתן לשלם בקישור:\n{link}\n\nאפשרויות תשלום:\n• כרטיס אשראי\n• העברה בנקאית — בנק הפועלים (12), חשבון 136503, סניף 448\n• הוראת קבע / המחאות\n• PayPal / ביט\n• טלפון: 073-7057470 או WhatsApp: 055-2778750\n\nניתן לפרוס את כל התשלומים.\nלשאלות בנושא תשלום — gizbar@mevaser.org.il (חשאיות מלאה).\n\nתודה רבה על השותפות! ❤️\nקהילת מבשר ציון — בית הכנסת, רח׳ הצופית 23, תל מונד';
-var MSG_TPL_KEY='mbz_msg_tpl';
-function getMsgTpl(){return localStorage.getItem(MSG_TPL_KEY)||DEFAULT_MSG_TPL}
-function saveMsgTpl(){
-  var tpl=document.getElementById('mbr-msg-tpl');
-  if(tpl){localStorage.setItem(MSG_TPL_KEY,tpl.value);alert('הודעת התזכורת נשמרה!')}
+var DEFAULT_MSG_RENEW='שלום {name} היקר/ה,\n\nמקווים שהכל טוב! 🙏\nשנת {year} מתקרבת לסיומה, ואנו שמחים להזמינך לחדש את דמי החבר לשנה הבאה.\n\nדמי החבר שלך עוזרים לנו להמשיך לתחזק את בית הכנסת ולקיים את כל הפעילויות הקהילתיות.\n\nלתשלום:\n{link}\n\nאפשרויות: אשראי, העברה בנקאית (הפועלים 12/136503/448), ביט, PayPal.\nטלפון: 073-7057470 | WhatsApp: 055-2778750\n\nתודה רבה! ❤️\nקהילת מבשר ציון';
+var DEFAULT_MSG_OVERDUE='שלום {name} היקר/ה,\n\nמקווים שהכל טוב ושמחים שאת/ה חלק מקהילתנו! 🙏\n\nרצינו להזכיר בנעימות שדמי החבר לשנת {year} טרם הוסדרו.\nבית הכנסת אינו מקבל תמיכה ממשלתית — הוא מתוחזק באופן מלא מכספי החברים.\n\nלתשלום:\n{link}\n\nאפשרויות: אשראי, העברה בנקאית (הפועלים 12/136503/448), הוראת קבע, ביט, PayPal.\nטלפון: 073-7057470 | WhatsApp: 055-2778750\nניתן לפרוס תשלומים. לשאלות — gizbar@mevaser.org.il (חשאיות מלאה).\n\nתודה רבה על השותפות! ❤️\nקהילת מבשר ציון';
+var MSG_RENEW_KEY='mbz_msg_renew';
+var MSG_OVERDUE_KEY='mbz_msg_overdue';
+function getMsgTpl(type){return localStorage.getItem(type==='renew'?MSG_RENEW_KEY:MSG_OVERDUE_KEY)||(type==='renew'?DEFAULT_MSG_RENEW:DEFAULT_MSG_OVERDUE)}
+function saveMsgTpls(){
+  var r=document.getElementById('mbr-msg-tpl-renew');
+  var o=document.getElementById('mbr-msg-tpl-overdue');
+  if(r)localStorage.setItem(MSG_RENEW_KEY,r.value);
+  if(o)localStorage.setItem(MSG_OVERDUE_KEY,o.value);
+  alert('הודעות התזכורת נשמרו!');
 }
-function buildReminderMsg(m){
+function buildReminderMsg(m,type){
   var s=getMbrSettings();
   var year=s.year||new Date().getFullYear().toString();
   var link=s.link||'';
-  var tpl=getMsgTpl();
+  var tpl=getMsgTpl(type||'overdue');
   return tpl.replace(/\{name\}/g,m.firstName).replace(/\{year\}/g,year).replace(/\{link\}/g,link);
 }
 function phoneToWA(phone){
@@ -2782,27 +2805,37 @@ function phoneToWA(phone){
   if(p.startsWith('0'))p='972'+p.slice(1);
   return p;
 }
-function sendReminder(id){
+function sendReminder(id,type){
   var m=getM(id);if(!m||!m.phone)return alert('אין מספר טלפון למתפלל זה');
-  var msg=buildReminderMsg(m);
+  var msg=buildReminderMsg(m,type||'overdue');
   var url='https://wa.me/'+phoneToWA(m.phone)+'?text='+encodeURIComponent(msg);
   window.open(url,'_blank');
 }
 function sendBulkReminder(){
   var ms=getMs().filter(function(m){return!m.membershipPaid&&m.phone});
   if(!ms.length)return alert('כל המתפללים שילמו! 🎉');
-  // Show list of WhatsApp links instead of auto-opening
-  var s=getMbrSettings();var year=s.year||'';
-  var h='<div style="max-height:60vh;overflow-y:auto">';
-  h+='<p style="margin-bottom:.8rem;font-size:.9rem">'+ms.length+' מתפללים טרם שילמו. לחץ על כל שם לפתיחת WhatsApp:</p>';
+  var h='<div style="padding:.5rem"><h2 style="margin-bottom:.5rem">📨 שליחת תזכורות</h2>';
+  h+='<p style="margin-bottom:.5rem;font-size:.85rem;color:var(--ink3)">בחר סוג תזכורת:</p>';
+  h+='<div style="display:flex;gap:8px;margin-bottom:1rem"><button class="abt" onclick="showBulkList(\'overdue\')" style="flex:1;padding:8px;font-size:.85rem;border:2px solid #c0392b;color:#c0392b;background:none;border-radius:8px">⚠ חוב פתוח ('+ms.length+')</button><button class="abt" onclick="showBulkList(\'renew\')" style="flex:1;padding:8px;font-size:.85rem;border:2px solid var(--gold);color:var(--gold);background:none;border-radius:8px">🔄 חידוש שנתי</button></div>';
+  h+='<div id="bulk-list"></div>';
+  h+='<div style="margin-top:1rem;text-align:center"><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
+  document.getElementById('md-card').innerHTML=h;
+  document.getElementById('md-ovl').classList.add('show');
+  showBulkList('overdue');
+}
+function showBulkList(type){
+  var ms=type==='overdue'?getMs().filter(function(m){return!m.membershipPaid&&m.phone}):getMs().filter(function(m){return m.phone});
+  var bl=document.getElementById('bulk-list');
+  if(!bl)return;
+  var h='<div style="max-height:50vh;overflow-y:auto">';
+  h+='<p style="margin-bottom:.5rem;font-size:.85rem">'+ms.length+' מתפללים — לחץ לפתיחת WhatsApp:</p>';
   ms.forEach(function(m,i){
-    var msg=buildReminderMsg(m);
+    var msg=buildReminderMsg(m,type);
     var url='https://wa.me/'+phoneToWA(m.phone)+'?text='+encodeURIComponent(msg);
-    h+='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd2)"><span style="min-width:24px;text-align:center;color:var(--ink3);font-size:.8rem">'+(i+1)+'</span><a href="'+url+'" target="_blank" style="flex:1;color:var(--ink);font-weight:500;text-decoration:none">'+es(m.firstName+' '+m.lastName)+'</a><span style="font-size:.8rem;color:var(--ink3);direction:ltr">'+es(m.phone)+'</span><a href="'+url+'" target="_blank" style="font-size:.8rem;color:#25d366;font-weight:600;text-decoration:none">📨 WhatsApp</a></div>';
+    h+='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd2)"><span style="min-width:24px;text-align:center;color:var(--ink3);font-size:.8rem">'+(i+1)+'</span><a href="'+url+'" target="_blank" style="flex:1;color:var(--ink);font-weight:500;text-decoration:none">'+es(m.firstName+' '+m.lastName)+'</a><span style="font-size:.8rem;color:var(--ink3);direction:ltr">'+es(m.phone)+'</span><a href="'+url+'" target="_blank" style="font-size:.8rem;color:#25d366;font-weight:600;text-decoration:none">📨</a></div>';
   });
   h+='</div>';
-  document.getElementById('md-card').innerHTML='<div style="padding:.5rem"><h2 style="margin-bottom:.8rem">📨 שליחת תזכורות</h2>'+h+'<div style="margin-top:1rem;text-align:center"><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
-  document.getElementById('md-ovl').classList.add('show');
+  bl.innerHTML=h;
 }
 
 // ── Duty Roster ──────────────────────────────────────────
