@@ -465,42 +465,56 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
 }
 
 /* Settings panel */
-.settings-panel{max-width:700px;margin:0 auto}
+.settings-panel{max-width:960px;margin:0 auto}
 .settings-panel h2{color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:1.15rem;font-weight:700;margin-bottom:1.2rem;text-align:center}
 .settings-lang-toggle{display:flex;gap:.4rem;justify-content:center;margin-bottom:1.2rem}
 .settings-lang-btn{padding:.45rem 1.1rem;border-radius:8px;border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);font-family:'Heebo',sans-serif;font-size:.82rem;cursor:pointer;transition:all .18s;min-height:40px}
 .settings-lang-btn.active{background:rgba(255,255,255,.14);color:var(--gold2);border-color:var(--gold);font-weight:600}
-.settings-section{margin-bottom:1.4rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:1rem 1.1rem .8rem}
-.settings-section h3{color:var(--gold3);font-family:'Frank Ruhl Libre',serif;font-size:.93rem;font-weight:700;margin-bottom:.85rem;padding-bottom:.45rem;border-bottom:1px solid rgba(255,255,255,.1)}
-.settings-field{display:flex;flex-direction:column;gap:.25rem;margin-bottom:.75rem}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.settings-grid .settings-section.full-width{grid-column:1/-1}
+.settings-section{margin-bottom:0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:0;overflow:hidden}
+.settings-section h3{color:var(--gold3);font-family:'Frank Ruhl Libre',serif;font-size:.88rem;font-weight:700;margin:0;padding:.7rem 1rem;border-bottom:1px solid rgba(255,255,255,.1);cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;transition:background .18s}
+.settings-section h3:hover{background:rgba(255,255,255,.04)}
+.settings-section h3::after{content:'▾';font-size:.7rem;color:rgba(255,255,255,.3);transition:transform .25s}
+.settings-section.collapsed h3::after{transform:rotate(-90deg)}
+.settings-section.collapsed h3{border-bottom-color:transparent}
+.settings-section-body{padding:.75rem 1rem .6rem;transition:none}
+.settings-section.collapsed .settings-section-body{display:none}
+.settings-field{display:flex;flex-direction:column;gap:.2rem;margin-bottom:.55rem}
 .settings-field:last-child{margin-bottom:0}
-.settings-field label{font-size:.76rem;font-weight:600;color:var(--gold2);opacity:.85}
-.settings-field input,.settings-field textarea{padding:.55rem .78rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;font-family:'Heebo',sans-serif;font-size:.88rem;color:#fff;background:rgba(0,0,0,.25);transition:border-color .2s,box-shadow .2s;direction:rtl;width:100%;min-height:42px}
-.settings-field textarea{resize:vertical;min-height:72px}
+.settings-field label{font-size:.72rem;font-weight:600;color:var(--gold2);opacity:.85}
+.settings-field input,.settings-field textarea{padding:.45rem .65rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;font-family:'Heebo',sans-serif;font-size:.84rem;color:#fff;background:rgba(0,0,0,.25);transition:border-color .2s,box-shadow .2s;direction:rtl;width:100%;min-height:38px}
+.settings-field textarea{resize:vertical;min-height:60px}
 .settings-field input:focus,.settings-field textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,168,75,.18);background:rgba(0,0,0,.35)}
 .settings-field input::placeholder,.settings-field textarea::placeholder{color:rgba(255,255,255,.25)}
-.settings-actions{display:flex;gap:.65rem;margin-top:1.4rem;flex-wrap:wrap}
-.settings-save-btn{flex:1;min-width:160px;padding:.72rem 1.2rem;background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 100%);color:var(--ink);border:none;border-radius:10px;font-family:'Frank Ruhl Libre',serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;min-height:48px}
+.settings-row{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.settings-actions{display:flex;gap:.65rem;margin-top:1.2rem;flex-wrap:wrap;justify-content:center}
+.settings-save-btn{min-width:180px;padding:.65rem 1.5rem;background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 100%);color:var(--ink);border:none;border-radius:10px;font-family:'Frank Ruhl Libre',serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .2s;min-height:46px}
 .settings-save-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
-.settings-reset-btn{padding:.72rem 1.2rem;background:transparent;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:10px;font-family:'Heebo',sans-serif;font-size:.85rem;cursor:pointer;transition:all .18s;min-height:48px}
+.settings-reset-btn{padding:.65rem 1.2rem;background:transparent;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:10px;font-family:'Heebo',sans-serif;font-size:.85rem;cursor:pointer;transition:all .18s;min-height:46px}
 .settings-reset-btn:hover{border-color:var(--red);color:var(--red);background:rgba(192,57,43,.08)}
 .settings-msg{text-align:center;font-size:.82rem;margin-top:.65rem;min-height:1.2rem;font-weight:600}
-.logo-upload-area{display:flex;flex-direction:column;align-items:center;gap:.75rem}
-.logo-upload-preview{width:96px;height:96px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.25),0 0 0 2px var(--gold);padding:6px}
+.logo-upload-area{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;justify-content:center}
+.logo-upload-preview{width:80px;height:80px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.25),0 0 0 2px var(--gold);padding:5px;flex-shrink:0}
 .logo-upload-preview img{width:100%;height:100%;object-fit:contain}
-.logo-upload-btns{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
-.logo-upload-btn{display:inline-flex;align-items:center;gap:.35rem;padding:.5rem 1rem;border-radius:8px;border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);font-family:'Heebo',sans-serif;font-size:.82rem;cursor:pointer;transition:all .18s;min-height:42px}
+.logo-upload-right{display:flex;flex-direction:column;gap:.45rem;align-items:flex-start}
+.logo-upload-btns{display:flex;gap:.4rem;flex-wrap:wrap}
+.logo-upload-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.4rem .8rem;border-radius:8px;border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);font-family:'Heebo',sans-serif;font-size:.78rem;cursor:pointer;transition:all .18s;min-height:36px}
 .logo-upload-btn:hover{border-color:var(--gold);color:var(--gold2);background:rgba(200,168,75,.1)}
 .logo-upload-btn.danger{border-color:rgba(192,57,43,.3);color:rgba(255,255,255,.5)}
 .logo-upload-btn.danger:hover{border-color:var(--red);color:var(--red);background:rgba(192,57,43,.08)}
-.logo-upload-hint{font-size:.72rem;color:rgba(255,255,255,.35);text-align:center}
-.logo-drop-zone{border:2px dashed rgba(255,255,255,.15);border-radius:12px;padding:1.2rem;text-align:center;cursor:pointer;transition:all .2s;margin-top:.3rem}
-.logo-drop-zone:hover,.logo-drop-zone.drag-over{border-color:var(--gold);background:rgba(200,168,75,.06)}
-.logo-drop-zone-text{font-size:.8rem;color:rgba(255,255,255,.4)}
+.logo-upload-hint{font-size:.68rem;color:rgba(255,255,255,.3)}
+.logo-drop-zone{display:none}
+@media(max-width:768px){
+  .settings-grid{grid-template-columns:1fr}
+  .settings-row{grid-template-columns:1fr}
+  .logo-upload-area{flex-direction:column}
+  .logo-upload-right{align-items:center}
+}
 @media(max-width:600px){
-  .settings-section{padding:.8rem .7rem .6rem}
+  .settings-section-body{padding:.65rem .7rem .5rem}
   .settings-actions{flex-direction:column}
-  .settings-field input,.settings-field textarea{font-size:16px}
+  .settings-field input,.settings-field textarea{font-size:16px;min-height:42px}
 }
 
 /* Registration collapse */
@@ -989,127 +1003,180 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
           <button class="settings-lang-btn" onclick="switchSettingsLang('en')">English</button>
         </div>
         <div id="settings-fields-he">
-          <div class="settings-section"><h3>לוגו הקהילה</h3>
-            <div class="settings-field">
-              <label>עדכון לוגו</label>
+          <div class="settings-section full-width" style="margin-bottom:.9rem">
+            <h3 onclick="toggleSettingsSection(this)">לוגו הקהילה</h3>
+            <div class="settings-section-body">
               <div class="logo-upload-area">
                 <div class="logo-upload-preview"><img id="logo-preview-he" src="logo.jpg" alt="לוגו"></div>
-                <div class="logo-drop-zone" id="logo-drop-he" onclick="document.getElementById('logo-file-he').click()">
-                  <div class="logo-drop-zone-text">📷 לחצו כאן או גררו תמונה</div>
-                </div>
                 <input type="file" id="logo-file-he" accept="image/*" style="display:none" onchange="handleLogoUpload(this)">
-                <div class="logo-upload-btns">
-                  <label class="logo-upload-btn" for="logo-file-he">📁 בחר קובץ</label>
-                  <label class="logo-upload-btn"><input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleLogoUpload(this)">📸 צלם תמונה</label>
-                  <button class="logo-upload-btn danger" onclick="resetLogo()">🗑 הסר לוגו מותאם</button>
+                <div class="logo-upload-right">
+                  <div class="logo-upload-btns">
+                    <label class="logo-upload-btn" for="logo-file-he">📁 בחר קובץ</label>
+                    <label class="logo-upload-btn"><input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleLogoUpload(this)">📸 צלם תמונה</label>
+                    <button class="logo-upload-btn danger" onclick="resetLogo()">🗑 הסר</button>
+                  </div>
+                  <div class="logo-upload-hint">JPG, PNG או WebP · עד 500KB · מומלץ ריבועי</div>
                 </div>
-                <div class="logo-upload-hint">JPG, PNG או WebP · עד 500KB · מומלץ ריבועי</div>
               </div>
             </div>
           </div>
-          <div class="settings-section"><h3>כללי</h3>
-            <div class="settings-field"><label>שם הארגון</label><input type="text" data-stkey="orgName"></div>
-            <div class="settings-field"><label>כותרת תחתונה</label><input type="text" data-stkey="logoSub"></div>
-            <div class="settings-field"><label>כותרת ברוכים הבאים</label><input type="text" data-stkey="welcomeTitle"></div>
-            <div class="settings-field"><label>טקסט ברוכים הבאים</label><textarea data-stkey="welcomeText"></textarea></div>
-            <div class="settings-field"><label>כפתור הרשמה</label><input type="text" data-stkey="registerBtn"></div>
-          </div>
-          <div class="settings-section"><h3>טופס רישום</h3>
-            <div class="settings-field"><label>כותרת פרטי קשר</label><input type="text" data-stkey="contactDetails"></div>
-            <div class="settings-field"><label>שם פרטי</label><input type="text" data-stkey="firstName"></div>
-            <div class="settings-field"><label>שם משפחה</label><input type="text" data-stkey="lastName"></div>
-            <div class="settings-field"><label>שם האב</label><input type="text" data-stkey="fatherName"></div>
-            <div class="settings-field"><label>שם האם</label><input type="text" data-stkey="motherName"></div>
-            <div class="settings-field"><label>שם לעלייה לתורה</label><input type="text" data-stkey="torahName"></div>
-            <div class="settings-field"><label>טלפון</label><input type="text" data-stkey="phone"></div>
-            <div class="settings-field"><label>דוא"ל</label><input type="text" data-stkey="email"></div>
-            <div class="settings-field"><label>כתובת</label><input type="text" data-stkey="address"></div>
-            <div class="settings-field"><label>ילדים</label><input type="text" data-stkey="children"></div>
-            <div class="settings-field"><label>התנדבות</label><input type="text" data-stkey="volunteering"></div>
-            <div class="settings-field"><label>יארצייטים</label><input type="text" data-stkey="yahrzeits"></div>
-            <div class="settings-field"><label>כפתור שמירה</label><input type="text" data-stkey="save"></div>
-          </div>
-          <div class="settings-section"><h3>בן/בת זוג</h3>
-            <div class="settings-field"><label>כותרת</label><input type="text" data-stkey="spouseTitle"></div>
-            <div class="settings-field"><label>שם</label><input type="text" data-stkey="spouseName"></div>
-          </div>
-          <div class="settings-section"><h3>הודעות הצלחה</h3>
-            <div class="settings-field"><label>כותרת הצלחה</label><input type="text" data-stkey="successTitle"></div>
-            <div class="settings-field"><label>טקסט הצלחה</label><textarea data-stkey="successBody"></textarea></div>
-          </div>
-          <div class="settings-section"><h3>כפתורים</h3>
-            <div class="settings-field"><label>עריכת פרטים</label><input type="text" data-stkey="editMyDetails"></div>
-            <div class="settings-field"><label>ניהול</label><input type="text" data-stkey="adminBtn"></div>
-          </div>
-          <div class="settings-section"><h3>ממשק מנהל — דמי חבר</h3>
-            <div class="settings-field"><label>כותרת טאב</label><input type="text" data-stkey="mbrTabTitle"></div>
-            <div class="settings-field"><label>כותרת הגדרות</label><input type="text" data-stkey="mbrSettingsTitle"></div>
-            <div class="settings-field"><label>כותרת עורך הודעה</label><input type="text" data-stkey="mbrMsgEditorTitle"></div>
-            <div class="settings-field"><label>תווית שילמו</label><input type="text" data-stkey="mbrPaidLabel"></div>
-            <div class="settings-field"><label>תווית טרם שילמו</label><input type="text" data-stkey="mbrUnpaidLabel"></div>
-            <div class="settings-field"><label>כפתור תזכורת</label><input type="text" data-stkey="mbrBulkBtn"></div>
-            <div class="settings-field"><label>כותרת חלון תשלום</label><input type="text" data-stkey="payModalTitle"></div>
-            <div class="settings-field"><label>כפתור אישור תשלום</label><input type="text" data-stkey="payConfirmBtn"></div>
-          </div>
-          <div class="settings-section"><h3>ממשק מנהל — תורנות</h3>
-            <div class="settings-field"><label>כותרת טאב</label><input type="text" data-stkey="dutyTabTitle"></div>
-            <div class="settings-field"><label>כותרת שבת קרובה</label><input type="text" data-stkey="dutyHeroTitle"></div>
-            <div class="settings-field"><label>כותרת לוח</label><input type="text" data-stkey="dutyScheduleTitle"></div>
-            <div class="settings-field"><label>כותרת רשימת תורנים</label><input type="text" data-stkey="dutyRosterTitle"></div>
-          </div>
-          <div class="settings-section"><h3>ממשק מנהל — משפחה</h3>
-            <div class="settings-field"><label>כותרת הרכב משפחתי</label><input type="text" data-stkey="familyViewTitle"></div>
-            <div class="settings-field"><label>כותרת תזכורות</label><input type="text" data-stkey="reminderListTitle"></div>
+          <div class="settings-grid">
+            <div class="settings-section">
+              <h3 onclick="toggleSettingsSection(this)">כללי</h3>
+              <div class="settings-section-body">
+                <div class="settings-field"><label>שם הארגון</label><input type="text" data-stkey="orgName"></div>
+                <div class="settings-field"><label>כותרת תחתונה</label><input type="text" data-stkey="logoSub"></div>
+                <div class="settings-field"><label>כותרת ברוכים הבאים</label><input type="text" data-stkey="welcomeTitle"></div>
+                <div class="settings-field"><label>טקסט ברוכים הבאים</label><textarea data-stkey="welcomeText"></textarea></div>
+                <div class="settings-field"><label>כפתור הרשמה</label><input type="text" data-stkey="registerBtn"></div>
+              </div>
+            </div>
+            <div class="settings-section">
+              <h3 onclick="toggleSettingsSection(this)">טופס רישום</h3>
+              <div class="settings-section-body">
+                <div class="settings-field"><label>כותרת פרטי קשר</label><input type="text" data-stkey="contactDetails"></div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>שם פרטי</label><input type="text" data-stkey="firstName"></div>
+                  <div class="settings-field"><label>שם משפחה</label><input type="text" data-stkey="lastName"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>שם האב</label><input type="text" data-stkey="fatherName"></div>
+                  <div class="settings-field"><label>שם האם</label><input type="text" data-stkey="motherName"></div>
+                </div>
+                <div class="settings-field"><label>שם לעלייה לתורה</label><input type="text" data-stkey="torahName"></div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>טלפון</label><input type="text" data-stkey="phone"></div>
+                  <div class="settings-field"><label>דוא"ל</label><input type="text" data-stkey="email"></div>
+                </div>
+                <div class="settings-field"><label>כתובת</label><input type="text" data-stkey="address"></div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>ילדים</label><input type="text" data-stkey="children"></div>
+                  <div class="settings-field"><label>יארצייטים</label><input type="text" data-stkey="yahrzeits"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>התנדבות</label><input type="text" data-stkey="volunteering"></div>
+                  <div class="settings-field"><label>כפתור שמירה</label><input type="text" data-stkey="save"></div>
+                </div>
+              </div>
+            </div>
+            <div class="settings-section">
+              <h3 onclick="toggleSettingsSection(this)">בן/בת זוג והודעות</h3>
+              <div class="settings-section-body">
+                <div class="settings-row">
+                  <div class="settings-field"><label>כותרת בן/בת זוג</label><input type="text" data-stkey="spouseTitle"></div>
+                  <div class="settings-field"><label>שם</label><input type="text" data-stkey="spouseName"></div>
+                </div>
+                <div class="settings-field"><label>כותרת הצלחה</label><input type="text" data-stkey="successTitle"></div>
+                <div class="settings-field"><label>טקסט הצלחה</label><textarea data-stkey="successBody"></textarea></div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>כפתור עריכת פרטים</label><input type="text" data-stkey="editMyDetails"></div>
+                  <div class="settings-field"><label>כפתור ניהול</label><input type="text" data-stkey="adminBtn"></div>
+                </div>
+              </div>
+            </div>
+            <div class="settings-section">
+              <h3 onclick="toggleSettingsSection(this)">ממשק מנהל</h3>
+              <div class="settings-section-body">
+                <div class="settings-row">
+                  <div class="settings-field"><label>טאב דמי חבר</label><input type="text" data-stkey="mbrTabTitle"></div>
+                  <div class="settings-field"><label>הגדרות דמי חבר</label><input type="text" data-stkey="mbrSettingsTitle"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>תווית שילמו</label><input type="text" data-stkey="mbrPaidLabel"></div>
+                  <div class="settings-field"><label>תווית טרם שילמו</label><input type="text" data-stkey="mbrUnpaidLabel"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>עורך הודעה</label><input type="text" data-stkey="mbrMsgEditorTitle"></div>
+                  <div class="settings-field"><label>כפתור תזכורת</label><input type="text" data-stkey="mbrBulkBtn"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>חלון תשלום</label><input type="text" data-stkey="payModalTitle"></div>
+                  <div class="settings-field"><label>אישור תשלום</label><input type="text" data-stkey="payConfirmBtn"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>טאב תורנות</label><input type="text" data-stkey="dutyTabTitle"></div>
+                  <div class="settings-field"><label>שבת קרובה</label><input type="text" data-stkey="dutyHeroTitle"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>לוח תורנויות</label><input type="text" data-stkey="dutyScheduleTitle"></div>
+                  <div class="settings-field"><label>רשימת תורנים</label><input type="text" data-stkey="dutyRosterTitle"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>הרכב משפחתי</label><input type="text" data-stkey="familyViewTitle"></div>
+                  <div class="settings-field"><label>תזכורות</label><input type="text" data-stkey="reminderListTitle"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div id="settings-fields-en" style="display:none">
-          <div class="settings-section"><h3>Community Logo</h3>
-            <div class="settings-field">
-              <label>Update Logo</label>
+          <div class="settings-section full-width" style="margin-bottom:.9rem">
+            <h3 onclick="toggleSettingsSection(this)">Community Logo</h3>
+            <div class="settings-section-body">
               <div class="logo-upload-area">
                 <div class="logo-upload-preview"><img id="logo-preview-en" src="logo.jpg" alt="Logo"></div>
-                <div class="logo-drop-zone" id="logo-drop-en" onclick="document.getElementById('logo-file-en').click()">
-                  <div class="logo-drop-zone-text">📷 Click here or drag an image</div>
-                </div>
                 <input type="file" id="logo-file-en" accept="image/*" style="display:none" onchange="handleLogoUpload(this)">
-                <div class="logo-upload-btns">
-                  <label class="logo-upload-btn" for="logo-file-en">📁 Choose file</label>
-                  <label class="logo-upload-btn"><input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleLogoUpload(this)">📸 Take photo</label>
-                  <button class="logo-upload-btn danger" onclick="resetLogo()">🗑 Remove custom logo</button>
+                <div class="logo-upload-right">
+                  <div class="logo-upload-btns">
+                    <label class="logo-upload-btn" for="logo-file-en">📁 Choose file</label>
+                    <label class="logo-upload-btn"><input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleLogoUpload(this)">📸 Take photo</label>
+                    <button class="logo-upload-btn danger" onclick="resetLogo()">🗑 Remove</button>
+                  </div>
+                  <div class="logo-upload-hint">JPG, PNG or WebP · up to 500KB · square recommended</div>
                 </div>
-                <div class="logo-upload-hint">JPG, PNG or WebP · up to 500KB · square recommended</div>
               </div>
             </div>
           </div>
-          <div class="settings-section"><h3>General</h3>
-            <div class="settings-field"><label>Organization Name</label><input type="text" data-stkey-en="orgName"></div>
-            <div class="settings-field"><label>Logo Subtitle</label><input type="text" data-stkey-en="logoSub"></div>
-            <div class="settings-field"><label>Welcome Title</label><input type="text" data-stkey-en="welcomeTitle"></div>
-            <div class="settings-field"><label>Welcome Text</label><textarea data-stkey-en="welcomeText"></textarea></div>
-            <div class="settings-field"><label>Register Button</label><input type="text" data-stkey-en="registerBtn"></div>
-          </div>
-          <div class="settings-section"><h3>Registration Form</h3>
-            <div class="settings-field"><label>Contact Details Title</label><input type="text" data-stkey-en="contactDetails"></div>
-            <div class="settings-field"><label>First Name</label><input type="text" data-stkey-en="firstName"></div>
-            <div class="settings-field"><label>Last Name</label><input type="text" data-stkey-en="lastName"></div>
-            <div class="settings-field"><label>Father's Name</label><input type="text" data-stkey-en="fatherName"></div>
-            <div class="settings-field"><label>Mother's Name</label><input type="text" data-stkey-en="motherName"></div>
-            <div class="settings-field"><label>Torah Name</label><input type="text" data-stkey-en="torahName"></div>
-            <div class="settings-field"><label>Phone</label><input type="text" data-stkey-en="phone"></div>
-            <div class="settings-field"><label>Email</label><input type="text" data-stkey-en="email"></div>
-            <div class="settings-field"><label>Address</label><input type="text" data-stkey-en="address"></div>
-            <div class="settings-field"><label>Children</label><input type="text" data-stkey-en="children"></div>
-            <div class="settings-field"><label>Volunteering</label><input type="text" data-stkey-en="volunteering"></div>
-            <div class="settings-field"><label>Yahrzeits</label><input type="text" data-stkey-en="yahrzeits"></div>
-            <div class="settings-field"><label>Save Button</label><input type="text" data-stkey-en="save"></div>
-          </div>
-          <div class="settings-section"><h3>Success Messages</h3>
-            <div class="settings-field"><label>Success Title</label><input type="text" data-stkey-en="successTitle"></div>
-            <div class="settings-field"><label>Success Body</label><textarea data-stkey-en="successBody"></textarea></div>
-          </div>
-          <div class="settings-section"><h3>Buttons</h3>
-            <div class="settings-field"><label>Edit My Details</label><input type="text" data-stkey-en="editMyDetails"></div>
-            <div class="settings-field"><label>Admin Button</label><input type="text" data-stkey-en="adminBtn"></div>
+          <div class="settings-grid">
+            <div class="settings-section">
+              <h3 onclick="toggleSettingsSection(this)">General</h3>
+              <div class="settings-section-body">
+                <div class="settings-field"><label>Organization Name</label><input type="text" data-stkey-en="orgName"></div>
+                <div class="settings-field"><label>Logo Subtitle</label><input type="text" data-stkey-en="logoSub"></div>
+                <div class="settings-field"><label>Welcome Title</label><input type="text" data-stkey-en="welcomeTitle"></div>
+                <div class="settings-field"><label>Welcome Text</label><textarea data-stkey-en="welcomeText"></textarea></div>
+                <div class="settings-field"><label>Register Button</label><input type="text" data-stkey-en="registerBtn"></div>
+              </div>
+            </div>
+            <div class="settings-section">
+              <h3 onclick="toggleSettingsSection(this)">Registration Form</h3>
+              <div class="settings-section-body">
+                <div class="settings-field"><label>Contact Details Title</label><input type="text" data-stkey-en="contactDetails"></div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>First Name</label><input type="text" data-stkey-en="firstName"></div>
+                  <div class="settings-field"><label>Last Name</label><input type="text" data-stkey-en="lastName"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>Father's Name</label><input type="text" data-stkey-en="fatherName"></div>
+                  <div class="settings-field"><label>Mother's Name</label><input type="text" data-stkey-en="motherName"></div>
+                </div>
+                <div class="settings-field"><label>Torah Name</label><input type="text" data-stkey-en="torahName"></div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>Phone</label><input type="text" data-stkey-en="phone"></div>
+                  <div class="settings-field"><label>Email</label><input type="text" data-stkey-en="email"></div>
+                </div>
+                <div class="settings-field"><label>Address</label><input type="text" data-stkey-en="address"></div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>Children</label><input type="text" data-stkey-en="children"></div>
+                  <div class="settings-field"><label>Yahrzeits</label><input type="text" data-stkey-en="yahrzeits"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>Volunteering</label><input type="text" data-stkey-en="volunteering"></div>
+                  <div class="settings-field"><label>Save Button</label><input type="text" data-stkey-en="save"></div>
+                </div>
+              </div>
+            </div>
+            <div class="settings-section">
+              <h3 onclick="toggleSettingsSection(this)">Messages & Buttons</h3>
+              <div class="settings-section-body">
+                <div class="settings-field"><label>Success Title</label><input type="text" data-stkey-en="successTitle"></div>
+                <div class="settings-field"><label>Success Body</label><textarea data-stkey-en="successBody"></textarea></div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>Edit My Details</label><input type="text" data-stkey-en="editMyDetails"></div>
+                  <div class="settings-field"><label>Admin Button</label><input type="text" data-stkey-en="adminBtn"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="settings-actions">
@@ -2582,6 +2649,7 @@ function toggleMasterAcc(el){
 
 // ── Settings / Custom Texts ──────────────────────────────
 var settingsLang='he';
+function toggleSettingsSection(h3){var sec=h3.parentElement;if(sec)sec.classList.toggle('collapsed');}
 function switchSettingsLang(lang){
   settingsLang=lang;
   document.getElementById('settings-fields-he').style.display=lang==='he'?'block':'none';
