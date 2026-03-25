@@ -3505,11 +3505,50 @@ async function renderDutyTab(){
   }
   body.innerHTML=h||'<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:1.5rem">אין תורנים</td></tr>';
   var rl=document.getElementById('roster-list');
+  var rh='';
   if(roster.length){
-    rl.innerHTML=roster.map(function(m,i){return'<div class="mc" style="margin-bottom:6px"><div class="mav">'+(i+1)+'</div><div class="mi"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone)+'</div></div></div>'}).join('');
+    rh=roster.map(function(m,i){return'<div class="mc" style="margin-bottom:6px;display:flex;align-items:center"><div class="mav">'+(i+1)+'</div><div class="mi" style="flex:1"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone)+'</div></div><button onclick="removeDutyMember(\''+m.id+'\')" style="padding:4px 10px;border:1px solid #c0392b;color:#c0392b;border-radius:6px;background:none;cursor:pointer;font-size:.75rem;font-family:inherit;white-space:nowrap">✕ הסר</button></div>'}).join('');
   }else{
-    rl.innerHTML='<div style="text-align:center;color:var(--ink3);padding:1.5rem">אין תורנים ברשימה</div>';
+    rh='<div style="text-align:center;color:var(--ink3);padding:1rem">אין תורנים ברשימה</div>';
   }
+  // Add member input
+  rh+='<div style="margin-top:.6rem;position:relative"><div style="display:flex;gap:6px"><input type="text" id="duty-add-input" placeholder="הוסף תורן — הקלד שם..." autocomplete="off" oninput="dutyRosterAC(this.value)" style="flex:1;padding:6px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:.85rem"><button onclick="addDutyFromInput()" style="padding:6px 12px;background:var(--gold);color:var(--bg1);border:none;border-radius:6px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap">+ הוסף</button></div><div id="duty-roster-ac" style="position:absolute;top:100%;right:0;left:0;z-index:10;background:var(--card,#1e2a3a);border:1px solid var(--bd);border-radius:0 0 8px 8px;max-height:160px;overflow-y:auto;display:none"></div></div>';
+  rl.innerHTML=rh;
+}
+
+function removeDutyMember(id){
+  var m=getM(id);if(!m)return;
+  var _e=curLang==='en';
+  if(!confirm((_e?'Remove ':'הסר את ')+m.firstName+' '+m.lastName+(_e?' from duty roster?':' מרשימת התורנים?')))return;
+  updM(id,{dutyRoster:false});renderDutyTab();
+}
+function dutyRosterAC(val){
+  var list=document.getElementById('duty-roster-ac');if(!list)return;
+  if(!val||val.length<1){list.style.display='none';return}
+  var roster=getDutyRoster();var rosterIds=roster.map(function(m){return m.id});
+  var ms=getMs().filter(function(m){return!rosterIds.includes(m.id)});
+  var q=val.toLowerCase();
+  var matches=ms.filter(function(m){return(m.firstName+' '+m.lastName).toLowerCase().indexOf(q)>=0}).slice(0,6);
+  if(!matches.length){list.style.display='none';return}
+  list.style.display='block';
+  list.innerHTML=matches.map(function(m){
+    return'<div onclick="addDutyMember(\''+m.id+'\')" style="padding:6px 10px;cursor:pointer;font-size:.84rem;border-bottom:1px solid rgba(255,255,255,.08);color:var(--ink,#ddd)">'+es(m.firstName+' '+m.lastName)+' <span style="font-size:.75rem;color:var(--ink3,#999)">'+es(m.phone||'')+'</span></div>';
+  }).join('');
+}
+function addDutyMember(id){
+  updM(id,{dutyRoster:true});
+  var inp=document.getElementById('duty-add-input');if(inp)inp.value='';
+  var list=document.getElementById('duty-roster-ac');if(list)list.style.display='none';
+  renderDutyTab();
+}
+function addDutyFromInput(){
+  var inp=document.getElementById('duty-add-input');if(!inp)return;
+  var val=inp.value.trim();if(!val)return;
+  var ms=getMs();
+  var match=ms.find(function(m){return(m.firstName+' '+m.lastName).trim()===val});
+  if(match){addDutyMember(match.id);return}
+  var _e=curLang==='en';
+  alert(_e?'Member not found. Start typing to see suggestions.':'לא נמצא מתפלל. התחל להקליד כדי לראות הצעות.');
 }
 
 // ── Excel Export/Import ──────────────────────────────────
