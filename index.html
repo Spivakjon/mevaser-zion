@@ -630,6 +630,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 </head>
 <body>
 <div class="top-actions">
+  <button onclick="toggleReg()" data-i18n="registerBtn">📝 הרשמה</button>
   <button onclick="openSelfEdit()" data-i18n="editMyDetails">📝 עריכת הפרטים שלי</button>
   <button onclick="scrollToPayInfo()" id="top-pay-btn" style="color:var(--gold)">💳 תשלום</button>
   <button onclick="openAdm()" data-i18n="adminBtn">🔒 ניהול</button>
@@ -642,10 +643,6 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 <div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img id="main-logo" src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name" data-i18n="orgName">עמותת מבשר ציון</div><div class="logo-sub" data-i18n="logoSub">בית הכנסת · רח׳ הצופית 23 · תל מונד</div></div></div>
 <div class="week-card" id="week-card"><div class="wk-head"><span class="wk-par" data-i18n="weekLoading">📅 טוען פרשת השבוע...</span></div></div>
 <div id="announcements-public"></div>
-<div class="reg-btn-wrap" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-  <button class="reg-btn" onclick="toggleReg()" data-i18n="registerBtn">📝 הרשמה</button>
-  <button class="reg-btn" id="pub-pay-btn" onclick="scrollToPayInfo()" style="background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--bg1)">💳 דמי חבר ותשלום</button>
-</div>
 
 <div class="info-section" id="info-section">
 <div class="info-welcome">
