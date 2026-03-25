@@ -663,6 +663,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
   <button onclick="openSelfEdit()" data-i18n="editMyDetails">📝 עריכת הפרטים שלי</button>
   <button onclick="scrollToPayInfo()" id="top-pay-btn" style="color:var(--gold)">💳 תשלום</button>
   <button onclick="openAdm()" data-i18n="adminBtn">🔒 ניהול</button>
+  <button id="pwa-install-btn" onclick="installPWA()" style="display:none;color:var(--gold)">📲 התקן</button>
   <button onclick="toggleTheme()" id="theme-toggle-btn">☀️</button>
   <div class="lang-toggle" id="lang-toggle">
     <button class="active" onclick="setLang('he')">עב</button>
@@ -740,7 +741,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
   <button class="adm-x" onclick="closeAdm()">✕</button>
   <div id="adm-lg" class="lg-wrap"><div class="lg-card"><div style="font-size:2.4rem;margin-bottom:.65rem">🔐</div><h2>ממשק מנהל</h2><p>הזן סיסמה לגישה לפאנל הניהול</p><input type="password" id="pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLg()"><button class="blg" onclick="doLg()">כניסה לממשק</button><div class="lg-err" id="pw-err">סיסמה שגויה</div></div></div>
   <div class="adm-pnl" id="adm-pnl">
-    <div class="adm-hdr"><span class="adm-title">🕍 ממשק ניהול — קהילת מבשר ציון</span><div class="adm-acts"><button class="abt" onclick="doSync()">🔄 סנכרן</button><button class="abt" onclick="expData()">💾 ייצוא</button><button class="abt" onclick="impData()">📂 שחזור</button><button class="abt" onclick="showAt('settings')">⚙️ הגדרות</button><button class="abt" onclick="doLo()">יציאה ✕</button></div></div>
+    <div class="adm-hdr"><span class="adm-title">🕍 ממשק ניהול — קהילת מבשר ציון</span><div class="adm-acts"><button class="abt" onclick="doSync()">🔄 סנכרן</button><button class="abt" onclick="expData()">💾 ייצוא</button><button class="abt" onclick="impData()">📂 שחזור</button><button class="abt" onclick="window.open('qr.html','_blank')">📱 QR הרשמה</button><button class="abt" onclick="showAt('settings')">⚙️ הגדרות</button><button class="abt" onclick="doLo()">יציאה ✕</button></div></div>
     <div id="stats-dashboard" class="stats-row"></div>
     <div id="sheets-banner" class="sheets-banner" style="display:none"><span class="sheets-banner-text">Google Sheets לא מחובר — הנתונים נשמרים מקומית בלבד</span><button class="sheets-banner-btn" onclick="toggleSheetsCfg()">הגדר חיבור</button></div>
     <div id="sheets-cfg" class="sheets-cfg">
@@ -2495,10 +2496,30 @@ async function getNextEvent(ms,thisSh,curHY){
   return closest;
 }
 
+// ── Week Summary Cache ────────────────────────────────────
+var WK_CACHE_KEY='mbz_week_cache';
+function getWeekCache(){try{var c=JSON.parse(localStorage.getItem(WK_CACHE_KEY));if(c&&c.key===d2s(gSh()))return c;return null}catch(e){return null}}
+function setWeekCache(key,html){try{localStorage.setItem(WK_CACHE_KEY,JSON.stringify({key:key,html:html,ts:Date.now()}))}catch(e){}}
+
+// ── PWA Install ──────────────────────────────────────────
+var _deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault();_deferredPrompt=e;
+  var btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='';
+});
+function installPWA(){
+  if(!_deferredPrompt)return;
+  _deferredPrompt.prompt();
+  _deferredPrompt.userChoice.then(function(){_deferredPrompt=null;var btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='none'});
+}
+
 // ── This Week Summary (public-facing) ────────────────────
 async function loadWeekSummary(){
   var card=document.getElementById('week-card');
   if(!card)return;
+  // Show cached version immediately
+  var cached=getWeekCache();
+  if(cached)card.innerHTML=cached.html;
   try{
     var sh=gSh();
     var key=d2s(sh);
@@ -2610,9 +2631,10 @@ async function loadWeekSummary(){
       h+='<a class="wk-link" href="'+MEVASER_URL+'" target="_blank" rel="noopener">🕍 אתר הקהילה ↗</a>';
     }
     card.innerHTML=h;
+    setWeekCache(key,h);
   }catch(err){
     console.warn('Week summary error:',err);
-    card.innerHTML='<div class="wk-head"><span class="wk-par">📅 לא ניתן לטעון</span></div>';
+    if(!cached)card.innerHTML='<div class="wk-head"><span class="wk-par">📅 לא ניתן לטעון</span></div>';
   }
 }
 
