@@ -2710,26 +2710,55 @@ function installPWA(){
   }
 })();
 
+async function getNextEventFast(ms,thisSh,curHY){
+  // Only check 3 weeks ahead to keep loading fast
+  for(var w=1;w<=3;w++){
+    var d=new Date();d.setDate(d.getDate()+w*7);
+    var sh=getUpcomingShabbat(d);
+    var evs=await getWkEvs(ms,sh,curHY);
+    for(var i=0;i<evs.length;i++){
+      var e=evs[i];var daysUntil=Math.round((sh-new Date())/(1000*60*60*24));
+      if(daysUntil<=0)continue;
+      if(e.t==='bm')return{icon:'✡',label:'בר מצווה: '+e.child+' בן/בת '+e.parent,days:daysUntil};
+      if(e.t==='yr'&&daysUntil<=14)return{icon:'🕯',label:'יארצייט: '+e.dec+' — '+e.mem,days:daysUntil};
+    }
+  }
+  return null;
+}
+
 // ── This Week Summary (public-facing) ────────────────────
 async function loadWeekSummary(){
   var card=document.getElementById('week-card');
   if(!card)return;
   // Show cached version immediately
   var cached=getWeekCache();
-  if(cached)card.innerHTML=cached.html;
+  if(cached){card.innerHTML=cached.html;
+    // If cache is fresh (same week, less than 3h old), don't refresh
+    if(cached.key===d2s(gSh())&&Date.now()-cached.ts<10800000)return;
+  }
   try{
     var sh=gSh();
     var key=d2s(sh);
-    var hd2=await g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate());
-    var hebStr=hd2?fhd(hd2.hd,hd2.hm,hd2.hy):'';
     var d1=new Date(sh);d1.setDate(d1.getDate()-1);
     var d2n=new Date(sh);d2n.setDate(d2n.getDate()+1);
-    var parMap=await fetchParashot(d1,d2n);
+    // Run all API calls in parallel
+    var results=await Promise.all([
+      g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate()),
+      fetchParashot(d1,d2n),
+      getShabbatTimes(),
+      getOmerDay(),
+      getDailyZmanim()
+    ]);
+    var hd2=results[0];
+    var parMap=results[1];
+    var shTimes=results[2];
+    var omerDayResult=results[3];
+    var zmanimResult=results[4];
+    var hebStr=hd2?fhd(hd2.hd,hd2.hm,hd2.hy):'';
     var pi=parMap[key]||{};
     var parName=pi.parasha||pi.holiday||pi.special||'';
     var ms=getMs();
     var curHY=hd2?hd2.hy:5786;
-    var shTimes=await getShabbatTimes();
     var evs=await getWkEvs(ms,sh,curHY);
     var birthdays=await getHebrewBirthdays(ms,sh);
     var aliyot=getAliyot();
@@ -2763,7 +2792,7 @@ async function loadWeekSummary(){
     }
 
     // Omer counting
-    var omerDay=await getOmerDay();
+    var omerDay=omerDayResult;
     if(omerDay>0&&omerDay<=49){
       var weeks=Math.floor(omerDay/7),days=omerDay%7;
       var omerText=isEn?'Omer Day '+omerDay:'יום '+omerDay+' לעומר';
@@ -2773,7 +2802,7 @@ async function loadWeekSummary(){
     }
 
     // Daily prayer times (weekday)
-    var zmanim=await getDailyZmanim();
+    var zmanim=zmanimResult;
     if(zmanim){
       h+='<div class="wk-daily"><div class="wk-daily-title">🕐 '+(isEn?'Weekday Prayer Times':'זמני תפילה יומיים')+'</div><div class="wk-daily-row">';
       if(zmanim.shacharit)h+='<span>🌅 '+(isEn?'Shacharit':'שחרית')+': <strong>'+zmanim.shacharit+'</strong></span>';
@@ -2788,8 +2817,8 @@ async function loadWeekSummary(){
       h+='<div class="wk-duty"><span class="wk-duty-label">🧹 '+(isEn?'This Week\'s Duty':'תורנים השבוע')+':</span> <strong>'+es(dutyPair[0].firstName+' '+dutyPair[0].lastName)+'</strong> &amp; <strong>'+es(dutyPair[1].firstName+' '+dutyPair[1].lastName)+'</strong></div>';
     }
 
-    // Upcoming event countdown
-    var nextEvent=await getNextEvent(ms,sh,curHY);
+    // Upcoming event countdown (only check 3 weeks to avoid slow loading)
+    var nextEvent=await getNextEventFast(ms,sh,curHY);
     if(nextEvent){
       h+='<div class="wk-countdown"><span class="wk-cd-icon">'+nextEvent.icon+'</span><span class="wk-cd-text">'+es(nextEvent.label)+'</span><span class="wk-cd-days">'+(isEn?'in '+nextEvent.days+' days':'בעוד '+nextEvent.days+' ימים')+'</span></div>';
     }
