@@ -660,7 +660,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 <body>
 <div class="top-actions">
   <button onclick="toggleReg()" data-i18n="registerBtn">📝 הרשמה</button>
-  <button onclick="openMyShabbat()">🕍 השבת שלי</button>
+  <button onclick="openMyShabbat()" data-i18n="myShabbatBtn">🕍 השבת שלי</button>
   <button onclick="openSelfEdit()" data-i18n="editMyDetails">📝 עריכת הפרטים שלי</button>
   <button onclick="scrollToPayInfo()" id="top-pay-btn" style="color:var(--gold)">💳 תשלום</button>
   <button onclick="openAdm()" data-i18n="adminBtn">🔒 ניהול</button>
@@ -1107,14 +1107,14 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 <!-- My Shabbat Modal -->
 <div class="se-ovl" id="myshab-ovl" onclick="if(event.target===this)closeMyShabbat()">
   <div class="se-card" style="max-width:440px">
-    <h2>🕍 השבת שלי</h2>
-    <p style="font-size:.85rem;color:var(--ink3);margin-bottom:.8rem">הזן טלפון לצפייה במידע האישי שלך</p>
+    <h2 data-i18n="myShabbatTitle">🕍 השבת שלי</h2>
+    <p style="font-size:.85rem;color:var(--ink3);margin-bottom:.8rem" data-i18n="myShabbatSubtitle">הזן טלפון לצפייה במידע האישי שלך</p>
     <div class="ff">
-      <label>טלפון</label>
+      <label data-i18n="phone">טלפון</label>
       <input type="tel" id="ms-phone" placeholder="050-1234567" dir="ltr" onkeydown="if(event.key==='Enter')doMyShabbat()">
     </div>
-    <button class="se-btn" onclick="doMyShabbat()">הצג</button>
-    <button class="se-close" onclick="closeMyShabbat()">סגור</button>
+    <button class="se-btn" onclick="doMyShabbat()" data-i18n="myShabbatShow">הצג</button>
+    <button class="se-close" onclick="closeMyShabbat()" data-i18n="selfEditClose">סגור</button>
     <div id="ms-result"></div>
   </div>
 </div>
@@ -2185,6 +2185,10 @@ var I18N={
     selfEditFather:'שם האב',
     selfEditSearch:'חפש',
     selfEditClose:'סגור',
+    myShabbatTitle:'🕍 השבת שלי',
+    myShabbatSubtitle:'הזן טלפון לצפייה במידע האישי שלך',
+    myShabbatShow:'הצג',
+    myShabbatBtn:'🕍 השבת שלי',
     selfEditErrEmpty:'אנא הזן טלפון, שם מלא ושם האב',
     selfEditErrName:'טלפון נמצא אך השם או שם האב אינם תואמים',
     selfEditErrNotFound:'לא נמצא מתפלל עם פרטים אלו',
@@ -2272,6 +2276,10 @@ var I18N={
     selfEditFather:'Father\'s Name',
     selfEditSearch:'Search',
     selfEditClose:'Close',
+    myShabbatTitle:'🕍 My Shabbat',
+    myShabbatSubtitle:'Enter your phone to view personal info',
+    myShabbatShow:'Show',
+    myShabbatBtn:'🕍 My Shabbat',
     selfEditErrEmpty:'Please enter phone, full name and father\'s name',
     selfEditErrName:'Phone found but name or father\'s name don\'t match',
     selfEditErrNotFound:'No member found with these details',
@@ -2531,18 +2539,23 @@ function closeMyShabbat(){document.getElementById('myshab-ovl').classList.remove
 async function doMyShabbat(){
   var phone=document.getElementById('ms-phone').value.trim();
   var res=document.getElementById('ms-result');
-  if(!phone){res.innerHTML='<div style="color:#c0392b;text-align:center;margin-top:.5rem">הזן מספר טלפון</div>';return}
+  var isEn=curLang==='en';
+  if(!phone){res.innerHTML='<div style="color:#c0392b;text-align:center;margin-top:.5rem">'+(isEn?'Enter phone number':'הזן מספר טלפון')+'</div>';return}
   var np=phone.replace(/[-\s()]/g,'');
   var ms=getMs();
   var m=ms.find(function(x){return(x.phone||'').replace(/[-\s()]/g,'')===np});
-  if(!m){res.innerHTML='<div style="color:#c0392b;text-align:center;margin-top:.5rem">לא נמצא מתפלל עם טלפון זה</div>';return}
-  var isEn=curLang==='en';
+  if(!m){res.innerHTML='<div style="color:#c0392b;text-align:center;margin-top:.5rem">'+(isEn?'No member found with this phone':'לא נמצא מתפלל עם טלפון זה')+'</div>';return}
   var h='<div style="margin-top:.8rem;border-top:1px solid var(--bd);padding-top:.8rem">';
-  h+='<div style="font-size:1.1rem;font-weight:700;color:var(--gold2);margin-bottom:.6rem;text-align:center">שבת שלום, '+es(m.firstName)+'!</div>';
+  h+='<div style="font-size:1.1rem;font-weight:700;color:var(--gold2);margin-bottom:.6rem;text-align:center">'+(isEn?'Shabbat Shalom, ':'שבת שלום, ')+es(m.firstName)+'!</div>';
 
   // Payment status
-  h+='<div style="display:flex;align-items:center;gap:6px;padding:.4rem 0;font-size:.85rem">';
-  h+=m.membershipPaid?'<span class="paid-tag">💳 דמי חבר שולמו ✓</span>':'<span class="unpaid-tag">💳 דמי חבר טרם שולמו</span>';
+  h+='<div style="display:flex;align-items:center;gap:6px;padding:.4rem 0;font-size:.85rem;flex-wrap:wrap">';
+  if(m.membershipPaid){
+    h+='<span class="paid-tag">💳 '+(isEn?'Membership paid ✓':'דמי חבר שולמו ✓')+'</span>';
+  }else{
+    h+='<span class="unpaid-tag">💳 '+(isEn?'Membership not paid':'דמי חבר טרם שולמו')+'</span>';
+    h+=' <button onclick="closeMyShabbat();scrollToPayInfo()" style="padding:3px 10px;font-size:.8rem;background:var(--gold);color:var(--ink);border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-weight:600">'+(isEn?'Pay Now':'לתשלום')+'</button>';
+  }
   h+='</div>';
 
   // Duty status
@@ -2550,9 +2563,9 @@ async function doMyShabbat(){
     var pair=getDutyPairWithSwaps(0);
     var isOnDuty=pair.some(function(p){return p&&p.id===m.id});
     if(isOnDuty){
-      h+='<div style="padding:.5rem;background:rgba(30,125,75,.15);border:1px solid rgba(30,125,75,.3);border-radius:8px;margin:.4rem 0;font-size:.88rem;font-weight:600;color:#1e7d4b;text-align:center">🧹 את/ה בתורנות השבת!</div>';
+      h+='<div style="padding:.5rem;background:rgba(30,125,75,.15);border:1px solid rgba(30,125,75,.3);border-radius:8px;margin:.4rem 0;font-size:.88rem;font-weight:600;color:#1e7d4b;text-align:center">🧹 '+(isEn?'You are on duty this Shabbat!':'את/ה בתורנות השבת!')+'</div>';
     }else{
-      h+='<div style="font-size:.82rem;color:var(--ink3);padding:.2rem 0">📋 רשום/ה בתורנות (לא השבת)</div>';
+      h+='<div style="font-size:.82rem;color:var(--ink3);padding:.2rem 0">📋 '+(isEn?'On duty roster (not this week)':'רשום/ה בתורנות (לא השבת)')+'</div>';
     }
   }
 
@@ -2572,10 +2585,10 @@ async function doMyShabbat(){
     }
   }
   if(myYahrzeits.length){
-    h+='<div style="margin:.5rem 0"><div style="font-size:.82rem;font-weight:600;color:var(--gold2);margin-bottom:.3rem">🕯 יארצייטים קרובים:</div>';
+    h+='<div style="margin:.5rem 0"><div style="font-size:.82rem;font-weight:600;color:var(--gold2);margin-bottom:.3rem">🕯 '+(isEn?'Upcoming Yahrzeits:':'יארצייטים קרובים:')+'</div>';
     for(var yi=0;yi<myYahrzeits.length;yi++){
       var y=myYahrzeits[yi];
-      h+='<div style="font-size:.85rem;padding:.2rem 0">'+es(y.name)+(y.dh?' — '+es(y.dh):'')+' <span style="color:var(--gold);font-weight:600">(בעוד '+y.days+' ימים)</span></div>';
+      h+='<div style="font-size:.85rem;padding:.2rem 0">'+es(y.name)+(y.dh?' — '+es(y.dh):'')+' <span style="color:var(--gold);font-weight:600">('+(isEn?'in '+y.days+' days':'בעוד '+y.days+' ימים')+')</span></div>';
     }
     h+='</div>';
   }
@@ -2594,17 +2607,17 @@ async function doMyShabbat(){
     }
   }
   if(myBMs.length){
-    h+='<div style="margin:.5rem 0"><div style="font-size:.82rem;font-weight:600;color:var(--gold2);margin-bottom:.3rem">✡ בר/בת מצווה:</div>';
+    h+='<div style="margin:.5rem 0"><div style="font-size:.82rem;font-weight:600;color:var(--gold2);margin-bottom:.3rem">✡ '+(isEn?'Upcoming Bar/Bat Mitzvah:':'בר/בת מצווה:')+'</div>';
     for(var bi=0;bi<myBMs.length;bi++){
       var b=myBMs[bi];
-      h+='<div style="font-size:.85rem;padding:.2rem 0">'+es(b.child)+(b.par?' — פרשת '+es(b.par):'')+' <span style="color:var(--gold);font-weight:600">(בעוד '+b.days+' ימים)</span></div>';
+      h+='<div style="font-size:.85rem;padding:.2rem 0">'+es(b.child)+(b.par?' — '+(isEn?'Parashat ':'פרשת ')+es(b.par):'')+' <span style="color:var(--gold);font-weight:600">('+(isEn?'in '+b.days+' days':'בעוד '+b.days+' ימים')+')</span></div>';
     }
     h+='</div>';
   }
 
   // Volunteering
   if(m.volunteering&&m.volunteering.length){
-    h+='<div style="font-size:.82rem;color:var(--ink3);padding:.3rem 0">🙏 התנדבות: '+es(m.volunteering.join(', '))+'</div>';
+    h+='<div style="font-size:.82rem;color:var(--ink3);padding:.3rem 0">🙏 '+(isEn?'Volunteering: ':'התנדבות: ')+es(m.volunteering.join(', '))+'</div>';
   }
 
   h+='</div>';
