@@ -2502,10 +2502,11 @@ async function getNextEvent(ms,thisSh,curHY){
       if(daysUntil<=0)continue;
       if(e.t==='bm'){
         if(!closest||daysUntil<closest.days)closest={icon:'✡',label:'בר מצווה: '+e.child+' בן/בת '+e.parent,days:daysUntil};
-      }else if(e.t==='yr'&&w<=2){
+      }else if(e.t==='yr'&&daysUntil<=14){
         if(!closest||daysUntil<closest.days)closest={icon:'🕯',label:'יארצייט: '+e.dec+' — '+e.mem,days:daysUntil};
       }
-      if(closest)return closest;
+      if(closest&&closest.days<=14&&closest.icon==='🕯')return closest;
+      if(closest&&closest.icon==='✡')return closest;
     }
   }
   return closest;
