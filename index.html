@@ -485,6 +485,18 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
 .settings-reset-btn{padding:.72rem 1.2rem;background:transparent;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);border-radius:10px;font-family:'Heebo',sans-serif;font-size:.85rem;cursor:pointer;transition:all .18s;min-height:48px}
 .settings-reset-btn:hover{border-color:var(--red);color:var(--red);background:rgba(192,57,43,.08)}
 .settings-msg{text-align:center;font-size:.82rem;margin-top:.65rem;min-height:1.2rem;font-weight:600}
+.logo-upload-area{display:flex;flex-direction:column;align-items:center;gap:.75rem}
+.logo-upload-preview{width:96px;height:96px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.25),0 0 0 2px var(--gold);padding:6px}
+.logo-upload-preview img{width:100%;height:100%;object-fit:contain}
+.logo-upload-btns{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
+.logo-upload-btn{display:inline-flex;align-items:center;gap:.35rem;padding:.5rem 1rem;border-radius:8px;border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);font-family:'Heebo',sans-serif;font-size:.82rem;cursor:pointer;transition:all .18s;min-height:42px}
+.logo-upload-btn:hover{border-color:var(--gold);color:var(--gold2);background:rgba(200,168,75,.1)}
+.logo-upload-btn.danger{border-color:rgba(192,57,43,.3);color:rgba(255,255,255,.5)}
+.logo-upload-btn.danger:hover{border-color:var(--red);color:var(--red);background:rgba(192,57,43,.08)}
+.logo-upload-hint{font-size:.72rem;color:rgba(255,255,255,.35);text-align:center}
+.logo-drop-zone{border:2px dashed rgba(255,255,255,.15);border-radius:12px;padding:1.2rem;text-align:center;cursor:pointer;transition:all .2s;margin-top:.3rem}
+.logo-drop-zone:hover,.logo-drop-zone.drag-over{border-color:var(--gold);background:rgba(200,168,75,.06)}
+.logo-drop-zone-text{font-size:.8rem;color:rgba(255,255,255,.4)}
 @media(max-width:600px){
   .settings-section{padding:.8rem .7rem .6rem}
   .settings-actions{flex-direction:column}
@@ -593,7 +605,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     <button onclick="setLang('en')">EN</button>
   </div>
 </div>
-<div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name" data-i18n="orgName">עמותת מבשר ציון</div><div class="logo-sub" data-i18n="logoSub">בית הכנסת · רח׳ הצופית 23 · תל מונד</div></div></div>
+<div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img id="main-logo" src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name" data-i18n="orgName">עמותת מבשר ציון</div><div class="logo-sub" data-i18n="logoSub">בית הכנסת · רח׳ הצופית 23 · תל מונד</div></div></div>
 <div class="week-card" id="week-card"><div class="wk-head"><span class="wk-par" data-i18n="weekLoading">📅 טוען פרשת השבוע...</span></div></div>
 <div id="announcements-public"></div>
 <div class="reg-btn-wrap" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
@@ -977,6 +989,24 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
           <button class="settings-lang-btn" onclick="switchSettingsLang('en')">English</button>
         </div>
         <div id="settings-fields-he">
+          <div class="settings-section"><h3>לוגו הקהילה</h3>
+            <div class="settings-field">
+              <label>עדכון לוגו</label>
+              <div class="logo-upload-area">
+                <div class="logo-upload-preview"><img id="logo-preview-he" src="logo.jpg" alt="לוגו"></div>
+                <div class="logo-drop-zone" id="logo-drop-he" onclick="document.getElementById('logo-file-he').click()">
+                  <div class="logo-drop-zone-text">📷 לחצו כאן או גררו תמונה</div>
+                </div>
+                <input type="file" id="logo-file-he" accept="image/*" style="display:none" onchange="handleLogoUpload(this)">
+                <div class="logo-upload-btns">
+                  <label class="logo-upload-btn" for="logo-file-he">📁 בחר קובץ</label>
+                  <label class="logo-upload-btn"><input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleLogoUpload(this)">📸 צלם תמונה</label>
+                  <button class="logo-upload-btn danger" onclick="resetLogo()">🗑 הסר לוגו מותאם</button>
+                </div>
+                <div class="logo-upload-hint">JPG, PNG או WebP · עד 500KB · מומלץ ריבועי</div>
+              </div>
+            </div>
+          </div>
           <div class="settings-section"><h3>כללי</h3>
             <div class="settings-field"><label>שם הארגון</label><input type="text" data-stkey="orgName"></div>
             <div class="settings-field"><label>כותרת תחתונה</label><input type="text" data-stkey="logoSub"></div>
@@ -1033,6 +1063,24 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
           </div>
         </div>
         <div id="settings-fields-en" style="display:none">
+          <div class="settings-section"><h3>Community Logo</h3>
+            <div class="settings-field">
+              <label>Update Logo</label>
+              <div class="logo-upload-area">
+                <div class="logo-upload-preview"><img id="logo-preview-en" src="logo.jpg" alt="Logo"></div>
+                <div class="logo-drop-zone" id="logo-drop-en" onclick="document.getElementById('logo-file-en').click()">
+                  <div class="logo-drop-zone-text">📷 Click here or drag an image</div>
+                </div>
+                <input type="file" id="logo-file-en" accept="image/*" style="display:none" onchange="handleLogoUpload(this)">
+                <div class="logo-upload-btns">
+                  <label class="logo-upload-btn" for="logo-file-en">📁 Choose file</label>
+                  <label class="logo-upload-btn"><input type="file" accept="image/*" capture="environment" style="display:none" onchange="handleLogoUpload(this)">📸 Take photo</label>
+                  <button class="logo-upload-btn danger" onclick="resetLogo()">🗑 Remove custom logo</button>
+                </div>
+                <div class="logo-upload-hint">JPG, PNG or WebP · up to 500KB · square recommended</div>
+              </div>
+            </div>
+          </div>
           <div class="settings-section"><h3>General</h3>
             <div class="settings-field"><label>Organization Name</label><input type="text" data-stkey-en="orgName"></div>
             <div class="settings-field"><label>Logo Subtitle</label><input type="text" data-stkey-en="logoSub"></div>
@@ -1439,6 +1487,7 @@ function autoTorah(){
 document.addEventListener('DOMContentLoaded',function(){
   var trEl=document.getElementById('tr');
   if(trEl)trEl.addEventListener('input',function(){_torahManual=true});
+  if(localStorage.getItem(LOGO_KEY))applyCustomLogo();
 });
 
 // ── Checkbox toggle ──
@@ -2552,6 +2601,8 @@ function populateSettingsFields(){
     var key=el.getAttribute('data-stkey-en');
     if(enDict[key]!=null)el.value=enDict[key];
   });
+  updateLogoPreview();
+  initLogoDrop();
 }
 function saveCustomTexts(){
   var custom=JSON.parse(localStorage.getItem('mbz_custom_texts')||'{"he":{},"en":{}}');
@@ -2584,6 +2635,63 @@ function mergeCustomTexts(){
     if(custom.he){for(var k in custom.he){if(custom.he[k]!=='')I18N.he[k]=custom.he[k];}}
     if(custom.en){for(var k in custom.en){if(custom.en[k]!=='')I18N.en[k]=custom.en[k];}}
   }catch(e){}
+}
+
+// ── Logo Upload ──────────────────────────────────────────
+var LOGO_KEY='mbz_custom_logo';
+function handleLogoUpload(input){
+  var file=input.files&&input.files[0];
+  if(!file)return;
+  if(!file.type.startsWith('image/')){alert(curLang==='he'?'יש לבחור קובץ תמונה בלבד':'Please select an image file');return;}
+  if(file.size>512000){alert(curLang==='he'?'הקובץ גדול מדי (מקסימום 500KB)':'File too large (max 500KB)');return;}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var dataUrl=e.target.result;
+    localStorage.setItem(LOGO_KEY,dataUrl);
+    applyCustomLogo();
+    updateLogoPreview(dataUrl);
+    var msg=document.getElementById('settings-msg');
+    if(msg){msg.style.color='var(--grn)';msg.textContent=curLang==='he'?'הלוגו עודכן בהצלחה!':'Logo updated successfully!';setTimeout(function(){msg.textContent=''},3000);}
+  };
+  reader.readAsDataURL(file);
+  input.value='';
+}
+function applyCustomLogo(){
+  var dataUrl=localStorage.getItem(LOGO_KEY);
+  var img=document.getElementById('main-logo');
+  if(img)img.src=dataUrl||'logo.jpg';
+}
+function updateLogoPreview(src){
+  var s=src||localStorage.getItem(LOGO_KEY)||'logo.jpg';
+  var ph=document.getElementById('logo-preview-he');
+  var pe=document.getElementById('logo-preview-en');
+  if(ph)ph.src=s;
+  if(pe)pe.src=s;
+}
+function resetLogo(){
+  if(!confirm(curLang==='he'?'להסיר את הלוגו המותאם ולחזור לברירת המחדל?':'Remove custom logo and revert to default?'))return;
+  localStorage.removeItem(LOGO_KEY);
+  var img=document.getElementById('main-logo');
+  if(img)img.src='logo.jpg';
+  updateLogoPreview('logo.jpg');
+  var msg=document.getElementById('settings-msg');
+  if(msg){msg.style.color='var(--gold2)';msg.textContent=curLang==='he'?'הלוגו אופס לברירת המחדל':'Logo reset to default';setTimeout(function(){msg.textContent=''},3000);}
+}
+function initLogoDrop(){
+  ['logo-drop-he','logo-drop-en'].forEach(function(id){
+    var zone=document.getElementById(id);
+    if(!zone)return;
+    zone.addEventListener('dragover',function(e){e.preventDefault();zone.classList.add('drag-over');});
+    zone.addEventListener('dragleave',function(){zone.classList.remove('drag-over');});
+    zone.addEventListener('drop',function(e){
+      e.preventDefault();zone.classList.remove('drag-over');
+      var file=e.dataTransfer.files&&e.dataTransfer.files[0];
+      if(!file)return;
+      var dt=new DataTransfer();dt.items.add(file);
+      var inp=id==='logo-drop-he'?document.getElementById('logo-file-he'):document.getElementById('logo-file-en');
+      if(inp){inp.files=dt.files;handleLogoUpload(inp);}
+    });
+  });
 }
 
 // ── Membership Fee ───────────────────────────────────────
