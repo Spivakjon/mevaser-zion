@@ -35,6 +35,11 @@ body.light-mode .wk-none{color:var(--ink3)}
 body.light-mode .wk-times{background:rgba(200,168,75,.08);border-color:rgba(200,168,75,.2)}
 body.light-mode .wk-time{color:var(--ink2)}
 body.light-mode .wk-time strong{color:var(--ink)}
+body.light-mode .wk-times-grid{background:rgba(200,168,75,.06);border-color:rgba(200,168,75,.15)}
+body.light-mode .wk-tg-item{background:rgba(0,0,0,.04)}
+body.light-mode .wk-tg-val{color:var(--ink)}
+body.light-mode .wk-duty{background:rgba(30,125,75,.06);border-color:rgba(30,125,75,.15)}
+body.light-mode .wk-duty strong{color:var(--ink)}
 body.light-mode .wk-link{color:var(--gold);border-color:var(--bd)}
 body.light-mode .ann-card{background:rgba(255,255,255,.9);border-color:var(--bd)}
 body.light-mode .ann-title{color:var(--ink)}
@@ -234,6 +239,14 @@ body.light-mode .lang-toggle button.active{background:rgba(0,0,0,.1);color:var(-
 .wk-times{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:.5rem;padding:.45rem .6rem;background:rgba(200,168,75,.1);border:1px solid rgba(200,168,75,.2);border-radius:8px}
 .wk-time{font-size:.82rem;color:var(--gold2);display:flex;align-items:center;gap:.3rem}
 .wk-time strong{color:#fff;font-size:.9rem}
+.wk-times-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.4rem;margin-bottom:.6rem;padding:.55rem;background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.2);border-radius:10px}
+.wk-tg-item{display:flex;flex-direction:column;align-items:center;padding:.35rem .3rem;background:rgba(0,0,0,.12);border-radius:8px;text-align:center}
+.wk-tg-icon{font-size:1rem;margin-bottom:.1rem}
+.wk-tg-label{font-size:.68rem;color:var(--gold2);opacity:.85}
+.wk-tg-val{font-size:1.05rem;font-weight:700;color:#fff;font-family:'Frank Ruhl Libre',serif}
+.wk-duty{padding:.5rem .7rem;background:rgba(30,125,75,.12);border:1px solid rgba(30,125,75,.25);border-radius:8px;margin-bottom:.5rem;font-size:.85rem;color:rgba(255,255,255,.8);text-align:center}
+.wk-duty-label{font-weight:600;color:var(--grn)}
+.wk-duty strong{color:#fff}
 .wk-none{font-size:.78rem;color:rgba(255,255,255,.3);padding:.3rem 0}
 .wk-link{display:inline-block;margin-top:.45rem;font-size:.72rem;color:var(--gold);text-decoration:none;border:1px solid rgba(200,168,75,.25);border-radius:6px;padding:.2rem .55rem;transition:all .15s}
 .wk-link:hover{background:rgba(200,168,75,.12);color:var(--gold2)}
@@ -260,6 +273,10 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
 .fpill{padding:.35rem .7rem;border-radius:20px;font-size:.75rem;font-family:'Heebo',sans-serif;cursor:pointer;border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);transition:all .15s;min-height:36px;display:inline-flex;align-items:center}
 .fpill:hover{border-color:var(--gold);color:var(--gold2)}
 .fpill.active{background:rgba(200,168,75,.2);border-color:var(--gold);color:var(--gold2);font-weight:600}
+.sort-bar{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.5rem;padding:.4rem .5rem;background:rgba(0,0,0,.08);border-radius:8px}
+.sort-btn{padding:.25rem .55rem;border-radius:6px;font-size:.7rem;font-family:'Heebo',sans-serif;cursor:pointer;border:1px solid transparent;background:none;color:rgba(255,255,255,.45);transition:all .15s;white-space:nowrap}
+.sort-btn:hover{color:var(--gold2)}
+.sort-btn.active{color:var(--gold2);font-weight:600;background:rgba(200,168,75,.12);border-color:rgba(200,168,75,.2)}
 
 /* Aliyot section in admin */
 .aliyot-section{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:12px;padding:1rem;margin-bottom:1rem}
@@ -440,6 +457,9 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
   .wk-head{flex-wrap:wrap}
   .wk-times{gap:.5rem;padding:.4rem .5rem}
   .wk-time{font-size:.8rem;flex:1;min-width:0;justify-content:center}
+  .wk-times-grid{grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:.3rem;padding:.4rem}
+  .wk-tg-label{font-size:.62rem}
+  .wk-tg-val{font-size:.92rem}
   .ann-card{margin:0 .45rem .85rem;padding:.75rem .7rem}
   .stats-row{gap:.3rem}
   .stat-card{min-width:70px;padding:.4rem .35rem}
@@ -856,7 +876,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     <div class="sh"><span>👨‍👧‍👦</span><span class="sh-t" data-i18n="children">ילדים</span></div>
     <div class="sec"><div id="cw"></div><button class="badd" id="badd-c" onclick="addCh()" data-i18n="addChild">+ הוסף ילד</button></div>
     <div class="sh"><span>🙏</span><span class="sh-t" data-i18n="volunteering">תחומי התנדבות</span></div>
-    <div class="sec"><div class="cb-row"><label class="cbl" id="cb1"><input type="checkbox" id="v1" onchange="tCb('cb1','v1')"> <span data-i18n="vol1">קניות לקידוש שבת</span></label><label class="cbl" id="cb2"><input type="checkbox" id="v2" onchange="tCb('cb2','v2')"> <span data-i18n="vol2">סידור וארגון הקידוש</span></label><label class="cbl" id="cb3"><input type="checkbox" id="v3" onchange="tCb('cb3','v3')"> <span data-i18n="vol3">העברת דבר תורה</span></label></div></div>
+    <div class="sec"><div class="cb-row" id="vol-checkboxes"></div></div>
     <div class="sh"><span>🕯</span><span class="sh-t" data-i18n="yahrzeits">ימי זיכרון (יארצייט)</span></div>
     <div class="sec"><div id="yw"></div><button class="badd" onclick="addYr()" data-i18n="addYahrzeit">+ הוסף יום זיכרון</button></div>
     <div class="fmsg" id="fmsg"></div>
@@ -990,8 +1010,8 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     </div>
     <div id="at-duty" style="display:none">
       <div id="duty-hero-card"></div>
-      <h3 style="margin:1rem 0 .6rem;font-size:.95rem" data-i18n-text="dutyScheduleTitle">📅 לוח תורנויות — 8 שבועות הקרובים</h3>
-      <table class="duty-tbl"><thead><tr><th data-i18n-text="dutyColDate">תאריך שבת</th><th data-i18n-text="dutyCol1">תורן 1</th><th data-i18n-text="dutyCol2">תורן 2</th></tr></thead><tbody id="duty-body"></tbody></table>
+      <h3 style="margin:1rem 0 .6rem;font-size:.95rem" data-i18n-text="dutyScheduleTitle">📅 לוח תורנויות — שבתות וחגים</h3>
+      <table class="duty-tbl"><thead><tr><th>תאריך</th><th>אירוע</th><th>תורן 1</th><th>תורן 2</th></tr></thead><tbody id="duty-body"></tbody></table>
       <h3 style="margin:1rem 0 .6rem;font-size:.95rem" data-i18n-text="dutyRosterTitle">👥 רשימת תורנים</h3>
       <div id="roster-list"></div>
     </div>
@@ -1104,6 +1124,16 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
                 <div class="settings-row">
                   <div class="settings-field"><label>הרכב משפחתי</label><input type="text" data-stkey="familyViewTitle"></div>
                   <div class="settings-field"><label>תזכורות</label><input type="text" data-stkey="reminderListTitle"></div>
+                </div>
+              </div>
+            </div>
+            <div class="settings-section full-width">
+              <h3 onclick="toggleSettingsSection(this)">ניהול סוגי התנדבות</h3>
+              <div class="settings-section-body">
+                <div id="vol-types-list"></div>
+                <div style="display:flex;gap:6px;margin-top:.5rem">
+                  <input type="text" id="vol-new-input" placeholder="שם סוג התנדבות חדש..." style="flex:1;padding:.4rem .65rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;font-family:'Heebo',sans-serif;font-size:.84rem;color:#fff;background:rgba(0,0,0,.25);min-height:38px;direction:rtl">
+                  <button onclick="addVolType()" style="padding:.4rem .9rem;background:var(--gold);color:var(--ink);border:none;border-radius:8px;font-family:'Heebo',sans-serif;font-size:.84rem;font-weight:600;cursor:pointer;white-space:nowrap">+ הוסף</button>
                 </div>
               </div>
             </div>
@@ -1443,7 +1473,7 @@ function initForm(m=null){_torahManual=!!m;eid=m?m.id:null;CH=m?JSON.parse(JSON.
     document.getElementById('ad-num').value=ap.num;
     document.getElementById('ad-apt').value=ap.apt;
     document.getElementById('ad-city').value=ap.city;
-    ['v1','v2','v3'].forEach((id,i)=>{const k=['קניות לקידוש','סידור קידוש','דבר תורה'][i];document.getElementById(id).checked=(m.volunteering||[]).includes(k)});['cb1','cb2','cb3'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',document.getElementById(`v${i+1}`).checked));
+    renderVolCheckboxes(m.volunteering||[]);
     var sp=m.spouse||{};document.getElementById('sp-fn').value=sp.name||'';document.getElementById('sp-ph').value=sp.phone||'';document.getElementById('sp-em').value=sp.email||'';
   } else {
     // Reset address fields
@@ -1451,6 +1481,7 @@ function initForm(m=null){_torahManual=!!m;eid=m?m.id:null;CH=m?JSON.parse(JSON.
     document.getElementById('ad-num').value='';
     document.getElementById('ad-apt').value='';
     document.getElementById('ad-city').value='תל מונד';
+    renderVolCheckboxes([]);
   }
   renderCH();renderYR()}
 
@@ -1569,8 +1600,8 @@ function colCh(i){const c={...CH[i]};['hd','hm','hy'].forEach(k=>{const el=docum
 function colYr(i){const y={...YR[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`y${i}-${k}`);if(el)y[k]=el.value});const gi=document.getElementById(`y${i}-gd`);if(gi)y.gd=gi.value;const ni=document.getElementById(`yn-${i}`);if(ni)y.name=ni.value.trim();const yl=document.getElementById(`yl-${i}`);if(yl)y.lead=yl.value;const yh=document.getElementById(`yh-${i}`);if(yh)y.haft=yh.value;return y}
 function reqF(id){const el=document.getElementById(id);const ok=el&&el.value.trim().length>0;const ff=el?el.closest('.ff'):null;if(ff)ff.classList.toggle('err',!ok);return ok}
 
-async function submitForm(){if(!['fn','ln','ph'].map(reqF).every(Boolean))return;const vols=[];if(document.getElementById('v1').checked)vols.push('קניות לקידוש');if(document.getElementById('v2').checked)vols.push('סידור קידוש');if(document.getElementById('v3').checked)vols.push('דבר תורה');var spouseFn=document.getElementById('sp-fn').value.trim();var spousePh=document.getElementById('sp-ph').value.trim();var spouseEm=document.getElementById('sp-em').value.trim();var spouse=(spouseFn||spousePh)?{name:spouseFn,phone:spousePh,email:spouseEm}:null;const data={firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),address:combineAddress(),spouse:spouse,volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};data.membershipPaid=window._mbrPaidStatus||false;data.membershipPaidDate=window._mbrPaidStatus?new Date().toLocaleDateString('he-IL'):'';if(eid){var existing=getM(eid);if(existing){data.membershipPaid=existing.membershipPaid;data.dutyRoster=existing.dutyRoster}}if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
-function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em','sp-fn','sp-ph','sp-em'].forEach(id=>{var el=document.getElementById(id);if(el)el.value=''});document.getElementById('ad-street').value='';document.getElementById('ad-num').value='';document.getElementById('ad-apt').value='';document.getElementById('ad-city').value='תל מונד';['v1','v2','v3'].forEach(id=>{document.getElementById(id).checked=false});['cb1','cb2','cb3'].forEach(id=>document.getElementById(id).classList.remove('on'));initForm();document.getElementById('main-card').classList.add('reg-collapsed');window._mbrPaidStatus=false;var ms=getMbrSettings();if(ms.year||ms.link){document.getElementById('main-card').style.display='none';document.getElementById('payment-msg-card').style.display='none';document.getElementById('membership-prompt-card').style.display=''}window.scrollTo(0,0)}
+async function submitForm(){if(!['fn','ln','ph'].map(reqF).every(Boolean))return;const vols=collectVols();var spouseFn=document.getElementById('sp-fn').value.trim();var spousePh=document.getElementById('sp-ph').value.trim();var spouseEm=document.getElementById('sp-em').value.trim();var spouse=(spouseFn||spousePh)?{name:spouseFn,phone:spousePh,email:spouseEm}:null;const data={firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),address:combineAddress(),spouse:spouse,volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};data.membershipPaid=window._mbrPaidStatus||false;data.membershipPaidDate=window._mbrPaidStatus?new Date().toLocaleDateString('he-IL'):'';if(eid){var existing=getM(eid);if(existing){data.membershipPaid=existing.membershipPaid;data.dutyRoster=existing.dutyRoster}}if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
+function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em','sp-fn','sp-ph','sp-em'].forEach(id=>{var el=document.getElementById(id);if(el)el.value=''});document.getElementById('ad-street').value='';document.getElementById('ad-num').value='';document.getElementById('ad-apt').value='';document.getElementById('ad-city').value='תל מונד';renderVolCheckboxes([]);initForm();document.getElementById('main-card').classList.add('reg-collapsed');window._mbrPaidStatus=false;var ms=getMbrSettings();if(ms.year||ms.link){document.getElementById('main-card').style.display='none';document.getElementById('payment-msg-card').style.display='none';document.getElementById('membership-prompt-card').style.display=''}window.scrollTo(0,0)}
 
 // ── Storage: localStorage + Google Sheets ───────────────
 let SHEETS_URL=localStorage.getItem('mbz_sheets_url')||'';
@@ -1918,7 +1949,11 @@ function renderML(f){
   else if(mFilterType==='unpaid')ms=ms.filter(function(m){return!m.membershipPaid});
   // Apply text search
   if(mflt)ms=ms.filter(function(m){return(m.firstName+' '+m.lastName+' '+m.torahName).toLowerCase().indexOf(mflt)>=0});
-  const el=document.getElementById('mcnt');if(el)el.textContent=`${ms.length} משפח${ms.length!==1?'ות':'ה'}`;const list=document.getElementById('ml');if(!list)return;if(!ms.length){list.innerHTML='<div class="no-m">אין מתפללים רשומים עדיין</div>';return}list.innerHTML=ms.map(m=>{const init=(m.firstName[0]||'')+(m.lastName[0]||'');
+  ms=sortMembers(ms);
+  const el=document.getElementById('mcnt');if(el)el.textContent=`${ms.length} משפח${ms.length!==1?'ות':'ה'}`;const list=document.getElementById('ml');if(!list)return;if(!ms.length){list.innerHTML='<div class="no-m">אין מתפללים רשומים עדיין</div>';return}
+  var sortArrow=function(c){return mSortCol===c?(mSortAsc?' ▲':' ▼'):''};
+  var sortBar='<div class="sort-bar"><button class="sort-btn'+(mSortCol==='name'?' active':'')+'" onclick="setMemberSort(\'name\')">שם'+sortArrow('name')+'</button><button class="sort-btn'+(mSortCol==='phone'?' active':'')+'" onclick="setMemberSort(\'phone\')">טלפון'+sortArrow('phone')+'</button><button class="sort-btn'+(mSortCol==='kids'?' active':'')+'" onclick="setMemberSort(\'kids\')">ילדים'+sortArrow('kids')+'</button><button class="sort-btn'+(mSortCol==='vol'?' active':'')+'" onclick="setMemberSort(\'vol\')">התנדבות'+sortArrow('vol')+'</button><button class="sort-btn'+(mSortCol==='paid'?' active':'')+'" onclick="setMemberSort(\'paid\')">תשלום'+sortArrow('paid')+'</button><button class="sort-btn'+(mSortCol==='duty'?' active':'')+'" onclick="setMemberSort(\'duty\')">תורנות'+sortArrow('duty')+'</button></div>';
+  list.innerHTML=sortBar+ms.map(m=>{const init=(m.firstName[0]||'')+(m.lastName[0]||'');
     // Family summary
     var famParts=[];
     if(m.spouse&&m.spouse.name)famParts.push('👩 '+es(m.spouse.name));
@@ -2548,6 +2583,14 @@ async function getShabbatTimes(){
   }catch(e){console.warn('Shabbat times error:',e);return null}
 }
 
+// ── Time helpers ─────────────────────────────────────────
+function timeAddMin(timeStr,min){
+  if(!timeStr)return'';var p=timeStr.split(':');var h=+p[0],m=+p[1]+min;
+  while(m<0){m+=60;h--}while(m>=60){m-=60;h++}
+  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+}
+function isWinterTime(){var now=new Date();var m=now.getMonth()+1;return m>=10||m<=3}
+
 // ── This Week Summary (public-facing) ────────────────────
 async function loadWeekSummary(){
   var card=document.getElementById('week-card');
@@ -2570,20 +2613,39 @@ async function loadWeekSummary(){
     var aliyot=getAliyot();
     var kiddush=getKiddush();
 
+    // Calculate adjusted times
+    var candlesAdj=shTimes?timeAddMin(shTimes.candles,-3):'';
+    var havdalahTime=shTimes?shTimes.havdalah:'';
+    var minchaErev=candlesAdj?timeAddMin(candlesAdj,10):'';
+    var shacharit=isWinterTime()?'08:20':'08:30';
+    var minchaShabbat=havdalahTime?timeAddMin(havdalahTime,-75):'';
+
     var isEn=curLang==='en';
     var locale=isEn?'en-IL':'he-IL';
+
     var h='<div class="wk-head">';
-    h+='<span class="wk-par">📖 '+(parName?es(parName):(isEn?'This Shabbat':'שבת הקרובה'))+'</span>';
+    h+='<span class="wk-par">📖 '+(isEn?'Parashat ':'פרשת ')+(parName?es(parName):(isEn?'This Shabbat':'שבת הקרובה'))+'</span>';
     h+='<span class="wk-heb">'+(isEn?'Shabbat ':'שבת ')+es(hebStr)+'</span>';
     h+='<span class="wk-date">'+sh.toLocaleDateString(locale,{day:'numeric',month:'long',year:'numeric'})+'</span>';
     h+='</div>';
-    // Shabbat times
-    if(shTimes&&(shTimes.candles||shTimes.havdalah)){
-      h+='<div class="wk-times">';
-      if(shTimes.candles)h+='<span class="wk-time">🕯️ '+(isEn?'Candle Lighting':'הדלקת נרות')+': <strong>'+shTimes.candles+'</strong></span>';
-      if(shTimes.havdalah)h+='<span class="wk-time">✨ '+(isEn?'Havdalah':'צאת שבת')+': <strong>'+shTimes.havdalah+'</strong></span>';
+
+    // Shabbat times grid
+    if(candlesAdj||havdalahTime){
+      h+='<div class="wk-times-grid">';
+      if(candlesAdj)h+='<div class="wk-tg-item"><span class="wk-tg-icon">🕯️</span><span class="wk-tg-label">'+(isEn?'Candle Lighting':'הדלקת נרות')+'</span><span class="wk-tg-val">'+candlesAdj+'</span></div>';
+      if(havdalahTime)h+='<div class="wk-tg-item"><span class="wk-tg-icon">✨</span><span class="wk-tg-label">'+(isEn?'Havdalah':'צאת שבת')+'</span><span class="wk-tg-val">'+havdalahTime+'</span></div>';
+      if(minchaErev)h+='<div class="wk-tg-item"><span class="wk-tg-icon">🙏</span><span class="wk-tg-label">'+(isEn?'Mincha Erev Shabbat':'מנחה ערב שבת')+'</span><span class="wk-tg-val">'+minchaErev+'</span></div>';
+      h+='<div class="wk-tg-item"><span class="wk-tg-icon">🌅</span><span class="wk-tg-label">'+(isEn?'Shacharit':'שחרית שבת')+'</span><span class="wk-tg-val">'+shacharit+'</span></div>';
+      if(minchaShabbat)h+='<div class="wk-tg-item"><span class="wk-tg-icon">📖</span><span class="wk-tg-label">'+(isEn?'Mincha Shabbat':'מנחה שבת')+'</span><span class="wk-tg-val">'+minchaShabbat+'</span></div>';
       h+='</div>';
     }
+
+    // Duty roster for this week
+    var dutyPair=getDutyPairWithSwaps(0);
+    if(dutyPair.length>=2){
+      h+='<div class="wk-duty"><span class="wk-duty-label">🧹 '+(isEn?'This Week\'s Duty':'תורנים השבוע')+':</span> <strong>'+es(dutyPair[0].firstName+' '+dutyPair[0].lastName)+'</strong> &amp; <strong>'+es(dutyPair[1].firstName+' '+dutyPair[1].lastName)+'</strong></div>';
+    }
+
     if(evs.length||birthdays.length||(aliyot&&aliyot.date===key)||(kiddush&&kiddush.date===key)){
       h+='<div class="wk-events">';
       for(var i=0;i<evs.length;i++){
@@ -2594,12 +2656,10 @@ async function loadWeekSummary(){
           h+='<div class="wk-ev"><span class="wk-ev-icon">🕯</span><div class="wk-ev-text"><span class="wk-ev-name">יארצייט: '+es(e.dec)+'</span> לזכרו של '+es(e.mem)+(e.dh?' — '+es(e.dh):'')+'</div></div>';
         }
       }
-      // Hebrew birthdays
       for(var bi=0;bi<birthdays.length;bi++){
         var bd=birthdays[bi];
         h+='<div class="wk-ev"><span class="wk-ev-icon">🎂</span><div class="wk-ev-text">יום הולדת עברי: <span class="wk-ev-name">'+es(bd.childName)+'</span> '+(bd.gender==='נקבה'?'בת':'בן')+' '+es(bd.parentName)+'</div></div>';
       }
-      // Aliyot summary
       if(aliyot&&aliyot.date===key&&aliyot.slots){
         var slotEntries=Object.entries(aliyot.slots);
         if(slotEntries.length){
@@ -2608,7 +2668,6 @@ async function loadWeekSummary(){
           h+='</div></div>';
         }
       }
-      // Kiddush summary
       if(kiddush&&kiddush.date===key&&kiddush.who){
         h+='<div class="wk-ev"><span class="wk-ev-icon">🍷</span><div class="wk-ev-text"><span class="wk-ev-name">קידוש:</span> '+es(kiddush.who)+(kiddush.notes?' — '+es(kiddush.notes):'')+'</div></div>';
       }
@@ -2671,6 +2730,7 @@ function populateSettingsFields(){
   });
   updateLogoPreview();
   initLogoDrop();
+  renderVolTypesList();
 }
 function saveCustomTexts(){
   var custom=JSON.parse(localStorage.getItem('mbz_custom_texts')||'{"he":{},"en":{}}');
@@ -3098,7 +3158,81 @@ function resetSwap(key,slot){
   saveDutySwaps(swaps);
   closeMD();renderDutyTab();
 }
-function renderDutyTab(){
+function getHolidayEves(year){
+  // Returns array of {date:Date, name:string} for holiday eves requiring duty
+  var holidays=[];
+  // We fetch from Hebcal for accurate dates
+  return holidays;
+}
+async function getHolidayDutyDates(){
+  // Get holidays for next 4 months from Hebcal
+  var now=new Date();var end=new Date();end.setMonth(end.getMonth()+4);
+  var url='https://www.hebcal.com/hebcal?cfg=json&v=1&maj=on&i=on&lg=he&start='+d2s(now)+'&end='+d2s(end);
+  try{
+    var r=await hf(url);if(!r||!r.items)return[];
+    var holidays=[];
+    var wanted={'ערב פסח':true,'פסח א׳':true,'פסח ב׳':true,'פסח VII':true,'שביעי של פסח':true,
+      'ערב שבועות':true,'שבועות':true,'שבועות א׳':true,
+      'ערב סוכות':true,'סוכות א׳':true,'סוכות ב׳':true,'סוכות':true,
+      'ערב ראש השנה':true,'ראש השנה':true,'ראש השנה א׳':true,'ראש השנה ב׳':true};
+    for(var i=0;i<r.items.length;i++){
+      var it=r.items[i];
+      if(it.category==='holiday'&&it.date){
+        var heb=it.hebrew||it.title||'';
+        var matched=false;
+        for(var w in wanted){if(heb.indexOf(w)>=0){matched=true;break}}
+        if(matched||heb.indexOf('פסח')>=0||heb.indexOf('סוכות')>=0||heb.indexOf('שבועות')>=0||heb.indexOf('ראש השנה')>=0){
+          var dt=new Date(it.date+'T00:00:00');
+          holidays.push({date:dt,dateKey:it.date.slice(0,10),name:heb});
+        }
+      }
+    }
+    return holidays;
+  }catch(e){return[]}
+}
+function getDutyPairForDate(dateKey){
+  var roster=getDutyRoster();if(roster.length<2)return roster.length?[roster[0]]:[];
+  var swaps=getDutySwaps();
+  if(swaps[dateKey]){
+    var pair=getDutyPair(0);// base pair as fallback
+    var sw=swaps[dateKey];
+    if(sw[0]){
+      if(typeof sw[0]==='object'&&sw[0].plus1)pair[0]={firstName:sw[0].name,lastName:'(+1)',phone:'—',id:'plus1_0',_plus1:true};
+      else{var r=roster.find(function(m){return m.id===sw[0]});if(r)pair[0]=r}
+    }
+    if(sw[1]){
+      if(typeof sw[1]==='object'&&sw[1].plus1)pair[1]={firstName:sw[1].name,lastName:'(+1)',phone:'—',id:'plus1_1',_plus1:true};
+      else{var r=roster.find(function(m){return m.id===sw[1]});if(r)pair[1]=r}
+    }
+    return pair;
+  }
+  return[];
+}
+function swapDutyByDate(dateKey,slot,label){
+  var roster=getDutyRoster();
+  var h='<div style="padding:.5rem"><h2 style="margin-bottom:.8rem">🔄 החלף תורן — '+es(label)+'</h2>';
+  h+='<div style="background:var(--c2);border-radius:8px;padding:.7rem;margin-bottom:.8rem;border:1px solid var(--bd2)">';
+  h+='<div style="font-size:.8rem;font-weight:600;margin-bottom:.4rem">➕ שיבוץ +1 (אורח)</div>';
+  h+='<div style="display:flex;gap:6px"><input type="text" id="duty-plus1-name" placeholder="שם מלא..." style="flex:1;padding:6px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:.85rem"><button onclick="confirmSwapByDate(\''+dateKey+'\','+slot+',null)" style="padding:6px 12px;background:var(--gold);color:var(--bg1);border:none;border-radius:6px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap">שבץ +1</button></div>';
+  h+='</div>';
+  if(roster.length){
+    h+='<p style="margin-bottom:.5rem;font-size:.85rem;color:var(--ink3)">או בחר מרשימת התורנים:</p>';
+    roster.forEach(function(m){
+      h+='<div class="mc" style="margin-bottom:4px;cursor:pointer" onclick="confirmSwapByDate(\''+dateKey+'\','+slot+',\''+m.id+'\')"><div class="mav">'+es((m.firstName||'').charAt(0)+(m.lastName||'').charAt(0))+'</div><div class="mi"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div></div></div>';
+    });
+  }
+  h+='<div style="margin-top:.8rem;display:flex;gap:8px;justify-content:center"><button class="md-btn-close" onclick="resetSwap(\''+dateKey+'\','+slot+')">↩ אפס</button><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
+  document.getElementById('md-card').innerHTML=h;
+  document.getElementById('md-ovl').classList.add('show');
+}
+function confirmSwapByDate(dateKey,slot,memberId){
+  var swaps=getDutySwaps();
+  if(!swaps[dateKey])swaps[dateKey]={};
+  if(memberId){swaps[dateKey][slot]=memberId}
+  else{var name=document.getElementById('duty-plus1-name').value.trim();if(!name)return alert('הזן שם');swaps[dateKey][slot]={plus1:true,name:name}}
+  saveDutySwaps(swaps);closeMD();renderDutyTab();
+}
+async function renderDutyTab(){
   var roster=getDutyRoster();
   var hc=document.getElementById('duty-hero-card');
   if(roster.length>=2){
@@ -3110,17 +3244,44 @@ function renderDutyTab(){
   }else{
     hc.innerHTML='<div class="duty-hero" style="background:#6b7280"><h3>אין תורנים ברשימה</h3><p style="margin-top:.5rem;opacity:.9;font-size:.85rem">הוסף תורנים דרך צפייה במתפלל ← כפתור "הוסף לרשימה"</p></div>';
   }
-  var body=document.getElementById('duty-body');var h='';
+  // Build combined list: Shabbatot + holidays
+  var entries=[];
   for(var w=0;w<8;w++){
     var d=new Date();d.setDate(d.getDate()+w*7);
     var sh=getUpcomingShabbat(d);
     var ds=sh.toLocaleDateString('he-IL',{day:'numeric',month:'long'});
     var pair=getDutyPairWithSwaps(w);
-    var n1=pair[0]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty('+w+',0)">'+es(pair[0].firstName+' '+pair[0].lastName)+'</span>':'—';
-    var n2=pair[1]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty('+w+',1)">'+es(pair[1].firstName+' '+pair[1].lastName)+'</span>':'—';
-    h+='<tr'+(w===0?' class="current"':'')+'><td>'+ds+(w===0?' (השבת)':'')+'</td><td>'+n1+'</td><td>'+n2+'</td></tr>';
+    entries.push({date:sh,dateKey:sh.toISOString().slice(0,10),label:'שבת',display:ds+(w===0?' (השבת)':''),pair:pair,weekOffset:w,isShabbat:true,isCurrent:w===0});
   }
-  body.innerHTML=h||'<tr><td colspan="3" style="text-align:center;color:var(--ink3);padding:1.5rem">אין תורנים</td></tr>';
+  // Fetch holidays
+  var holidays=await getHolidayDutyDates();
+  var lastShabbat=entries[entries.length-1].date;
+  for(var hi=0;hi<holidays.length;hi++){
+    var hol=holidays[hi];
+    if(hol.date>lastShabbat)continue;
+    // Don't duplicate if same date as Shabbat
+    var isDup=entries.some(function(e){return e.dateKey===hol.dateKey});
+    if(isDup)continue;
+    var holPair=getDutyPairForDate(hol.dateKey);
+    entries.push({date:hol.date,dateKey:hol.dateKey,label:hol.name,display:hol.date.toLocaleDateString('he-IL',{day:'numeric',month:'long'}),pair:holPair,isShabbat:false,isCurrent:false});
+  }
+  entries.sort(function(a,b){return a.date-b.date});
+
+  var body=document.getElementById('duty-body');var h='';
+  for(var i=0;i<entries.length;i++){
+    var e=entries[i];
+    var n1,n2;
+    if(e.isShabbat){
+      n1=e.pair[0]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty('+e.weekOffset+',0)">'+es(e.pair[0].firstName+' '+e.pair[0].lastName)+'</span>':'—';
+      n2=e.pair[1]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty('+e.weekOffset+',1)">'+es(e.pair[1].firstName+' '+e.pair[1].lastName)+'</span>':'—';
+    }else{
+      n1=e.pair[0]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDutyByDate(\''+e.dateKey+'\',0,\''+es(e.label)+'\')">'+es(e.pair[0].firstName+' '+e.pair[0].lastName)+'</span>':'<span style="cursor:pointer;color:var(--gold);text-decoration:underline" onclick="swapDutyByDate(\''+e.dateKey+'\',0,\''+es(e.label)+'\')">+ שבץ</span>';
+      n2=e.pair[1]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDutyByDate(\''+e.dateKey+'\',1,\''+es(e.label)+'\')">'+es(e.pair[1].firstName+' '+e.pair[1].lastName)+'</span>':'<span style="cursor:pointer;color:var(--gold);text-decoration:underline" onclick="swapDutyByDate(\''+e.dateKey+'\',1,\''+es(e.label)+'\')">+ שבץ</span>';
+    }
+    var rowClass=e.isCurrent?' class="current"':(e.isShabbat?'':' style="background:rgba(200,168,75,.06)"');
+    h+='<tr'+rowClass+'><td>'+e.display+'</td><td>'+(e.isShabbat?'שבת':'🕎 '+es(e.label))+'</td><td>'+n1+'</td><td>'+n2+'</td></tr>';
+  }
+  body.innerHTML=h||'<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:1.5rem">אין תורנים</td></tr>';
   var rl=document.getElementById('roster-list');
   if(roster.length){
     rl.innerHTML=roster.map(function(m,i){return'<div class="mc" style="margin-bottom:6px"><div class="mav">'+(i+1)+'</div><div class="mi"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone)+'</div></div></div>'}).join('');
@@ -3131,39 +3292,49 @@ function renderDutyTab(){
 
 // ── Excel Export/Import ──────────────────────────────────
 function exportExcel(){
-  var ms=getMs();
+  var ms=getMs();var volTypes=getVolTypes();
   var BOM='\uFEFF';
   var headers=[
-    'שם פרטי','שם משפחה','שם האב','שם האם','שם לעלייה לתורה',
-    'טלפון','דוא"ל','כתובת',
-    'שם בן/בת זוג','טלפון בן/בת זוג','דוא"ל בן/בת זוג',
-    'התנדבות','תורן','דמי חבר שולם','תאריך תשלום','אמצעי תשלום','סכום','הערות תשלום'
+    'מזהה','שם פרטי','שם משפחה','שם האב','שם האם','שם לעלייה לתורה',
+    'טלפון','דוא"ל','רחוב','מספר בית','דירה','עיר','כתובת מלאה',
+    'שם בן/בת זוג','טלפון בן/בת זוג','דוא"ל בן/בת זוג'
   ];
+  // Add a column for each volunteering type
+  for(var vi=0;vi<volTypes.length;vi++)headers.push('התנדבות: '+volTypes[vi]);
+  headers.push('תורן','דמי חבר שולם','תאריך תשלום','אמצעי תשלום','סכום','הערות תשלום','תאריך הצטרפות');
   // Dynamic: up to max children and yahrzeits
   var maxCh=0,maxYr=0;
   for(var i=0;i<ms.length;i++){
     var ch=(ms[i].children||[]).length;var yr=(ms[i].yahrzeits||[]).length;
     if(ch>maxCh)maxCh=ch;if(yr>maxYr)maxYr=yr;
   }
-  for(var c=1;c<=maxCh;c++){headers.push('ילד'+c+' שם','ילד'+c+' מין','ילד'+c+' ת.לידה','ילד'+c+' פרשה')}
-  for(var y=1;y<=maxYr;y++){headers.push('יארצייט'+y+' שם','יארצייט'+y+' יום','יארצייט'+y+' חודש','יארצייט'+y+' שנה','יארצייט'+y+' חזן','יארצייט'+y+' הפטרה')}
+  for(var c=1;c<=maxCh;c++){headers.push('ילד'+c+' שם','ילד'+c+' מין','ילד'+c+' ת.לידה עברית','ילד'+c+' ת.לידה לועזית','ילד'+c+' פרשת בר מצווה','ילד'+c+' תאריך בר מצווה','ילד'+c+' קריאה בתורה','ילד'+c+' הפטרה')}
+  for(var y=1;y<=maxYr;y++){headers.push('יארצייט'+y+' שם הנפטר','יארצייט'+y+' יום','יארצייט'+y+' חודש','יארצייט'+y+' שנה','יארצייט'+y+' תאריך לועזי','יארצייט'+y+' לפני התיבה','יארצייט'+y+' הפטרה')}
   var rows=[headers.join(',')];
   for(var i=0;i<ms.length;i++){
     var m=ms[i];var sp=m.spouse||{};
+    var ap=typeof m.address==='object'?m.address:{street:'',num:'',apt:'',city:''};
+    var addrStr=typeof m.address==='string'?m.address:[ap.street,ap.num,ap.apt,ap.city].filter(Boolean).join(', ');
     var row=[
-      csvCell(m.firstName),csvCell(m.lastName),csvCell(m.fatherName),csvCell(m.motherName),csvCell(m.torahName),
-      csvCell(m.phone),csvCell(m.email),csvCell(m.address),
-      csvCell(sp.name),csvCell(sp.phone),csvCell(sp.email),
-      csvCell((m.volunteering||[]).join('; ')),csvCell(m.dutyRoster?'כן':'לא'),
-      csvCell(m.membershipPaid?'כן':'לא'),csvCell(m.membershipPaidDate),csvCell(m.paymentMethod),csvCell(m.paymentAmount),csvCell(m.paymentNotes)
+      csvCell(m.id),csvCell(m.firstName),csvCell(m.lastName),csvCell(m.fatherName),csvCell(m.motherName),csvCell(m.torahName),
+      csvCell(m.phone),csvCell(m.email),
+      csvCell(ap.street),csvCell(ap.num),csvCell(ap.apt),csvCell(ap.city),csvCell(addrStr),
+      csvCell(sp.name),csvCell(sp.phone),csvCell(sp.email)
     ];
+    // Volunteering columns
+    for(var vi=0;vi<volTypes.length;vi++){
+      row.push(csvCell((m.volunteering||[]).includes(volTypes[vi])?'כן':'לא'));
+    }
+    row.push(csvCell(m.dutyRoster?'כן':'לא'),
+      csvCell(m.membershipPaid?'כן':'לא'),csvCell(m.membershipPaidDate),csvCell(m.paymentMethod),csvCell(m.paymentAmount),csvCell(m.paymentNotes),csvCell(m.timestamp));
     for(var c=0;c<maxCh;c++){
       var ch=(m.children||[])[c]||{};
-      row.push(csvCell(ch.name),csvCell(ch.gender),csvCell(ch.gd),csvCell(ch.parasha));
+      var hebDate=(ch.hd&&ch.hm&&ch.hy)?ch.hd+'/'+ch.hm+'/'+ch.hy:'';
+      row.push(csvCell(ch.name),csvCell(ch.gender),csvCell(hebDate),csvCell(ch.gd),csvCell(ch.parasha),csvCell(ch.barDate),csvCell(ch.readP),csvCell(ch.readH));
     }
     for(var y=0;y<maxYr;y++){
       var yr=(m.yahrzeits||[])[y]||{};
-      row.push(csvCell(yr.name),csvCell(yr.hd),csvCell(yr.hm),csvCell(yr.hy),csvCell(yr.lead),csvCell(yr.haft));
+      row.push(csvCell(yr.name),csvCell(yr.hd),csvCell(yr.hm),csvCell(yr.hy),csvCell(yr.gd),csvCell(yr.lead),csvCell(yr.haft));
     }
     rows.push(row.join(','));
   }
@@ -3314,6 +3485,62 @@ function loadDemoData(){
   lsSet(demos);
 }
 loadDemoData();
+
+// ── Volunteering Types Management ────────────────────────
+var VOL_TYPES_KEY='mbz_vol_types';
+var DEFAULT_VOL_TYPES=['קניות לקידוש','סידור קידוש','דבר תורה','ועד חסד'];
+function getVolTypes(){try{var v=JSON.parse(localStorage.getItem(VOL_TYPES_KEY));return v&&v.length?v:DEFAULT_VOL_TYPES}catch(e){return DEFAULT_VOL_TYPES}}
+function saveVolTypes(arr){localStorage.setItem(VOL_TYPES_KEY,JSON.stringify(arr))}
+function renderVolCheckboxes(memberVols){
+  var types=getVolTypes();var el=document.getElementById('vol-checkboxes');if(!el)return;
+  var vols=memberVols||[];
+  el.innerHTML=types.map(function(t,i){var checked=vols.includes(t)?'checked':'';var on=vols.includes(t)?' on':'';
+    return'<label class="cbl'+on+'" id="vcb'+i+'"><input type="checkbox" id="vv'+i+'" '+checked+' onchange="tCb(\'vcb'+i+'\',\'vv'+i+'\')"> <span>'+es(t)+'</span></label>'}).join('');
+}
+function collectVols(){
+  var types=getVolTypes();var vols=[];
+  for(var i=0;i<types.length;i++){var cb=document.getElementById('vv'+i);if(cb&&cb.checked)vols.push(types[i])}
+  return vols;
+}
+function renderVolTypesList(){
+  var types=getVolTypes();var el=document.getElementById('vol-types-list');if(!el)return;
+  el.innerHTML=types.map(function(t,i){
+    return'<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.08)"><span style="flex:1;font-size:.84rem;color:rgba(255,255,255,.8)">'+es(t)+'</span><button onclick="removeVolType('+i+')" style="padding:2px 8px;border:1px solid rgba(192,57,43,.3);color:rgba(255,255,255,.5);background:none;border-radius:4px;cursor:pointer;font-size:.75rem">✕</button></div>'
+  }).join('');
+}
+function addVolType(){
+  var inp=document.getElementById('vol-new-input');if(!inp)return;
+  var name=inp.value.trim();if(!name)return;
+  var types=getVolTypes();if(types.includes(name)){alert('סוג זה כבר קיים');return}
+  types.push(name);saveVolTypes(types);inp.value='';renderVolTypesList();
+}
+function removeVolType(idx){
+  var types=getVolTypes();if(!confirm('להסיר את "'+types[idx]+'"?'))return;
+  types.splice(idx,1);saveVolTypes(types);renderVolTypesList();
+}
+
+// ── Sortable Members ─────────────────────────────────────
+var mSortCol='name',mSortAsc=true;
+function setMemberSort(col){
+  if(mSortCol===col)mSortAsc=!mSortAsc;else{mSortCol=col;mSortAsc=true}
+  renderML();
+}
+function sortMembers(ms){
+  var col=mSortCol,asc=mSortAsc;
+  return ms.slice().sort(function(a,b){
+    var va,vb;
+    if(col==='name'){va=(a.lastName||'')+' '+(a.firstName||'');vb=(b.lastName||'')+' '+(b.firstName||'')}
+    else if(col==='phone'){va=a.phone||'';vb=b.phone||''}
+    else if(col==='kids'){va=(a.children||[]).length;vb=(b.children||[]).length;return asc?va-vb:vb-va}
+    else if(col==='yr'){va=(a.yahrzeits||[]).length;vb=(b.yahrzeits||[]).length;return asc?va-vb:vb-va}
+    else if(col==='vol'){va=(a.volunteering||[]).length;vb=(b.volunteering||[]).length;return asc?va-vb:vb-va}
+    else if(col==='paid'){va=a.membershipPaid?1:0;vb=b.membershipPaid?1:0;return asc?va-vb:vb-va}
+    else if(col==='duty'){va=a.dutyRoster?1:0;vb=b.dutyRoster?1:0;return asc?va-vb:vb-va}
+    else{va='';vb=''}
+    if(typeof va==='string'){var r=va.localeCompare(vb,'he');return asc?r:-r}
+    return asc?va-vb:vb-va;
+  });
+}
 
 // ── Init ─────────────────────────────────────────────────
 mergeCustomTexts();
