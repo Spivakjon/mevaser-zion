@@ -660,6 +660,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 <body>
 <div class="top-actions">
   <button onclick="toggleReg()" data-i18n="registerBtn">📝 הרשמה</button>
+  <button onclick="openMyShabbat()">🕍 השבת שלי</button>
   <button onclick="openSelfEdit()" data-i18n="editMyDetails">📝 עריכת הפרטים שלי</button>
   <button onclick="scrollToPayInfo()" id="top-pay-btn" style="color:var(--gold)">💳 תשלום</button>
   <button onclick="openAdm()" data-i18n="adminBtn">🔒 ניהול</button>
@@ -1098,6 +1099,21 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     <button class="se-btn" onclick="doSelfEdit()" data-i18n="selfEditSearch">חפש</button>
     <button class="se-close" onclick="closeSelfEdit()" data-i18n="selfEditClose">סגור</button>
     <div class="se-err" id="se-err" data-i18n="selfEditErrNotFound">לא נמצא מתפלל עם פרטים אלו</div>
+  </div>
+</div>
+
+<!-- My Shabbat Modal -->
+<div class="se-ovl" id="myshab-ovl" onclick="if(event.target===this)closeMyShabbat()">
+  <div class="se-card" style="max-width:440px">
+    <h2>🕍 השבת שלי</h2>
+    <p style="font-size:.85rem;color:var(--ink3);margin-bottom:.8rem">הזן טלפון לצפייה במידע האישי שלך</p>
+    <div class="ff">
+      <label>טלפון</label>
+      <input type="tel" id="ms-phone" placeholder="050-1234567" dir="ltr" onkeydown="if(event.key==='Enter')doMyShabbat()">
+    </div>
+    <button class="se-btn" onclick="doMyShabbat()">הצג</button>
+    <button class="se-close" onclick="closeMyShabbat()">סגור</button>
+    <div id="ms-result"></div>
   </div>
 </div>
 
@@ -2477,7 +2493,6 @@ async function getDailyZmanim(){
 // ── Next Event Countdown ─────────────────────────────────
 async function getNextEvent(ms,thisSh,curHY){
   var now=new Date();var closest=null;
-  // Check bar mitzvahs in next 12 weeks
   for(var w=1;w<=12;w++){
     var d=new Date();d.setDate(d.getDate()+w*7);
     var sh=getUpcomingShabbat(d);
@@ -2487,10 +2502,10 @@ async function getNextEvent(ms,thisSh,curHY){
       if(daysUntil<=0)continue;
       if(e.t==='bm'){
         if(!closest||daysUntil<closest.days)closest={icon:'✡',label:'בר מצווה: '+e.child+' בן/בת '+e.parent,days:daysUntil};
-      }else if(e.t==='yr'){
+      }else if(e.t==='yr'&&w<=2){
         if(!closest||daysUntil<closest.days)closest={icon:'🕯',label:'יארצייט: '+e.dec+' — '+e.mem,days:daysUntil};
       }
-      if(closest)return closest;// return first upcoming
+      if(closest)return closest;
     }
   }
   return closest;
@@ -2500,6 +2515,96 @@ async function getNextEvent(ms,thisSh,curHY){
 var WK_CACHE_KEY='mbz_week_cache';
 function getWeekCache(){try{var c=JSON.parse(localStorage.getItem(WK_CACHE_KEY));if(c&&c.key===d2s(gSh()))return c;return null}catch(e){return null}}
 function setWeekCache(key,html){try{localStorage.setItem(WK_CACHE_KEY,JSON.stringify({key:key,html:html,ts:Date.now()}))}catch(e){}}
+
+// ── My Shabbat ───────────────────────────────────────────
+function openMyShabbat(){
+  document.getElementById('myshab-ovl').classList.add('show');
+  document.getElementById('ms-phone').value='';
+  document.getElementById('ms-result').innerHTML='';
+}
+function closeMyShabbat(){document.getElementById('myshab-ovl').classList.remove('show')}
+async function doMyShabbat(){
+  var phone=document.getElementById('ms-phone').value.trim();
+  var res=document.getElementById('ms-result');
+  if(!phone){res.innerHTML='<div style="color:#c0392b;text-align:center;margin-top:.5rem">הזן מספר טלפון</div>';return}
+  var np=phone.replace(/[-\s()]/g,'');
+  var ms=getMs();
+  var m=ms.find(function(x){return(x.phone||'').replace(/[-\s()]/g,'')===np});
+  if(!m){res.innerHTML='<div style="color:#c0392b;text-align:center;margin-top:.5rem">לא נמצא מתפלל עם טלפון זה</div>';return}
+  var isEn=curLang==='en';
+  var h='<div style="margin-top:.8rem;border-top:1px solid var(--bd);padding-top:.8rem">';
+  h+='<div style="font-size:1.1rem;font-weight:700;color:var(--gold2);margin-bottom:.6rem;text-align:center">שבת שלום, '+es(m.firstName)+'!</div>';
+
+  // Payment status
+  h+='<div style="display:flex;align-items:center;gap:6px;padding:.4rem 0;font-size:.85rem">';
+  h+=m.membershipPaid?'<span class="paid-tag">💳 דמי חבר שולמו ✓</span>':'<span class="unpaid-tag">💳 דמי חבר טרם שולמו</span>';
+  h+='</div>';
+
+  // Duty status
+  if(m.dutyRoster){
+    var pair=getDutyPairWithSwaps(0);
+    var isOnDuty=pair.some(function(p){return p&&p.id===m.id});
+    if(isOnDuty){
+      h+='<div style="padding:.5rem;background:rgba(30,125,75,.15);border:1px solid rgba(30,125,75,.3);border-radius:8px;margin:.4rem 0;font-size:.88rem;font-weight:600;color:#1e7d4b;text-align:center">🧹 את/ה בתורנות השבת!</div>';
+    }else{
+      h+='<div style="font-size:.82rem;color:var(--ink3);padding:.2rem 0">📋 רשום/ה בתורנות (לא השבת)</div>';
+    }
+  }
+
+  // Upcoming yahrzeits (2 weeks)
+  var sh=gSh();var hd2=await g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate());
+  var curHY=hd2?hd2.hy:5786;
+  var myYahrzeits=[];
+  for(var w=0;w<=2;w++){
+    var d=new Date();d.setDate(d.getDate()+w*7);
+    var shW=getUpcomingShabbat(d);
+    var evs=await getWkEvs([m],shW,curHY);
+    for(var i=0;i<evs.length;i++){
+      if(evs[i].t==='yr'){
+        var daysU=Math.round((shW-new Date())/(1000*60*60*24));
+        myYahrzeits.push({name:evs[i].dec,days:daysU,dh:evs[i].dh});
+      }
+    }
+  }
+  if(myYahrzeits.length){
+    h+='<div style="margin:.5rem 0"><div style="font-size:.82rem;font-weight:600;color:var(--gold2);margin-bottom:.3rem">🕯 יארצייטים קרובים:</div>';
+    for(var yi=0;yi<myYahrzeits.length;yi++){
+      var y=myYahrzeits[yi];
+      h+='<div style="font-size:.85rem;padding:.2rem 0">'+es(y.name)+(y.dh?' — '+es(y.dh):'')+' <span style="color:var(--gold);font-weight:600">(בעוד '+y.days+' ימים)</span></div>';
+    }
+    h+='</div>';
+  }
+
+  // Upcoming bar mitzvahs
+  var myBMs=[];
+  for(var w=0;w<=12;w++){
+    var d=new Date();d.setDate(d.getDate()+w*7);
+    var shW=getUpcomingShabbat(d);
+    var evs=await getWkEvs([m],shW,curHY);
+    for(var i=0;i<evs.length;i++){
+      if(evs[i].t==='bm'){
+        var daysU=Math.round((shW-new Date())/(1000*60*60*24));
+        myBMs.push({child:evs[i].child,par:evs[i].par,days:daysU});
+      }
+    }
+  }
+  if(myBMs.length){
+    h+='<div style="margin:.5rem 0"><div style="font-size:.82rem;font-weight:600;color:var(--gold2);margin-bottom:.3rem">✡ בר/בת מצווה:</div>';
+    for(var bi=0;bi<myBMs.length;bi++){
+      var b=myBMs[bi];
+      h+='<div style="font-size:.85rem;padding:.2rem 0">'+es(b.child)+(b.par?' — פרשת '+es(b.par):'')+' <span style="color:var(--gold);font-weight:600">(בעוד '+b.days+' ימים)</span></div>';
+    }
+    h+='</div>';
+  }
+
+  // Volunteering
+  if(m.volunteering&&m.volunteering.length){
+    h+='<div style="font-size:.82rem;color:var(--ink3);padding:.3rem 0">🙏 התנדבות: '+es(m.volunteering.join(', '))+'</div>';
+  }
+
+  h+='</div>';
+  res.innerHTML=h;
+}
 
 // ── PWA Install ──────────────────────────────────────────
 var _deferredPrompt=null;
