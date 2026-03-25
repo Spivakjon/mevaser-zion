@@ -732,6 +732,8 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     <div class="sec"><div id="cw"></div><button class="badd" id="badd-c" onclick="addCh()" data-i18n="addChild">+ הוסף ילד</button></div>
     <div class="sh"><span>🙏</span><span class="sh-t" data-i18n="volunteering">תחומי התנדבות</span></div>
     <div class="sec"><div class="cb-row" id="vol-checkboxes"></div></div>
+    <div class="sh"><span>📋</span><span class="sh-t">תורנות שבת</span></div>
+    <div class="sec"><div class="cb-row"><label class="cbl" id="cb-duty"><input type="checkbox" id="duty-reg-cb" onchange="tCb('cb-duty','duty-reg-cb')"> <span>אני מעוניין/ת להירשם לתורנות שבת</span></label></div></div>
     <div class="sh"><span>🕯</span><span class="sh-t" data-i18n="yahrzeits">ימי זיכרון (יארצייט)</span></div>
     <div class="sec"><div id="yw"></div><button class="badd" onclick="addYr()" data-i18n="addYahrzeit">+ הוסף יום זיכרון</button></div>
     <div class="fmsg" id="fmsg"></div>
@@ -1349,6 +1351,7 @@ function initForm(m=null){_torahManual=!!m;eid=m?m.id:null;CH=m?JSON.parse(JSON.
     document.getElementById('ad-apt').value=ap.apt;
     document.getElementById('ad-city').value=ap.city;
     renderVolCheckboxes(m.volunteering||[]);
+    var dutyCb=document.getElementById('duty-reg-cb');if(dutyCb){dutyCb.checked=!!m.dutyRoster;tCb('cb-duty','duty-reg-cb')}
     var sp=m.spouse||{};document.getElementById('sp-fn').value=sp.name||'';document.getElementById('sp-ph').value=sp.phone||'';document.getElementById('sp-em').value=sp.email||'';
   } else {
     // Reset address fields
@@ -1357,6 +1360,7 @@ function initForm(m=null){_torahManual=!!m;eid=m?m.id:null;CH=m?JSON.parse(JSON.
     document.getElementById('ad-apt').value='';
     document.getElementById('ad-city').value='תל מונד';
     renderVolCheckboxes([]);
+    var dutyCb=document.getElementById('duty-reg-cb');if(dutyCb){dutyCb.checked=false;tCb('cb-duty','duty-reg-cb')}
   }
   renderCH();renderYR()}
 
@@ -1475,7 +1479,7 @@ function colCh(i){const c={...CH[i]};['hd','hm','hy'].forEach(k=>{const el=docum
 function colYr(i){const y={...YR[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`y${i}-${k}`);if(el)y[k]=el.value});const gi=document.getElementById(`y${i}-gd`);if(gi)y.gd=gi.value;const ni=document.getElementById(`yn-${i}`);if(ni)y.name=ni.value.trim();const yl=document.getElementById(`yl-${i}`);if(yl)y.lead=yl.value;const yh=document.getElementById(`yh-${i}`);if(yh)y.haft=yh.value;return y}
 function reqF(id){const el=document.getElementById(id);const ok=el&&el.value.trim().length>0;const ff=el?el.closest('.ff'):null;if(ff)ff.classList.toggle('err',!ok);return ok}
 
-async function submitForm(){if(!['fn','ln','ph'].map(reqF).every(Boolean))return;const vols=collectVols();var spouseFn=document.getElementById('sp-fn').value.trim();var spousePh=document.getElementById('sp-ph').value.trim();var spouseEm=document.getElementById('sp-em').value.trim();var spouse=(spouseFn||spousePh)?{name:spouseFn,phone:spousePh,email:spouseEm}:null;const data={firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),address:combineAddress(),spouse:spouse,volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};data.membershipPaid=window._mbrPaidStatus||false;data.membershipPaidDate=window._mbrPaidStatus?new Date().toLocaleDateString('he-IL'):'';if(eid){var existing=getM(eid);if(existing){data.membershipPaid=existing.membershipPaid;data.dutyRoster=existing.dutyRoster}}if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
+async function submitForm(){if(!['fn','ln','ph'].map(reqF).every(Boolean))return;const vols=collectVols();var spouseFn=document.getElementById('sp-fn').value.trim();var spousePh=document.getElementById('sp-ph').value.trim();var spouseEm=document.getElementById('sp-em').value.trim();var spouse=(spouseFn||spousePh)?{name:spouseFn,phone:spousePh,email:spouseEm}:null;const data={firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),address:combineAddress(),spouse:spouse,volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};var dutyCb=document.getElementById('duty-reg-cb');data.dutyRoster=dutyCb?dutyCb.checked:false;data.membershipPaid=window._mbrPaidStatus||false;data.membershipPaidDate=window._mbrPaidStatus?new Date().toLocaleDateString('he-IL'):'';if(eid){var existing=getM(eid);if(existing){data.membershipPaid=existing.membershipPaid}}if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
 function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em','sp-fn','sp-ph','sp-em'].forEach(id=>{var el=document.getElementById(id);if(el)el.value=''});document.getElementById('ad-street').value='';document.getElementById('ad-num').value='';document.getElementById('ad-apt').value='';document.getElementById('ad-city').value='תל מונד';renderVolCheckboxes([]);initForm();document.getElementById('main-card').classList.add('reg-collapsed');window._mbrPaidStatus=false;var ms=getMbrSettings();if(ms.year||ms.link){document.getElementById('main-card').style.display='none';document.getElementById('payment-msg-card').style.display='none';document.getElementById('membership-prompt-card').style.display=''}window.scrollTo(0,0)}
 
 // ── Storage: localStorage + Google Sheets ───────────────
@@ -3171,7 +3175,7 @@ function swapDuty(weekOffset,slot){
   // +1 option - assign someone by name who is not in roster
   h+='<div style="background:var(--c2);border-radius:8px;padding:.7rem;margin-bottom:.8rem;border:1px solid var(--bd2)">';
   h+='<div style="font-size:.8rem;font-weight:600;margin-bottom:.4rem">➕ שיבוץ +1 (אורח / לא ברשימה)</div>';
-  h+='<div style="display:flex;gap:6px"><input type="text" id="duty-plus1-name" placeholder="שם מלא..." style="flex:1;padding:6px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:.85rem"><button onclick="confirmSwapPlus1('+weekOffset+','+slot+')" style="padding:6px 12px;background:var(--gold);color:var(--bg1);border:none;border-radius:6px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap">שבץ +1</button></div>';
+  h+='<div style="position:relative"><div style="display:flex;gap:6px"><input type="text" id="duty-plus1-name" placeholder="התחל להקליד שם..." autocomplete="off" oninput="dutyAC(this.value)" style="flex:1;padding:6px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:.85rem"><button onclick="confirmSwapPlus1('+weekOffset+','+slot+')" style="padding:6px 12px;background:var(--gold);color:var(--bg1);border:none;border-radius:6px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap">שבץ</button></div><div id="duty-ac-list" style="position:absolute;top:100%;right:0;left:0;z-index:10;background:var(--card,#fff);border:1px solid var(--bd);border-radius:0 0 8px 8px;max-height:160px;overflow-y:auto;display:none"></div></div>';
   h+='</div>';
   if(roster.length){
     h+='<p style="margin-bottom:.5rem;font-size:.85rem;color:var(--ink3)">או בחר מרשימת התורנים:</p>';
@@ -3279,6 +3283,18 @@ function suggestDutyForDate(dateKey,slot){
   document.getElementById('md-card').innerHTML=h;
   document.getElementById('md-ovl').classList.add('show');
 }
+function dutyAC(val){
+  var list=document.getElementById('duty-ac-list');if(!list)return;
+  if(!val||val.length<1){list.style.display='none';return}
+  var ms=getMs();var q=val.toLowerCase();
+  var matches=ms.filter(function(m){return(m.firstName+' '+m.lastName).toLowerCase().indexOf(q)>=0}).slice(0,6);
+  if(!matches.length){list.style.display='none';return}
+  list.style.display='block';
+  list.innerHTML=matches.map(function(m){
+    var name=m.firstName+' '+m.lastName;
+    return'<div onclick="document.getElementById(\'duty-plus1-name\').value=\''+es(name)+'\';document.getElementById(\'duty-ac-list\').style.display=\'none\'" style="padding:6px 10px;cursor:pointer;font-size:.84rem;border-bottom:1px solid rgba(255,255,255,.08);color:var(--ink,#333)">'+es(name)+' <span style="font-size:.75rem;color:var(--ink3,#999)">'+es(m.phone||'')+'</span></div>';
+  }).join('');
+}
 function getDutyPairForDate(dateKey){
   var roster=getDutyRoster();if(roster.length<2)return roster.length?[roster[0]]:[];
   var swaps=getDutySwaps();
@@ -3303,7 +3319,7 @@ function swapDutyByDate(dateKey,slot,label){
   h+='<button onclick="closeMD();suggestDutyForDate(\''+dateKey+'\','+slot+')" style="width:100%;padding:8px;margin-bottom:.8rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer">🤖 המלצה חכמה — מי צריך להיות?</button>';
   h+='<div style="background:var(--c2);border-radius:8px;padding:.7rem;margin-bottom:.8rem;border:1px solid var(--bd2)">';
   h+='<div style="font-size:.8rem;font-weight:600;margin-bottom:.4rem">➕ שיבוץ +1 (אורח)</div>';
-  h+='<div style="display:flex;gap:6px"><input type="text" id="duty-plus1-name" placeholder="שם מלא..." style="flex:1;padding:6px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:.85rem"><button onclick="confirmSwapByDate(\''+dateKey+'\','+slot+',null)" style="padding:6px 12px;background:var(--gold);color:var(--bg1);border:none;border-radius:6px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap">שבץ +1</button></div>';
+  h+='<div style="position:relative"><div style="display:flex;gap:6px"><input type="text" id="duty-plus1-name" placeholder="התחל להקליד שם..." autocomplete="off" oninput="dutyAC(this.value)" style="flex:1;padding:6px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:.85rem"><button onclick="confirmSwapByDate(\''+dateKey+'\','+slot+',null)" style="padding:6px 12px;background:var(--gold);color:var(--bg1);border:none;border-radius:6px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap">שבץ</button></div><div id="duty-ac-list" style="position:absolute;top:100%;right:0;left:0;z-index:10;background:var(--card,#fff);border:1px solid var(--bd);border-radius:0 0 8px 8px;max-height:160px;overflow-y:auto;display:none"></div></div>';
   h+='</div>';
   if(roster.length){
     h+='<p style="margin-bottom:.5rem;font-size:.85rem;color:var(--ink3)">או בחר מרשימת התורנים:</p>';
