@@ -1,0 +1,23 @@
+{
+  "name": "קהילת מבשר ציון",
+  "short_name": "מבשר ציון",
+  "description": "אפליקציית קהילת מבשר ציון - ניהול קהילה, זמני תפילות ואירועים",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1a2744",
+  "theme_color": "#1a2744",
+  "dir": "rtl",
+  "lang": "he",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
