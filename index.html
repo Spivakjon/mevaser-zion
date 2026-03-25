@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="מבשר ציון">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#1a2744">
-<meta name="format-detection" content="telephone=no">
+<meta name="format-detection" content="telephone=yes">
 <link rel="manifest" href="manifest.json">
 <title>עמותת מבשר ציון</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -677,7 +677,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 
 <div class="info-section" id="info-section">
 <div style="text-align:center;padding:1.2rem .5rem;font-size:.95rem;color:rgba(255,255,255,.7);line-height:1.8">
-  <p data-i18n="contactLine">לפרטים ניתן לפנות לניר קויפמן — 054-8882150</p>
+  <p>לפרטים ניתן לפנות ל<strong style="color:var(--gold2)">ניר קויפמן</strong> — <a href="tel:054-8882150" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(200,168,75,.4)">054-8882150</a></p>
 </div>
 </div>
 
@@ -1190,14 +1190,20 @@ function showToast(msg){const el=document.getElementById('toast');el.textContent
 
 // ── Hebcal API (cached, iOS-safe) ───────────────────────
 const _c={};
+var HC_KEY='mbz_hc_cache';
+function _hcGet(url){try{var c=JSON.parse(localStorage.getItem(HC_KEY)||'{}');var e=c[url];if(e&&Date.now()-e.ts<21600000)return e.d;return null}catch(x){return null}}
+function _hcSet(url,d){try{var c=JSON.parse(localStorage.getItem(HC_KEY)||'{}');c[url]={d:d,ts:Date.now()};// keep max 30 entries
+var keys=Object.keys(c);if(keys.length>30){keys.sort(function(a,b){return c[a].ts-c[b].ts});for(var i=0;i<keys.length-30;i++)delete c[keys[i]]}
+localStorage.setItem(HC_KEY,JSON.stringify(c))}catch(x){}}
 async function hf(url){
   if(_c[url])return _c[url];
+  var cached=_hcGet(url);if(cached){_c[url]=cached;return cached}
   try{
     const r=await fetch(url,{mode:'cors',credentials:'omit',cache:'default'});
     if(!r.ok){console.warn('Hebcal HTTP',r.status,url);return null}
     const txt=await r.text();
     let d;try{d=JSON.parse(txt)}catch(pe){console.warn('Hebcal JSON parse error',pe,txt.slice(0,200));return null}
-    if(d&&!d.error){_c[url]=d;return d}
+    if(d&&!d.error){_c[url]=d;_hcSet(url,d);return d}
     console.warn('Hebcal API error',d);return null;
   }catch(e){console.warn('Hebcal fetch failed',e,url);return null}
 }
@@ -2568,7 +2574,14 @@ async function getNextEvent(ms,thisSh,curHY){
 
 // ── Week Summary Cache ────────────────────────────────────
 var WK_CACHE_KEY='mbz_week_cache';
-function getWeekCache(){try{var c=JSON.parse(localStorage.getItem(WK_CACHE_KEY));if(c&&c.key===d2s(gSh()))return c;return null}catch(e){return null}}
+function getWeekCache(){
+  try{var c=JSON.parse(localStorage.getItem(WK_CACHE_KEY));
+  if(!c||!c.html)return null;
+  // Return cache if it's for current week OR if it's less than 24h old (stale but better than loading spinner)
+  if(c.key===d2s(gSh()))return c;
+  if(Date.now()-c.ts<86400000)return c;// show last week's data for up to 24h while refreshing
+  return null}catch(e){return null}
+}
 function setWeekCache(key,html){try{localStorage.setItem(WK_CACHE_KEY,JSON.stringify({key:key,html:html,ts:Date.now()}))}catch(e){}}
 
 // ── My Shabbat ───────────────────────────────────────────
@@ -2673,10 +2686,29 @@ window.addEventListener('beforeinstallprompt',function(e){
   var btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='';
 });
 function installPWA(){
-  if(!_deferredPrompt)return;
-  _deferredPrompt.prompt();
-  _deferredPrompt.userChoice.then(function(){_deferredPrompt=null;var btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='none'});
+  if(_deferredPrompt){
+    _deferredPrompt.prompt();
+    _deferredPrompt.userChoice.then(function(){_deferredPrompt=null;var btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='none'});
+    return;
+  }
+  // iOS/Safari - show manual instructions
+  var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+  var isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  var isStandalone=window.navigator.standalone||window.matchMedia('(display-mode:standalone)').matches;
+  if(isStandalone)return;
+  var isEn=curLang==='en';
+  var msg=isIOS||isSafari?
+    (isEn?'To install: tap the Share button (□↑) then "Add to Home Screen"':'להתקנה: לחצו על כפתור השיתוף (□↑) ואז "הוסף למסך הבית"'):
+    (isEn?'To install: open browser menu (⋮) then "Install App" or "Add to Home Screen"':'להתקנה: פתחו תפריט דפדפן (⋮) ואז "התקן אפליקציה" או "הוסף למסך הבית"');
+  alert(msg);
 }
+// Show install button on iOS too (no beforeinstallprompt there)
+(function(){
+  var isStandalone=window.navigator.standalone||window.matchMedia('(display-mode:standalone)').matches;
+  if(!isStandalone&&/Mobi|Android|iPad|iPhone/i.test(navigator.userAgent)){
+    var btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='';
+  }
+})();
 
 // ── This Week Summary (public-facing) ────────────────────
 async function loadWeekSummary(){
