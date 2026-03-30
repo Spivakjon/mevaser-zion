@@ -1115,6 +1115,13 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
             <input type="file" id="csv-restore-file" accept=".csv,.tsv,.txt" style="display:none" onchange="importExcel(event)">
           </div>
         </div>
+        <div style="margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.12)">
+          <h3 style="color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:.95rem;margin-bottom:.8rem">⚙️ הצגה בדף הראשי</h3>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.85rem;color:rgba(255,255,255,.7)">
+            <input type="checkbox" id="toggle-daily-times" onchange="toggleDailyTimes(this.checked)" style="width:18px;height:18px;accent-color:var(--gold)">
+            <span>הצג זמני תפילה יומיים (שחרית/מנחה/ערבית) בדף הראשי</span>
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -2822,14 +2829,14 @@ async function loadWeekSummary(){
     h+='<span class="wk-date">'+sh.toLocaleDateString(locale,{day:'numeric',month:'long',year:'numeric'})+'</span>';
     h+='</div>';
 
-    // Shabbat times grid
+    // Shabbat times grid — ordered by prayer sequence
     if(candlesAdj||havdalahTime){
       h+='<div class="wk-times-grid">';
-      if(candlesAdj)h+='<div class="wk-tg-item"><span class="wk-tg-icon">🕯️</span><span class="wk-tg-label">'+(isEn?'Candle Lighting':'הדלקת נרות')+'</span><span class="wk-tg-val">'+candlesAdj+'</span></div>';
-      if(havdalahTime)h+='<div class="wk-tg-item"><span class="wk-tg-icon">✨</span><span class="wk-tg-label">'+(isEn?'Havdalah':'צאת שבת')+'</span><span class="wk-tg-val">'+havdalahTime+'</span></div>';
       if(minchaErev)h+='<div class="wk-tg-item"><span class="wk-tg-icon">🙏</span><span class="wk-tg-label">'+(isEn?'Mincha Erev Shabbat':'מנחה ערב שבת')+'</span><span class="wk-tg-val">'+minchaErev+'</span></div>';
+      if(candlesAdj)h+='<div class="wk-tg-item"><span class="wk-tg-icon">🕯️</span><span class="wk-tg-label">'+(isEn?'Candle Lighting':'הדלקת נרות')+'</span><span class="wk-tg-val">'+candlesAdj+'</span></div>';
       h+='<div class="wk-tg-item"><span class="wk-tg-icon">🌅</span><span class="wk-tg-label">'+(isEn?'Shacharit':'שחרית שבת')+'</span><span class="wk-tg-val">'+shacharit+'</span></div>';
       if(minchaShabbat)h+='<div class="wk-tg-item"><span class="wk-tg-icon">📖</span><span class="wk-tg-label">'+(isEn?'Mincha Shabbat':'מנחה שבת')+'</span><span class="wk-tg-val">'+minchaShabbat+'</span></div>';
+      if(havdalahTime)h+='<div class="wk-tg-item"><span class="wk-tg-icon">✨</span><span class="wk-tg-label">'+(isEn?'Havdalah':'צאת שבת')+'</span><span class="wk-tg-val">'+havdalahTime+'</span></div>';
       h+='</div>';
     }
 
@@ -2843,9 +2850,10 @@ async function loadWeekSummary(){
       h+='<div class="wk-omer">🌾 '+omerText+'</div>';
     }
 
-    // Daily prayer times (weekday)
+    // Daily prayer times (weekday) — controlled by setting
     var zmanim=zmanimResult;
-    if(zmanim){
+    var showDaily=localStorage.getItem('mbz_show_daily_times')!=='false';
+    if(zmanim&&showDaily){
       h+='<div class="wk-daily"><div class="wk-daily-title">🕐 '+(isEn?'Weekday Prayer Times':'זמני תפילה יומיים')+'</div><div class="wk-daily-row">';
       if(zmanim.shacharit)h+='<span>🌅 '+(isEn?'Shacharit':'שחרית')+': <strong>'+zmanim.shacharit+'</strong></span>';
       if(zmanim.mincha)h+='<span>🙏 '+(isEn?'Mincha':'מנחה')+': <strong>'+zmanim.mincha+'</strong></span>';
@@ -2952,6 +2960,7 @@ function populateSettingsFields(){
   initLogoDrop();
   renderVolTypesList();
   renderCustomTagsList();
+  initDailyTimesToggle();
 }
 function saveCustomTexts(){
   var custom=JSON.parse(localStorage.getItem('mbz_custom_texts')||'{"he":{},"en":{}}');
@@ -3919,6 +3928,10 @@ function importVCard(event){
   }
   event.target.value='';
 }
+
+// ── Daily Times Toggle ───────────────────────────────────
+function toggleDailyTimes(on){localStorage.setItem('mbz_show_daily_times',on?'true':'false');try{localStorage.removeItem(WK_CACHE_KEY)}catch(e){}loadWeekSummary()}
+function initDailyTimesToggle(){var cb=document.getElementById('toggle-daily-times');if(cb)cb.checked=localStorage.getItem('mbz_show_daily_times')!=='false'}
 
 // ── Yahrzeits Tab ────────────────────────────────────────
 function renderYrzTab(){
