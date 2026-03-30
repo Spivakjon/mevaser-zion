@@ -2872,7 +2872,7 @@ async function loadWeekSummary(){
 
     // Daily prayer times (weekday) — controlled by setting
     var zmanim=zmanimResult;
-    var showDaily=localStorage.getItem('mbz_show_daily_times')!=='false';
+    var showDaily=localStorage.getItem('mbz_show_daily_times')==='true';
     if(zmanim&&showDaily){
       h+='<div class="wk-daily"><div class="wk-daily-title">🕐 '+(isEn?'Weekday Prayer Times':'זמני תפילה יומיים')+'</div><div class="wk-daily-row">';
       if(zmanim.shacharit)h+='<span>🌅 '+(isEn?'Shacharit':'שחרית')+': <strong>'+zmanim.shacharit+'</strong></span>';
@@ -3951,7 +3951,7 @@ function importVCard(event){
 
 // ── Daily Times Toggle ───────────────────────────────────
 function toggleDailyTimes(on){localStorage.setItem('mbz_show_daily_times',on?'true':'false');try{localStorage.removeItem(WK_CACHE_KEY)}catch(e){}loadWeekSummary()}
-function initDailyTimesToggle(){var cb=document.getElementById('toggle-daily-times');if(cb)cb.checked=localStorage.getItem('mbz_show_daily_times')!=='false'}
+function initDailyTimesToggle(){var cb=document.getElementById('toggle-daily-times');if(cb)cb.checked=localStorage.getItem('mbz_show_daily_times')==='true'}
 
 // ── Yahrzeits Tab ────────────────────────────────────────
 function renderYrzTab(){
