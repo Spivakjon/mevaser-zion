@@ -246,8 +246,7 @@ body.light-mode .lang-toggle button.active{background:rgba(0,0,0,.1);color:var(-
 .wk-time{font-size:.82rem;color:var(--gold2);display:flex;align-items:center;gap:.3rem}
 .wk-time strong{color:#fff;font-size:.9rem}
 .wk-times-grid{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem;padding:.55rem;background:rgba(200,168,75,.08);border:1px solid rgba(200,168,75,.2);border-radius:10px;direction:rtl}
-.wk-tg-item{flex:1 1 140px;min-width:100px}
-.wk-tg-item{display:flex;flex-direction:column;align-items:center;padding:.35rem .3rem;background:rgba(0,0,0,.12);border-radius:8px;text-align:center}
+.wk-tg-item{flex:1 1 140px;min-width:100px;display:flex;flex-direction:column;align-items:center;padding:.35rem .3rem;background:rgba(0,0,0,.12);border-radius:8px;text-align:center}
 .wk-tg-icon{font-size:1rem;margin-bottom:.1rem}
 .wk-tg-label{font-size:.68rem;color:var(--gold2);opacity:.85}
 .wk-tg-val{font-size:1.05rem;font-weight:700;color:#fff;font-family:'Frank Ruhl Libre',serif}
@@ -1844,7 +1843,8 @@ function loadAdm(){initJNav();collapseJnavOnMobile();if(curAt==='cal')renderCal(
 function calNav(w){if(w===0){calSt=gSh();}else{calSt=new Date(calSt);calSt.setDate(calSt.getDate()+w*7);}renderCal()}
 var CAL_CACHE_KEY='mbz_cal_cache';
 function getCalCache(startKey){try{var c=JSON.parse(localStorage.getItem(CAL_CACHE_KEY));if(c&&c.startKey===startKey&&c.html&&c.title)return c;return null}catch(e){return null}}
-function setCalCache(startKey,title,html,memberCount){try{localStorage.setItem(CAL_CACHE_KEY,JSON.stringify({startKey:startKey,title:title,html:html,memberCount:memberCount,ts:Date.now()}))}catch(e){}}
+function memberHash(){var ms=getMs();var h=ms.length;for(var i=0;i<ms.length;i++){h=h*31+((ms[i].yahrzeits||[]).length+(ms[i].children||[]).length)*7+(ms[i].firstName||'').length}return h}
+function setCalCache(startKey,title,html,mHash){try{localStorage.setItem(CAL_CACHE_KEY,JSON.stringify({startKey:startKey,title:title,html:html,mHash:mHash,ts:Date.now()}))}catch(e){}}
 function invalidateCalCache(){try{localStorage.removeItem(CAL_CACHE_KEY)}catch(e){}}
 
 async function renderCal(){
@@ -1856,10 +1856,10 @@ async function renderCal(){
 
   // Show from cache immediately
   var ms=getMs();
+  var mh=memberHash();
   var cached=getCalCache(startKey);
-  if(cached&&cached.memberCount===ms.length){
+  if(cached&&cached.mHash===mh){
     grid.innerHTML=cached.html;
-    // If cache is less than 3h old, done
     if(Date.now()-cached.ts<10800000)return;
   }else{
     grid.innerHTML=shs.map(s=>`<div class="wr" id="wr-${d2s(s)}"><div class="wh" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.parentElement.classList.contains('open')?'block':'none'"><div class="wdates"><span class="wheb">טוען...</span><span class="wgreg">${s.toLocaleDateString('he-IL',{day:'numeric',month:'long'})}</span></div><div class="wpar">טוען פרשות...</div><div class="wbdgs"></div><div class="wtgl">▾</div></div><div class="wevs"></div></div>`).join('');
@@ -1878,7 +1878,7 @@ async function renderCal(){
     renderWR(sh,parInfo,hd2,evs);
   }));
   // Save to cache
-  setCalCache(startKey,titleText,grid.innerHTML,ms.length);
+  setCalCache(startKey,titleText,grid.innerHTML,mh);
 }
 async function getWkEvs(ms,sh,curHY){
   const evs=[],ss=d2s(sh);
@@ -4131,43 +4131,25 @@ function restoreFullBackup(event){
 }
 
 // ── Tag Rename ───────────────────────────────────────────
-function renameCustomTag(oldName){
-  var newName=prompt('שם חדש לתגית "'+oldName+'":',oldName);
+function _renameInList(oldName,promptLabel,getList,saveList,memberField){
+  var newName=prompt(promptLabel+' "'+oldName+'":',oldName);
   if(!newName||newName.trim()===oldName)return;
   newName=newName.trim();
-  var tags=getCustomTags();
-  var idx=tags.indexOf(oldName);
+  var list=getList();var idx=list.indexOf(oldName);
   if(idx<0)return;
-  tags[idx]=newName;
-  saveCustomTags(tags);
-  // Update all members that have this tag
+  list[idx]=newName;saveList(list);
   var ms=getMs();var changed=false;
   for(var i=0;i<ms.length;i++){
-    var ti=ms[i].customTags?ms[i].customTags.indexOf(oldName):-1;
-    if(ti>=0){ms[i].customTags[ti]=newName;changed=true}
+    var arr=ms[i][memberField];if(!arr)continue;
+    var fi=arr.indexOf(oldName);
+    if(fi>=0){arr[fi]=newName;changed=true}
   }
   if(changed)lsSet(ms);
-  showToast('תגית שונתה: '+oldName+' → '+newName);
+  showToast(oldName+' → '+newName);
   if(curAt==='settings')populateSettingsFields();
 }
-function renameVolType(oldName){
-  var newName=prompt('שם חדש לסוג התנדבות "'+oldName+'":',oldName);
-  if(!newName||newName.trim()===oldName)return;
-  newName=newName.trim();
-  var types=getVolTypes();
-  var idx=types.indexOf(oldName);
-  if(idx<0)return;
-  types[idx]=newName;
-  saveVolTypes(types);
-  var ms=getMs();var changed=false;
-  for(var i=0;i<ms.length;i++){
-    var vi=ms[i].volunteering?ms[i].volunteering.indexOf(oldName):-1;
-    if(vi>=0){ms[i].volunteering[vi]=newName;changed=true}
-  }
-  if(changed)lsSet(ms);
-  showToast('סוג התנדבות שונה: '+oldName+' → '+newName);
-  if(curAt==='settings')populateSettingsFields();
-}
+function renameCustomTag(oldName){_renameInList(oldName,'שם חדש לתגית',getCustomTags,saveCustomTags,'customTags')}
+function renameVolType(oldName){_renameInList(oldName,'שם חדש לסוג התנדבות',getVolTypes,saveVolTypes,'volunteering')}
 
 // ── Init ─────────────────────────────────────────────────
 mergeCustomTexts();
