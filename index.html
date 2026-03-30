@@ -1591,8 +1591,9 @@ function resetForm(){_torahManual=false;document.getElementById('fv').style.disp
 // ── Storage: localStorage + Google Sheets ───────────────
 let SHEETS_URL=localStorage.getItem('mbz_sheets_url')||'';
 
-function lsGet(){try{return JSON.parse(localStorage.getItem(SK)||'[]')}catch(e){return[]}}
-function lsSet(a){try{localStorage.setItem(SK,JSON.stringify(a))}catch(e){}}
+var _msCache=null;
+function lsGet(){if(_msCache)return _msCache;try{_msCache=JSON.parse(localStorage.getItem(SK)||'[]')}catch(e){_msCache=[]}return _msCache}
+function lsSet(a){_msCache=a;try{localStorage.setItem(SK,JSON.stringify(a))}catch(e){}}
 function getMs(){return lsGet()}
 function getM(id){return lsGet().find(m=>m.id===id)||null}
 function addM(d){const a=lsGet();d.id=Date.now()+'_'+Math.random().toString(36).slice(2,7);a.push(d);lsSet(a);invalidateCalCache();if(SHEETS_URL)sheetsPost({action:'add',member:d}).catch(e=>console.warn('Sheets sync error:',e))}
@@ -1882,9 +1883,23 @@ async function renderCal(){
 }
 async function getWkEvs(ms,sh,curHY){
   const evs=[],ss=d2s(sh);
+  const ss2=new Date(sh);ss2.setDate(sh.getDate()-6);ss2.setHours(0,0,0);
+  const se=new Date(sh);se.setHours(23,59,59);
+  // Collect bar mitzvahs (no API needed)
   for(const m of ms){const fn=`${m.firstName} ${m.lastName}`;
-    for(const c of(m.children||[])){if(c.barDate&&c.barDate===ss)evs.push({t:'bm',child:c.name,parent:fn,torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH})}
-    for(const y of(m.yahrzeits||[])){if(!y.hm||!y.hd)continue;for(const tY of[curHY,curHY+1]){try{const g=await h2g(tY,+y.hm,+y.hd);if(!g)continue;const gd=new Date(g.y,g.m-1,g.d);const ss2=new Date(sh);ss2.setDate(sh.getDate()-6);ss2.setHours(0,0,0);const se=new Date(sh);se.setHours(23,59,59);if(gd>=ss2&&gd<=se){evs.push({t:'yr',dec:y.name,mem:fn,lead:y.lead,haft:y.haft,dh:fhd(y.hd,y.hm,tY)});break}}catch(e){}}}}
+    for(const c of(m.children||[])){if(c.barDate&&c.barDate===ss)evs.push({t:'bm',child:c.name,parent:fn,torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH})}}
+  // Batch all yahrzeit h2g calls in parallel
+  var yrJobs=[];
+  for(const m of ms){const fn=`${m.firstName} ${m.lastName}`;
+    for(const y of(m.yahrzeits||[])){if(!y.hm||!y.hd)continue;
+      for(const tY of[curHY,curHY+1]){yrJobs.push({y:y,fn:fn,tY:tY,hm:+y.hm,hd:+y.hd})}}}
+  if(yrJobs.length){
+    var results=await Promise.all(yrJobs.map(function(j){return h2g(j.tY,j.hm,j.hd).catch(function(){return null})}));
+    var matched=new Set();
+    for(var i=0;i<yrJobs.length;i++){var j=yrJobs[i],g=results[i];if(!g)continue;
+      var mkey=j.fn+'|'+j.y.name+'|'+j.hm+'|'+j.hd;if(matched.has(mkey))continue;
+      var gd=new Date(g.y,g.m-1,g.d);
+      if(gd>=ss2&&gd<=se){evs.push({t:'yr',dec:j.y.name,mem:j.fn,lead:j.y.lead,haft:j.y.haft,dh:fhd(j.hd,j.hm,j.tY)});matched.add(mkey)}}}
   return evs}
 function renderWR(sh,parInfo,hd2,evs){
   const key=d2s(sh);const row=document.getElementById(`wr-${key}`);if(!row)return;
