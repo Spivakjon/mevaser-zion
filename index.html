@@ -718,7 +718,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     <div class="sec">
       <div class="g3" style="margin-bottom:.7rem"><div class="ff"><label data-i18n="firstName">שם פרטי <span class="req">*</span></label><input id="fn" placeholder="משה" data-i18n-placeholder="phFirstName" oninput="autoTorah()"><div class="emsg" data-i18n="fieldRequired">שדה חובה</div></div><div class="ff"><label data-i18n="lastName">שם משפחה <span class="req">*</span></label><input id="ln" placeholder="כהן" data-i18n-placeholder="phLastName" oninput="autoTorah()"><div class="emsg" data-i18n="fieldRequired">שדה חובה</div></div><div class="ff"><label data-i18n="fatherName">שם האב <span class="req">*</span></label><input id="fa" placeholder="אברהם" data-i18n-placeholder="phFatherName" oninput="autoTorah()"><div class="emsg" data-i18n="fieldRequired">שדה חובה</div></div></div>
       <div class="g3"><div class="ff"><label data-i18n="motherName">שם האם</label><input id="mo" placeholder="שרה" data-i18n-placeholder="phMotherName"></div><div class="ff"><label data-i18n="torahName">שם מלא לעלייה לתורה</label><input id="tr" placeholder="משה בן אברהם" data-i18n-placeholder="phTorahName"></div><div class="ff"><label data-i18n="phone">טלפון <span class="req">*</span></label><input id="ph" type="tel" placeholder="050-1234567" dir="ltr"><div class="emsg" data-i18n="fieldRequired">שדה חובה</div></div></div>
-      <div class="g2" style="margin-top:.7rem"><div class="ff"><label data-i18n="email">דואר אלקטרוני</label><input id="em" type="email" placeholder="shalom@gmail.com" dir="ltr"></div><div style="display:contents"></div></div>
+      <div class="g3" style="margin-top:.7rem"><div class="ff"><label>תעודת זהות <span class="req">*</span></label><input id="tz" type="text" inputmode="numeric" maxlength="9" placeholder="123456789" dir="ltr" style="text-align:center;letter-spacing:.15em"><div class="emsg" id="tz-err">מספר ת.ז. לא תקין</div></div><div class="ff"><label data-i18n="email">דואר אלקטרוני</label><input id="em" type="email" placeholder="shalom@gmail.com" dir="ltr"></div><div style="display:contents"></div></div>
       <div style="margin-top:.7rem"><label style="font-size:.75rem;font-weight:600;color:var(--ink2);display:block;margin-bottom:.35rem" data-i18n="address">כתובת מגורים</label>
         <div class="g4">
           <div class="ff"><label data-i18n="street">רחוב</label><input id="ad-street" placeholder="הרצל" data-i18n-placeholder="phStreet"></div>
@@ -1399,6 +1399,7 @@ function parseAddress(addr){
 function initForm(m=null){_torahManual=!!m;eid=m?m.id:null;CH=m?JSON.parse(JSON.stringify(m.children||[])):[];YR=m?JSON.parse(JSON.stringify(m.yahrzeits||[])):[];
   if(m){
     ['fn','ln','fa','mo','tr','ph','em'].forEach((id,i)=>document.getElementById(id).value=[m.firstName,m.lastName,m.fatherName,m.motherName,m.torahName,m.phone,m.email][i]||'');
+    var tzEl=document.getElementById('tz');if(tzEl)tzEl.value=m.idNumber||'';
     // Parse address into components
     var ap=parseAddress(m.address||'');
     document.getElementById('ad-street').value=ap.street;
@@ -1540,8 +1541,53 @@ function colCh(i){const c={...CH[i]};['hd','hm','hy'].forEach(k=>{const el=docum
 function colYr(i){const y={...YR[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`y${i}-${k}`);if(el)y[k]=el.value});const gi=document.getElementById(`y${i}-gd`);if(gi)y.gd=gi.value;const ni=document.getElementById(`yn-${i}`);if(ni)y.name=ni.value.trim();const yl=document.getElementById(`yl-${i}`);if(yl)y.lead=yl.value;const yh=document.getElementById(`yh-${i}`);if(yh)y.haft=yh.value;return y}
 function reqF(id){const el=document.getElementById(id);const ok=el&&el.value.trim().length>0;const ff=el?el.closest('.ff'):null;if(ff)ff.classList.toggle('err',!ok);return ok}
 
-async function submitForm(){if(!['fn','ln','ph'].map(reqF).every(Boolean))return;const vols=collectVols();var spouseFn=document.getElementById('sp-fn').value.trim();var spousePh=document.getElementById('sp-ph').value.trim();var spouseEm=document.getElementById('sp-em').value.trim();var spouse=(spouseFn||spousePh)?{name:spouseFn,phone:spousePh,email:spouseEm}:null;const data={firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),address:combineAddress(),spouse:spouse,volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};var dutyCb=document.getElementById('duty-reg-cb');data.dutyRoster=dutyCb?dutyCb.checked:false;data.membershipPaid=window._mbrPaidStatus||false;data.membershipPaidDate=window._mbrPaidStatus?new Date().toLocaleDateString('he-IL'):'';if(eid){var existing=getM(eid);if(existing){data.membershipPaid=existing.membershipPaid}}if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
-function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em','sp-fn','sp-ph','sp-em'].forEach(id=>{var el=document.getElementById(id);if(el)el.value=''});document.getElementById('ad-street').value='';document.getElementById('ad-num').value='';document.getElementById('ad-apt').value='';document.getElementById('ad-city').value='תל מונד';renderVolCheckboxes([]);initForm();document.getElementById('main-card').classList.add('reg-collapsed');window._mbrPaidStatus=false;var ms=getMbrSettings();if(ms.year||ms.link){document.getElementById('main-card').style.display='none';document.getElementById('payment-msg-card').style.display='none';document.getElementById('membership-prompt-card').style.display=''}window.scrollTo(0,0)}
+// ── Israeli ID Validation (Luhn mod 10) ─────────────────
+function validateIsraeliID(id){
+  id=String(id).trim().replace(/\D/g,'');
+  if(id.length<5||id.length>9)return false;
+  while(id.length<9)id='0'+id;
+  if(/^0+$/.test(id))return false;
+  var sum=0;
+  for(var i=0;i<9;i++){var digit=+id[i]*(i%2===0?1:2);if(digit>9)digit-=9;sum+=digit}
+  return sum%10===0;
+}
+function checkDuplicateID(idNum,excludeId){
+  var ms=getMs();
+  return ms.find(function(m){return m.idNumber===idNum&&m.id!==excludeId});
+}
+// ── Rate Limiting (3 per hour) ───────────────────────────
+function checkRateLimit(){
+  try{
+    var key='mbz_reg_rate';
+    var data=JSON.parse(sessionStorage.getItem(key)||'{"count":0,"ts":0}');
+    var now=Date.now();
+    if(now-data.ts>3600000){data={count:0,ts:now}}
+    if(data.count>=3)return false;
+    data.count++;data.ts=data.ts||now;
+    sessionStorage.setItem(key,JSON.stringify(data));
+    return true;
+  }catch(e){return true}
+}
+
+async function submitForm(){
+  // Validate required fields
+  if(!['fn','ln','ph'].map(reqF).every(Boolean))return;
+  // Validate Israeli ID
+  var tzEl=document.getElementById('tz');
+  var tzVal=(tzEl?tzEl.value:'').trim();
+  var tzFF=tzEl?tzEl.closest('.ff'):null;
+  var tzErr=document.getElementById('tz-err');
+  if(!eid){
+    // ID required only for new registrations, not edits
+    if(!tzVal){if(tzFF)tzFF.classList.add('err');if(tzErr){tzErr.textContent='שדה חובה';tzErr.style.display='block'}return}
+    if(!validateIsraeliID(tzVal)){if(tzFF)tzFF.classList.add('err');if(tzErr){tzErr.textContent='מספר ת.ז. לא תקין';tzErr.style.display='block'}return}
+    var dup=checkDuplicateID(tzVal,null);
+    if(dup){if(tzFF)tzFF.classList.add('err');if(tzErr){tzErr.textContent='ת.ז. זו כבר רשומה במערכת ('+dup.firstName+' '+dup.lastName+')';tzErr.style.display='block'}return}
+    // Rate limit
+    if(!checkRateLimit()){showToast('יותר מדי רישומים — נסה שוב מאוחר יותר');return}
+  }
+  if(tzFF)tzFF.classList.remove('err');if(tzErr)tzErr.style.display='none';const vols=collectVols();var spouseFn=document.getElementById('sp-fn').value.trim();var spousePh=document.getElementById('sp-ph').value.trim();var spouseEm=document.getElementById('sp-em').value.trim();var spouse=(spouseFn||spousePh)?{name:spouseFn,phone:spousePh,email:spouseEm}:null;const data={idNumber:tzVal||undefined,firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),address:combineAddress(),spouse:spouse,volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};var dutyCb=document.getElementById('duty-reg-cb');data.dutyRoster=dutyCb?dutyCb.checked:false;data.membershipPaid=window._mbrPaidStatus||false;data.membershipPaidDate=window._mbrPaidStatus?new Date().toLocaleDateString('he-IL'):'';if(eid){var existing=getM(eid);if(existing){data.membershipPaid=existing.membershipPaid}}if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
+function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em','tz','sp-fn','sp-ph','sp-em'].forEach(id=>{var el=document.getElementById(id);if(el)el.value=''});document.getElementById('ad-street').value='';document.getElementById('ad-num').value='';document.getElementById('ad-apt').value='';document.getElementById('ad-city').value='תל מונד';renderVolCheckboxes([]);initForm();document.getElementById('main-card').classList.add('reg-collapsed');window._mbrPaidStatus=false;var ms=getMbrSettings();if(ms.year||ms.link){document.getElementById('main-card').style.display='none';document.getElementById('payment-msg-card').style.display='none';document.getElementById('membership-prompt-card').style.display=''}window.scrollTo(0,0)}
 
 // ── Storage: localStorage + Google Sheets ───────────────
 let SHEETS_URL=localStorage.getItem('mbz_sheets_url')||'';
@@ -1921,7 +1967,7 @@ function showMemberDetail(m){
   var init=(m.firstName||'').charAt(0)+(m.lastName||'').charAt(0);
   var h='<div class="md-header"><div class="md-avatar">'+es(init)+'</div><div><div class="md-name">'+es(m.firstName)+' <strong>'+es(m.lastName)+'</strong></div>'+(m.torahName?'<div class="md-torah">'+es(m.torahName)+'</div>':'')+'</div></div>';
   h+='<div class="md-section"><div class="md-section-title">👤 '+(_e?'Personal Details':'פרטים אישיים')+'</div>';
-  var rows=_e?[["Father's Name",m.fatherName],["Mother's Name",m.motherName],['Phone',m.phone],['Email',m.email],['Address',m.address]]:[['שם האב',m.fatherName],['שם האם',m.motherName],['טלפון',m.phone],['דוא"ל',m.email],['כתובת',m.address]];
+  var rows=_e?[["ID",m.idNumber],["Father's Name",m.fatherName],["Mother's Name",m.motherName],['Phone',m.phone],['Email',m.email],['Address',m.address]]:[['ת.ז.',m.idNumber],['שם האב',m.fatherName],['שם האם',m.motherName],['טלפון',m.phone],['דוא"ל',m.email],['כתובת',m.address]];
   for(var i=0;i<rows.length;i++){if(rows[i][1])h+='<div class="md-row"><span class="md-label">'+rows[i][0]+'</span><span class="md-val">'+es(rows[i][1])+'</span></div>'}
   h+='</div>';
   if(m.spouse&&m.spouse.name){
