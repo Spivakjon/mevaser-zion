@@ -732,8 +732,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     <div class="sec"><div id="cw"></div><button class="badd" id="badd-c" onclick="addCh()" data-i18n="addChild">+ הוסף ילד</button></div>
     <div class="sh"><span>🙏</span><span class="sh-t" data-i18n="volunteering">תחומי התנדבות</span></div>
     <div class="sec"><div class="cb-row" id="vol-checkboxes"></div></div>
-    <div class="sh"><span>📋</span><span class="sh-t" data-i18n="dutyRosterSection">תורנות שבת</span></div>
-    <div class="sec"><div class="cb-row"><label class="cbl" id="cb-duty"><input type="checkbox" id="duty-reg-cb" onchange="tCb('cb-duty','duty-reg-cb')"> <span data-i18n="dutyRegLabel">אני מעוניין/ת להירשם לתורנות שבת</span></label></div></div>
+    <!-- תורנות שבת מנוהלת רק מהאדמין -->
     <div class="sh"><span>🕯</span><span class="sh-t" data-i18n="yahrzeits">ימי זיכרון (יארצייט)</span></div>
     <div class="sec"><div id="yw"></div><button class="badd" onclick="addYr()" data-i18n="addYahrzeit">+ הוסף יום זיכרון</button></div>
     <div class="fmsg" id="fmsg"></div>
@@ -766,6 +765,9 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       <button class="stb" onclick="showAt('ann')">📢 מודעות</button>
       <button class="stb" onclick="showAt('mbr')" data-i18n-text="mbrTabTitle">💳 דמי חבר</button>
       <button class="stb" onclick="showAt('duty')" data-i18n-text="dutyTabTitle">📋 תורנות</button>
+      <button class="stb" onclick="showAt('yrz')">🕯 יארצייטים</button>
+      <button class="stb" onclick="showAt('vol')">🙏 מתנדבים</button>
+      <button class="stb" onclick="showAt('ftbl')">📊 טבלה מלאה</button>
     </div>
     <div id="at-cal">
     <div class="jnav" id="jnav">
@@ -865,6 +867,32 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       <table class="duty-tbl"><thead><tr><th>תאריך</th><th>אירוע</th><th>תורן 1</th><th>תורן 2</th></tr></thead><tbody id="duty-body"></tbody></table>
       <h3 style="margin:1rem 0 .6rem;font-size:.95rem" data-i18n-text="dutyRosterTitle">👥 רשימת תורנים</h3>
       <div id="roster-list"></div>
+    </div>
+    <div id="at-yrz" style="display:none">
+      <h3 style="color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:1rem;margin-bottom:.8rem">🕯 ימי זיכרון / יארצייטים</h3>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:.8rem;flex-wrap:wrap">
+        <label style="color:rgba(255,255,255,.5);font-size:.82rem;font-weight:600">סינון לפי חודש:</label>
+        <select id="yrz-month-filter" onchange="renderYrzTab()" style="padding:.4rem .7rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:.85rem;min-height:40px">
+          <option value="">הכל</option>
+          <option value="7">תשרי</option><option value="8">חשון</option><option value="9">כסלו</option><option value="10">טבת</option><option value="11">שבט</option><option value="12">אדר א׳</option><option value="13">אדר ב׳</option><option value="1">ניסן</option><option value="2">אייר</option><option value="3">סיון</option><option value="4">תמוז</option><option value="5">אב</option><option value="6">אלול</option>
+        </select>
+      </div>
+      <div id="yrz-table"></div>
+    </div>
+    <div id="at-vol" style="display:none">
+      <h3 style="color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:1rem;margin-bottom:.8rem">🙏 מתנדבים</h3>
+      <div id="vol-table"></div>
+    </div>
+    <div id="at-ftbl" style="display:none">
+      <h3 style="color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:1rem;margin-bottom:.8rem">📊 טבלה מלאה</h3>
+      <div class="filter-pills" style="margin-bottom:.8rem">
+        <button class="fpill active" onclick="setFullTblFilter('all',this)">כולם</button>
+        <button class="fpill" onclick="setFullTblFilter('vol',this)">מתנדבים</button>
+        <button class="fpill" onclick="setFullTblFilter('yr',this)">יש יארצייט</button>
+        <button class="fpill" onclick="setFullTblFilter('bm',this)">בר מצווה</button>
+      </div>
+      <div style="overflow:auto;max-height:70vh;border-radius:8px;border:1px solid rgba(255,255,255,.14);-webkit-overflow-scrolling:touch" id="ftbl-wrap"></div>
+      <button class="abt" onclick="exportExcel()" style="margin-top:.6rem;font-size:.8rem">📊 ייצוא CSV</button>
     </div>
     <div id="at-settings" style="display:none">
       <div class="settings-panel">
@@ -1076,6 +1104,17 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
           <button class="settings-reset-btn" onclick="resetCustomTexts()">איפוס לברירת מחדל</button>
         </div>
         <div class="settings-msg" id="settings-msg"></div>
+        <div style="margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.12)">
+          <h3 style="color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:.95rem;margin-bottom:.8rem">💾 גיבוי ושחזור</h3>
+          <p style="font-size:.78rem;color:rgba(255,255,255,.45);margin-bottom:.8rem">הורדת גיבוי תשמור את כל הנתונים לקובץ JSON. שחזור יטען קובץ ויחליף את כל הנתונים.</p>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="abt" onclick="downloadFullBackup()" style="font-size:.82rem">⬇️ הורד גיבוי JSON</button>
+            <button class="abt" onclick="document.getElementById('restore-file').click()" style="font-size:.82rem">⬆️ שחזר מגיבוי</button>
+            <input type="file" id="restore-file" accept=".json,.txt" style="display:none" onchange="restoreFullBackup(event)">
+            <button class="abt" onclick="document.getElementById('csv-restore-file').click()" style="font-size:.82rem">📊 ייבוא מ-CSV</button>
+            <input type="file" id="csv-restore-file" accept=".csv,.tsv,.txt" style="display:none" onchange="importExcel(event)">
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1171,7 +1210,7 @@ const PW='Nir2026',SK='mbz_v5',CHBD='https://www.chabad.org.il/ParashotArticles/
 const HM=[{n:'תשרי',v:7,e:'Tishrei'},{n:'חשון',v:8,e:'Cheshvan'},{n:'כסלו',v:9,e:'Kislev'},{n:'טבת',v:10,e:'Tevet'},{n:'שבט',v:11,e:'Shevat'},{n:'אדר א׳',v:12,e:'Adar I'},{n:'אדר ב׳',v:13,e:'Adar II'},{n:'ניסן',v:1,e:'Nisan'},{n:'אייר',v:2,e:'Iyar'},{n:'סיון',v:3,e:'Sivan'},{n:'תמוז',v:4,e:'Tamuz'},{n:'אב',v:5,e:'Av'},{n:'אלול',v:6,e:'Elul'}];
 const HD=['','א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב','יג','יד','טו','טז','יז','יח','יט','כ','כא','כב','כג','כד','כה','כו','כז','כח','כט','ל'];
 function hy2s(y){const T=[[400,'ת'],[300,'ש'],[200,'ר'],[100,'ק'],[90,'צ'],[80,'פ'],[70,'ע'],[60,'ס'],[50,'נ'],[40,'מ'],[30,'ל'],[20,'כ'],[10,'י'],[9,'ט'],[8,'ח'],[7,'ז'],[6,'ו'],[5,'ה'],[4,'ד'],[3,'ג'],[2,'ב'],[1,'א']];let n=y%1000,s='';for(const[v,l]of T){while(n>=v){if(n===15){s+='טו';n=0;break}if(n===16){s+='טז';n=0;break}s+=l;n-=v}if(!n)break}return s.length===1?s+"'":s.slice(0,-1)+'"'+s.slice(-1)}
-var _hmAlias={'Iyyar':2,'Sh\'vat':11,'Shvat':11,'Adar':12};
+var _hmAlias={'Iyyar':2,'Sh\'vat':11,'Shvat':11,'Adar':12,'Adar 1':12,'Adar 2':13,'Adar I':12,'Adar II':13,'אדר':12,'אדר א':12,'אדר ב':13};
 function hmn(v){var f=HM.find(function(m){return m.v==v||m.e===v});if(f)return f.n;if(_hmAlias[v]!==undefined){var f2=HM.find(function(m){return m.v===_hmAlias[v]});if(f2)return f2.n}return v}
 function normHm(raw){var found=HM.find(function(m){return m.v==raw||m.e===raw});if(found)return found.v;if(_hmAlias[raw]!==undefined)return _hmAlias[raw];return raw}
 function fhd(d,m,y){if(!d&&!m&&!y)return'';return[HD[+d]||d,hmn(m),y?hy2s(+y):''].filter(Boolean).join(' ')}
@@ -1720,30 +1759,26 @@ function doImpFile(){
 
 // ── Admin ───────────────────────────────────────────────
 function openAdm(){document.getElementById('adm-ovl').style.display='block';document.body.style.overflow='hidden'}
-function closeAdm(){document.getElementById('adm-ovl').style.display='none';document.body.style.overflow=''}
+function closeAdm(){document.getElementById('adm-ovl').style.display='none';document.body.style.overflow='';try{localStorage.removeItem(WK_CACHE_KEY)}catch(e){}loadWeekSummary();renderPublicAnnouncements()}
 function doLg(){const p=document.getElementById('pw').value,err=document.getElementById('pw-err');if(p===PW){err.style.display='none';document.getElementById('adm-lg').style.display='none';document.getElementById('adm-pnl').style.display='block';calSt=gSh();initSheetsUI();renderStats();loadAdm();}else{err.style.display='block';document.getElementById('pw').value=''}}
 function doLo(){document.getElementById('adm-pnl').style.display='none';document.getElementById('adm-lg').style.display='block';document.getElementById('pw').value=''}
 let calSt=gSh(),curAt='cal';
 function showAt(t){
   curAt=t;
-  document.querySelectorAll('.stb').forEach(function(b,i){
-    b.classList.toggle('active',(i===0&&t==='cal')||(i===1&&t==='mem')||(i===2&&t==='ali')||(i===3&&t==='ann')||(i===4&&t==='mbr')||(i===5&&t==='duty'));
-  });
-  document.getElementById('at-cal').style.display=t==='cal'?'block':'none';
-  document.getElementById('at-mem').style.display=t==='mem'?'block':'none';
-  document.getElementById('at-ali').style.display=t==='ali'?'block':'none';
-  document.getElementById('at-ann').style.display=t==='ann'?'block':'none';
-  document.getElementById('at-mbr').style.display=t==='mbr'?'block':'none';
-  document.getElementById('at-duty').style.display=t==='duty'?'block':'none';
-  document.getElementById('at-settings').style.display=t==='settings'?'block':'none';
+  var tabs=['cal','mem','ali','ann','mbr','duty','yrz','vol','ftbl'];
+  document.querySelectorAll('.stb').forEach(function(b,i){b.classList.toggle('active',tabs[i]===t)});
+  tabs.concat(['settings']).forEach(function(id){var el=document.getElementById('at-'+id);if(el)el.style.display=id===t?'block':'none'});
   if(t==='mem')renderML();
   if(t==='ali')renderAliyotAdmin();
   if(t==='ann')renderAnnAdmin();
   if(t==='mbr')renderMbrTab();
   if(t==='duty')renderDutyTab();
+  if(t==='yrz')renderYrzTab();
+  if(t==='vol')renderVolTab();
+  if(t==='ftbl')renderFullTable();
   if(t==='settings')populateSettingsFields();
 }
-function loadAdm(){initJNav();collapseJnavOnMobile();if(curAt==='cal')renderCal();else if(curAt==='mem')renderML();else if(curAt==='ali')renderAliyotAdmin();else if(curAt==='ann')renderAnnAdmin();else if(curAt==='mbr')renderMbrTab();else if(curAt==='duty')renderDutyTab();else if(curAt==='settings')populateSettingsFields();}
+function loadAdm(){initJNav();collapseJnavOnMobile();if(curAt==='cal')renderCal();else if(curAt==='mem')renderML();else if(curAt==='ali')renderAliyotAdmin();else if(curAt==='ann')renderAnnAdmin();else if(curAt==='mbr')renderMbrTab();else if(curAt==='duty')renderDutyTab();else if(curAt==='yrz')renderYrzTab();else if(curAt==='vol')renderVolTab();else if(curAt==='ftbl')renderFullTable();else if(curAt==='settings')populateSettingsFields();}
 function calNav(w){if(w===0){calSt=gSh();}else{calSt=new Date(calSt);calSt.setDate(calSt.getDate()+w*7);}renderCal()}
 async function renderCal(){
   const grid=document.getElementById('cal-grid');const shs=[];const d=new Date(calSt);
@@ -3768,7 +3803,7 @@ function collectVols(){
 function renderVolTypesList(){
   var types=getVolTypes();var el=document.getElementById('vol-types-list');if(!el)return;
   el.innerHTML=types.map(function(t,i){
-    return'<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.08)"><span style="flex:1;font-size:.84rem;color:rgba(255,255,255,.8)">'+es(t)+'</span><button onclick="removeVolType('+i+')" style="padding:2px 8px;border:1px solid rgba(192,57,43,.3);color:rgba(255,255,255,.5);background:none;border-radius:4px;cursor:pointer;font-size:.75rem">✕</button></div>'
+    return'<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.08)"><span style="flex:1;font-size:.84rem;color:rgba(255,255,255,.8)">'+es(t)+'</span><button onclick="renameVolType(\''+es(t)+'\')" style="padding:2px 8px;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);background:none;border-radius:4px;cursor:pointer;font-size:.75rem">✏️</button><button onclick="removeVolType('+i+')" style="padding:2px 8px;border:1px solid rgba(192,57,43,.3);color:rgba(255,255,255,.5);background:none;border-radius:4px;cursor:pointer;font-size:.75rem">✕</button></div>'
   }).join('');
 }
 function addVolType(){
@@ -3813,7 +3848,7 @@ function saveCustomTags(arr){localStorage.setItem(TAGS_KEY,JSON.stringify(arr))}
 function renderCustomTagsList(){
   var tags=getCustomTags();var el=document.getElementById('custom-tags-list');if(!el)return;
   el.innerHTML=tags.map(function(t,i){
-    return'<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.08)"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:.78rem;background:rgba(99,102,241,.2);color:#a5b4fc">'+es(t)+'</span><span style="flex:1"></span><button onclick="removeCustomTag('+i+')" style="padding:2px 8px;border:1px solid rgba(192,57,43,.3);color:rgba(255,255,255,.5);background:none;border-radius:4px;cursor:pointer;font-size:.75rem">✕</button></div>'
+    return'<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.08)"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:.78rem;background:rgba(99,102,241,.2);color:#a5b4fc">'+es(t)+'</span><span style="flex:1"></span><button onclick="renameCustomTag(\''+es(t)+'\')" style="padding:2px 8px;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.5);background:none;border-radius:4px;cursor:pointer;font-size:.75rem">✏️</button><button onclick="removeCustomTag('+i+')" style="padding:2px 8px;border:1px solid rgba(192,57,43,.3);color:rgba(255,255,255,.5);background:none;border-radius:4px;cursor:pointer;font-size:.75rem">✕</button></div>'
   }).join('');
 }
 function addCustomTag(){
@@ -3876,6 +3911,174 @@ function importVCard(event){
     })(files[fi]);
   }
   event.target.value='';
+}
+
+// ── Yahrzeits Tab ────────────────────────────────────────
+function renderYrzTab(){
+  var ms=getMs();var filter=document.getElementById('yrz-month-filter').value;
+  var rows=[];
+  for(var i=0;i<ms.length;i++){var m=ms[i];if(!m.yahrzeits)continue;
+    for(var j=0;j<m.yahrzeits.length;j++){var y=m.yahrzeits[j];
+      if(filter&&String(y.hm)!==filter)continue;
+      rows.push({memberName:m.firstName+' '+m.lastName,name:y.name||'',hd:y.hd||'',hm:y.hm||'',hy:y.hy||'',gd:y.gd||'',lead:y.lead||'',haft:y.haft||''})}}
+  var el=document.getElementById('yrz-table');
+  if(!rows.length){el.innerHTML='<div style="text-align:center;color:rgba(255,255,255,.35);padding:2rem;font-size:.85rem">אין ימי זיכרון'+(filter?' לחודש זה':'')+'</div>';return}
+  var h='<table style="width:100%;border-collapse:collapse;font-size:.82rem;color:#fff"><thead><tr style="background:rgba(255,255,255,.08)">';
+  h+='<th style="padding:8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.12)">#</th>';
+  h+='<th style="padding:8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.12)">מתפלל</th>';
+  h+='<th style="padding:8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.12)">שם הנפטר</th>';
+  h+='<th style="padding:8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.12)">תאריך עברי</th>';
+  h+='<th style="padding:8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.12)">לועזי</th>';
+  h+='<th style="padding:8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.12)">חזן</th>';
+  h+='<th style="padding:8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.12)">הפטרה</th>';
+  h+='</tr></thead><tbody>';
+  for(var r=0;r<rows.length;r++){var rw=rows[r];
+    h+='<tr style="border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:6px 8px">'+(r+1)+'</td>';
+    h+='<td style="padding:6px 8px">'+es(rw.memberName)+'</td>';
+    h+='<td style="padding:6px 8px;font-weight:700">'+es(rw.name)+'</td>';
+    h+='<td style="padding:6px 8px">'+fhd(rw.hd,rw.hm,rw.hy)+'</td>';
+    h+='<td style="padding:6px 8px;direction:ltr">'+(rw.gd?fgd(rw.gd):'—')+'</td>';
+    h+='<td style="padding:6px 8px;color:'+(rw.lead==='כן'?'#5dbe8a':'rgba(255,255,255,.35)')+'">'+es(rw.lead||'—')+'</td>';
+    h+='<td style="padding:6px 8px;color:'+(rw.haft==='כן'?'#5dbe8a':'rgba(255,255,255,.35)')+'">'+es(rw.haft||'—')+'</td></tr>'}
+  h+='</tbody></table>';
+  el.innerHTML=h;
+}
+
+// ── Volunteers Tab ───────────────────────────────────────
+function renderVolTab(){
+  var ms=getMs().filter(function(m){return(m.volunteering||[]).length>0});
+  var el=document.getElementById('vol-table');
+  if(!ms.length){el.innerHTML='<div style="text-align:center;color:rgba(255,255,255,.35);padding:2rem;font-size:.85rem">אין מתנדבים רשומים</div>';return}
+  var h='<table style="width:100%;border-collapse:collapse;font-size:.82rem;color:#fff"><thead><tr style="background:rgba(255,255,255,.08)">';
+  h+='<th style="padding:8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.12)">#</th>';
+  h+='<th style="padding:8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.12)">שם</th>';
+  h+='<th style="padding:8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.12)">טלפון</th>';
+  h+='<th style="padding:8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.12)">סוגי התנדבות</th>';
+  h+='</tr></thead><tbody>';
+  for(var i=0;i<ms.length;i++){var m=ms[i];
+    h+='<tr style="border-bottom:1px solid rgba(255,255,255,.06)"><td style="padding:6px 8px">'+(i+1)+'</td>';
+    h+='<td style="padding:6px 8px;font-weight:700">'+es(m.firstName+' '+m.lastName)+'</td>';
+    h+='<td style="padding:6px 8px;direction:ltr;text-align:right">'+es(m.phone||'')+'</td>';
+    h+='<td style="padding:6px 8px">'+(m.volunteering||[]).map(function(v){return'<span style="display:inline-block;background:rgba(200,168,75,.15);color:var(--gold2);padding:1px 8px;border-radius:4px;font-size:.75rem;margin:1px">'+es(v)+'</span>'}).join(' ')+'</td></tr>'}
+  h+='</tbody></table>';
+  el.innerHTML=h;
+}
+
+// ── Full Table Tab ───────────────────────────────────────
+var ftblFilter='all';
+function setFullTblFilter(f,btn){
+  ftblFilter=f;
+  document.querySelectorAll('#at-ftbl .fpill').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  renderFullTable();
+}
+function renderFullTable(){
+  var ms=getMs();
+  if(ftblFilter==='vol')ms=ms.filter(function(m){return(m.volunteering||[]).length>0});
+  else if(ftblFilter==='yr')ms=ms.filter(function(m){return(m.yahrzeits||[]).length>0});
+  else if(ftblFilter==='bm')ms=ms.filter(function(m){return(m.children||[]).some(function(c){return c.parasha})});
+  var wrap=document.getElementById('ftbl-wrap');
+  if(!ms.length){wrap.innerHTML='<div style="text-align:center;color:rgba(255,255,255,.35);padding:2rem">אין נתונים</div>';return}
+  var headers=['#','שם פרטי','שם משפחה','שם האב','שם לעלייה','טלפון','דוא"ל','כתובת','התנדבות','תורן','דמי חבר'];
+  var maxCh=0,maxYr=0;
+  for(var i=0;i<ms.length;i++){var ch=(ms[i].children||[]).length;var yr=(ms[i].yahrzeits||[]).length;if(ch>maxCh)maxCh=ch;if(yr>maxYr)maxYr=yr}
+  for(var c=1;c<=maxCh;c++){headers.push('ילד'+c+' שם');headers.push('ילד'+c+' פרשה')}
+  for(var y=1;y<=maxYr;y++){headers.push('יארצייט'+y+' שם');headers.push('יארצייט'+y+' תאריך')}
+  var h='<table style="width:100%;border-collapse:collapse;font-size:.75rem;color:#fff;min-width:'+(800+maxCh*200+maxYr*200)+'px"><thead><tr style="background:rgba(255,255,255,.08);position:sticky;top:0;z-index:2">';
+  headers.forEach(function(hdr){h+='<th style="padding:6px 8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.12);white-space:nowrap">'+hdr+'</th>'});
+  h+='</tr></thead><tbody>';
+  for(var i=0;i<ms.length;i++){var m=ms[i];
+    h+='<tr style="border-bottom:1px solid rgba(255,255,255,.06)">';
+    h+='<td style="padding:4px 6px">'+(i+1)+'</td>';
+    h+='<td style="padding:4px 6px">'+es(m.firstName)+'</td>';
+    h+='<td style="padding:4px 6px">'+es(m.lastName)+'</td>';
+    h+='<td style="padding:4px 6px">'+es(m.fatherName)+'</td>';
+    h+='<td style="padding:4px 6px">'+es(m.torahName)+'</td>';
+    h+='<td style="padding:4px 6px;direction:ltr;text-align:right">'+es(m.phone)+'</td>';
+    h+='<td style="padding:4px 6px">'+es(m.email||'')+'</td>';
+    h+='<td style="padding:4px 6px">'+es(m.address||'')+'</td>';
+    h+='<td style="padding:4px 6px">'+(m.volunteering||[]).join(', ')+'</td>';
+    h+='<td style="padding:4px 6px">'+(m.dutyRoster?'✓':'')+'</td>';
+    h+='<td style="padding:4px 6px;color:'+(m.membershipPaid?'#5dbe8a':'#e88')+';">'+(m.membershipPaid?'שולם':'—')+'</td>';
+    for(var c=0;c<maxCh;c++){var ch=(m.children||[])[c]||{};h+='<td style="padding:4px 6px">'+es(ch.name||'')+'</td><td style="padding:4px 6px">'+es(ch.parasha||'')+'</td>'}
+    for(var y=0;y<maxYr;y++){var yr=(m.yahrzeits||[])[y]||{};h+='<td style="padding:4px 6px">'+es(yr.name||'')+'</td><td style="padding:4px 6px">'+fhd(yr.hd,yr.hm,yr.hy)+'</td>'}
+    h+='</tr>'}
+  h+='</tbody></table>';
+  wrap.innerHTML=h;
+}
+
+// ── Backup & Restore ─────────────────────────────────────
+function downloadFullBackup(){
+  var data={members:getMs(),aliyot:getAliyot(),kiddush:getKiddush(),announcements:getAnnouncements(),customTexts:JSON.parse(localStorage.getItem('mbz_custom_texts')||'null'),volTypes:getVolTypes(),customTags:getCustomTags(),exportDate:new Date().toISOString()};
+  var json=JSON.stringify(data,null,2);
+  var blob=new Blob([json],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  if(isIOS){var w=window.open('','_blank');if(w){w.document.write('<html><head><meta charset="UTF-8"><title>גיבוי</title></head><body style="direction:rtl;font-family:sans-serif;padding:20px"><h2>💾 גיבוי נתונים</h2><p>לשמירה: □↑ → "שמור ב-Files"</p><textarea style="width:100%;height:70vh;direction:ltr;font-size:12px">'+json.replace(/</g,'&lt;')+'</textarea></body></html>')}}
+  else{var a=document.createElement('a');a.href=url;a.download='mevaser_zion_backup_'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();document.body.removeChild(a)}
+  URL.revokeObjectURL(url);showToast('גיבוי הורד בהצלחה');
+}
+function restoreFullBackup(event){
+  var file=event.target.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      var members=null;
+      if(Array.isArray(data))members=data;
+      else if(data.members&&Array.isArray(data.members))members=data.members;
+      else{showToast('קובץ גיבוי לא תקין');return}
+      if(!confirm('שחזור יחליף את כל '+getMs().length+' מתפללים קיימים ב-'+members.length+' מהגיבוי. להמשיך?'))return;
+      lsSet(members);
+      if(data.aliyot)setAliyot(data.aliyot);
+      if(data.kiddush)setKiddush(data.kiddush);
+      if(data.announcements)setAnnouncements(data.announcements);
+      if(data.volTypes)saveVolTypes(data.volTypes);
+      if(data.customTags)saveCustomTags(data.customTags);
+      if(data.customTexts)localStorage.setItem('mbz_custom_texts',JSON.stringify(data.customTexts));
+      showToast('שוחזרו '+members.length+' מתפללים בהצלחה!');
+      if(curAt==='mem')renderML();
+    }catch(err){showToast('קובץ גיבוי לא תקין: '+err.message)}
+  };reader.readAsText(file);event.target.value='';
+}
+
+// ── Tag Rename ───────────────────────────────────────────
+function renameCustomTag(oldName){
+  var newName=prompt('שם חדש לתגית "'+oldName+'":',oldName);
+  if(!newName||newName.trim()===oldName)return;
+  newName=newName.trim();
+  var tags=getCustomTags();
+  var idx=tags.indexOf(oldName);
+  if(idx<0)return;
+  tags[idx]=newName;
+  saveCustomTags(tags);
+  // Update all members that have this tag
+  var ms=getMs();var changed=false;
+  for(var i=0;i<ms.length;i++){
+    var ti=ms[i].customTags?ms[i].customTags.indexOf(oldName):-1;
+    if(ti>=0){ms[i].customTags[ti]=newName;changed=true}
+  }
+  if(changed)lsSet(ms);
+  showToast('תגית שונתה: '+oldName+' → '+newName);
+  if(curAt==='settings')populateSettingsFields();
+}
+function renameVolType(oldName){
+  var newName=prompt('שם חדש לסוג התנדבות "'+oldName+'":',oldName);
+  if(!newName||newName.trim()===oldName)return;
+  newName=newName.trim();
+  var types=getVolTypes();
+  var idx=types.indexOf(oldName);
+  if(idx<0)return;
+  types[idx]=newName;
+  saveVolTypes(types);
+  var ms=getMs();var changed=false;
+  for(var i=0;i<ms.length;i++){
+    var vi=ms[i].volunteering?ms[i].volunteering.indexOf(oldName):-1;
+    if(vi>=0){ms[i].volunteering[vi]=newName;changed=true}
+  }
+  if(changed)lsSet(ms);
+  showToast('סוג התנדבות שונה: '+oldName+' → '+newName);
+  if(curAt==='settings')populateSettingsFields();
 }
 
 // ── Init ─────────────────────────────────────────────────
