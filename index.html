@@ -1548,9 +1548,9 @@ function lsGet(){try{return JSON.parse(localStorage.getItem(SK)||'[]')}catch(e){
 function lsSet(a){try{localStorage.setItem(SK,JSON.stringify(a))}catch(e){}}
 function getMs(){return lsGet()}
 function getM(id){return lsGet().find(m=>m.id===id)||null}
-function addM(d){const a=lsGet();d.id=Date.now()+'_'+Math.random().toString(36).slice(2,7);a.push(d);lsSet(a);if(SHEETS_URL)sheetsPost({action:'add',member:d}).catch(e=>console.warn('Sheets sync error:',e))}
-function updM(id,d){const a=lsGet();const i=a.findIndex(m=>m.id===id);if(i>=0){a[i]={...a[i],...d,id};lsSet(a);if(SHEETS_URL)sheetsPost({action:'update',member:a[i]}).catch(e=>console.warn('Sheets sync error:',e))}}
-function delM(id){lsSet(lsGet().filter(m=>m.id!==id));if(SHEETS_URL)sheetsPost({action:'delete',id:id}).catch(e=>console.warn('Sheets sync error:',e))}
+function addM(d){const a=lsGet();d.id=Date.now()+'_'+Math.random().toString(36).slice(2,7);a.push(d);lsSet(a);invalidateCalCache();if(SHEETS_URL)sheetsPost({action:'add',member:d}).catch(e=>console.warn('Sheets sync error:',e))}
+function updM(id,d){const a=lsGet();const i=a.findIndex(m=>m.id===id);if(i>=0){a[i]={...a[i],...d,id};lsSet(a);invalidateCalCache();if(SHEETS_URL)sheetsPost({action:'update',member:a[i]}).catch(e=>console.warn('Sheets sync error:',e))}}
+function delM(id){lsSet(lsGet().filter(m=>m.id!==id));invalidateCalCache();if(SHEETS_URL)sheetsPost({action:'delete',id:id}).catch(e=>console.warn('Sheets sync error:',e))}
 
 // ── Google Sheets Integration ───────────────────────────
 async function sheetsPost(payload){
@@ -1794,12 +1794,30 @@ function showAt(t){
 }
 function loadAdm(){initJNav();collapseJnavOnMobile();if(curAt==='cal')renderCal();else if(curAt==='mem')renderML();else if(curAt==='ali')renderAliyotAdmin();else if(curAt==='ann')renderAnnAdmin();else if(curAt==='mbr')renderMbrTab();else if(curAt==='duty')renderDutyTab();else if(curAt==='yrz')renderYrzTab();else if(curAt==='vol')renderVolTab();else if(curAt==='ftbl')renderFullTable();else if(curAt==='settings')populateSettingsFields();}
 function calNav(w){if(w===0){calSt=gSh();}else{calSt=new Date(calSt);calSt.setDate(calSt.getDate()+w*7);}renderCal()}
+var CAL_CACHE_KEY='mbz_cal_cache';
+function getCalCache(startKey){try{var c=JSON.parse(localStorage.getItem(CAL_CACHE_KEY));if(c&&c.startKey===startKey&&c.html&&c.title)return c;return null}catch(e){return null}}
+function setCalCache(startKey,title,html,memberCount){try{localStorage.setItem(CAL_CACHE_KEY,JSON.stringify({startKey:startKey,title:title,html:html,memberCount:memberCount,ts:Date.now()}))}catch(e){}}
+function invalidateCalCache(){try{localStorage.removeItem(CAL_CACHE_KEY)}catch(e){}}
+
 async function renderCal(){
   const grid=document.getElementById('cal-grid');const shs=[];const d=new Date(calSt);
   for(let i=0;i<12;i++){shs.push(new Date(d));d.setDate(d.getDate()+7)}
-  document.getElementById('cal-ttl').textContent=shs[0].toLocaleDateString('he-IL',{month:'long',year:'numeric'})+' — '+shs[11].toLocaleDateString('he-IL',{month:'long',year:'numeric'});
-  grid.innerHTML=shs.map(s=>`<div class="wr" id="wr-${d2s(s)}"><div class="wh" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.parentElement.classList.contains('open')?'block':'none'"><div class="wdates"><span class="wheb">טוען...</span><span class="wgreg">${s.toLocaleDateString('he-IL',{day:'numeric',month:'long'})}</span></div><div class="wpar">טוען פרשות...</div><div class="wbdgs"></div><div class="wtgl">▾</div></div><div class="wevs"></div></div>`).join('');
-  const ms=getMs();
+  var startKey=d2s(shs[0]);
+  var titleText=shs[0].toLocaleDateString('he-IL',{month:'long',year:'numeric'})+' — '+shs[11].toLocaleDateString('he-IL',{month:'long',year:'numeric'});
+  document.getElementById('cal-ttl').textContent=titleText;
+
+  // Show from cache immediately
+  var ms=getMs();
+  var cached=getCalCache(startKey);
+  if(cached&&cached.memberCount===ms.length){
+    grid.innerHTML=cached.html;
+    // If cache is less than 3h old, done
+    if(Date.now()-cached.ts<10800000)return;
+  }else{
+    grid.innerHTML=shs.map(s=>`<div class="wr" id="wr-${d2s(s)}"><div class="wh" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.parentElement.classList.contains('open')?'block':'none'"><div class="wdates"><span class="wheb">טוען...</span><span class="wgreg">${s.toLocaleDateString('he-IL',{day:'numeric',month:'long'})}</span></div><div class="wpar">טוען פרשות...</div><div class="wbdgs"></div><div class="wtgl">▾</div></div><div class="wevs"></div></div>`).join('');
+  }
+
+  // Fetch fresh data
   const tH=await g2h(new Date().getFullYear(),new Date().getMonth()+1,new Date().getDate());
   const curHY=tH?tH.hy:5786;
   const rangeEnd=new Date(shs[shs.length-1]);rangeEnd.setDate(rangeEnd.getDate()+1);
@@ -1811,6 +1829,8 @@ async function renderCal(){
     const[hd2,evs]=await Promise.all([g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate()),getWkEvs(ms,sh,curHY)]);
     renderWR(sh,parInfo,hd2,evs);
   }));
+  // Save to cache
+  setCalCache(startKey,titleText,grid.innerHTML,ms.length);
 }
 async function getWkEvs(ms,sh,curHY){
   const evs=[],ss=d2s(sh);
