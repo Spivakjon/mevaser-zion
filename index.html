@@ -1248,7 +1248,8 @@ async function hf(url){
 }
 async function g2h(y,m,d){const r=await hf(`https://www.hebcal.com/converter?cfg=json&gy=${y}&gm=${m}&gd=${d}&g2h=1`);return(r&&!r.error)?{hd:r.hd,hm:normHm(r.hm),hy:r.hy}:null}
 async function h2g(hy,hm,hd){
-  const r=await hf(`https://www.hebcal.com/converter?cfg=json&hy=${hy}&hm=${hm}&hd=${hd}&h2g=1`);
+  var hmName=hm;var hmObj=HM.find(function(m){return m.v==hm});if(hmObj)hmName=hmObj.e;
+  const r=await hf(`https://www.hebcal.com/converter?cfg=json&hy=${hy}&hm=${encodeURIComponent(hmName)}&hd=${hd}&h2g=1`);
   if(r&&!r.error&&r.gy)return{y:r.gy,m:r.gm,d:r.gd};
   const hmOff=hm<=6?hm+5:hm-7;
   const estYear=hy-3761+(hmOff>=3?1:0);
@@ -1415,13 +1416,13 @@ function chH(i){const c=CH[i];const bmOn=c.wantsBM?'show':'';
 <div class="ic-head"><span class="ic-title">ילד ${i+1}${c.name?' — '+es(c.name):''}</span><button class="brm" onclick="remCh(${i})">✕</button></div>
 <div class="g3" style="margin-bottom:.65rem">
   <div class="ff"><label>שם פרטי <span class="req">*</span></label><input id="cn-${i}" value="${es(c.name)}" placeholder="שם פרטי" onchange="CH[${i}].name=this.value;rChT(${i})"><div class="emsg" data-i18n="fieldRequired">שדה חובה</div></div>
-  <div class="ff"><label>מין</label><select id="cg-${i}" onchange="CH[${i}].gender=this.value"><option value="">בחר</option><option value="זכר"${c.gender==='זכר'?' selected':''}>זכר</option><option value="נקבה"${c.gender==='נקבה'?' selected':''}>נקבה</option></select></div>
+  <div class="ff"><label>מין</label><select id="cg-${i}" onchange="CH[${i}].gender=this.value;updateBMVisibility(${i})"><option value="">בחר</option><option value="זכר"${c.gender==='זכר'?' selected':''}>זכר</option><option value="נקבה"${c.gender==='נקבה'?' selected':''}>נקבה</option></select></div>
   <div><div style="font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.25rem">תאריך לידה</div>${dbH('c'+i,{hd:c.hd,hm:c.hm,hy:c.hy,gd:c.gd,mode:c.mode})}</div>
 </div>
-<div class="bm-section">
+<div class="bm-section" id="bms-${i}" style="${c.gender==='נקבה'?'display:none':''}">
   <label class="bm-toggle-row">
     <input type="checkbox" id="cbm-${i}" ${c.wantsBM?'checked':''} onchange="toggleBM(${i})">
-    <span class="bm-toggle-lbl">📖 רישום לפרשת שבת ${c.gender==='נקבה'?'בת':'בר'} מצווה</span>
+    <span class="bm-toggle-lbl">📖 רישום לפרשת שבת בר מצווה</span>
   </label>
   <div class="bm-details ${bmOn}" id="bmd-${i}">
     <button class="bm-btn" id="bmc-${i}" onclick="calcBM(${i})" style="margin-bottom:.5rem">📖 חשב פרשת בר מצווה ←</button>
@@ -1435,6 +1436,12 @@ function chH(i){const c=CH[i];const bmOn=c.wantsBM?'show':'';
   </div>
 </div>
 </div>`;}
+function updateBMVisibility(i){
+  var sec=document.getElementById('bms-'+i);
+  if(!sec)return;
+  if(CH[i].gender==='נקבה'){sec.style.display='none';CH[i].wantsBM=false;var cb=document.getElementById('cbm-'+i);if(cb)cb.checked=false;var det=document.getElementById('bmd-'+i);if(det)det.classList.remove('show')}
+  else{sec.style.display=''}
+}
 function toggleBM(i){
   const cb=document.getElementById(`cbm-${i}`);
   const det=document.getElementById(`bmd-${i}`);
