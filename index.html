@@ -660,9 +660,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 </head>
 <body>
 <div class="top-actions">
-  <button onclick="toggleReg()" data-i18n="registerBtn">📝 הרשמה</button>
-  <button onclick="openMyShabbat()" data-i18n="myShabbatBtn">🕍 השבת שלי</button>
-  <button onclick="openSelfEdit()" data-i18n="editMyDetails">📝 עריכת הפרטים שלי</button>
+  <button onclick="openMyArea()" data-i18n="myAreaBtn">🕍 האזור שלי</button>
   <button onclick="scrollToPayInfo()" id="top-pay-btn" style="color:var(--gold)" data-i18n="payBtn">💳 תשלום</button>
   <button onclick="openAdm()" data-i18n="adminBtn">🔒 ניהול</button>
   <button id="pwa-install-btn" onclick="installPWA()" style="display:none;color:var(--gold)" data-i18n="installBtn">📲 התקן</button>
@@ -1110,10 +1108,8 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
           <p style="font-size:.78rem;color:rgba(255,255,255,.45);margin-bottom:.8rem">הורדת גיבוי תשמור את כל הנתונים לקובץ JSON. שחזור יטען קובץ ויחליף את כל הנתונים.</p>
           <div style="display:flex;gap:.5rem;flex-wrap:wrap">
             <button class="abt" onclick="downloadFullBackup()" style="font-size:.82rem">⬇️ הורד גיבוי JSON</button>
-            <button class="abt" onclick="document.getElementById('restore-file').click()" style="font-size:.82rem">⬆️ שחזר מגיבוי</button>
-            <input type="file" id="restore-file" accept=".json,.txt" style="display:none" onchange="restoreFullBackup(event)">
-            <button class="abt" onclick="document.getElementById('csv-restore-file').click()" style="font-size:.82rem">📊 ייבוא מ-CSV</button>
-            <input type="file" id="csv-restore-file" accept=".csv,.tsv,.txt" style="display:none" onchange="importExcel(event)">
+            <button class="abt" onclick="document.getElementById('restore-file').click()" style="font-size:.82rem">⬆️ שחזר מגיבוי (JSON / CSV)</button>
+            <input type="file" id="restore-file" accept=".json,.txt,.csv,.tsv,.xlsx" style="display:none" onchange="restoreSmartImport(event)">
           </div>
         </div>
         <div style="margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.12)">
@@ -1128,43 +1124,26 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
   </div>
 </div>
 
-<!-- Self-Edit Modal -->
-<div class="se-ovl" id="se-ovl" onclick="if(event.target===this)closeSelfEdit()">
-  <div class="se-card">
-    <h2 data-i18n="selfEditTitle">📝 עריכת הפרטים שלי</h2>
-    <p data-i18n="selfEditSubtitle">הזן את הפרטים הבאים לזיהוי</p>
+<!-- My Area Modal (unified: Shabbat info + Edit + Register) -->
+<div class="se-ovl" id="myarea-ovl" onclick="if(event.target===this)closeMyArea()">
+  <div class="se-card" style="max-width:460px">
+    <h2>🕍 האזור שלי</h2>
+    <p style="font-size:.85rem;color:var(--ink3);margin-bottom:.8rem">הזן מספר טלפון כדי לצפות במידע האישי שלך</p>
     <div class="ff">
-      <label data-i18n="selfEditPhone">טלפון</label>
-      <input type="tel" id="se-phone" placeholder="050-1234567" dir="ltr">
+      <label>טלפון</label>
+      <input type="tel" id="ma-phone" placeholder="050-1234567" dir="ltr" onkeydown="if(event.key==='Enter')doMyArea()">
     </div>
-    <div class="ff">
-      <label data-i18n="selfEditName">שם מלא (שם פרטי + שם משפחה)</label>
-      <input type="text" id="se-name" placeholder="משה כהן" data-i18n-placeholder="selfEditNamePh">
-    </div>
-    <div class="ff">
-      <label data-i18n="selfEditFather">שם האב</label>
-      <input type="text" id="se-father" placeholder="אברהם" data-i18n-placeholder="selfEditFatherPh">
-    </div>
-    <button class="se-btn" onclick="doSelfEdit()" data-i18n="selfEditSearch">חפש</button>
-    <button class="se-close" onclick="closeSelfEdit()" data-i18n="selfEditClose">סגור</button>
-    <div class="se-err" id="se-err" data-i18n="selfEditErrNotFound">לא נמצא מתפלל עם פרטים אלו</div>
+    <button class="se-btn" onclick="doMyArea()">🔍 חפש</button>
+    <div style="text-align:center;margin:.6rem 0;font-size:.82rem;color:var(--ink3)">— או —</div>
+    <button class="se-btn" onclick="closeMyArea();toggleReg()" style="background:transparent;border:1.5px solid var(--gold);color:var(--gold)">📝 הרשמה כחבר חדש</button>
+    <button class="se-close" onclick="closeMyArea()">סגור</button>
+    <div id="ma-result"></div>
   </div>
 </div>
 
-<!-- My Shabbat Modal -->
-<div class="se-ovl" id="myshab-ovl" onclick="if(event.target===this)closeMyShabbat()">
-  <div class="se-card" style="max-width:440px">
-    <h2 data-i18n="myShabbatTitle">🕍 השבת שלי</h2>
-    <p style="font-size:.85rem;color:var(--ink3);margin-bottom:.8rem" data-i18n="myShabbatSubtitle">הזן טלפון לצפייה במידע האישי שלך</p>
-    <div class="ff">
-      <label data-i18n="phone">טלפון</label>
-      <input type="tel" id="ms-phone" placeholder="050-1234567" dir="ltr" onkeydown="if(event.key==='Enter')doMyShabbat()">
-    </div>
-    <button class="se-btn" onclick="doMyShabbat()" data-i18n="myShabbatShow">הצג</button>
-    <button class="se-close" onclick="closeMyShabbat()" data-i18n="selfEditClose">סגור</button>
-    <div id="ms-result"></div>
-  </div>
-</div>
+<!-- Keep hidden overlays for backward compatibility -->
+<div class="se-ovl" id="se-ovl" style="display:none"></div>
+<div class="se-ovl" id="myshab-ovl" style="display:none"></div>
 
 <!-- Modals -->
 <div class="modal-bg" id="exp-modal" onclick="if(event.target===this)this.classList.remove('show')">
@@ -1715,54 +1694,8 @@ function initSheetsUI(){
 }
 
 // ── Self-Edit Feature ───────────────────────────────────
-function openSelfEdit(){
-  document.getElementById('se-ovl').classList.add('show');
-  document.getElementById('se-phone').value='';
-  document.getElementById('se-name').value='';
-  document.getElementById('se-father').value='';
-  document.getElementById('se-err').style.display='none';
-}
-function closeSelfEdit(){
-  document.getElementById('se-ovl').classList.remove('show');
-}
-function doSelfEdit(){
-  var phone=document.getElementById('se-phone').value.trim();
-  var name=document.getElementById('se-name').value.trim();
-  var father=document.getElementById('se-father').value.trim();
-  var errEl=document.getElementById('se-err');
-  var dict=I18N[curLang]||I18N.he;
-  if(!phone||!name||!father){
-    errEl.textContent=dict.selfEditErrEmpty||'אנא הזן טלפון, שם מלא ושם האב';
-    errEl.style.display='block';
-    return;
-  }
-  var ms=getMs();
-  var normalizePhone=function(p){return p.replace(/[-\s()]/g,'')};
-  var np=normalizePhone(phone);
-  var match=ms.find(function(m){
-    var mp=normalizePhone(m.phone||'');
-    var fullName=((m.firstName||'')+' '+(m.lastName||'')).trim();
-    var fa=(m.fatherName||'').trim();
-    return mp===np&&fullName===name.trim()&&fa===father.trim();
-  });
-  if(!match){
-    var phoneMatch=ms.find(function(m){return normalizePhone(m.phone||'')===np});
-    if(phoneMatch){
-      errEl.textContent=dict.selfEditErrName||'הטלפון נמצא אך השם או שם האב אינם תואמים';
-    }else{
-      errEl.textContent=dict.selfEditErrNotFound||'לא נמצא מתפלל עם פרטים אלו';
-    }
-    errEl.style.display='block';
-    return;
-  }
-  closeSelfEdit();
-  initForm(match);
-  document.getElementById('fv').style.display='block';
-  document.getElementById('sv').style.display='none';
-  document.getElementById('main-card').classList.remove('reg-collapsed');
-  window.scrollTo(0,0);
-  showToast('הפרטים נטענו — ערוך ולחץ שמור');
-}
+// Legacy self-edit functions (now handled by My Area)
+function doSelfEdit(){openMyArea()}
 
 // ── Export / Import (iOS-safe) ────────
 let _expJSON='';
@@ -1846,7 +1779,7 @@ var CAL_CACHE_KEY='mbz_cal_cache';
 function getCalCache(startKey){try{var c=JSON.parse(localStorage.getItem(CAL_CACHE_KEY));if(c&&c.startKey===startKey&&c.html&&c.title)return c;return null}catch(e){return null}}
 function memberHash(){var ms=getMs();var h=ms.length;for(var i=0;i<ms.length;i++){h=h*31+((ms[i].yahrzeits||[]).length+(ms[i].children||[]).length)*7+(ms[i].firstName||'').length}return h}
 function setCalCache(startKey,title,html,mHash){try{localStorage.setItem(CAL_CACHE_KEY,JSON.stringify({startKey:startKey,title:title,html:html,mHash:mHash,ts:Date.now()}))}catch(e){}}
-function invalidateCalCache(){try{localStorage.removeItem(CAL_CACHE_KEY)}catch(e){}}
+function invalidateCalCache(){try{localStorage.removeItem(CAL_CACHE_KEY);localStorage.removeItem(WK_CACHE_KEY)}catch(e){}}
 
 async function renderCal(){
   const grid=document.getElementById('cal-grid');const shs=[];const d=new Date(calSt);
@@ -2217,20 +2150,27 @@ const ANN_KEY='mbz_announcements';
 function getAnnouncements(){try{return JSON.parse(localStorage.getItem(ANN_KEY)||'[]')}catch(e){return[]}}
 function setAnnouncements(arr){localStorage.setItem(ANN_KEY,JSON.stringify(arr))}
 
+var _annEditIdx=-1;
 function renderAnnAdmin(){
   var container=document.getElementById('at-ann');
   var anns=getAnnouncements();
-  var h='<div class="ann-admin"><h3>📢 הוסף מודעה חדשה</h3>';
-  h+='<input id="ann-title-input" placeholder="כותרת המודעה">';
-  h+='<textarea id="ann-body-input" placeholder="תוכן המודעה"></textarea>';
-  h+='<button class="save-aliyot-btn" onclick="addAnnouncement()">📢 פרסם מודעה</button></div>';
+  var isEdit=_annEditIdx>=0&&_annEditIdx<anns.length;
+  var h='<div class="ann-admin"><h3>'+(isEdit?'✏️ עריכת מודעה':'📢 הוסף מודעה חדשה')+'</h3>';
+  h+='<input id="ann-title-input" placeholder="כותרת המודעה" value="'+(isEdit?es(anns[_annEditIdx].title):'')+'">';
+  h+='<textarea id="ann-body-input" placeholder="תוכן המודעה">'+(isEdit?es(anns[_annEditIdx].content):'')+'</textarea>';
+  if(isEdit){
+    h+='<div style="display:flex;gap:8px"><button class="save-aliyot-btn" onclick="saveEditAnnouncement()" style="flex:1">💾 שמור שינויים</button><button class="save-aliyot-btn" onclick="cancelEditAnnouncement()" style="flex:0;background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)">ביטול</button></div>';
+  }else{
+    h+='<button class="save-aliyot-btn" onclick="addAnnouncement()">📢 פרסם מודעה</button>';
+  }
+  h+='</div>';
   h+='<div class="ann-admin"><h3>📋 מודעות קיימות ('+anns.length+')</h3>';
   if(!anns.length){
     h+='<div style="color:rgba(255,255,255,.35);font-size:.82rem;padding:.5rem 0">אין מודעות</div>';
   }else{
     for(var i=0;i<anns.length;i++){
       var a=anns[i];
-      h+='<div class="ann-list-item"><div class="ann-list-text"><div class="ann-list-title">'+es(a.title)+'</div><div class="ann-list-body">'+es(a.content)+'</div><div class="ann-list-date">'+es(a.date)+'</div></div><button class="ann-del-btn" onclick="delAnnouncement('+i+')">מחק</button></div>';
+      h+='<div class="ann-list-item"><div class="ann-list-text"><div class="ann-list-title">'+es(a.title)+'</div><div class="ann-list-body">'+es(a.content)+'</div><div class="ann-list-date">'+es(a.date)+'</div></div><div style="display:flex;gap:4px"><button class="ann-del-btn" onclick="editAnnouncement('+i+')" style="background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.3);color:#a5b4fc">✏️ ערוך</button><button class="ann-del-btn" onclick="delAnnouncement('+i+')">מחק</button></div></div>';
     }
   }
   h+='</div>';
@@ -2252,9 +2192,33 @@ function delAnnouncement(idx){
   if(!confirm('מחק מודעה: '+anns[idx].title+'?'))return;
   anns.splice(idx,1);
   setAnnouncements(anns);
+  _annEditIdx=-1;
   renderAnnAdmin();
   renderPublicAnnouncements();
   showToast('המודעה נמחקה');
+}
+function editAnnouncement(idx){
+  _annEditIdx=idx;
+  renderAnnAdmin();
+  document.getElementById('ann-title-input').focus();
+}
+function saveEditAnnouncement(){
+  var title=(document.getElementById('ann-title-input').value||'').trim();
+  var body=(document.getElementById('ann-body-input').value||'').trim();
+  if(!title){showToast('אנא הזן כותרת');return}
+  var anns=getAnnouncements();
+  if(_annEditIdx<0||_annEditIdx>=anns.length)return;
+  anns[_annEditIdx].title=title;
+  anns[_annEditIdx].content=body;
+  setAnnouncements(anns);
+  _annEditIdx=-1;
+  renderAnnAdmin();
+  renderPublicAnnouncements();
+  showToast('המודעה עודכנה');
+}
+function cancelEditAnnouncement(){
+  _annEditIdx=-1;
+  renderAnnAdmin();
 }
 function renderPublicAnnouncements(){
   var container=document.getElementById('announcements-public');
@@ -2327,6 +2291,7 @@ var I18N={
     myShabbatSubtitle:'הזן טלפון לצפייה במידע האישי שלך',
     myShabbatShow:'הצג',
     myShabbatBtn:'🕍 השבת שלי',
+    myAreaBtn:'🕍 האזור שלי',
     selfEditErrEmpty:'אנא הזן טלפון, שם מלא ושם האב',
     selfEditErrName:'טלפון נמצא אך השם או שם האב אינם תואמים',
     selfEditErrNotFound:'לא נמצא מתפלל עם פרטים אלו',
@@ -2439,6 +2404,7 @@ var I18N={
     myShabbatSubtitle:'Enter your phone to view personal info',
     myShabbatShow:'Show',
     myShabbatBtn:'🕍 My Shabbat',
+    myAreaBtn:'🕍 My Area',
     selfEditErrEmpty:'Please enter phone, full name and father\'s name',
     selfEditErrName:'Phone found but name or father\'s name don\'t match',
     selfEditErrNotFound:'No member found with these details',
@@ -2716,24 +2682,41 @@ function getWeekCache(){
 }
 function setWeekCache(key,html){try{localStorage.setItem(WK_CACHE_KEY,JSON.stringify({key:key,html:html,ts:Date.now()}))}catch(e){}}
 
-// ── My Shabbat ───────────────────────────────────────────
-function openMyShabbat(){
-  document.getElementById('myshab-ovl').classList.add('show');
-  document.getElementById('ms-phone').value='';
-  document.getElementById('ms-result').innerHTML='';
+// ── My Area (unified: Shabbat + Edit + Register) ────────
+function openMyArea(){
+  document.getElementById('myarea-ovl').classList.add('show');
+  document.getElementById('ma-phone').value='';
+  document.getElementById('ma-result').innerHTML='';
 }
-function closeMyShabbat(){document.getElementById('myshab-ovl').classList.remove('show')}
-async function doMyShabbat(){
-  var phone=document.getElementById('ms-phone').value.trim();
-  var res=document.getElementById('ms-result');
+function closeMyArea(){document.getElementById('myarea-ovl').classList.remove('show')}
+// Keep old functions as aliases for backward compatibility
+function openMyShabbat(){openMyArea()}
+function closeMyShabbat(){closeMyArea()}
+function openSelfEdit(){openMyArea()}
+function closeSelfEdit(){closeMyArea()}
+async function doMyArea(){
+  var phone=document.getElementById('ma-phone').value.trim();
+  var res=document.getElementById('ma-result');
   var isEn=curLang==='en';
   if(!phone){res.innerHTML='<div style="color:#c0392b;text-align:center;margin-top:.5rem">'+(isEn?'Enter phone number':'הזן מספר טלפון')+'</div>';return}
   var np=phone.replace(/[-\s()]/g,'');
   var ms=getMs();
   var m=ms.find(function(x){return(x.phone||'').replace(/[-\s()]/g,'')===np});
-  if(!m){res.innerHTML='<div style="color:#c0392b;text-align:center;margin-top:.5rem">'+(isEn?'No member found with this phone':'לא נמצא מתפלל עם טלפון זה')+'</div>';return}
+  if(!m){
+    // Not found - offer registration
+    res.innerHTML='<div style="margin-top:.8rem;border-top:1px solid var(--bd);padding-top:.8rem;text-align:center">'
+      +'<div style="font-size:.9rem;color:var(--ink3);margin-bottom:.8rem">'+(isEn?'No member found with this phone number.':'לא נמצא מתפלל עם מספר טלפון זה.')+'</div>'
+      +'<button onclick="closeMyArea();toggleReg()" style="padding:8px 24px;background:var(--gold);color:var(--bg1);border:none;border-radius:8px;font-family:inherit;font-size:.9rem;font-weight:700;cursor:pointer">'+(isEn?'Register as New Member':'📝 הירשם כחבר חדש')+'</button>'
+      +'</div>';
+    return;
+  }
   var h='<div style="margin-top:.8rem;border-top:1px solid var(--bd);padding-top:.8rem">';
   h+='<div style="font-size:1.1rem;font-weight:700;color:var(--gold2);margin-bottom:.6rem;text-align:center">'+(isEn?'Shabbat Shalom, ':'שבת שלום, ')+es(m.firstName)+'!</div>';
+
+  // Action buttons: Edit details
+  h+='<div style="display:flex;gap:8px;justify-content:center;margin-bottom:.8rem">';
+  h+='<button onclick="closeMyArea();doSelfEditDirect(\''+es(m.id)+'\')" style="padding:6px 16px;background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer">'+(isEn?'Edit My Details':'📝 עריכת הפרטים שלי')+'</button>';
+  h+='</div>';
 
   // Payment status
   h+='<div style="display:flex;align-items:center;gap:6px;padding:.4rem 0;font-size:.85rem;flex-wrap:wrap">';
@@ -2741,7 +2724,7 @@ async function doMyShabbat(){
     h+='<span class="paid-tag">💳 '+(isEn?'Membership paid ✓':'דמי חבר שולמו ✓')+'</span>';
   }else{
     h+='<span class="unpaid-tag">💳 '+(isEn?'Membership not paid':'דמי חבר טרם שולמו')+'</span>';
-    h+=' <button onclick="closeMyShabbat();scrollToPayInfo()" style="padding:3px 10px;font-size:.8rem;background:var(--gold);color:var(--ink);border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-weight:600">'+(isEn?'Pay Now':'לתשלום')+'</button>';
+    h+=' <button onclick="closeMyArea();scrollToPayInfo()" style="padding:3px 10px;font-size:.8rem;background:var(--gold);color:var(--ink);border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-weight:600">'+(isEn?'Pay Now':'לתשלום')+'</button>';
   }
   h+='</div>';
 
@@ -2809,6 +2792,16 @@ async function doMyShabbat(){
 
   h+='</div>';
   res.innerHTML=h;
+}
+function doSelfEditDirect(memberId){
+  var m=getM(memberId);
+  if(!m)return;
+  initForm(m);
+  document.getElementById('fv').style.display='block';
+  document.getElementById('sv').style.display='none';
+  document.getElementById('main-card').classList.remove('reg-collapsed');
+  window.scrollTo(0,0);
+  showToast('הפרטים נטענו — ערוך ולחץ שמור');
 }
 
 // ── PWA Install ──────────────────────────────────────────
@@ -3392,12 +3385,106 @@ function showBulkList(type){
 function getDutyRoster(){return getMs().filter(function(m){return m.dutyRoster})}
 function getUpcomingShabbat(d){var dt=new Date(d);var day=dt.getDay();var diff=(6-day+7)%7;dt.setDate(dt.getDate()+diff);return dt}
 function getRotationIdx(d){var epoch=new Date(2024,0,1);return Math.floor((d-epoch)/(7*24*60*60*1000))}
+// ── Duty Queue (fairness-based rotation) ────────────────
+var DUTY_QUEUE_KEY='mbz_duty_queue';
+function getDutyQueue(){try{return JSON.parse(localStorage.getItem(DUTY_QUEUE_KEY)||'[]')}catch(e){return[]}}
+function saveDutyQueue(q){localStorage.setItem(DUTY_QUEUE_KEY,JSON.stringify(q))}
+function syncDutyQueue(){
+  var roster=getDutyRoster();
+  var rosterIds=roster.map(function(m){return m.id});
+  var queue=getDutyQueue();
+  // Remove members no longer in roster
+  queue=queue.filter(function(id){return rosterIds.indexOf(id)>=0});
+  // Add new roster members to FRONT (haven't served yet = highest priority)
+  var inQueue={};queue.forEach(function(id){inQueue[id]=true});
+  var newIds=rosterIds.filter(function(id){return!inQueue[id]});
+  queue=newIds.concat(queue);
+  saveDutyQueue(queue);
+  return queue;
+}
 function getDutyPair(weekOffset){
   var roster=getDutyRoster();if(roster.length===0)return[];if(roster.length===1)return[roster[0]];
-  var d=new Date();d.setDate(d.getDate()+weekOffset*7);
-  var sh=getUpcomingShabbat(d);var wi=getRotationIdx(sh);
-  var tp=Math.ceil(roster.length/2);var pi=wi%tp;
-  return[roster[(pi*2)%roster.length],roster[(pi*2+1)%roster.length]];
+  var queue=syncDutyQueue();
+  if(queue.length<2)return roster.slice(0,2);
+  // Each week uses 2 members from the queue in order
+  var pos=(weekOffset*2)%queue.length;
+  var id1=queue[pos%queue.length];
+  var id2=queue[(pos+1)%queue.length];
+  var rosterMap={};roster.forEach(function(m){rosterMap[m.id]=m});
+  return[rosterMap[id1]||roster[0],rosterMap[id2]||roster[1]];
+}
+function advanceDutyQueue(){
+  // Called after current Shabbat passes - move served pair to end
+  var queue=syncDutyQueue();
+  if(queue.length<2)return;
+  var served=queue.splice(0,2);
+  queue=queue.concat(served);
+  saveDutyQueue(queue);
+  // Record in history
+  var sh=getUpcomingShabbat(new Date());
+  var key=sh.toISOString().slice(0,10);
+  var hist=getDutyHistory();
+  if(!hist[key])hist[key]=served;
+  saveDutyHistory(hist);
+}
+var DUTY_HIST_KEY='mbz_duty_history';
+function getDutyHistory(){try{return JSON.parse(localStorage.getItem(DUTY_HIST_KEY)||'{}')}catch(e){return{}}}
+function saveDutyHistory(h){localStorage.setItem(DUTY_HIST_KEY,JSON.stringify(h))}
+function getDutyStats(){
+  // Calculate per-member stats from queue position + history
+  var roster=getDutyRoster();
+  var queue=syncDutyQueue();
+  var hist=getDutyHistory();
+  var swaps=getDutySwaps();
+  var stats={};
+  roster.forEach(function(m){stats[m.id]={count:0,lastDate:null,queuePos:-1}});
+  // Count from history
+  for(var dateKey in hist){
+    var pair=hist[dateKey];
+    if(pair&&pair[0]&&stats[pair[0]]){stats[pair[0]].count++;stats[pair[0]].lastDate=dateKey}
+    if(pair&&pair[1]&&stats[pair[1]]){stats[pair[1]].count++;stats[pair[1]].lastDate=dateKey}
+  }
+  // Count from swaps (also a form of history)
+  for(var dateKey in swaps){
+    var sw=swaps[dateKey];
+    for(var s=0;s<2;s++){
+      if(sw[s]&&typeof sw[s]==='string'&&stats[sw[s]]){
+        // Only count past dates
+        if(new Date(dateKey)<new Date()){stats[sw[s]].count++;if(!stats[sw[s]].lastDate||dateKey>stats[sw[s]].lastDate)stats[sw[s]].lastDate=dateKey}
+      }
+    }
+  }
+  // Queue position
+  for(var i=0;i<queue.length;i++){if(stats[queue[i]])stats[queue[i]].queuePos=i}
+  return stats;
+}
+function autoArrangeQueue(){
+  // Sort queue by fairness: fewest duties first, then longest wait
+  var roster=getDutyRoster();
+  var stats=getDutyStats();
+  var sorted=roster.slice().sort(function(a,b){
+    var ca=stats[a.id]?stats[a.id].count:0;
+    var cb=stats[b.id]?stats[b.id].count:0;
+    if(ca!==cb)return ca-cb;
+    var da=stats[a.id]&&stats[a.id].lastDate?stats[a.id].lastDate:'';
+    var db=stats[b.id]&&stats[b.id].lastDate?stats[b.id].lastDate:'';
+    return da.localeCompare(db);
+  });
+  saveDutyQueue(sorted.map(function(m){return m.id}));
+  showToast('הסדר עודכן לפי הוגנות');
+  renderDutyTab();
+}
+function markDutyDone(){
+  // Mark this week's duty as completed and advance queue
+  var sh=getUpcomingShabbat(new Date());
+  var key=sh.toISOString().slice(0,10);
+  var pair=getDutyPairWithSwaps(0);
+  var hist=getDutyHistory();
+  hist[key]=[pair[0]?pair[0].id:null,pair[1]?pair[1].id:null];
+  saveDutyHistory(hist);
+  advanceDutyQueue();
+  showToast('תורנות סומנה כבוצעה — הסדר עודכן');
+  renderDutyTab();
 }
 var DUTY_SWAPS_KEY='mbz_duty_swaps';
 function getDutySwaps(){try{return JSON.parse(localStorage.getItem(DUTY_SWAPS_KEY)||'{}')}catch(e){return{}}}
@@ -3507,36 +3594,26 @@ async function getHolidayDutyDates(){
   }catch(e){return[]}
 }
 function suggestDutyForDate(dateKey,slot){
-  // Smart suggestion: find who was on duty least recently
+  // Smart suggestion based on fairness stats
   var roster=getDutyRoster();if(roster.length<2)return;
-  var swaps=getDutySwaps();
-  // Build a map of last duty date for each member
-  var lastDuty={};
-  roster.forEach(function(m){lastDuty[m.id]=0});
-  // Check past 16 weeks
-  for(var w=-16;w<=8;w++){
-    var d=new Date();d.setDate(d.getDate()+w*7);
-    var sh=getUpcomingShabbat(d);
-    var pair=getDutyPairWithSwaps(w);
-    if(pair[0]&&pair[0].id)lastDuty[pair[0].id]=Math.max(lastDuty[pair[0].id]||0,sh.getTime());
-    if(pair[1]&&pair[1].id)lastDuty[pair[1].id]=Math.max(lastDuty[pair[1].id]||0,sh.getTime());
-  }
-  // Also check holiday swaps
-  for(var key in swaps){
-    var sw=swaps[key];
-    if(sw[0]&&typeof sw[0]==='string')lastDuty[sw[0]]=Math.max(lastDuty[sw[0]]||0,new Date(key).getTime());
-    if(sw[1]&&typeof sw[1]==='string')lastDuty[sw[1]]=Math.max(lastDuty[sw[1]]||0,new Date(key).getTime());
-  }
-  // Sort by least recent duty
-  var sorted=roster.slice().sort(function(a,b){return(lastDuty[a.id]||0)-(lastDuty[b.id]||0)});
-  // Pick the 2 members with longest gap
-  var suggestions=sorted.slice(0,2);
+  var stats=getDutyStats();
+  // Sort by fairness: fewest duties first, then longest wait
+  var sorted=roster.slice().sort(function(a,b){
+    var ca=stats[a.id]?stats[a.id].count:0;
+    var cb=stats[b.id]?stats[b.id].count:0;
+    if(ca!==cb)return ca-cb;
+    var da=stats[a.id]&&stats[a.id].lastDate?stats[a.id].lastDate:'';
+    var db=stats[b.id]&&stats[b.id].lastDate?stats[b.id].lastDate:'';
+    return da.localeCompare(db);
+  });
+  var suggestions=sorted.slice(0,3);
   var h='<div style="padding:.5rem"><h2 style="margin-bottom:.6rem">🤖 המלצת שיבוץ חכמה</h2>';
-  h+='<p style="font-size:.82rem;color:#666;margin-bottom:.8rem">המערכת ממליצה על מי שלא היה בתורנות הכי הרבה זמן:</p>';
+  h+='<p style="font-size:.82rem;color:#666;margin-bottom:.8rem">לפי הוגנות — מי שעשה הכי מעט תורנויות והכי מזמן:</p>';
   suggestions.forEach(function(m,i){
-    var daysAgo=lastDuty[m.id]?Math.round((Date.now()-lastDuty[m.id])/(1000*60*60*24)):999;
+    var s=stats[m.id]||{count:0,lastDate:null};
+    var daysAgo=s.lastDate?Math.round((Date.now()-new Date(s.lastDate).getTime())/(1000*60*60*24)):999;
     var label=daysAgo>900?'טרם שובץ':'לפני '+daysAgo+' ימים';
-    h+='<div class="mc" style="margin-bottom:6px;cursor:pointer;border-right:3px solid #1e7d4b" onclick="confirmSwapByDate(\''+dateKey+'\','+slot+',\''+m.id+'\')"><div class="mav" style="background:#1e7d4b">'+(i+1)+'</div><div class="mi"><div class="mn" style="color:#222">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2" style="color:#888">'+es(m.phone)+' · '+label+'</div></div></div>';
+    h+='<div class="mc" style="margin-bottom:6px;cursor:pointer;border-right:3px solid #1e7d4b" onclick="confirmSwapByDate(\''+dateKey+'\','+slot+',\''+m.id+'\')"><div class="mav" style="background:#1e7d4b">'+(i+1)+'</div><div class="mi"><div class="mn" style="color:#222">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2" style="color:#888">'+es(m.phone)+' · '+s.count+' תורנויות · '+label+'</div></div></div>';
   });
   h+='<div style="margin-top:.8rem;text-align:center"><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
   document.getElementById('md-card').innerHTML=h;
@@ -3649,8 +3726,24 @@ async function renderDutyTab(){
   body.innerHTML=h||'<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:1.5rem">אין תורנים</td></tr>';
   var rl=document.getElementById('roster-list');
   var rh='';
+  // Action buttons
+  rh+='<div style="display:flex;gap:6px;margin-bottom:.8rem;flex-wrap:wrap">';
+  rh+='<button onclick="markDutyDone()" style="padding:6px 14px;background:linear-gradient(135deg,#1e7d4b,#2d9d5e);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer">✅ סיים תורנות השבוע</button>';
+  rh+='<button onclick="autoArrangeQueue()" style="padding:6px 14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer">🤖 סדר אוטומטי לפי הוגנות</button>';
+  rh+='</div>';
   if(roster.length){
-    rh=roster.map(function(m,i){return'<div class="mc" style="margin-bottom:6px;display:flex;align-items:center"><div class="mav">'+(i+1)+'</div><div class="mi" style="flex:1"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone)+'</div></div><button onclick="removeDutyMember(\''+m.id+'\')" style="padding:4px 10px;border:1px solid #c0392b;color:#c0392b;border-radius:6px;background:none;cursor:pointer;font-size:.75rem;font-family:inherit;white-space:nowrap">✕ הסר</button></div>'}).join('');
+    var stats=getDutyStats();
+    var queue=getDutyQueue();
+    // Show roster ordered by queue position
+    var ordered=queue.map(function(id){return roster.find(function(m){return m.id===id})}).filter(Boolean);
+    // Add any roster members not in queue
+    roster.forEach(function(m){if(!ordered.find(function(o){return o.id===m.id}))ordered.push(m)});
+    rh+=ordered.map(function(m,i){
+      var s=stats[m.id]||{count:0,lastDate:null,queuePos:i};
+      var daysAgo=s.lastDate?Math.round((Date.now()-new Date(s.lastDate).getTime())/(1000*60*60*24)):-1;
+      var label=daysAgo<0?'טרם שובץ':daysAgo===0?'היום':'לפני '+daysAgo+' ימים';
+      var isNext=i<2;
+      return'<div class="mc" style="margin-bottom:6px;display:flex;align-items:center;border-right:3px solid '+(isNext?'#1e7d4b':'transparent')+'"><div class="mav" style="'+(isNext?'background:#1e7d4b':'')+'">'+(i+1)+'</div><div class="mi" style="flex:1"><div class="mn">'+es(m.firstName+' '+m.lastName)+(isNext?' <span style="font-size:.7rem;color:#1e7d4b;font-weight:700">הבא בתור</span>':'')+'</div><div class="ms2">'+es(m.phone)+' · '+s.count+' תורנויות · '+label+'</div></div><button onclick="removeDutyMember(\''+m.id+'\')" style="padding:4px 10px;border:1px solid #c0392b;color:#c0392b;border-radius:6px;background:none;cursor:pointer;font-size:.75rem;font-family:inherit;white-space:nowrap">✕ הסר</button></div>'}).join('');
   }else{
     rh='<div style="text-align:center;color:var(--ink3);padding:1rem">אין תורנים ברשימה</div>';
   }
@@ -3663,7 +3756,12 @@ function removeDutyMember(id){
   var m=getM(id);if(!m)return;
   var _e=curLang==='en';
   if(!confirm((_e?'Remove ':'הסר את ')+m.firstName+' '+m.lastName+(_e?' from duty roster?':' מרשימת התורנים?')))return;
-  updM(id,{dutyRoster:false});renderDutyTab();
+  updM(id,{dutyRoster:false});
+  // Remove from queue
+  var queue=getDutyQueue();
+  queue=queue.filter(function(qid){return qid!==id});
+  saveDutyQueue(queue);
+  renderDutyTab();
 }
 function dutyRosterAC(val){
   var list=document.getElementById('duty-roster-ac');if(!list)return;
@@ -3680,6 +3778,11 @@ function dutyRosterAC(val){
 }
 function addDutyMember(id){
   updM(id,{dutyRoster:true});
+  // Add to front of queue (new member = hasn't served = highest priority)
+  var queue=getDutyQueue();
+  queue=queue.filter(function(qid){return qid!==id});
+  queue.unshift(id);
+  saveDutyQueue(queue);
   var inp=document.getElementById('duty-add-input');if(inp)inp.value='';
   var list=document.getElementById('duty-roster-ac');if(list)list.style.display='none';
   renderDutyTab();
@@ -4149,9 +4252,34 @@ function restoreFullBackup(event){
       if(data.customTags)saveCustomTags(data.customTags);
       if(data.customTexts)localStorage.setItem('mbz_custom_texts',JSON.stringify(data.customTexts));
       showToast('שוחזרו '+members.length+' מתפללים בהצלחה!');
+      invalidateCalCache();
       if(curAt==='mem')renderML();
     }catch(err){showToast('קובץ גיבוי לא תקין: '+err.message)}
   };reader.readAsText(file);event.target.value='';
+}
+function restoreSmartImport(event){
+  var file=event.target.files[0];if(!file)return;
+  var name=file.name.toLowerCase();
+  if(name.endsWith('.csv')||name.endsWith('.tsv')||name.endsWith('.txt')){
+    // Try CSV first - peek at content
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var text=e.target.result;
+      // If it starts with [ or { it's JSON in a .txt file
+      var trimmed=text.trim();
+      if(trimmed.charAt(0)==='['||trimmed.charAt(0)==='{'){
+        // It's JSON - use JSON restore
+        var fakeEvent={target:{files:[file],value:''}};
+        restoreFullBackup(fakeEvent);
+      }else{
+        // It's CSV - use CSV import
+        importExcel(event);
+      }
+    };reader.readAsText(file);
+  }else{
+    // JSON or other - use standard restore
+    restoreFullBackup(event);
+  }
 }
 
 // ── Tag Rename ───────────────────────────────────────────
