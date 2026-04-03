@@ -4271,7 +4271,7 @@ function _autoAdvancePastWeeks(){
   for(var w=4;w>=1;w--){
     var d=new Date(today);d.setDate(d.getDate()-w*7);
     var sh=getUpcomingShabbat(d);
-    var key=sh.toISOString().slice(0,10);
+    var key=d2s(sh);
     if(sh>=today)continue; // hasn't passed yet
     if(hist[key])continue; // already recorded
     if(key<=lastAdvKey)continue; // already processed
@@ -4365,7 +4365,7 @@ function advanceDutyQueue(){
   queue=queue.concat(served);
   saveDutyQueue(queue);
   var sh=getUpcomingShabbat(new Date());
-  var key=sh.toISOString().slice(0,10);
+  var key=d2s(sh);
   var hist=getDutyHistory();
   if(!hist[key])hist[key]=served;
   saveDutyHistory(hist);
@@ -4404,7 +4404,7 @@ function autoArrangeQueue(){
 
 function markDutyDone(){
   var sh=getUpcomingShabbat(new Date());
-  var key=sh.toISOString().slice(0,10);
+  var key=d2s(sh);
   var pair=getDutyPairWithSwaps(0);
   var hist=getDutyHistory();
   hist[key]=[pair[0]?pair[0].id:null,pair[1]?pair[1].id:null];
@@ -4422,7 +4422,7 @@ function getDutyPairWithSwaps(weekOffset,_queue){
   var pair=getDutyPair(weekOffset,_queue);
   var d=new Date();d.setDate(d.getDate()+weekOffset*7);
   var sh=getUpcomingShabbat(d);
-  var key=sh.toISOString().slice(0,10);
+  var key=d2s(sh);
   var swaps=getDutySwaps();
   var roster=getDutyRoster();
   if(swaps[key]){
@@ -4653,7 +4653,7 @@ async function renderDutyTab(){
     var isPast=sh<new Date();
     var isCurrent=w===0;
     var displayLabel=ds+(isCurrent?' '+T('dutyCurrent'):'');
-    entries.push({date:sh,dateKey:sh.toISOString().slice(0,10),label:T('dutyShabbat'),display:displayLabel,pair:pair,weekOffset:w,isShabbat:true,isCurrent:isCurrent,isPast:isPast});
+    entries.push({date:sh,dateKey:d2s(sh),label:T('dutyShabbat'),display:displayLabel,pair:pair,weekOffset:w,isShabbat:true,isCurrent:isCurrent,isPast:isPast});
   }
   // Fetch holidays for this range
   var holidays=await getHolidayDutyDates();
