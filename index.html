@@ -3253,13 +3253,22 @@ function setLang(lang){
   document.querySelectorAll('#lang-toggle button').forEach(function(b){
     b.classList.toggle('active',b.textContent.trim()===(lang==='he'?'עב':'EN'));
   });
-  // Reload week card with new language
+  // Reload week card & public announcements with new language
   loadWeekSummary();
-  // Re-render dynamic content if form is open
-  if(typeof renderCH==='function'&&document.getElementById('cw'))try{renderCH()}catch(e){}
-  if(typeof renderYR==='function'&&document.getElementById('yw'))try{renderYR()}catch(e){}
-  // Re-render admin tabs if open
-  if(typeof renderStats==='function'&&document.getElementById('adm-pnl')&&document.getElementById('adm-pnl').style.display==='block')try{renderStats()}catch(e){}
+  try{renderPublicAnnouncements()}catch(e){}
+  // Re-render registration form dynamic content if open
+  try{if(document.getElementById('cw')&&CH.length)renderCH()}catch(e){}
+  try{if(document.getElementById('yw')&&YR.length)renderYR()}catch(e){}
+  // Re-render the active admin tab and stats if admin panel is open
+  var admPnl=document.getElementById('adm-pnl');
+  if(admPnl&&admPnl.style.display!=='none'){
+    try{renderStats()}catch(e){}
+    try{initJNav()}catch(e){}
+    var rerender={cal:renderCal,mem:renderML,ali:renderAliyotAdmin,ann:renderAnnAdmin,mbr:renderMbrTab,duty:renderDutyTab,yrz:renderYrzTab,vol:renderVolTab,ftbl:renderFullTable};
+    if(rerender[curAt])try{rerender[curAt]()}catch(e){}
+  }
+  // Invalidate calendar cache so it rebuilds with new language
+  try{invalidateCalCache()}catch(e){}
 }
 function applyLang(){
   var dict=I18N[curLang]||I18N.he;
