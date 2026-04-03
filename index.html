@@ -4427,63 +4427,19 @@ function getDutyPairWithSwaps(weekOffset,_queue){
   var roster=getDutyRoster();
   if(swaps[key]){
     var sw=swaps[key];
-    if(sw[0]){
-      if(typeof sw[0]==='object'&&sw[0].plus1){pair[0]={firstName:sw[0].name,lastName:'(+1)',phone:'—',id:'plus1_0',_plus1:true}}
-      else{var r=roster.find(function(m){return m.id===sw[0]});if(r)pair[0]=r}
-    }
-    if(sw[1]){
-      if(typeof sw[1]==='object'&&sw[1].plus1){pair[1]={firstName:sw[1].name,lastName:'(+1)',phone:'—',id:'plus1_1',_plus1:true}}
-      else{var r=roster.find(function(m){return m.id===sw[1]});if(r)pair[1]=r}
+    for(var si=0;si<2;si++){
+      if(sw[si]===undefined)continue;
+      if(sw[si]==='__empty__'){pair[si]=null}
+      else if(typeof sw[si]==='object'&&sw[si].plus1){pair[si]={firstName:sw[si].name,lastName:'(+1)',phone:'—',id:'plus1_'+si,_plus1:true}}
+      else if(typeof sw[si]==='string'){var r=roster.find(function(m){return m.id===sw[si]});if(r)pair[si]=r}
     }
   }
   return pair;
 }
 function swapDuty(weekOffset,slot){
-  var roster=getDutyRoster();
-  var pair=getDutyPairWithSwaps(weekOffset);
-  var currentId=pair[slot]?pair[slot].id:'';
   var d=new Date();d.setDate(d.getDate()+weekOffset*7);
-  var sh=getUpcomingShabbat(d);var key=sh.toISOString().slice(0,10);
-  var h='<div style="padding:.5rem"><h2 style="margin-bottom:.8rem">🔄 החלף תורן</h2>';
-  // AI suggestion button
-  h+='<button onclick="closeMD();suggestDutyForDate(\''+key+'\','+slot+')" style="width:100%;padding:8px;margin-bottom:.8rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer">🤖 המלצה חכמה — מי צריך להיות?</button>';
-  // +1 option - assign someone by name who is not in roster
-  h+='<div style="background:var(--c2);border-radius:8px;padding:.7rem;margin-bottom:.8rem;border:1px solid var(--bd2)">';
-  h+='<div style="font-size:.8rem;font-weight:600;margin-bottom:.4rem">➕ שיבוץ +1 (אורח / לא ברשימה)</div>';
-  h+='<div style="position:relative"><div style="display:flex;gap:6px"><input type="text" id="duty-plus1-name" placeholder="התחל להקליד שם..." autocomplete="off" oninput="dutyAC(this.value)" style="flex:1;padding:6px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:.85rem"><button onclick="confirmSwapPlus1('+weekOffset+','+slot+')" style="padding:6px 12px;background:var(--gold);color:var(--bg1);border:none;border-radius:6px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap">שבץ</button></div><div id="duty-ac-list" style="position:absolute;top:100%;right:0;left:0;z-index:10;background:var(--card,#fff);border:1px solid var(--bd);border-radius:0 0 8px 8px;max-height:160px;overflow-y:auto;display:none"></div></div>';
-  h+='</div>';
-  if(roster.length){
-    h+='<p style="margin-bottom:.5rem;font-size:.85rem;color:var(--ink3)">או בחר מרשימת התורנים:</p>';
-    roster.forEach(function(m){
-      var isCurrent=m.id===currentId;
-      h+='<div class="mc" style="margin-bottom:4px;cursor:pointer;opacity:'+(isCurrent?'.5':'1')+'" onclick="'+(isCurrent?'':'confirmSwap('+weekOffset+','+slot+',\''+m.id+'\')')+'"><div class="mav">'+es((m.firstName||'').charAt(0)+(m.lastName||'').charAt(0))+'</div><div class="mi"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2">'+es(m.phone)+(isCurrent?' (נוכחי)':'')+'</div></div></div>';
-    });
-  }
-  h+='<div style="margin-top:.8rem;display:flex;gap:8px;justify-content:center"><button class="md-btn-close" onclick="resetSwap(\''+key+'\','+slot+')">↩ אפס לרוטציה</button><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
-  document.getElementById('md-card').innerHTML=h;
-  document.getElementById('md-ovl').classList.add('show');
-}
-function confirmSwapPlus1(weekOffset,slot){
-  var name=document.getElementById('duty-plus1-name').value.trim();
-  if(!name)return alert(T('enterName'));
-  var d=new Date();d.setDate(d.getDate()+weekOffset*7);
-  var sh=getUpcomingShabbat(d);var key=sh.toISOString().slice(0,10);
-  var swaps=getDutySwaps();
-  if(!swaps[key])swaps[key]={};
-  // Store as object with name for +1 guests
-  swaps[key][slot]={plus1:true,name:name};
-  saveDutySwaps(swaps);
-  closeMD();renderDutyTab();
-}
-function confirmSwap(weekOffset,slot,newId){
-  var d=new Date();d.setDate(d.getDate()+weekOffset*7);
-  var sh=getUpcomingShabbat(d);var key=sh.toISOString().slice(0,10);
-  var swaps=getDutySwaps();
-  if(!swaps[key])swaps[key]={};
-  swaps[key][slot]=newId;
-  saveDutySwaps(swaps);
-  _dutySyncToSheets();
-  closeMD();renderDutyTab();
+  var sh=getUpcomingShabbat(d);var key=d2s(sh);
+  swapDutyByDate(key,slot,'שבת');
 }
 function resetSwap(key,slot){
   var swaps=getDutySwaps();
@@ -4491,6 +4447,15 @@ function resetSwap(key,slot){
   saveDutySwaps(swaps);
   _dutySyncToSheets();
   closeMD();renderDutyTab();
+}
+function clearDutySlot(dateKey,slot){
+  // Remove a single person from a specific slot on a specific date
+  var swaps=getDutySwaps();
+  if(!swaps[dateKey])swaps[dateKey]={};
+  swaps[dateKey][slot]='__empty__';
+  saveDutySwaps(swaps);
+  _dutySyncToSheets();
+  renderDutyTab();
 }
 function getHolidayEves(year){
   // Returns array of {date:Date, name:string} for holiday eves requiring duty
@@ -4592,15 +4557,13 @@ function getDutyPairForDate(dateKey){
   var roster=getDutyRoster();if(roster.length<2)return roster.length?[roster[0]]:[];
   var swaps=getDutySwaps();
   if(swaps[dateKey]){
-    var pair=getDutyPair(0);// base pair as fallback
+    var pair=getDutyPair(0);
     var sw=swaps[dateKey];
-    if(sw[0]){
-      if(typeof sw[0]==='object'&&sw[0].plus1)pair[0]={firstName:sw[0].name,lastName:'(+1)',phone:'—',id:'plus1_0',_plus1:true};
-      else{var r=roster.find(function(m){return m.id===sw[0]});if(r)pair[0]=r}
-    }
-    if(sw[1]){
-      if(typeof sw[1]==='object'&&sw[1].plus1)pair[1]={firstName:sw[1].name,lastName:'(+1)',phone:'—',id:'plus1_1',_plus1:true};
-      else{var r=roster.find(function(m){return m.id===sw[1]});if(r)pair[1]=r}
+    for(var si=0;si<2;si++){
+      if(sw[si]===undefined)continue;
+      if(sw[si]==='__empty__'){pair[si]=null}
+      else if(typeof sw[si]==='object'&&sw[si].plus1)pair[si]={firstName:sw[si].name,lastName:'(+1)',phone:'—',id:'plus1_'+si,_plus1:true};
+      else if(typeof sw[si]==='string'){var r=roster.find(function(m){return m.id===sw[si]});if(r)pair[si]=r}
     }
     return pair;
   }
@@ -4620,7 +4583,7 @@ function swapDutyByDate(dateKey,slot,label){
       h+='<div class="mc" style="margin-bottom:4px;cursor:pointer" onclick="confirmSwapByDate(\''+dateKey+'\','+slot+',\''+m.id+'\')"><div class="mav">'+es((m.firstName||'').charAt(0)+(m.lastName||'').charAt(0))+'</div><div class="mi"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div></div></div>';
     });
   }
-  h+='<div style="margin-top:.8rem;display:flex;gap:8px;justify-content:center"><button class="md-btn-close" onclick="resetSwap(\''+dateKey+'\','+slot+')">↩ אפס</button><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
+  h+='<div style="margin-top:.8rem;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button onclick="clearDutySlot(\''+dateKey+'\','+slot+');closeMD()" style="padding:6px 14px;background:rgba(192,57,43,.1);color:var(--red);border:1.5px solid rgba(192,57,43,.3);border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer">✕ הסר מתורנות</button><button class="md-btn-close" onclick="resetSwap(\''+dateKey+'\','+slot+')">↩ אפס לרוטציה</button><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
   document.getElementById('md-card').innerHTML=h;
   document.getElementById('md-ovl').classList.add('show');
 }
@@ -4732,27 +4695,38 @@ async function renderDutyTab(){
   for(var i=0;i<entries.length;i++){
     var e=entries[i];
     var n1,n2;
-    // Past weeks: show from history if available
+    var eKey=e.dateKey;
+    var eLbl=e.isShabbat?'שבת':es(e.label);
+    // Helper: render a single duty cell (name + swap link + remove button)
+    function dutyCell(member,slotIdx,isEditable){
+      if(!isEditable){
+        return member?es(member.firstName+' '+member.lastName):'—';
+      }
+      if(!member){
+        return'<span style="cursor:pointer;color:var(--gold);text-decoration:underline;font-size:.82rem" onclick="swapDutyByDate(\''+eKey+'\','+slotIdx+',\''+eLbl+'\')">+ שבץ</span>';
+      }
+      var name=es(member.firstName+' '+member.lastName);
+      return'<span style="display:inline-flex;align-items:center;gap:4px">'
+        +'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDutyByDate(\''+eKey+'\','+slotIdx+',\''+eLbl+'\')">'+name+'</span>'
+        +'<button onclick="clearDutySlot(\''+eKey+'\','+slotIdx+')" style="border:none;background:none;color:var(--red);cursor:pointer;font-size:.75rem;padding:0 2px;opacity:.5" title="הסר מתורנות">✕</button>'
+        +'</span>';
+    }
     if(e.isPast){
       var histPair=_histCache[e.dateKey];
       if(histPair){
         var rm={};roster.forEach(function(m){rm[m.id]=m});
-        var hm1=rm[histPair[0]],hm2=rm[histPair[1]];
-        n1=hm1?es(hm1.firstName+' '+hm1.lastName):'—';
-        n2=hm2?es(hm2.firstName+' '+hm2.lastName):'—';
+        n1=dutyCell(rm[histPair[0]],0,false);
+        n2=dutyCell(rm[histPair[1]],1,false);
       }else{
-        n1=e.pair[0]?es(e.pair[0].firstName+' '+e.pair[0].lastName):'—';
-        n2=e.pair[1]?es(e.pair[1].firstName+' '+e.pair[1].lastName):'—';
+        n1=dutyCell(e.pair[0],0,false);
+        n2=dutyCell(e.pair[1],1,false);
       }
-    }else if(e.isShabbat){
-      n1=e.pair[0]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty('+e.weekOffset+',0)">'+es(e.pair[0].firstName+' '+e.pair[0].lastName)+'</span>':'—';
-      n2=e.pair[1]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty('+e.weekOffset+',1)">'+es(e.pair[1].firstName+' '+e.pair[1].lastName)+'</span>':'—';
     }else{
-      n1=e.pair[0]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDutyByDate(\''+e.dateKey+'\',0,\''+es(e.label)+'\')">'+es(e.pair[0].firstName+' '+e.pair[0].lastName)+'</span>':'<span style="cursor:pointer;color:var(--gold);text-decoration:underline" onclick="swapDutyByDate(\''+e.dateKey+'\',0,\''+es(e.label)+'\')">+ שבץ</span>';
-      n2=e.pair[1]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDutyByDate(\''+e.dateKey+'\',1,\''+es(e.label)+'\')">'+es(e.pair[1].firstName+' '+e.pair[1].lastName)+'</span>':'<span style="cursor:pointer;color:var(--gold);text-decoration:underline" onclick="swapDutyByDate(\''+e.dateKey+'\',1,\''+es(e.label)+'\')">+ שבץ</span>';
+      n1=dutyCell(e.pair[0],0,true);
+      n2=dutyCell(e.pair[1],1,true);
     }
     var rowClass=e.isCurrent?' class="current"':(e.isPast?' style="opacity:.6"':(e.isShabbat?'':' style="background:rgba(200,168,75,.06)"'));
-    var delBtn=e.isCustom?'<td><button onclick="deleteCustomDuty(\''+e.dateKey+'\')" style="border:none;background:none;color:var(--red);cursor:pointer;font-size:.9rem" title="מחק">✕</button></td>':'<td></td>';
+    var delBtn=e.isCustom?'<td><button onclick="deleteCustomDuty(\''+e.dateKey+'\')" style="border:none;background:none;color:var(--red);cursor:pointer;font-size:.9rem" title="מחק שורה">✕</button></td>':'<td></td>';
     h+='<tr'+rowClass+'><td>'+e.display+(e.isPast?' <span style="font-size:.7rem;color:var(--ink3)">✓</span>':'')+'</td><td>'+(e.isShabbat?'שבת':(e.isCustom?'📌 '+es(e.label):'🕎 '+es(e.label)))+'</td><td>'+n1+'</td><td>'+n2+'</td>'+delBtn+'</tr>';
   }
   body.innerHTML=h||'<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:1.5rem">'+T('dutyNone')+'</td></tr>';
