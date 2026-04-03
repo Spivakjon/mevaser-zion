@@ -3355,7 +3355,7 @@ async function getHebrewBirthdays(ms,sh){
 async function getShabbatTimes(){
   try{
     var lg=curLang==='en'?'s':'he';
-    var url='https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude=32.258&longitude=34.917&tzid=Asia/Jerusalem&m=50&lg='+lg+'&i=on';
+    var url='https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude=32.258&longitude=34.917&tzid=Asia/Jerusalem&m=30&lg='+lg+'&i=on';
     var r=await hf(url);
     if(!r||!r.items)return null;
     var times={candles:'',havdalah:'',parashaLink:''};
@@ -3662,9 +3662,9 @@ async function loadWeekSummary(){
     var kiddush=getKiddush();
 
     // Calculate adjusted times
-    var candlesAdj=shTimes?timeAddMin(shTimes.candles,-3):'';
+    var candlesAdj=shTimes?shTimes.candles:'';
     var havdalahTime=shTimes?shTimes.havdalah:'';
-    var minchaErev=candlesAdj?timeAddMin(candlesAdj,10):'';
+    var minchaErev=candlesAdj?timeAddMin(candlesAdj,-10):'';
     var shacharit=isWinterTime()?'08:20':'08:30';
     var minchaShabbat=havdalahTime?timeAddMin(havdalahTime,-75):'';
 
