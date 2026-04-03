@@ -53,6 +53,81 @@ body.light-mode .ann-body{color:var(--ink2)}
 body.light-mode .ann-date{color:var(--ink3)}
 body.light-mode .ann-head{color:var(--ink)}
 
+/* Light mode — Admin panel */
+body.light-mode .m-srch{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.15);color:var(--ink)}
+body.light-mode .m-srch::placeholder{color:rgba(0,0,0,.35)}
+body.light-mode .m-srch:focus{background:rgba(0,0,0,.07);border-color:var(--gold)}
+body.light-mode .no-m{color:var(--ink3)}
+body.light-mode .aliyot-section,body.light-mode .kiddush-section,body.light-mode .ann-admin{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.1)}
+body.light-mode .aliyot-label{color:var(--ink2)}
+body.light-mode .aliyot-slot input,body.light-mode .kiddush-section input,body.light-mode .kiddush-section textarea,body.light-mode .ann-admin input,body.light-mode .ann-admin textarea{background:#fff;border-color:#d1d5db;color:var(--ink)}
+body.light-mode .aliyot-slot input::placeholder,body.light-mode .kiddush-section input::placeholder,body.light-mode .kiddush-section textarea::placeholder,body.light-mode .ann-admin input::placeholder,body.light-mode .ann-admin textarea::placeholder{color:var(--ink3)}
+body.light-mode .aliyot-slot input:focus,body.light-mode .kiddush-section input:focus,body.light-mode .kiddush-section textarea:focus,body.light-mode .ann-admin input:focus,body.light-mode .ann-admin textarea:focus{border-color:var(--gold);background:#fff}
+body.light-mode .ann-list-item{background:rgba(0,0,0,.03)}
+body.light-mode .ann-list-item .ann-list-title{color:var(--ink)}
+body.light-mode .ann-list-item .ann-list-body{color:var(--ink2)}
+body.light-mode .ann-list-item .ann-list-date{color:var(--ink3)}
+body.light-mode .ctag{background:rgba(99,102,241,.1);color:#6366f1}
+
+/* Light mode — Settings panel */
+body.light-mode .settings-section{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.1)}
+body.light-mode .settings-section h3{color:var(--ink)}
+body.light-mode .settings-section h3:hover{background:rgba(0,0,0,.03)}
+body.light-mode .settings-section h3::after{color:var(--ink3)}
+body.light-mode .settings-lang-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.12);color:var(--ink3)}
+body.light-mode .settings-lang-btn.active{background:rgba(200,168,75,.1);color:var(--gold);border-color:var(--gold)}
+body.light-mode .settings-field input,body.light-mode .settings-field textarea{background:#fff;border-color:#d1d5db;color:var(--ink)}
+body.light-mode .settings-field input:focus,body.light-mode .settings-field textarea:focus{background:#fff;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,168,75,.15)}
+body.light-mode .settings-field input::placeholder,body.light-mode .settings-field textarea::placeholder{color:var(--ink3)}
+body.light-mode .settings-reset-btn{border-color:rgba(0,0,0,.15);color:var(--ink3)}
+body.light-mode .settings-reset-btn:hover{border-color:var(--red);color:var(--red)}
+body.light-mode .logo-upload-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.12);color:var(--ink2)}
+body.light-mode .logo-upload-btn:hover{border-color:var(--gold);color:var(--gold)}
+body.light-mode .logo-upload-hint{color:var(--ink3)}
+
+/* Light mode — Admin tabs & nav */
+body.light-mode .abt{color:var(--ink3);border-color:rgba(0,0,0,.1);background:rgba(0,0,0,.03)}
+body.light-mode .abt:hover,body.light-mode .abt.active{color:var(--gold);border-color:var(--gold);background:rgba(200,168,75,.08)}
+body.light-mode .stb{color:var(--ink3)}
+body.light-mode .stb.active{background:rgba(200,168,75,.1);color:var(--gold)}
+body.light-mode .jnav{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.1)}
+body.light-mode .jnav-title{color:var(--ink3)}
+body.light-mode .jnav select,body.light-mode .jnav input[type="date"]{background:#fff;border-color:#d1d5db;color:var(--ink)}
+body.light-mode .jnav select option{background:#fff;color:var(--ink)}
+body.light-mode .jnav-item{color:var(--ink3)}
+body.light-mode .jnav-item.active{color:var(--gold);border-color:var(--gold)}
+
+/* Light mode — Duty tab */
+body.light-mode .duty-tbl th{background:rgba(0,0,0,.04);color:var(--ink)}
+body.light-mode .duty-tbl td{color:var(--ink);border-color:rgba(0,0,0,.08)}
+body.light-mode .duty-tbl tr.current{background:rgba(30,125,75,.06)}
+
+/* Light mode — Filter pills & calendar */
+body.light-mode .fpill{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);color:var(--ink3)}
+body.light-mode .fpill:hover{border-color:var(--gold);color:var(--gold)}
+body.light-mode .fpill.active{background:rgba(200,168,75,.12);border-color:var(--gold);color:var(--gold)}
+
+/* Light mode — Admin overlay */
+body.light-mode .adm-x{background:rgba(0,0,0,.08);border-color:rgba(0,0,0,.15);color:var(--ink)}
+body.light-mode .adm-x:hover{background:rgba(0,0,0,.12)}
+
+/* Light mode — Modal & overlay */
+body.light-mode .md-card{background:#fff}
+
+/* ── Accessibility: Focus states ──────────────────────── */
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.top-actions button:focus-visible{background:rgba(200,168,75,.15);color:var(--gold2)}
+.stb:focus-visible{background:rgba(255,255,255,.13);color:var(--gold2)}
+.abt:focus-visible{border-color:var(--gold);color:var(--gold2)}
+body.light-mode .top-actions button:focus-visible{background:rgba(200,168,75,.12);color:var(--gold)}
+body.light-mode .stb:focus-visible{background:rgba(200,168,75,.1);color:var(--gold)}
+
+/* ── Accessibility: Reduced motion ────────────────────── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important;scroll-behavior:auto!important}
+}
+
 .logo-area{text-align:center;padding:1rem 1rem 1rem}
 .logo-wrap{display:inline-flex;flex-direction:column;align-items:center;gap:.5rem}
 .logo-box{width:112px;height:112px;background:#fff;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(0,0,0,.3),0 0 0 2px var(--gold);position:relative;overflow:hidden;padding:8px}
@@ -181,7 +256,7 @@ body.light-mode .lang-toggle button.active{background:rgba(0,0,0,.1);color:var(-
 .m-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;flex-wrap:wrap;gap:.55rem}
 .m-cnt{color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:.93rem;font-weight:700}
 .m-srch{padding:.52rem .75rem;border:1.5px solid rgba(255,255,255,.14);border-radius:9px;background:rgba(255,255,255,.07);color:#fff;font-family:'Heebo',sans-serif;font-size:16px;width:195px;direction:rtl;-webkit-appearance:none;min-height:44px}
-.m-srch::placeholder{color:rgba(255,255,255,.28)}
+.m-srch::placeholder{color:rgba(255,255,255,.5)}
 .m-srch:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.1)}
 .mc{background:#fff;border-radius:10px;padding:.88rem .98rem;margin-bottom:.52rem;display:flex;align-items:center;gap:.75rem;box-shadow:0 2px 10px rgba(0,0,0,.12)}
 .mav{width:38px;height:38px;background:var(--ink);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Frank Ruhl Libre',serif;color:var(--gold);font-size:.87rem;font-weight:700}
@@ -195,7 +270,7 @@ body.light-mode .lang-toggle button.active{background:rgba(0,0,0,.1);color:var(-
 .med:hover{background:var(--ink);color:var(--gold2);border-color:var(--ink)}
 .mde{background:rgba(192,57,43,.07);border:1.5px solid #f5c0bc;border-radius:7px;padding:.35rem .65rem;font-size:.73rem;cursor:pointer;color:var(--red);font-family:'Heebo',sans-serif;transition:all .15s;min-height:36px;display:inline-flex;align-items:center}
 .mde:hover{background:var(--red);color:#fff;border-color:var(--red)}
-.no-m{text-align:center;color:rgba(255,255,255,.32);padding:2.25rem;font-size:.84rem}
+.no-m{text-align:center;color:rgba(255,255,255,.5);padding:2.25rem;font-size:.84rem}
 .div{height:1px;background:var(--bd2);margin:.7rem 0}
 .jnav{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:12px;padding:.8rem 1rem;margin-bottom:1rem}
 .jnav-title{color:rgba(255,255,255,.55);font-size:.74rem;font-weight:600;margin-bottom:.6rem;letter-spacing:.04em;cursor:pointer;display:flex;align-items:center;gap:.4rem}
@@ -301,13 +376,13 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
 .aliyot-label{min-width:70px;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.6)}
 .aliyot-slot input{flex:1;padding:.48rem .65rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:16px;direction:rtl;min-height:44px;min-width:0}
 .aliyot-slot input:focus{outline:none;border-color:var(--gold)}
-.aliyot-slot input::placeholder{color:rgba(255,255,255,.3)}
+.aliyot-slot input::placeholder{color:rgba(255,255,255,.5)}
 .kiddush-section{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:12px;padding:1rem;margin-bottom:1rem}
 .kiddush-section h3{color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:.95rem;font-weight:700;margin-bottom:.7rem}
 .kiddush-section input,.kiddush-section textarea{width:100%;padding:.48rem .65rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:16px;direction:rtl;min-height:44px}
 .kiddush-section textarea{min-height:60px;resize:vertical}
 .kiddush-section input:focus,.kiddush-section textarea:focus{outline:none;border-color:var(--gold)}
-.kiddush-section input::placeholder,.kiddush-section textarea::placeholder{color:rgba(255,255,255,.3)}
+.kiddush-section input::placeholder,.kiddush-section textarea::placeholder{color:rgba(255,255,255,.5)}
 .save-aliyot-btn{background:var(--gold);color:var(--ink);border:none;border-radius:8px;padding:.55rem 1.2rem;font-family:'Heebo',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;min-height:44px;margin-top:.5rem;transition:all .15s}
 .save-aliyot-btn:hover{background:var(--gold2)}
 
@@ -317,7 +392,7 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
 .ann-admin input,.ann-admin textarea{width:100%;padding:.48rem .65rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:16px;direction:rtl;min-height:44px;margin-bottom:.45rem}
 .ann-admin textarea{min-height:70px;resize:vertical}
 .ann-admin input:focus,.ann-admin textarea:focus{outline:none;border-color:var(--gold)}
-.ann-admin input::placeholder,.ann-admin textarea::placeholder{color:rgba(255,255,255,.3)}
+.ann-admin input::placeholder,.ann-admin textarea::placeholder{color:rgba(255,255,255,.5)}
 .ann-list-item{background:rgba(255,255,255,.07);border-radius:8px;padding:.6rem .75rem;margin-bottom:.4rem;display:flex;align-items:flex-start;gap:.5rem}
 .ann-list-item .ann-list-text{flex:1}
 .ann-list-item .ann-list-title{color:#fff;font-weight:700;font-size:.85rem}
@@ -379,7 +454,7 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
 .sheets-cfg-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.5rem}
 .sheets-cfg input{flex:1;padding:.52rem .75rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:16px;direction:ltr;-webkit-appearance:none;min-height:44px;min-width:0}
 .sheets-cfg input:focus{outline:none;border-color:var(--gold)}
-.sheets-cfg input::placeholder{color:rgba(255,255,255,.3)}
+.sheets-cfg input::placeholder{color:rgba(255,255,255,.5)}
 .sheets-cfg-btn{background:var(--gold);color:var(--ink);border:none;border-radius:8px;padding:.48rem .95rem;font-family:'Heebo',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;min-height:44px;white-space:nowrap}
 .sheets-cfg-btn:hover{background:var(--gold2)}
 .sheets-cfg-btn.test{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.17);color:rgba(255,255,255,.68)}
@@ -540,7 +615,7 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
 .logo-upload-btn:hover{border-color:var(--gold);color:var(--gold2);background:rgba(200,168,75,.1)}
 .logo-upload-btn.danger{border-color:rgba(192,57,43,.3);color:rgba(255,255,255,.5)}
 .logo-upload-btn.danger:hover{border-color:var(--red);color:var(--red);background:rgba(192,57,43,.08)}
-.logo-upload-hint{font-size:.68rem;color:rgba(255,255,255,.3)}
+.logo-upload-hint{font-size:.68rem;color:rgba(255,255,255,.5)}
 .logo-drop-zone{display:none}
 @media(max-width:768px){
   .settings-grid{grid-template-columns:1fr}
@@ -657,6 +732,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
 .pay-modal .pm-btns button{flex:1;padding:8px;border:none;border-radius:8px;font-family:inherit;font-size:.9rem;cursor:pointer;font-weight:600}
 .spouse-sec{background:var(--c2);border-radius:8px;padding:.8rem;margin-top:.5rem;border:1px solid var(--bd2)}
 </style>
+<script src="https://unpkg.com/kosher-zmanim@0.9.0/dist/kosher-zmanim.min.js"></script>
 </head>
 <body>
 <div class="top-actions">
@@ -664,10 +740,10 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
   <button onclick="scrollToPayInfo()" id="top-pay-btn" style="color:var(--gold)" data-i18n="payBtn">💳 תשלום</button>
   <button onclick="openAdm()" data-i18n="adminBtn">🔒 ניהול</button>
   <button id="pwa-install-btn" onclick="installPWA()" style="display:none;color:var(--gold)" data-i18n="installBtn">📲 התקן</button>
-  <button onclick="toggleTheme()" id="theme-toggle-btn">☀️</button>
-  <div class="lang-toggle" id="lang-toggle">
-    <button class="active" onclick="setLang('he')">עב</button>
-    <button onclick="setLang('en')">EN</button>
+  <button onclick="toggleTheme()" id="theme-toggle-btn" aria-label="Toggle light/dark mode">☀️</button>
+  <div class="lang-toggle" id="lang-toggle" role="group" aria-label="Language">
+    <button class="active" onclick="setLang('he')" aria-label="עברית">עב</button>
+    <button onclick="setLang('en')" aria-label="English">EN</button>
   </div>
 </div>
 <div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img id="main-logo" src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name" data-i18n="orgName">עמותת מבשר ציון</div><div class="logo-sub" data-i18n="logoSub">בית הכנסת · רח׳ הצופית 23 · תל מונד</div></div></div>
@@ -862,8 +938,18 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     </div>
     <div id="at-duty" style="display:none">
       <div id="duty-hero-card"></div>
-      <h3 style="margin:1rem 0 .6rem;font-size:.95rem" data-i18n-text="dutyScheduleTitle">📅 לוח תורנויות — שבתות וחגים</h3>
-      <table class="duty-tbl"><thead><tr><th data-i18n-text="dutyColDateTh">תאריך</th><th data-i18n-text="dutyColEvent">אירוע</th><th data-i18n-text="dutyCol1Th">תורן 1</th><th data-i18n-text="dutyCol2Th">תורן 2</th></tr></thead><tbody id="duty-body"></tbody></table>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin:1rem 0 .6rem;flex-wrap:wrap;gap:.4rem">
+        <h3 style="font-size:.95rem;margin:0" data-i18n-text="dutyScheduleTitle">📅 לוח תורנויות — שבתות וחגים</h3>
+        <div style="display:flex;align-items:center;gap:6px">
+          <button id="duty-prev-btn" onclick="dutyPageNav(-1)" style="padding:4px 10px;border:1px solid var(--bd);border-radius:6px;background:none;cursor:pointer;font-size:.85rem;font-family:inherit;color:var(--ink)">→ קודם</button>
+          <span id="duty-page-label" style="font-size:.78rem;color:var(--ink3);min-width:80px;text-align:center"></span>
+          <button id="duty-next-btn" onclick="dutyPageNav(1)" style="padding:4px 10px;border:1px solid var(--bd);border-radius:6px;background:none;cursor:pointer;font-size:.85rem;font-family:inherit;color:var(--ink)">הבא ←</button>
+        </div>
+      </div>
+      <table class="duty-tbl"><thead><tr><th data-i18n-text="dutyColDateTh">תאריך</th><th data-i18n-text="dutyColEvent">אירוע</th><th data-i18n-text="dutyCol1Th">תורן 1</th><th data-i18n-text="dutyCol2Th">תורן 2</th><th style="width:36px"></th></tr></thead><tbody id="duty-body"></tbody></table>
+      <div style="display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap">
+        <button onclick="addCustomDutyRow()" style="padding:5px 12px;border:1.5px dashed var(--bd);border-radius:8px;background:none;cursor:pointer;font-family:inherit;font-size:.82rem;color:var(--ink3)">+ הוסף תורנות ידנית</button>
+      </div>
       <h3 style="margin:1rem 0 .6rem;font-size:.95rem" data-i18n-text="dutyRosterTitle">👥 רשימת תורנים</h3>
       <div id="roster-list"></div>
     </div>
@@ -3351,30 +3437,32 @@ async function getHebrewBirthdays(ms,sh){
   return results;
 }
 
+// ── KosherZmanim helper (Tel Mond) ──────────────────────
+var _kzGeo=new KosherZmanim.GeoLocation('Tel Mond',32.258,34.917,0,'Asia/Jerusalem');
+function _kzCal(date){
+  var cal=new KosherZmanim.ComplexZmanimCalendar(_kzGeo);
+  cal.setDate(date);
+  cal.setCandleLightingOffset(30);
+  return cal;
+}
+function _kzFmt(dt){
+  if(!dt)return'';
+  var d=(dt instanceof Date)?dt:(dt.toJSDate?dt.toJSDate():new Date(dt));
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+
 // ── Shabbat Times (Tel Mond) ─────────────────────────────
 async function getShabbatTimes(){
   try{
-    // Calculate times from zmanim endpoint (more accurate than shabbat endpoint during holidays)
     var sh=gSh(); // Saturday
     var fri=new Date(sh);fri.setDate(fri.getDate()-1); // Friday
-    var friStr=d2s(fri),satStr=d2s(sh);
-    var base='https://www.hebcal.com/zmanim?cfg=json&geo=pos&latitude=32.258&longitude=34.917&tzid=Asia/Jerusalem&date=';
-    var results=await Promise.all([hf(base+friStr),hf(base+satStr)]);
-    var friZ=results[0],satZ=results[1];
+    var friCal=_kzCal(fri),satCal=_kzCal(sh);
     var times={candles:'',havdalah:'',parashaLink:''};
     // Candle lighting = Friday sunset minus 30 minutes
-    if(friZ&&friZ.times&&friZ.times.sunset){
-      var ss=new Date(friZ.times.sunset);
-      ss.setMinutes(ss.getMinutes()-30);
-      times.candles=String(ss.getHours()).padStart(2,'0')+':'+String(ss.getMinutes()).padStart(2,'0');
-    }
-    // Havdalah = Saturday tzeit 8.5 degrees
-    if(satZ&&satZ.times){
-      var tz=satZ.times.tzeit85deg||null;
-      // Fallback: sunset + 42 min
-      if(!tz&&satZ.times.sunset){var fb=new Date(satZ.times.sunset);fb.setMinutes(fb.getMinutes()+42);tz=fb.toISOString()}
-      if(tz){var hd=new Date(tz);times.havdalah=String(hd.getHours()).padStart(2,'0')+':'+String(hd.getMinutes()).padStart(2,'0')}
-    }
+    times.candles=_kzFmt(friCal.getCandleLighting());
+    // Havdalah = Saturday tzait 8.5 degrees
+    var tzais=satCal.getTzais();
+    times.havdalah=_kzFmt(tzais);
     return times;
   }catch(e){console.warn('Shabbat times error:',e);return null}
 }
@@ -3403,17 +3491,18 @@ async function getOmerDay(){
 // ── Daily Zmanim (weekday prayer times) ──────────────────
 async function getDailyZmanim(){
   try{
-    var now=new Date();var s=d2s(now);
-    var url='https://www.hebcal.com/zmanim?cfg=json&geo=pos&latitude=32.258&longitude=34.917&tzid=Asia/Jerusalem&date='+s;
-    var r=await hf(url);if(!r||!r.times)return null;
-    var sunrise=r.times.sunrise?new Date(r.times.sunrise):null;
-    var sunset=r.times.sunset?new Date(r.times.sunset):null;
+    var now=new Date();
+    var cal=_kzCal(now);
+    var sunrise=cal.getSunrise();
+    var sunset=cal.getSunset();
     if(!sunrise||!sunset)return null;
+    var srD=(sunrise.toJSDate?sunrise.toJSDate():new Date(sunrise));
+    var ssD=(sunset.toJSDate?sunset.toJSDate():new Date(sunset));
     // Shacharit: sunrise rounded to nearest 5min
-    var shM=sunrise.getHours()*60+sunrise.getMinutes();
+    var shM=srD.getHours()*60+srD.getMinutes();
     var shacharit=Math.ceil(shM/5)*5;
     // Mincha: 15 min before sunset, rounded to 5min
-    var ssM=sunset.getHours()*60+sunset.getMinutes();
+    var ssM=ssD.getHours()*60+ssD.getMinutes();
     var mincha=Math.floor((ssM-15)/5)*5;
     // Maariv: 20 min after sunset, rounded to 5min
     var maariv=Math.ceil((ssM+20)/5)*5;
@@ -4152,95 +4241,168 @@ function getUpcomingShabbat(d){var dt=new Date(d);var day=dt.getDay();var diff=(
 function getRotationIdx(d){var epoch=new Date(2024,0,1);return Math.floor((d-epoch)/(7*24*60*60*1000))}
 // ── Duty Queue (fairness-based rotation) ────────────────
 var DUTY_QUEUE_KEY='mbz_duty_queue';
+var DUTY_HIST_KEY='mbz_duty_history';
 function getDutyQueue(){try{return JSON.parse(localStorage.getItem(DUTY_QUEUE_KEY)||'[]')}catch(e){return[]}}
 function saveDutyQueue(q){localStorage.setItem(DUTY_QUEUE_KEY,JSON.stringify(q))}
+function getDutyHistory(){try{return JSON.parse(localStorage.getItem(DUTY_HIST_KEY)||'{}')}catch(e){return{}}}
+function saveDutyHistory(h){localStorage.setItem(DUTY_HIST_KEY,JSON.stringify(h))}
+
 function syncDutyQueue(){
   var roster=getDutyRoster();
   var rosterIds=roster.map(function(m){return m.id});
   var queue=getDutyQueue();
   // Remove members no longer in roster
   queue=queue.filter(function(id){return rosterIds.indexOf(id)>=0});
-  // Add new roster members to FRONT (haven't served yet = highest priority)
+  // Add new roster members to END (will be sorted by fairness)
   var inQueue={};queue.forEach(function(id){inQueue[id]=true});
   var newIds=rosterIds.filter(function(id){return!inQueue[id]});
-  queue=newIds.concat(queue);
+  queue=queue.concat(newIds);
+  saveDutyQueue(queue);
+  // Auto-advance past weeks that weren't manually marked
+  _autoAdvancePastWeeks();
+  return getDutyQueue();
+}
+
+function _autoAdvancePastWeeks(){
+  var hist=getDutyHistory();
+  var lastAdvKey=localStorage.getItem('mbz_duty_last_adv')||'';
+  var today=new Date();today.setHours(0,0,0,0);
+  // Check last 4 Shabbatot - record any that passed without being marked
+  for(var w=4;w>=1;w--){
+    var d=new Date(today);d.setDate(d.getDate()-w*7);
+    var sh=getUpcomingShabbat(d);
+    var key=sh.toISOString().slice(0,10);
+    if(sh>=today)continue; // hasn't passed yet
+    if(hist[key])continue; // already recorded
+    if(key<=lastAdvKey)continue; // already processed
+    // This Shabbat passed without being recorded - record it and advance
+    var queue=getDutyQueue();
+    if(queue.length>=2){
+      hist[key]=[queue[0],queue[1]];
+      // Move served pair to end
+      var served=queue.splice(0,2);
+      queue=queue.concat(served);
+      saveDutyQueue(queue);
+    }
+  }
+  saveDutyHistory(hist);
+  localStorage.setItem('mbz_duty_last_adv',d2s(today));
+}
+
+function _fairSortQueue(){
+  var stats=getDutyStats();
+  var queue=getDutyQueue();
+  queue.sort(function(a,b){
+    var ca=(stats[a]?stats[a].count:0),cb=(stats[b]?stats[b].count:0);
+    if(ca!==cb)return ca-cb;
+    var da=(stats[a]&&stats[a].lastDate?stats[a].lastDate:''),db=(stats[b]&&stats[b].lastDate?stats[b].lastDate:'');
+    if(da!==db)return da.localeCompare(db);
+    return 0;
+  });
   saveDutyQueue(queue);
   return queue;
 }
-function getDutyPair(weekOffset){
-  var roster=getDutyRoster();if(roster.length===0)return[];if(roster.length===1)return[roster[0]];
-  var queue=syncDutyQueue();
-  if(queue.length<2)return roster.slice(0,2);
-  // Each week uses 2 members from the queue in order
-  var pos=(weekOffset*2)%queue.length;
-  var id1=queue[pos%queue.length];
-  var id2=queue[(pos+1)%queue.length];
+
+function getDutyPair(weekOffset,_queue){
+  var roster=getDutyRoster();
+  if(roster.length===0)return[];
+  if(roster.length===1)return[roster[0]];
+  var queue=_queue||syncDutyQueue();
+  var n=queue.length;
+  if(n<2)return roster.slice(0,2);
   var rosterMap={};roster.forEach(function(m){rosterMap[m.id]=m});
-  return[rosterMap[id1]||roster[0],rosterMap[id2]||roster[1]];
+  // Safe modulo that works with negative weekOffset
+  var pos=((weekOffset*2)%n+n)%n;
+  var id1=queue[pos];
+  var id2Pos=(pos+1)%n;
+  // Ensure id2 is different from id1
+  if(queue[id2Pos]===id1){id2Pos=(id2Pos+1)%n}
+  var id2=queue[id2Pos];
+  var m1=rosterMap[id1],m2=rosterMap[id2];
+  if(!m1&&!m2)return roster.slice(0,2);
+  if(!m1)return[m2,roster.find(function(r){return r.id!==m2.id})||m2];
+  if(!m2)return[m1,roster.find(function(r){return r.id!==m1.id})||m1];
+  return[m1,m2];
 }
+
+// ── Duty Sheets Sync ────────────────────────────────────
+function _dutySyncToSheets(){
+  if(!SHEETS_URL)return;
+  var duty={
+    queue:getDutyQueue(),
+    history:getDutyHistory(),
+    swaps:getDutySwaps(),
+    customs:getCustomDuties()
+  };
+  sheetsPost({action:'saveDuty',duty:duty}).catch(function(e){console.warn('Duty sync error:',e)});
+}
+async function _dutyLoadFromSheets(){
+  if(!SHEETS_URL)return false;
+  try{
+    var r=await fetch(SHEETS_URL+'?action=getDuty',{mode:'cors'});
+    if(!r.ok)return false;
+    var data=await r.json();
+    if(!data||data.status!=='ok'||!data.duty)return false;
+    if(data.duty.queue)saveDutyQueue(data.duty.queue);
+    if(data.duty.history)saveDutyHistory(data.duty.history);
+    if(data.duty.swaps)saveDutySwaps(data.duty.swaps);
+    if(data.duty.customs)saveCustomDuties(data.duty.customs);
+    return true;
+  }catch(e){console.warn('Duty load error:',e);return false}
+}
+
+async function syncDutyFromSheets(){
+  var ok=await _dutyLoadFromSheets();
+  var _e=curLang==='en';
+  if(ok){showToast(_e?'Synced from server':'סונכרן מהשרת בהצלחה');renderDutyTab()}
+  else{showToast(_e?'Server sync failed':'שגיאה בסנכרון מהשרת')}
+}
+
 function advanceDutyQueue(){
-  // Called after current Shabbat passes - move served pair to end
   var queue=syncDutyQueue();
   if(queue.length<2)return;
   var served=queue.splice(0,2);
   queue=queue.concat(served);
   saveDutyQueue(queue);
-  // Record in history
   var sh=getUpcomingShabbat(new Date());
   var key=sh.toISOString().slice(0,10);
   var hist=getDutyHistory();
   if(!hist[key])hist[key]=served;
   saveDutyHistory(hist);
 }
-var DUTY_HIST_KEY='mbz_duty_history';
-function getDutyHistory(){try{return JSON.parse(localStorage.getItem(DUTY_HIST_KEY)||'{}')}catch(e){return{}}}
-function saveDutyHistory(h){localStorage.setItem(DUTY_HIST_KEY,JSON.stringify(h))}
+
 function getDutyStats(){
-  // Calculate per-member stats from queue position + history
   var roster=getDutyRoster();
   var queue=syncDutyQueue();
   var hist=getDutyHistory();
   var swaps=getDutySwaps();
   var stats={};
   roster.forEach(function(m){stats[m.id]={count:0,lastDate:null,queuePos:-1}});
-  // Count from history
   for(var dateKey in hist){
     var pair=hist[dateKey];
-    if(pair&&pair[0]&&stats[pair[0]]){stats[pair[0]].count++;stats[pair[0]].lastDate=dateKey}
-    if(pair&&pair[1]&&stats[pair[1]]){stats[pair[1]].count++;stats[pair[1]].lastDate=dateKey}
+    if(pair&&pair[0]&&stats[pair[0]]){stats[pair[0]].count++;if(!stats[pair[0]].lastDate||dateKey>stats[pair[0]].lastDate)stats[pair[0]].lastDate=dateKey}
+    if(pair&&pair[1]&&stats[pair[1]]){stats[pair[1]].count++;if(!stats[pair[1]].lastDate||dateKey>stats[pair[1]].lastDate)stats[pair[1]].lastDate=dateKey}
   }
-  // Count from swaps (also a form of history)
   for(var dateKey in swaps){
     var sw=swaps[dateKey];
     for(var s=0;s<2;s++){
       if(sw[s]&&typeof sw[s]==='string'&&stats[sw[s]]){
-        // Only count past dates
         if(new Date(dateKey)<new Date()){stats[sw[s]].count++;if(!stats[sw[s]].lastDate||dateKey>stats[sw[s]].lastDate)stats[sw[s]].lastDate=dateKey}
       }
     }
   }
-  // Queue position
   for(var i=0;i<queue.length;i++){if(stats[queue[i]])stats[queue[i]].queuePos=i}
   return stats;
 }
+
 function autoArrangeQueue(){
-  // Sort queue by fairness: fewest duties first, then longest wait
-  var roster=getDutyRoster();
-  var stats=getDutyStats();
-  var sorted=roster.slice().sort(function(a,b){
-    var ca=stats[a.id]?stats[a.id].count:0;
-    var cb=stats[b.id]?stats[b.id].count:0;
-    if(ca!==cb)return ca-cb;
-    var da=stats[a.id]&&stats[a.id].lastDate?stats[a.id].lastDate:'';
-    var db=stats[b.id]&&stats[b.id].lastDate?stats[b.id].lastDate:'';
-    return da.localeCompare(db);
-  });
-  saveDutyQueue(sorted.map(function(m){return m.id}));
+  _fairSortQueue();
+  _dutySyncToSheets();
   showToast(T('toastQueueUpdated'));
   renderDutyTab();
 }
+
 function markDutyDone(){
-  // Mark this week's duty as completed and advance queue
   var sh=getUpcomingShabbat(new Date());
   var key=sh.toISOString().slice(0,10);
   var pair=getDutyPairWithSwaps(0);
@@ -4248,14 +4410,16 @@ function markDutyDone(){
   hist[key]=[pair[0]?pair[0].id:null,pair[1]?pair[1].id:null];
   saveDutyHistory(hist);
   advanceDutyQueue();
+  _fairSortQueue();
+  _dutySyncToSheets();
   showToast(T('toastDutyDone'));
   renderDutyTab();
 }
 var DUTY_SWAPS_KEY='mbz_duty_swaps';
 function getDutySwaps(){try{return JSON.parse(localStorage.getItem(DUTY_SWAPS_KEY)||'{}')}catch(e){return{}}}
 function saveDutySwaps(s){localStorage.setItem(DUTY_SWAPS_KEY,JSON.stringify(s))}
-function getDutyPairWithSwaps(weekOffset){
-  var pair=getDutyPair(weekOffset);
+function getDutyPairWithSwaps(weekOffset,_queue){
+  var pair=getDutyPair(weekOffset,_queue);
   var d=new Date();d.setDate(d.getDate()+weekOffset*7);
   var sh=getUpcomingShabbat(d);
   var key=sh.toISOString().slice(0,10);
@@ -4318,12 +4482,14 @@ function confirmSwap(weekOffset,slot,newId){
   if(!swaps[key])swaps[key]={};
   swaps[key][slot]=newId;
   saveDutySwaps(swaps);
+  _dutySyncToSheets();
   closeMD();renderDutyTab();
 }
 function resetSwap(key,slot){
   var swaps=getDutySwaps();
   if(swaps[key]){delete swaps[key][slot];if(!swaps[key][0]&&!swaps[key][1])delete swaps[key]}
   saveDutySwaps(swaps);
+  _dutySyncToSheets();
   closeMD();renderDutyTab();
 }
 function getHolidayEves(year){
@@ -4359,28 +4525,54 @@ async function getHolidayDutyDates(){
   }catch(e){return[]}
 }
 function suggestDutyForDate(dateKey,slot){
-  // Smart suggestion based on fairness stats
   var roster=getDutyRoster();if(roster.length<2)return;
-  var stats=getDutyStats();
-  // Sort by fairness: fewest duties first, then longest wait
-  var sorted=roster.slice().sort(function(a,b){
-    var ca=stats[a.id]?stats[a.id].count:0;
-    var cb=stats[b.id]?stats[b.id].count:0;
+  var queue=syncDutyQueue();
+  // Build 8-week schedule to count real appearances
+  var schedCount={};var nearestBefore={};
+  for(var w=-4;w<8;w++){
+    var d=new Date();d.setDate(d.getDate()+w*7);
+    var sh=getUpcomingShabbat(d);
+    var pair=getDutyPairWithSwaps(w,queue);
+    if(pair[0]&&pair[0].id)schedCount[pair[0].id]=(schedCount[pair[0].id]||0)+1;
+    if(pair[1]&&pair[1].id)schedCount[pair[1].id]=(schedCount[pair[1].id]||0)+1;
+    // Track nearest assignment before this date
+    var sk=d2s(sh);
+    if(sk<dateKey){
+      if(pair[0]&&pair[0].id)nearestBefore[pair[0].id]=sk;
+      if(pair[1]&&pair[1].id)nearestBefore[pair[1].id]=sk;
+    }
+  }
+  // Find who is in the OTHER slot for this date (exclude them)
+  var otherSlot=slot===0?1:0;
+  var swaps=getDutySwaps();
+  var otherMemberId=null;
+  if(swaps[dateKey]&&swaps[dateKey][otherSlot]&&typeof swaps[dateKey][otherSlot]==='string'){
+    otherMemberId=swaps[dateKey][otherSlot];
+  }else{
+    var basePair=getDutyPair(0,queue);
+    if(basePair[otherSlot])otherMemberId=basePair[otherSlot].id;
+  }
+  // Sort: fewest schedule appearances first, then longest wait
+  var candidates=roster.filter(function(m){return m.id!==otherMemberId});
+  candidates.sort(function(a,b){
+    var ca=schedCount[a.id]||0,cb=schedCount[b.id]||0;
     if(ca!==cb)return ca-cb;
-    var da=stats[a.id]&&stats[a.id].lastDate?stats[a.id].lastDate:'';
-    var db=stats[b.id]&&stats[b.id].lastDate?stats[b.id].lastDate:'';
+    var da=nearestBefore[a.id]||'',db=nearestBefore[b.id]||'';
     return da.localeCompare(db);
   });
-  var suggestions=sorted.slice(0,3);
-  var h='<div style="padding:.5rem"><h2 style="margin-bottom:.6rem">🤖 המלצת שיבוץ חכמה</h2>';
-  h+='<p style="font-size:.82rem;color:#666;margin-bottom:.8rem">לפי הוגנות — מי שעשה הכי מעט תורנויות והכי מזמן:</p>';
+  var suggestions=candidates.slice(0,Math.min(5,candidates.length));
+  var _e=curLang==='en';
+  var h='<div style="padding:.5rem"><h2 style="margin-bottom:.6rem">'+(_e?'Smart Suggestion':'🤖 המלצת שיבוץ חכמה')+'</h2>';
+  h+='<p style="font-size:.82rem;color:var(--ink3);margin-bottom:.8rem">'+(_e?'By fairness — fewest assignments in the 12-week schedule:':'לפי הוגנות — מי שמשובץ הכי פחות ב-12 השבועות:')+'</p>';
   suggestions.forEach(function(m,i){
-    var s=stats[m.id]||{count:0,lastDate:null};
-    var daysAgo=s.lastDate?Math.round((Date.now()-new Date(s.lastDate).getTime())/(1000*60*60*24)):999;
-    var label=daysAgo>900?'טרם שובץ':'לפני '+daysAgo+' ימים';
-    h+='<div class="mc" style="margin-bottom:6px;cursor:pointer;border-right:3px solid #1e7d4b" onclick="confirmSwapByDate(\''+dateKey+'\','+slot+',\''+m.id+'\')"><div class="mav" style="background:#1e7d4b">'+(i+1)+'</div><div class="mi"><div class="mn" style="color:#222">'+es(m.firstName+' '+m.lastName)+'</div><div class="ms2" style="color:#888">'+es(m.phone)+' · '+s.count+' תורנויות · '+label+'</div></div></div>';
+    var sc=schedCount[m.id]||0;
+    var nb=nearestBefore[m.id];
+    var label;
+    if(!nb)label=_e?'Not recently assigned':'לא שובץ לאחרונה';
+    else{var daysAgo=Math.round((new Date(dateKey)-new Date(nb))/(1000*60*60*24));label=(_e?'Last: ':'אחרון: ')+daysAgo+(_e?' days ago':' ימים לפני')}
+    h+='<div class="mc" style="margin-bottom:6px;cursor:pointer;border-right:3px solid '+(i===0?'#1e7d4b':'var(--bd)')+'" onclick="confirmSwapByDate(\''+dateKey+'\','+slot+',\''+m.id+'\')"><div class="mav" style="'+(i===0?'background:#1e7d4b':'')+'">'+( i===0?'★':(i+1))+'</div><div class="mi"><div class="mn">'+es(m.firstName+' '+m.lastName)+(i===0?' <span style="font-size:.7rem;color:#1e7d4b;font-weight:700">'+(_e?'Recommended':'מומלץ')+'</span>':'')+'</div><div class="ms2">'+es(m.phone)+' · '+sc+(_e?' assignments':' שיבוצים')+' · '+label+'</div></div></div>';
   });
-  h+='<div style="margin-top:.8rem;text-align:center"><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
+  h+='<div style="margin-top:.8rem;text-align:center"><button class="md-btn-close" onclick="closeMD()">'+(_e?'Close':'סגור')+'</button></div></div>';
   document.getElementById('md-card').innerHTML=h;
   document.getElementById('md-ovl').classList.add('show');
 }
@@ -4437,13 +4629,49 @@ function confirmSwapByDate(dateKey,slot,memberId){
   if(!swaps[dateKey])swaps[dateKey]={};
   if(memberId){swaps[dateKey][slot]=memberId}
   else{var name=document.getElementById('duty-plus1-name').value.trim();if(!name)return alert(T('enterName'));swaps[dateKey][slot]={plus1:true,name:name}}
-  saveDutySwaps(swaps);closeMD();renderDutyTab();
+  saveDutySwaps(swaps);_dutySyncToSheets();closeMD();renderDutyTab();
 }
+var _dutyPage=0; // 0 = current, negative = past, positive = future
+function dutyPageNav(dir){_dutyPage+=dir;renderDutyTab()}
+
+// ── Custom duty entries (manual add/delete) ─────────────
+var CUSTOM_DUTY_KEY='mbz_custom_duties';
+function getCustomDuties(){try{return JSON.parse(localStorage.getItem(CUSTOM_DUTY_KEY)||'[]')}catch(e){return[]}}
+function saveCustomDuties(arr){localStorage.setItem(CUSTOM_DUTY_KEY,JSON.stringify(arr))}
+
+function addCustomDutyRow(){
+  var _e=curLang==='en';
+  var label=prompt(_e?'Event name (e.g. Holiday Eve):':'שם האירוע (למשל: ערב חג):');
+  if(!label)return;
+  var dateStr=prompt(_e?'Date (YYYY-MM-DD):':'תאריך (YYYY-MM-DD):',d2s(new Date()));
+  if(!dateStr||!/^\d{4}-\d{2}-\d{2}$/.test(dateStr))return alert(_e?'Invalid date format':'פורמט תאריך לא תקין');
+  var customs=getCustomDuties();
+  customs.push({date:dateStr,label:label});
+  saveCustomDuties(customs);
+  _dutySyncToSheets();
+  renderDutyTab();
+}
+
+function deleteCustomDuty(dateKey){
+  var _e=curLang==='en';
+  if(!confirm(_e?'Delete this duty entry?':'למחוק את התורנות הזו?'))return;
+  var customs=getCustomDuties();
+  customs=customs.filter(function(c){return c.date!==dateKey});
+  saveCustomDuties(customs);
+  // Also clear any swaps for this date
+  var swaps=getDutySwaps();
+  if(swaps[dateKey]){delete swaps[dateKey];saveDutySwaps(swaps)}
+  _dutySyncToSheets();
+  renderDutyTab();
+}
+
 async function renderDutyTab(){
   var roster=getDutyRoster();
+  var _syncedQueue=syncDutyQueue(); // sync once, reuse for all getDutyPair calls
+  var _histCache=getDutyHistory(); // hoist: used in render loop
   var hc=document.getElementById('duty-hero-card');
   if(roster.length>=2){
-    var pair=getDutyPairWithSwaps(0);var sh=getUpcomingShabbat(new Date());
+    var pair=getDutyPairWithSwaps(0,_syncedQueue);var sh=getUpcomingShabbat(new Date());
     var ds=sh.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
     hc.innerHTML='<div class="duty-hero"><h3>'+T('dutyThisShabbat')+ds+'</h3><div class="duty-names"><span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty(0,0)">'+es(pair[0].firstName+' '+pair[0].lastName)+'</span>  &amp;  <span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty(0,1)">'+es(pair[1].firstName+' '+pair[1].lastName)+'</span></div><div class="duty-phones">'+es(pair[0].phone)+' | '+es(pair[1].phone)+'</div></div>';
   }else if(roster.length===1){
@@ -4451,64 +4679,113 @@ async function renderDutyTab(){
   }else{
     hc.innerHTML='<div class="duty-hero" style="background:#6b7280"><h3>'+T('dutyNone')+'</h3><p style="margin-top:.5rem;opacity:.9;font-size:.85rem">'+T('dutyNoneDesc')+'</p></div>';
   }
-  // Build combined list: Shabbatot + holidays
+  // Build 8-week window: page 0 = weeks 0..7, page -1 = weeks -8..-1, page 1 = weeks 8..15
+  var startWeek=_dutyPage*8;
   var entries=[];
-  for(var w=0;w<8;w++){
+  for(var w=startWeek;w<startWeek+8;w++){
     var d=new Date();d.setDate(d.getDate()+w*7);
     var sh=getUpcomingShabbat(d);
     var ds=sh.toLocaleDateString('he-IL',{day:'numeric',month:'long'});
-    var pair=getDutyPairWithSwaps(w);
-    entries.push({date:sh,dateKey:sh.toISOString().slice(0,10),label:T('dutyShabbat'),display:ds+(w===0?' '+T('dutyCurrent'):''),pair:pair,weekOffset:w,isShabbat:true,isCurrent:w===0});
+    var pair=getDutyPairWithSwaps(w,_syncedQueue);
+    var isPast=sh<new Date();
+    var isCurrent=w===0;
+    var displayLabel=ds+(isCurrent?' '+T('dutyCurrent'):'');
+    entries.push({date:sh,dateKey:sh.toISOString().slice(0,10),label:T('dutyShabbat'),display:displayLabel,pair:pair,weekOffset:w,isShabbat:true,isCurrent:isCurrent,isPast:isPast});
   }
-  // Fetch holidays
+  // Fetch holidays for this range
   var holidays=await getHolidayDutyDates();
-  var lastShabbat=entries[entries.length-1].date;
+  var firstDate=entries[0].date,lastDate=entries[entries.length-1].date;
   for(var hi=0;hi<holidays.length;hi++){
     var hol=holidays[hi];
-    if(hol.date>lastShabbat)continue;
-    // Don't duplicate if same date as Shabbat
+    if(hol.date<firstDate||hol.date>lastDate)continue;
     var isDup=entries.some(function(e){return e.dateKey===hol.dateKey});
     if(isDup)continue;
     var holPair=getDutyPairForDate(hol.dateKey);
-    entries.push({date:hol.date,dateKey:hol.dateKey,label:hol.name,display:hol.date.toLocaleDateString('he-IL',{day:'numeric',month:'long'}),pair:holPair,isShabbat:false,isCurrent:false});
+    entries.push({date:hol.date,dateKey:hol.dateKey,label:hol.name,display:hol.date.toLocaleDateString('he-IL',{day:'numeric',month:'long'}),pair:holPair,isShabbat:false,isCurrent:false,isPast:hol.date<new Date()});
+  }
+  // Add custom duty entries
+  var customs=getCustomDuties();
+  for(var ci=0;ci<customs.length;ci++){
+    var cd=customs[ci];
+    var cdDate=new Date(cd.date+'T12:00:00');
+    if(cdDate<firstDate||cdDate>lastDate)continue;
+    var isDup=entries.some(function(e){return e.dateKey===cd.date});
+    if(isDup)continue;
+    var cdPair=getDutyPairForDate(cd.date);
+    entries.push({date:cdDate,dateKey:cd.date,label:cd.label||'תורנות',display:cdDate.toLocaleDateString('he-IL',{day:'numeric',month:'long'}),pair:cdPair,isShabbat:false,isCurrent:false,isPast:cdDate<new Date(),isCustom:true});
   }
   entries.sort(function(a,b){return a.date-b.date});
+
+  // Update page label and buttons
+  var pageLabel=document.getElementById('duty-page-label');
+  var prevBtn=document.getElementById('duty-prev-btn');
+  var nextBtn=document.getElementById('duty-next-btn');
+  if(pageLabel){
+    if(_dutyPage===0)pageLabel.textContent='שבועות קרובים';
+    else if(_dutyPage<0)pageLabel.textContent=Math.abs(_dutyPage*8)+' שבועות אחורה';
+    else pageLabel.textContent=(_dutyPage*8)+' שבועות קדימה';
+  }
+  if(prevBtn)prevBtn.disabled=(_dutyPage<=-4); // max 32 weeks back
+  if(nextBtn)nextBtn.disabled=(_dutyPage>=4);  // max 32 weeks forward
 
   var body=document.getElementById('duty-body');var h='';
   for(var i=0;i<entries.length;i++){
     var e=entries[i];
     var n1,n2;
-    if(e.isShabbat){
+    // Past weeks: show from history if available
+    if(e.isPast){
+      var histPair=_histCache[e.dateKey];
+      if(histPair){
+        var rm={};roster.forEach(function(m){rm[m.id]=m});
+        var hm1=rm[histPair[0]],hm2=rm[histPair[1]];
+        n1=hm1?es(hm1.firstName+' '+hm1.lastName):'—';
+        n2=hm2?es(hm2.firstName+' '+hm2.lastName):'—';
+      }else{
+        n1=e.pair[0]?es(e.pair[0].firstName+' '+e.pair[0].lastName):'—';
+        n2=e.pair[1]?es(e.pair[1].firstName+' '+e.pair[1].lastName):'—';
+      }
+    }else if(e.isShabbat){
       n1=e.pair[0]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty('+e.weekOffset+',0)">'+es(e.pair[0].firstName+' '+e.pair[0].lastName)+'</span>':'—';
       n2=e.pair[1]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty('+e.weekOffset+',1)">'+es(e.pair[1].firstName+' '+e.pair[1].lastName)+'</span>':'—';
     }else{
       n1=e.pair[0]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDutyByDate(\''+e.dateKey+'\',0,\''+es(e.label)+'\')">'+es(e.pair[0].firstName+' '+e.pair[0].lastName)+'</span>':'<span style="cursor:pointer;color:var(--gold);text-decoration:underline" onclick="swapDutyByDate(\''+e.dateKey+'\',0,\''+es(e.label)+'\')">+ שבץ</span>';
       n2=e.pair[1]?'<span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDutyByDate(\''+e.dateKey+'\',1,\''+es(e.label)+'\')">'+es(e.pair[1].firstName+' '+e.pair[1].lastName)+'</span>':'<span style="cursor:pointer;color:var(--gold);text-decoration:underline" onclick="swapDutyByDate(\''+e.dateKey+'\',1,\''+es(e.label)+'\')">+ שבץ</span>';
     }
-    var rowClass=e.isCurrent?' class="current"':(e.isShabbat?'':' style="background:rgba(200,168,75,.06)"');
-    h+='<tr'+rowClass+'><td>'+e.display+'</td><td>'+(e.isShabbat?'שבת':'🕎 '+es(e.label))+'</td><td>'+n1+'</td><td>'+n2+'</td></tr>';
+    var rowClass=e.isCurrent?' class="current"':(e.isPast?' style="opacity:.6"':(e.isShabbat?'':' style="background:rgba(200,168,75,.06)"'));
+    var delBtn=e.isCustom?'<td><button onclick="deleteCustomDuty(\''+e.dateKey+'\')" style="border:none;background:none;color:var(--red);cursor:pointer;font-size:.9rem" title="מחק">✕</button></td>':'<td></td>';
+    h+='<tr'+rowClass+'><td>'+e.display+(e.isPast?' <span style="font-size:.7rem;color:var(--ink3)">✓</span>':'')+'</td><td>'+(e.isShabbat?'שבת':(e.isCustom?'📌 '+es(e.label):'🕎 '+es(e.label)))+'</td><td>'+n1+'</td><td>'+n2+'</td>'+delBtn+'</tr>';
   }
   body.innerHTML=h||'<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:1.5rem">'+T('dutyNone')+'</td></tr>';
+  // Count scheduled appearances from the entries we just built
+  var schedCount={},nextDate={};
+  for(var ei=0;ei<entries.length;ei++){
+    var ep=entries[ei].pair;
+    var dk=entries[ei].dateKey;
+    if(ep[0]&&ep[0].id){schedCount[ep[0].id]=(schedCount[ep[0].id]||0)+1;if(!nextDate[ep[0].id]&&!entries[ei].isPast)nextDate[ep[0].id]=dk}
+    if(ep[1]&&ep[1].id){schedCount[ep[1].id]=(schedCount[ep[1].id]||0)+1;if(!nextDate[ep[1].id]&&!entries[ei].isPast)nextDate[ep[1].id]=dk}
+  }
   var rl=document.getElementById('roster-list');
   var rh='';
   // Action buttons
   rh+='<div style="display:flex;gap:6px;margin-bottom:.8rem;flex-wrap:wrap">';
   rh+='<button onclick="markDutyDone()" style="padding:6px 14px;background:linear-gradient(135deg,#1e7d4b,#2d9d5e);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer">✅ סיים תורנות השבוע</button>';
   rh+='<button onclick="autoArrangeQueue()" style="padding:6px 14px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer">🤖 סדר אוטומטי לפי הוגנות</button>';
+  if(SHEETS_URL)rh+='<button onclick="syncDutyFromSheets()" style="padding:6px 14px;background:linear-gradient(135deg,#2563eb,#3b82f6);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer">☁ סנכרן מהשרת</button>';
   rh+='</div>';
   if(roster.length){
-    var stats=getDutyStats();
     var queue=getDutyQueue();
     // Show roster ordered by queue position
     var ordered=queue.map(function(id){return roster.find(function(m){return m.id===id})}).filter(Boolean);
     // Add any roster members not in queue
     roster.forEach(function(m){if(!ordered.find(function(o){return o.id===m.id}))ordered.push(m)});
     rh+=ordered.map(function(m,i){
-      var s=stats[m.id]||{count:0,lastDate:null,queuePos:i};
-      var daysAgo=s.lastDate?Math.round((Date.now()-new Date(s.lastDate).getTime())/(1000*60*60*24)):-1;
-      var label=daysAgo<0?'טרם שובץ':daysAgo===0?'היום':'לפני '+daysAgo+' ימים';
+      var sc=schedCount[m.id]||0;
+      var nd=nextDate[m.id]||'';
+      var label;
+      if(nd){var ndD=new Date(nd);var daysUntil=Math.round((ndD-new Date())/(1000*60*60*24));label=daysUntil<=0?'השבת הקרובה':daysUntil<=7?'השבת הבאה':'בעוד '+daysUntil+' ימים'}
+      else{label='ממתין בתור'}
       var isNext=i<2;
-      return'<div class="mc" style="margin-bottom:6px;display:flex;align-items:center;border-right:3px solid '+(isNext?'#1e7d4b':'transparent')+'"><div class="mav" style="'+(isNext?'background:#1e7d4b':'')+'">'+(i+1)+'</div><div class="mi" style="flex:1"><div class="mn">'+es(m.firstName+' '+m.lastName)+(isNext?' <span style="font-size:.7rem;color:#1e7d4b;font-weight:700">הבא בתור</span>':'')+'</div><div class="ms2">'+es(m.phone)+' · '+s.count+' תורנויות · '+label+'</div></div><button onclick="removeDutyMember(\''+m.id+'\')" style="padding:4px 10px;border:1px solid #c0392b;color:#c0392b;border-radius:6px;background:none;cursor:pointer;font-size:.75rem;font-family:inherit;white-space:nowrap">✕ הסר</button></div>'}).join('');
+      return'<div class="mc" style="margin-bottom:6px;display:flex;align-items:center;border-right:3px solid '+(isNext?'#1e7d4b':'transparent')+'"><div class="mav" style="'+(isNext?'background:#1e7d4b':'')+'">'+(i+1)+'</div><div class="mi" style="flex:1"><div class="mn">'+es(m.firstName+' '+m.lastName)+(isNext?' <span style="font-size:.7rem;color:#1e7d4b;font-weight:700">הבא בתור</span>':'')+'</div><div class="ms2">'+es(m.phone)+' · '+sc+' שיבוצים ב-8 שבועות · '+label+'</div></div><button onclick="removeDutyMember(\''+m.id+'\')" style="padding:4px 10px;border:1px solid #c0392b;color:#c0392b;border-radius:6px;background:none;cursor:pointer;font-size:.75rem;font-family:inherit;white-space:nowrap">✕ הסר</button></div>'}).join('');
   }else{
     rh='<div style="text-align:center;color:var(--ink3);padding:1rem">אין תורנים ברשימה</div>';
   }
@@ -4526,6 +4803,7 @@ function removeDutyMember(id){
   var queue=getDutyQueue();
   queue=queue.filter(function(qid){return qid!==id});
   saveDutyQueue(queue);
+  _dutySyncToSheets();
   renderDutyTab();
 }
 function dutyRosterAC(val){
@@ -4543,11 +4821,13 @@ function dutyRosterAC(val){
 }
 function addDutyMember(id){
   updM(id,{dutyRoster:true});
-  // Add to front of queue (new member = hasn't served = highest priority)
+  // Add to queue and re-sort by fairness (new member with 0 duties gets fair position)
   var queue=getDutyQueue();
   queue=queue.filter(function(qid){return qid!==id});
-  queue.unshift(id);
+  queue.push(id);
   saveDutyQueue(queue);
+  _fairSortQueue();
+  _dutySyncToSheets();
   var inp=document.getElementById('duty-add-input');if(inp)inp.value='';
   var list=document.getElementById('duty-roster-ac');if(list)list.style.display='none';
   renderDutyTab();

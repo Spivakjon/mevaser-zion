@@ -48,6 +48,10 @@ function doGet(e) {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
+  if (action === 'getDuty') {
+    return jsonResp(getDutyData());
+  }
+
   return ContentService
     .createTextOutput(JSON.stringify({ status: 'ok', msg: 'Mevaser Zion API' }))
     .setMimeType(ContentService.MimeType.JSON);
@@ -72,6 +76,9 @@ function doPost(e) {
   }
   if (action === 'delete') {
     return jsonResp(deleteMember(id));
+  }
+  if (action === 'saveDuty') {
+    return jsonResp(saveDutyData(payload.duty));
   }
 
   return jsonResp({ status: 'error', msg: 'Unknown action: ' + action });
@@ -151,6 +158,60 @@ function deleteMember(id) {
   }
 
   return { status: 'error', msg: 'Member not found: ' + id };
+}
+
+// ── תורנויות — גיליון נפרד ─────────────────────────────
+const DUTY_SHEET_NAME = 'תורנויות';
+
+function getDutySheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(DUTY_SHEET_NAME);
+  if (!sh) {
+    sh = ss.insertSheet(DUTY_SHEET_NAME);
+    sh.appendRow(['key', 'value', 'updatedAt']);
+    sh.setFrozenRows(1);
+    sh.getRange('1:1').setFontWeight('bold')
+      .setBackground('#1e7d4b').setFontColor('#fff');
+  }
+  return sh;
+}
+
+function saveDutyData(duty) {
+  if (!duty) return { status: 'error', msg: 'Missing duty data' };
+  const sh = getDutySheet();
+  const now = new Date().toISOString();
+  // Store each key (queue, history, swaps) as a separate row
+  const keys = ['queue', 'history', 'swaps', 'customs'];
+  const rows = sh.getDataRange().getValues();
+
+  for (const key of keys) {
+    if (duty[key] === undefined) continue;
+    let found = false;
+    for (let i = 1; i < rows.length; i++) {
+      if (rows[i][0] === key) {
+        sh.getRange(i + 1, 2).setValue(JSON.stringify(duty[key]));
+        sh.getRange(i + 1, 3).setValue(now);
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      sh.appendRow([key, JSON.stringify(duty[key]), now]);
+    }
+  }
+  return { status: 'ok' };
+}
+
+function getDutyData() {
+  const sh = getDutySheet();
+  const rows = sh.getDataRange().getValues();
+  const result = {};
+  for (let i = 1; i < rows.length; i++) {
+    try {
+      result[rows[i][0]] = JSON.parse(rows[i][1]);
+    } catch (e) {}
+  }
+  return { status: 'ok', duty: result };
 }
 
 // ── Helper ───────────────────────────────────────────────
