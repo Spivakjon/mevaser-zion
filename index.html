@@ -3354,24 +3354,26 @@ async function getHebrewBirthdays(ms,sh){
 // ── Shabbat Times (Tel Mond) ─────────────────────────────
 async function getShabbatTimes(){
   try{
-    var lg=curLang==='en'?'s':'he';
-    var url='https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude=32.258&longitude=34.917&tzid=Asia/Jerusalem&m=30&lg='+lg+'&i=on';
-    var r=await hf(url);
-    if(!r||!r.items)return null;
+    // Calculate times from zmanim endpoint (more accurate than shabbat endpoint during holidays)
+    var sh=gSh(); // Saturday
+    var fri=new Date(sh);fri.setDate(fri.getDate()-1); // Friday
+    var friStr=d2s(fri),satStr=d2s(sh);
+    var base='https://www.hebcal.com/zmanim?cfg=json&geo=pos&latitude=32.258&longitude=34.917&tzid=Asia/Jerusalem&date=';
+    var results=await Promise.all([hf(base+friStr),hf(base+satStr)]);
+    var friZ=results[0],satZ=results[1];
     var times={candles:'',havdalah:'',parashaLink:''};
-    for(var i=0;i<r.items.length;i++){
-      var it=r.items[i];
-      if(it.category==='candles'){
-        var dt=new Date(it.date);
-        times.candles=String(dt.getHours()).padStart(2,'0')+':'+String(dt.getMinutes()).padStart(2,'0');
-      }
-      if(it.category==='havdalah'){
-        var dt2=new Date(it.date);
-        times.havdalah=String(dt2.getHours()).padStart(2,'0')+':'+String(dt2.getMinutes()).padStart(2,'0');
-      }
-      if(it.category==='parashat'&&it.link){
-        times.parashaLink=it.link;
-      }
+    // Candle lighting = Friday sunset minus 30 minutes
+    if(friZ&&friZ.times&&friZ.times.sunset){
+      var ss=new Date(friZ.times.sunset);
+      ss.setMinutes(ss.getMinutes()-30);
+      times.candles=String(ss.getHours()).padStart(2,'0')+':'+String(ss.getMinutes()).padStart(2,'0');
+    }
+    // Havdalah = Saturday tzeit 8.5 degrees
+    if(satZ&&satZ.times){
+      var tz=satZ.times.tzeit85deg||null;
+      // Fallback: sunset + 42 min
+      if(!tz&&satZ.times.sunset){var fb=new Date(satZ.times.sunset);fb.setMinutes(fb.getMinutes()+42);tz=fb.toISOString()}
+      if(tz){var hd=new Date(tz);times.havdalah=String(hd.getHours()).padStart(2,'0')+':'+String(hd.getMinutes()).padStart(2,'0')}
     }
     return times;
   }catch(e){console.warn('Shabbat times error:',e);return null}
@@ -3721,15 +3723,6 @@ async function loadWeekSummary(){
       h+='<div class="wk-countdown"><span class="wk-cd-icon">'+nextEvent.icon+'</span><span class="wk-cd-text">'+es(nextEvent.label)+'</span><span class="wk-cd-days">'+(isEn?'in '+nextEvent.days+' days':'בעוד '+nextEvent.days+' ימים')+'</span></div>';
     }
 
-    // ── DEMO DATA (remove after review) ──
-    evs.push({t:'bm',child:'יונתן',parent:'דוד כהן',torah:'יונתן בן דוד',par:'תזריע-מצורע',rp:true,rh:false});
-    evs.push({t:'yr',dec:'שרה בת אברהם',mem:'אברהם לוי',lead:'כן',haft:'לא',dh:'ט״ו ניסן תשפ״ו'});
-    evs.push({t:'yr',dec:'משה בן יעקב',mem:'יעקב ישראלי',lead:'לא',haft:'כן',dh:'י״ז ניסן תשפ״ו'});
-    birthdays.push({childName:'נועם',parentName:'רחל ומיכאל דהן',gender:'זכר'});
-    birthdays.push({childName:'תמר',parentName:'יוסי ושירה אלון',gender:'נקבה'});
-    if(!aliyot||aliyot.date!==key){aliyot={date:key,slots:{'כהן':'אברהם לוי','לוי':'יצחק כהן','שלישי':'דוד ישראלי','רביעי':'משה אלון','חמישי':'שמעון דהן','שישי':'יעקב פרץ','שביעי':'אליהו מזרחי','מפטיר':'יונתן כהן'}}}
-    if(!kiddush||kiddush.date!==key){kiddush={date:key,who:'משפחת כהן',notes:'לרגל בר המצווה של יונתן'}}
-    // ── END DEMO DATA ──
     if(evs.length||birthdays.length||(aliyot&&aliyot.date===key)||(kiddush&&kiddush.date===key)){
       h+='<div class="wk-events">';
       for(var i=0;i<evs.length;i++){
