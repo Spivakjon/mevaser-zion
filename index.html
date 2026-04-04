@@ -949,6 +949,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       <table class="duty-tbl"><thead><tr><th data-i18n-text="dutyColDateTh">תאריך</th><th data-i18n-text="dutyColEvent">אירוע</th><th data-i18n-text="dutyCol1Th">תורן 1</th><th data-i18n-text="dutyCol2Th">תורן 2</th><th style="width:36px"></th></tr></thead><tbody id="duty-body"></tbody></table>
       <div style="display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap">
         <button onclick="addCustomDutyRow()" style="padding:5px 12px;border:1.5px dashed var(--bd);border-radius:8px;background:none;cursor:pointer;font-family:inherit;font-size:.82rem;color:var(--ink3)">+ הוסף תורנות ידנית</button>
+        <button onclick="autoFillEmptySlots()" style="padding:5px 12px;border:1.5px solid rgba(30,125,75,.4);border-radius:8px;background:rgba(30,125,75,.08);cursor:pointer;font-family:inherit;font-size:.82rem;color:#1e7d4b;font-weight:600">⚡ שבץ את כל הריקים</button>
       </div>
       <h3 style="margin:1rem 0 .6rem;font-size:.95rem" data-i18n-text="dutyRosterTitle">👥 רשימת תורנים</h3>
       <div id="roster-list"></div>
@@ -4612,6 +4613,59 @@ function addCustomDutyRow(){
   customs.push({date:dateStr,label:label});
   saveCustomDuties(customs);
   _dutySyncToSheets();
+  renderDutyTab();
+}
+
+function autoFillEmptySlots(){
+  // Smart auto-fill: go through 8 visible weeks, fill empty slots fairly
+  var roster=getDutyRoster();
+  if(roster.length===0)return;
+  var queue=syncDutyQueue();
+  var swaps=getDutySwaps();
+  var startWeek=_dutyPage*8;
+  // First pass: collect all dates and current assignments to count per-member
+  var assignments={}; // id → count in this window
+  roster.forEach(function(m){assignments[m.id]=0});
+  var slots=[]; // {dateKey, slotIdx, otherId} for empty slots
+  for(var w=startWeek;w<startWeek+8;w++){
+    var d=new Date();d.setDate(d.getDate()+w*7);
+    var sh=getUpcomingShabbat(d);
+    if(sh<new Date())continue; // skip past
+    var key=d2s(sh);
+    var pair=getDutyPairWithSwaps(w,queue);
+    for(var s=0;s<2;s++){
+      if(pair[s]&&pair[s].id&&assignments[pair[s].id]!==undefined){
+        assignments[pair[s].id]++;
+      }
+      if(!pair[s]){
+        var otherId=(pair[1-s]&&pair[1-s].id)?pair[1-s].id:null;
+        slots.push({dateKey:key,slotIdx:s,otherId:otherId});
+      }
+    }
+  }
+  if(slots.length===0){
+    showToast(curLang==='en'?'No empty slots':'אין משבצות ריקות');
+    return;
+  }
+  // Fill each empty slot with the person who has fewest assignments (and isn't the other person on same date)
+  for(var i=0;i<slots.length;i++){
+    var sl=slots[i];
+    // Find the member with fewest assignments who isn't in the other slot
+    var best=null,bestCount=Infinity;
+    roster.forEach(function(m){
+      if(m.id===sl.otherId)return; // skip the person in the other slot
+      var c=assignments[m.id]||0;
+      if(c<bestCount){bestCount=c;best=m}
+    });
+    if(!best)continue;
+    // Assign
+    if(!swaps[sl.dateKey])swaps[sl.dateKey]={};
+    swaps[sl.dateKey][sl.slotIdx]=best.id;
+    assignments[best.id]++;
+  }
+  saveDutySwaps(swaps);
+  _dutySyncToSheets();
+  showToast(curLang==='en'?slots.length+' slots filled':'שובצו '+slots.length+' משבצות');
   renderDutyTab();
 }
 
