@@ -1353,6 +1353,26 @@ async function fetchParashot(startD,endD){
   }
   return map;
 }
+async function _fetchUpcomingHolidays(start,end){
+  var url='https://www.hebcal.com/hebcal?cfg=json&v=1&maj=on&min=on&i=on&lg=he&start='+d2s(start)+'&end='+d2s(end);
+  try{
+    var r=await hf(url);if(!r||!r.items)return[];
+    var holidays=[];
+    for(var i=0;i<r.items.length;i++){
+      var it=r.items[i];
+      if(it.category!=='holiday'||!it.date)continue;
+      var heb=it.hebrew||it.title||'';
+      // Include major holidays, Pesach seder, erev chag, etc.
+      if(it.subcat==='major'||heb.indexOf('פסח')>=0||heb.indexOf('סוכות')>=0||heb.indexOf('שבועות')>=0||heb.indexOf('ראש השנה')>=0||heb.indexOf('יום כיפור')>=0||heb.indexOf('חנוכה')>=0||heb.indexOf('פורים')>=0||heb.indexOf('סדר')>=0){
+        var dt=new Date(it.date+'T00:00:00');
+        // Skip if already passed
+        if(dt<new Date(new Date().setHours(0,0,0,0)))continue;
+        holidays.push({date:dt,name:heb});
+      }
+    }
+    return holidays;
+  }catch(e){return[]}
+}
 async function getPar(sh){
   const y=sh.getFullYear(),m=sh.getMonth()+1,d=sh.getDate();
   const d1=new Date(sh);d1.setDate(d1.getDate()-1);
@@ -3731,18 +3751,22 @@ async function loadWeekSummary(){
     var d1=new Date(sh);d1.setDate(d1.getDate()-1);
     var d2n=new Date(sh);d2n.setDate(d2n.getDate()+1);
     // Run all API calls in parallel
+    // Also fetch upcoming holidays for the next 14 days
+    var holidayEnd=new Date();holidayEnd.setDate(holidayEnd.getDate()+14);
     var results=await Promise.all([
       g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate()),
       fetchParashot(d1,d2n),
       getShabbatTimes(),
       getOmerDay(),
-      getDailyZmanim()
+      getDailyZmanim(),
+      _fetchUpcomingHolidays(new Date(),holidayEnd)
     ]);
     var hd2=results[0];
     var parMap=results[1];
     var shTimes=results[2];
     var omerDayResult=results[3];
     var zmanimResult=results[4];
+    var upcomingHolidays=results[5]||[];
     var hebStr=hd2?fhd(hd2.hd,hd2.hm,hd2.hy):'';
     var pi=parMap[key]||{};
     var parName=pi.parasha||pi.holiday||pi.special||'';
@@ -3842,6 +3866,24 @@ async function loadWeekSummary(){
     }else{
       h+='<div class="wk-none">'+((I18N[curLang]||I18N.he).noEvents||'אין אירועים מיוחדים השבת')+'</div>';
     }
+    // Upcoming holidays (Pesach, Sukkot, etc.)
+    if(upcomingHolidays.length){
+      h+='<div class="wk-events">';
+      for(var hi2=0;hi2<upcomingHolidays.length;hi2++){
+        var hol=upcomingHolidays[hi2];
+        var holDays=Math.round((hol.date-new Date())/(1000*60*60*24));
+        var holWhen=holDays<=0?(isEn?'Today':'היום'):holDays===1?(isEn?'Tomorrow':'מחר'):(isEn?'in '+holDays+' days':'בעוד '+holDays+' ימים');
+        h+='<div class="wk-ev"><span class="wk-ev-icon">🕎</span><div class="wk-ev-text"><span class="wk-ev-name">'+es(hol.name)+'</span> <span style="font-size:.75rem;color:var(--ink3)">'+hol.date.toLocaleDateString(locale,{weekday:'short',day:'numeric',month:'short'})+' — '+holWhen+'</span></div></div>';
+      }
+      h+='</div>';
+    }
+
+    // Shabbat Shalom greeting on Friday/Saturday
+    var dayOfWeek=new Date().getDay();
+    if(dayOfWeek===5||dayOfWeek===6){
+      h+='<div style="text-align:center;padding:.8rem .5rem;font-family:\'Frank Ruhl Libre\',serif;font-size:1.3rem;font-weight:700;color:var(--gold2)">'+(isEn?'Shabbat Shalom! ✨':'שבת שלום! ✨')+'</div>';
+    }
+
     if(parName){
       h+='<a class="wk-link" href="'+CHBD+'" target="_blank" rel="noopener">'+T('wkReadParasha')+'</a> ';
       h+='<a class="wk-link" href="'+MEVASER_URL+'" target="_blank" rel="noopener">'+T('wkCommunitySite')+'</a>';
