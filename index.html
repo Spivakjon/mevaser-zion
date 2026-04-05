@@ -808,8 +808,8 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     <div class="sh"><span>🙏</span><span class="sh-t" data-i18n="volunteering">תחומי התנדבות</span></div>
     <div class="sec"><div class="cb-row" id="vol-checkboxes"></div></div>
     <!-- תורנות שבת מנוהלת רק מהאדמין -->
-    <div class="sh"><span>🕯</span><span class="sh-t" data-i18n="yahrzeits">ימי זיכרון (יארצייט)</span></div>
-    <div class="sec"><div id="yw"></div><button class="badd" onclick="addYr()" data-i18n="addYahrzeit">+ הוסף יום זיכרון</button></div>
+    <div class="sh"><span>🕯</span><span class="sh-t" data-i18n="yahrzeits">יארצייט (יום זיכרון)</span></div>
+    <div class="sec"><div id="yw"></div><button class="badd" onclick="addYr()" data-i18n="addYahrzeit">+ הוסף יארצייט</button></div>
     <div class="fmsg" id="fmsg"></div>
     <button class="bsave" id="bsave" onclick="submitForm()" data-i18n="save"><span>💾</span> שמור פרטים</button>
   </div>
@@ -840,7 +840,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       <button class="stb" onclick="showAt('ann')" data-i18n-text="tabAnnouncements">📢 מודעות</button>
       <button class="stb" onclick="showAt('mbr')" data-i18n-text="mbrTabTitle">💳 דמי חבר</button>
       <button class="stb" onclick="showAt('duty')" data-i18n-text="dutyTabTitle">📋 תורנות</button>
-      <button class="stb" onclick="showAt('yrz')" data-i18n-text="tabYahrzeits">🕯 יארצייטים</button>
+      <button class="stb" onclick="showAt('yrz')" data-i18n-text="tabYahrzeits">🕯 יארצייט</button>
       <button class="stb" onclick="showAt('vol')" data-i18n-text="tabVolunteers">🙏 מתנדבים</button>
       <button class="stb" onclick="showAt('ftbl')" data-i18n-text="tabFullTable">📊 טבלה מלאה</button>
     </div>
@@ -955,7 +955,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       <div id="roster-list"></div>
     </div>
     <div id="at-yrz" style="display:none">
-      <h3 style="color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:1rem;margin-bottom:.8rem" data-i18n-text="yrzTitle">🕯 ימי זיכרון / יארצייטים</h3>
+      <h3 style="color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:1rem;margin-bottom:.8rem" data-i18n-text="yrzTitle">🕯 יארצייט (יום זיכרון)</h3>
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:.8rem;flex-wrap:wrap">
         <label style="color:rgba(255,255,255,.5);font-size:.82rem;font-weight:600" data-i18n-text="yrzFilterLabel">סינון לפי חודש:</label>
         <select id="yrz-month-filter" onchange="renderYrzTab()" style="padding:.4rem .7rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:.85rem;min-height:40px">
@@ -1036,7 +1036,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
                 <div class="settings-field"><label>כתובת</label><input type="text" data-stkey="address"></div>
                 <div class="settings-row">
                   <div class="settings-field"><label>ילדים</label><input type="text" data-stkey="children"></div>
-                  <div class="settings-field"><label>יארצייטים</label><input type="text" data-stkey="yahrzeits"></div>
+                  <div class="settings-field"><label>יארצייט</label><input type="text" data-stkey="yahrzeits"></div>
                 </div>
                 <div class="settings-row">
                   <div class="settings-field"><label>התנדבות</label><input type="text" data-stkey="volunteering"></div>
@@ -1281,12 +1281,12 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
    אחסון: localStorage + Google Sheets (אופציונלי)
    ═══════════════════════════════════════════════════════ */
 const PW='Nir2026',SK='mbz_v5',CHBD='https://www.chabad.org.il/ParashotArticles/Item.asp?CategoryID=41',MEVASER_URL='https://mevaser.org.il';
-const HM=[{n:'תשרי',v:7,e:'Tishrei'},{n:'חשון',v:8,e:'Cheshvan'},{n:'כסלו',v:9,e:'Kislev'},{n:'טבת',v:10,e:'Tevet'},{n:'שבט',v:11,e:'Shevat'},{n:'אדר א׳',v:12,e:'Adar I'},{n:'אדר ב׳',v:13,e:'Adar II'},{n:'ניסן',v:1,e:'Nisan'},{n:'אייר',v:2,e:'Iyar'},{n:'סיון',v:3,e:'Sivan'},{n:'תמוז',v:4,e:'Tamuz'},{n:'אב',v:5,e:'Av'},{n:'אלול',v:6,e:'Elul'}];
+const HM=[{n:'תשרי',v:7,e:'Tishrei'},{n:'חשון',v:8,e:'Cheshvan'},{n:'כסלו',v:9,e:'Kislev'},{n:'טבת',v:10,e:'Tevet'},{n:'שבט',v:11,e:'Shevat'},{n:'אדר',v:14,e:'Adar'},{n:'אדר א׳',v:12,e:'Adar I'},{n:'אדר ב׳',v:13,e:'Adar II'},{n:'ניסן',v:1,e:'Nisan'},{n:'אייר',v:2,e:'Iyar'},{n:'סיון',v:3,e:'Sivan'},{n:'תמוז',v:4,e:'Tamuz'},{n:'אב',v:5,e:'Av'},{n:'אלול',v:6,e:'Elul'}];
 const HD=['','א','ב','ג','ד','ה','ו','ז','ח','ט','י','יא','יב','יג','יד','טו','טז','יז','יח','יט','כ','כא','כב','כג','כד','כה','כו','כז','כח','כט','ל'];
 function hy2s(y){const T=[[400,'ת'],[300,'ש'],[200,'ר'],[100,'ק'],[90,'צ'],[80,'פ'],[70,'ע'],[60,'ס'],[50,'נ'],[40,'מ'],[30,'ל'],[20,'כ'],[10,'י'],[9,'ט'],[8,'ח'],[7,'ז'],[6,'ו'],[5,'ה'],[4,'ד'],[3,'ג'],[2,'ב'],[1,'א']];let n=y%1000,s='';for(const[v,l]of T){while(n>=v){if(n===15){s+='טו';n=0;break}if(n===16){s+='טז';n=0;break}s+=l;n-=v}if(!n)break}return s.length===1?s+"'":s.slice(0,-1)+'"'+s.slice(-1)}
-var _hmAlias={'Iyyar':2,'Sh\'vat':11,'Shvat':11,'Adar':12,'Adar 1':12,'Adar 2':13,'Adar I':12,'Adar II':13,'אדר':12,'אדר א':12,'אדר ב':13};
+var _hmAlias={'Iyyar':2,'Sh\'vat':11,'Shvat':11,'Adar':14,'Adar 1':12,'Adar 2':13,'Adar I':12,'Adar II':13,'אדר':14,'אדר א':12,'אדר ב':13,14:12};
 function hmn(v){var f=HM.find(function(m){return m.v==v||m.e===v});if(f)return f.n;if(_hmAlias[v]!==undefined){var f2=HM.find(function(m){return m.v===_hmAlias[v]});if(f2)return f2.n}return v}
-function normHm(raw){var found=HM.find(function(m){return m.v==raw||m.e===raw});if(found)return found.v;if(_hmAlias[raw]!==undefined)return _hmAlias[raw];return raw}
+function normHm(raw){if(+raw===14)return 12;var found=HM.find(function(m){return m.v==raw||m.e===raw});if(found)return found.v;if(_hmAlias[raw]!==undefined){var a=_hmAlias[raw];return a===14?12:a}return raw}
 function fhd(d,m,y){if(!d&&!m&&!y)return'';return[HD[+d]||d,hmn(m),y?hy2s(+y):''].filter(Boolean).join(' ')}
 function fgd(s){if(!s)return'';return new Date(s+'T12:00:00').toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'})}
 function d2s(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
@@ -1512,7 +1512,7 @@ function chH(i){const c=CH[i];const bmOn=c.wantsBM?'show':'';
 <div class="g3" style="margin-bottom:.65rem">
   <div class="ff"><label>${T('childFirstName')} <span class="req">*</span></label><input id="cn-${i}" value="${es(c.name)}" placeholder="${T('childFirstName')}" onchange="CH[${i}].name=this.value;rChT(${i})"><div class="emsg">${T('fieldRequired')}</div></div>
   <div class="ff"><label>${T('childGender')}</label><select id="cg-${i}" onchange="CH[${i}].gender=this.value;updateBMVisibility(${i})"><option value="">${T('childGenderSelect')}</option><option value="זכר"${c.gender==='זכר'?' selected':''}>${T('childMale')}</option><option value="נקבה"${c.gender==='נקבה'?' selected':''}>${T('childFemale')}</option></select></div>
-  <div><div style="font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.25rem">${T('childBirthDate')}</div>${dbH('c'+i,{hd:c.hd,hm:c.hm,hy:c.hy,gd:c.gd,mode:c.mode})}</div>
+  <div class="ff"><label>${T('childBirthDate')}</label><input type="date" id="c${i}-gd" value="${es(c.gd)}" onchange="CH[${i}].gd=this.value;autoHChild(${i})" style="direction:ltr"><div class="cdp" id="cdp-${i}" style="font-size:.75rem;color:var(--gold3);margin-top:.2rem">${c.gd?new Date(c.gd+'T12:00:00').toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'}):''}</div></div>
 </div>
 <div class="bm-section" id="bms-${i}" style="${c.gender==='נקבה'?'display:none':''}">
   <label class="bm-toggle-row">
@@ -1531,6 +1531,15 @@ function chH(i){const c=CH[i];const bmOn=c.wantsBM?'show':'';
   </div>
 </div>
 </div>`;}
+async function autoHChild(i){
+  var gd=CH[i].gd;
+  var dp=document.getElementById('cdp-'+i);
+  if(!gd){if(dp)dp.textContent='';return}
+  if(dp)dp.textContent=new Date(gd+'T12:00:00').toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
+  var parts=gd.split('-');
+  var h=await g2h(+parts[0],+parts[1],+parts[2]);
+  if(h){CH[i].hd=h.hd;CH[i].hm=h.hm;CH[i].hy=h.hy}
+}
 function updateBMVisibility(i){
   var sec=document.getElementById('bms-'+i);
   if(!sec)return;
@@ -1550,9 +1559,15 @@ function addCh(){CH.push(bC());renderCH();document.getElementById(`ci-${CH.lengt
 function remCh(i){CH.splice(i,1);renderCH()}
 async function calcBM(i){
   const btn=document.getElementById(`bmc-${i}`),res=document.getElementById(`bmr-${i}`);
-  const hd=parseInt(CH[i].hd)||parseInt(document.getElementById(`c${i}-hd`)?.value)||0;
-  const hm=parseInt(CH[i].hm)||parseInt(document.getElementById(`c${i}-hm`)?.value)||0;
-  const hy=parseInt(CH[i].hy)||parseInt(document.getElementById(`c${i}-hy`)?.value)||0;
+  let hd=parseInt(CH[i].hd)||0;
+  let hm=parseInt(CH[i].hm)||0;
+  let hy=parseInt(CH[i].hy)||0;
+  // Auto-convert from gregorian if hebrew date is missing
+  if((!hd||!hm||!hy)&&CH[i].gd){
+    var parts=CH[i].gd.split('-');
+    var h=await g2h(+parts[0],+parts[1],+parts[2]);
+    if(h){hd=h.hd;hm=h.hm;hy=h.hy;CH[i].hd=hd;CH[i].hm=hm;CH[i].hy=hy}
+  }
   if(!hd||!hm||!hy){
     res.innerHTML='<span style="color:#f87171">'+T('bmSelectDate')+'</span>';
     res.style.display='block';return;}
@@ -1586,7 +1601,7 @@ async function calcBM(i){
   btn.disabled=false;btn.textContent=T('childBmCalc');}
 
 // ── Yahrzeits ───────────────────────────────────────────
-function yrH(i){const y=YR[i];return`<div class="ic" id="yi-${i}"><div class="ic-head"><span class="ic-title">${T('yrMemorialN').replace('{n}',i+1)}${y.name?' — '+es(y.name):''}</span><button class="brm" onclick="remYr(${i})">✕</button></div><div class="g2" style="margin-bottom:.65rem"><div class="ff"><label>${T('yrDeceasedName')} <span class="req">*</span></label><input id="yn-${i}" value="${es(y.name)}" placeholder="${T('yrDeceasedName')}" onchange="YR[${i}].name=this.value;rYrT(${i})"><div class="emsg">${T('fieldRequired')}</div></div><div><div style="font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.25rem">${T('yrDeathDate')}</div>${dbH('y'+i,{hd:y.hd,hm:y.hm,hy:y.hy,gd:y.gd,mode:y.mode},true)}</div></div><div class="g2"><div class="ff"><label>${T('yrLeadPrayer')}</label><select id="yl-${i}" onchange="YR[${i}].lead=this.value"><option value="">${T('optNotSpecified')}</option><option value="כן"${y.lead==='כן'?' selected':''}>${T('optYes')}</option><option value="לא"${y.lead==='לא'?' selected':''}>${T('optNo')}</option></select></div><div class="ff"><label>${T('yrHaftarah')}</label><select id="yh-${i}" onchange="YR[${i}].haft=this.value"><option value="">${T('optNotSpecified')}</option><option value="כן"${y.haft==='כן'?' selected':''}>${T('optYes')}</option><option value="לא"${y.haft==='לא'?' selected':''}>${T('optNo')}</option></select></div></div></div>`}
+function yrH(i){const y=YR[i];return`<div class="ic" id="yi-${i}"><div class="ic-head"><span class="ic-title">${T('yrMemorialN').replace('{n}',i+1)}${y.name?' — '+es(y.name):''}</span><button class="brm" onclick="remYr(${i})">✕</button></div><div class="g2" style="margin-bottom:.65rem"><div class="ff"><label>${T('yrDeceasedName')} <span class="req">*</span></label><input id="yn-${i}" value="${es(y.name)}" placeholder="${T('yrDeceasedName')}" onchange="YR[${i}].name=this.value;rYrT(${i})"><div class="emsg">${T('fieldRequired')}</div></div><div><div style="font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.25rem">${T('yrDeathDate')}</div><div class="hrow" style="grid-template-columns:1fr 1fr 1fr">${sDay('y'+i+'-hd',y.hd)}${sMon('y'+i+'-hm',y.hm)}${sYr('y'+i+'-hy',y.hy,5680)}</div></div></div><div class="g2"><div class="ff"><label>${T('yrLeadPrayer')}</label><select id="yl-${i}" onchange="YR[${i}].lead=this.value"><option value="">${T('optNotSpecified')}</option><option value="כן"${y.lead==='כן'?' selected':''}>${T('optYes')}</option><option value="לא"${y.lead==='לא'?' selected':''}>${T('optNo')}</option></select></div><div class="ff"><label>${T('yrHaftarah')}</label><select id="yh-${i}" onchange="YR[${i}].haft=this.value"><option value="">${T('optNotSpecified')}</option><option value="כן"${y.haft==='כן'?' selected':''}>${T('optYes')}</option><option value="לא"${y.haft==='לא'?' selected':''}>${T('optNo')}</option></select></div></div></div>`}
 function rYrT(i){const el=document.querySelector(`#yi-${i} .ic-title`);if(el)el.textContent=T('yrMemorialN').replace('{n}',i+1)+(YR[i].name?' — '+YR[i].name:'')}
 function renderYR(){document.getElementById('yw').innerHTML=YR.map((_,i)=>yrH(i)).join('')}
 function addYr(){YR.push(bY());renderYR();document.getElementById(`yi-${YR.length-1}`).scrollIntoView({behavior:'smooth'})}
@@ -1622,8 +1637,8 @@ function tCb(lblId,cbId){
 }
 
 // ── Form collect ────────────────────────────────────────
-function colCh(i){const c={...CH[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`c${i}-${k}`);if(el)c[k]=el.value});const gi=document.getElementById(`c${i}-gd`);if(gi)c.gd=gi.value;const ni=document.getElementById(`cn-${i}`);if(ni)c.name=ni.value.trim();const ge=document.getElementById(`cg-${i}`);if(ge)c.gender=ge.value;const wbm=document.getElementById(`cbm-${i}`);if(wbm)c.wantsBM=wbm.checked;const pi=document.getElementById(`cp-${i}`);if(pi)c.parasha=pi.value.trim();const rp=document.getElementById(`crp-${i}`);if(rp)c.readP=rp.value;const rh=document.getElementById(`crh-${i}`);if(rh)c.readH=rh.value;return c}
-function colYr(i){const y={...YR[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`y${i}-${k}`);if(el)y[k]=el.value});const gi=document.getElementById(`y${i}-gd`);if(gi)y.gd=gi.value;const ni=document.getElementById(`yn-${i}`);if(ni)y.name=ni.value.trim();const yl=document.getElementById(`yl-${i}`);if(yl)y.lead=yl.value;const yh=document.getElementById(`yh-${i}`);if(yh)y.haft=yh.value;return y}
+function colCh(i){const c={...CH[i]};const gi=document.getElementById(`c${i}-gd`);if(gi)c.gd=gi.value;const ni=document.getElementById(`cn-${i}`);if(ni)c.name=ni.value.trim();const ge=document.getElementById(`cg-${i}`);if(ge)c.gender=ge.value;const wbm=document.getElementById(`cbm-${i}`);if(wbm)c.wantsBM=wbm.checked;const pi=document.getElementById(`cp-${i}`);if(pi)c.parasha=pi.value.trim();const rp=document.getElementById(`crp-${i}`);if(rp)c.readP=rp.value;const rh=document.getElementById(`crh-${i}`);if(rh)c.readH=rh.value;return c}
+function colYr(i){const y={...YR[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`y${i}-${k}`);if(el)y[k]=el.value});const ni=document.getElementById(`yn-${i}`);if(ni)y.name=ni.value.trim();const yl=document.getElementById(`yl-${i}`);if(yl)y.lead=yl.value;const yh=document.getElementById(`yh-${i}`);if(yh)y.haft=yh.value;return y}
 function reqF(id){const el=document.getElementById(id);const ok=el&&el.value.trim().length>0;const ff=el?el.closest('.ff'):null;if(ff)ff.classList.toggle('err',!ok);return ok}
 
 // ── Israeli ID Validation (Luhn mod 10) ─────────────────
@@ -2070,7 +2085,7 @@ function showMemberDetail(m){
     h+='</div>';
   }
   if(m.yahrzeits&&m.yahrzeits.length){
-    h+='<div class="md-section"><div class="md-section-title">🕯 '+(_e?'Yahrzeits':'יארצייטים')+' ('+m.yahrzeits.length+')</div>';
+    h+='<div class="md-section"><div class="md-section-title">🕯 '+(_e?'Yahrzeit':'יארצייט')+' ('+m.yahrzeits.length+')</div>';
     for(var y=0;y<m.yahrzeits.length;y++){
       var yr=m.yahrzeits[y];
       var yinfo=[];
@@ -2378,8 +2393,8 @@ var I18N={
     children:'ילדים',
     addChild:'+ הוסף ילד',
     volunteering:'תחומי התנדבות',
-    yahrzeits:'ימי זיכרון (יארצייט)',
-    addYahrzeit:'+ הוסף יום זיכרון',
+    yahrzeits:'יארצייט (יום זיכרון)',
+    addYahrzeit:'+ הוסף יארצייט',
     save:'💾 שמור פרטים',
     orgName:'עמותת מבשר ציון',
     logoSub:'בית הכנסת · רח׳ הצופית 23 · תל מונד',
@@ -2497,7 +2512,7 @@ var I18N={
     tabMembers:'📋 מתפללים',
     tabAliyot:'📜 עליות/קידוש',
     tabAnnouncements:'📢 מודעות',
-    tabYahrzeits:'🕯 יארצייטים',
+    tabYahrzeits:'🕯 יארצייט',
     tabVolunteers:'🙏 מתנדבים',
     tabFullTable:'📊 טבלה מלאה',
     // Calendar nav
@@ -2556,7 +2571,7 @@ var I18N={
     dutyCol1Th:'תורן 1',
     dutyCol2Th:'תורן 2',
     // Yahrzeit tab
-    yrzTitle:'🕯 ימי זיכרון / יארצייטים',
+    yrzTitle:'🕯 יארצייט (יום זיכרון)',
     yrzFilterLabel:'סינון לפי חודש:',
     yrzAll:'הכל',
     hmTishrei:'תשרי',hmCheshvan:'חשון',hmKislev:'כסלו',hmTevet:'טבת',hmShvat:'שבט',
@@ -2598,7 +2613,7 @@ var I18N={
     optYes:'כן',
     optNo:'לא',
     // Yahrzeit template
-    yrMemorialN:'יום זיכרון {n}',
+    yrMemorialN:'יארצייט {n}',
     yrDeceasedName:'שם הנפטר',
     yrDeathDate:'תאריך הפטירה',
     yrLeadPrayer:'לפני התיבה ביארצייט?',
@@ -2710,7 +2725,7 @@ var I18N={
     // Statistics
     statMembers:'מתפללים',
     statChildren:'ילדים',
-    statYahrzeits:'יארצייטים',
+    statYahrzeits:'יארצייט',
     statUpcomingBM:'בר מצווה קרוב',
     statVolunteers:'מתנדבים',
     statPaidMbr:'שילמו דמי חבר',
@@ -2786,8 +2801,8 @@ var I18N={
     yrzColGregDate:'לועזי',
     yrzColHazzan:'חזן',
     yrzColHaftarah:'הפטרה',
-    yrzNoRecords:'אין ימי זיכרון',
-    yrzNoRecordsMonth:'אין ימי זיכרון לחודש זה',
+    yrzNoRecords:'אין יארצייט',
+    yrzNoRecordsMonth:'אין יארצייט לחודש זה',
     // Vol table headers
     volColNum:'#',
     volColName:'שם',
@@ -3639,7 +3654,7 @@ async function doMyArea(){
     }
   }
   if(myYahrzeits.length){
-    h+='<div style="margin:.5rem 0"><div style="font-size:.82rem;font-weight:600;color:var(--gold2);margin-bottom:.3rem">🕯 '+(isEn?'Upcoming Yahrzeits:':'יארצייטים קרובים:')+'</div>';
+    h+='<div style="margin:.5rem 0"><div style="font-size:.82rem;font-weight:600;color:var(--gold2);margin-bottom:.3rem">🕯 '+(isEn?'Upcoming Yahrzeit:':'יארצייט קרוב:')+'</div>';
     for(var yi=0;yi<myYahrzeits.length;yi++){
       var y=myYahrzeits[yi];
       h+='<div style="font-size:.85rem;padding:.2rem 0">'+es(y.name)+(y.dh?' — '+es(y.dh):'')+' <span style="color:var(--gold);font-weight:600">('+(isEn?'in '+y.days+' days':'בעוד '+y.days+' ימים')+')</span></div>';
@@ -3827,7 +3842,7 @@ async function loadWeekSummary(){
 
     // Duty roster for this week
     var dutyPair=getDutyPairWithSwaps(0);
-    if(dutyPair.length>=2){
+    if(dutyPair.length>=2&&dutyPair[0]&&dutyPair[1]){
       h+='<div class="wk-duty"><span class="wk-duty-label">🧹 '+(isEn?'This Week\'s Duty':'תורנים השבוע')+':</span> <strong>'+es(dutyPair[0].firstName+' '+dutyPair[0].lastName)+'</strong> &amp; <strong>'+es(dutyPair[1].firstName+' '+dutyPair[1].lastName)+'</strong></div>';
     }
 
@@ -4665,8 +4680,10 @@ function autoFillEmptySlots(){
   var queue=syncDutyQueue();
   var swaps=getDutySwaps();
   var startWeek=_dutyPage*8;
-  // First pass: collect all dates and current assignments to count per-member
+  // First pass: collect all dates (sorted) and current assignments
   var assignments={}; // id → count in this window
+  var dateAssignments={}; // dateKey → Set of member ids assigned on that date
+  var allDates=[]; // sorted date keys for adjacency check
   roster.forEach(function(m){assignments[m.id]=0});
   var slots=[]; // {dateKey, slotIdx, otherId} for empty slots
   for(var w=startWeek;w<startWeek+8;w++){
@@ -4674,10 +4691,13 @@ function autoFillEmptySlots(){
     var sh=getUpcomingShabbat(d);
     if(sh<new Date())continue; // skip past
     var key=d2s(sh);
+    if(allDates.indexOf(key)<0)allDates.push(key);
+    if(!dateAssignments[key])dateAssignments[key]=new Set();
     var pair=getDutyPairWithSwaps(w,queue);
     for(var s=0;s<2;s++){
       if(pair[s]&&pair[s].id&&assignments[pair[s].id]!==undefined){
         assignments[pair[s].id]++;
+        dateAssignments[key].add(pair[s].id);
       }
       if(!pair[s]){
         var otherId=(pair[1-s]&&pair[1-s].id)?pair[1-s].id:null;
@@ -4685,25 +4705,37 @@ function autoFillEmptySlots(){
       }
     }
   }
+  allDates.sort();
   if(slots.length===0){
     showToast(curLang==='en'?'No empty slots':'אין משבצות ריקות');
     return;
   }
-  // Fill each empty slot with the person who has fewest assignments (and isn't the other person on same date)
+  // Helper: check if member is assigned on adjacent dates
+  function isOnAdjacentDate(memberId,dateKey){
+    var idx=allDates.indexOf(dateKey);
+    if(idx>0){var prev=allDates[idx-1];if(dateAssignments[prev]&&dateAssignments[prev].has(memberId))return true}
+    if(idx<allDates.length-1){var next=allDates[idx+1];if(dateAssignments[next]&&dateAssignments[next].has(memberId))return true}
+    return false;
+  }
+  // Fill each empty slot — prefer fewest assignments AND not on adjacent dates
   for(var i=0;i<slots.length;i++){
     var sl=slots[i];
-    // Find the member with fewest assignments who isn't in the other slot
-    var best=null,bestCount=Infinity;
+    var best=null,bestCount=Infinity,bestAdj=true;
     roster.forEach(function(m){
-      if(m.id===sl.otherId)return; // skip the person in the other slot
+      if(m.id===sl.otherId)return;
+      if(dateAssignments[sl.dateKey]&&dateAssignments[sl.dateKey].has(m.id))return;
       var c=assignments[m.id]||0;
-      if(c<bestCount){bestCount=c;best=m}
+      var adj=isOnAdjacentDate(m.id,sl.dateKey);
+      // Prefer non-adjacent, then fewest count
+      if(!adj&&bestAdj){best=m;bestCount=c;bestAdj=false}
+      else if(adj===bestAdj&&c<bestCount){best=m;bestCount=c;bestAdj=adj}
     });
     if(!best)continue;
-    // Assign
     if(!swaps[sl.dateKey])swaps[sl.dateKey]={};
     swaps[sl.dateKey][sl.slotIdx]=best.id;
     assignments[best.id]++;
+    if(!dateAssignments[sl.dateKey])dateAssignments[sl.dateKey]=new Set();
+    dateAssignments[sl.dateKey].add(best.id);
   }
   saveDutySwaps(swaps);
   _dutySyncToSheets();
@@ -4732,7 +4764,11 @@ async function renderDutyTab(){
   if(roster.length>=2){
     var pair=getDutyPairWithSwaps(0,_syncedQueue);var sh=getUpcomingShabbat(new Date());
     var ds=sh.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-    hc.innerHTML='<div class="duty-hero"><h3>'+T('dutyThisShabbat')+ds+'</h3><div class="duty-names"><span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty(0,0)">'+es(pair[0].firstName+' '+pair[0].lastName)+'</span>  &amp;  <span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty(0,1)">'+es(pair[1].firstName+' '+pair[1].lastName)+'</span></div><div class="duty-phones">'+es(pair[0].phone)+' | '+es(pair[1].phone)+'</div></div>';
+    var dn0=pair[0]?(pair[0].firstName+' '+pair[0].lastName):'—';
+    var dn1=pair[1]?(pair[1].firstName+' '+pair[1].lastName):'—';
+    var dp0=pair[0]?pair[0].phone:'—';
+    var dp1=pair[1]?pair[1].phone:'—';
+    hc.innerHTML='<div class="duty-hero"><h3>'+T('dutyThisShabbat')+ds+'</h3><div class="duty-names"><span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty(0,0)">'+es(dn0)+'</span>  &amp;  <span style="cursor:pointer;text-decoration:underline dotted" onclick="swapDuty(0,1)">'+es(dn1)+'</span></div><div class="duty-phones">'+es(dp0)+' | '+es(dp1)+'</div></div>';
   }else if(roster.length===1){
     hc.innerHTML='<div class="duty-hero" style="background:linear-gradient(135deg,#d97706,#f59e0b)"><h3>'+T('dutyOnlyOne')+'</h3><div class="duty-names">'+es(roster[0].firstName+' '+roster[0].lastName)+'</div></div>';
   }else{
@@ -5327,7 +5363,7 @@ function renderFullTable(){
     h+='<td style="padding:4px 6px;direction:ltr;text-align:right">'+es(m.phone)+'</td>';
     h+='<td style="padding:4px 6px">'+es(m.email||'')+'</td>';
     h+='<td style="padding:4px 6px">'+es(m.address||'')+'</td>';
-    h+='<td style="padding:4px 6px">'+(m.volunteering||[]).join(', ')+'</td>';
+    h+='<td style="padding:4px 6px">'+es((m.volunteering||[]).join(', '))+'</td>';
     h+='<td style="padding:4px 6px">'+(m.dutyRoster?'✓':'')+'</td>';
     h+='<td style="padding:4px 6px;color:'+(m.membershipPaid?'#5dbe8a':'#e88')+';">'+(m.membershipPaid?T('ftblPaid'):'—')+'</td>';
     for(var c=0;c<maxCh;c++){var ch=(m.children||[])[c]||{};h+='<td style="padding:4px 6px">'+es(ch.name||'')+'</td><td style="padding:4px 6px">'+es(ch.parasha||'')+'</td>'}
