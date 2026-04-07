@@ -808,7 +808,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     <div class="sh"><span>🙏</span><span class="sh-t" data-i18n="volunteering">תחומי התנדבות</span></div>
     <div class="sec"><div class="cb-row" id="vol-checkboxes"></div></div>
     <!-- תורנות שבת מנוהלת רק מהאדמין -->
-    <div class="sh"><span>🕯</span><span class="sh-t" data-i18n="yahrzeits">יארצייט (יום זיכרון)</span></div>
+    <div class="sh"><span>🕯</span><span class="sh-t" data-i18n="yahrzeits">יארצייט (יום זכרון)</span></div>
     <div class="sec"><div id="yw"></div><button class="badd" onclick="addYr()" data-i18n="addYahrzeit">+ הוסף יארצייט</button></div>
     <div class="fmsg" id="fmsg"></div>
     <button class="bsave" id="bsave" onclick="submitForm()" data-i18n="save"><span>💾</span> שמור פרטים</button>
@@ -948,14 +948,15 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       </div>
       <table class="duty-tbl"><thead><tr><th data-i18n-text="dutyColDateTh">תאריך</th><th data-i18n-text="dutyColEvent">אירוע</th><th data-i18n-text="dutyCol1Th">תורן 1</th><th data-i18n-text="dutyCol2Th">תורן 2</th><th style="width:36px"></th></tr></thead><tbody id="duty-body"></tbody></table>
       <div style="display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap">
-        <button onclick="addCustomDutyRow()" style="padding:5px 12px;border:1.5px dashed var(--bd);border-radius:8px;background:none;cursor:pointer;font-family:inherit;font-size:.82rem;color:var(--ink3)">+ הוסף תורנות ידנית</button>
+        <button onclick="addCustomDutyRow()" style="padding:5px 12px;border:1.5px dashed var(--bd);border-radius:8px;background:none;cursor:pointer;font-family:inherit;font-size:.82rem;color:var(--ink3)">+ הוסף / שבץ ליום ספציפי</button>
         <button onclick="autoFillEmptySlots()" style="padding:5px 12px;border:1.5px solid rgba(30,125,75,.4);border-radius:8px;background:rgba(30,125,75,.08);cursor:pointer;font-family:inherit;font-size:.82rem;color:#1e7d4b;font-weight:600">⚡ שבץ את כל הריקים</button>
+        <button onclick="restoreHiddenDuties()" style="padding:5px 12px;border:1.5px solid var(--bd);border-radius:8px;background:none;cursor:pointer;font-family:inherit;font-size:.82rem;color:var(--ink3)">↩ שחזר ימים שנמחקו</button>
       </div>
       <h3 style="margin:1rem 0 .6rem;font-size:.95rem" data-i18n-text="dutyRosterTitle">👥 רשימת תורנים</h3>
       <div id="roster-list"></div>
     </div>
     <div id="at-yrz" style="display:none">
-      <h3 style="color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:1rem;margin-bottom:.8rem" data-i18n-text="yrzTitle">🕯 יארצייט (יום זיכרון)</h3>
+      <h3 style="color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:1rem;margin-bottom:.8rem" data-i18n-text="yrzTitle">🕯 יארצייט (יום זכרון)</h3>
       <div style="display:flex;gap:8px;align-items:center;margin-bottom:.8rem;flex-wrap:wrap">
         <label style="color:rgba(255,255,255,.5);font-size:.82rem;font-weight:600" data-i18n-text="yrzFilterLabel">סינון לפי חודש:</label>
         <select id="yrz-month-filter" onchange="renderYrzTab()" style="padding:.4rem .7rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:rgba(255,255,255,.09);color:#fff;font-family:'Heebo',sans-serif;font-size:.85rem;min-height:40px">
@@ -1506,52 +1507,33 @@ function initForm(m=null){_torahManual=!!m;eid=m?m.id:null;CH=m?JSON.parse(JSON.
   renderCH();renderYR()}
 
 // ── Children ────────────────────────────────────────────
-function chH(i){const c=CH[i];const bmOn=c.wantsBM?'show':'';
+function chH(i){const c=CH[i];
+  var gd=c.gd||'';var gp=gd.split('-');
+  var gy=gp[0]||'';var gm=gp[1]||'';var gdy=gp[2]||'';
+  var dayOpts='<option value="">יום</option>';
+  for(var dd=1;dd<=31;dd++){var dv=dd<10?'0'+dd:''+dd;dayOpts+='<option value="'+dv+'"'+(gdy===dv?' selected':'')+'>'+dd+'</option>'}
+  var monNames=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+  var monOpts='<option value="">חודש</option>';
+  for(var mn=1;mn<=12;mn++){var mv=mn<10?'0'+mn:''+mn;monOpts+='<option value="'+mv+'"'+(gm===mv?' selected':'')+'>'+monNames[mn-1]+'</option>'}
+  var curY=new Date().getFullYear();
+  var yrOpts='<option value="">שנה</option>';
+  for(var yy=curY;yy>=curY-30;yy--)yrOpts+='<option value="'+yy+'"'+(gy===''+yy?' selected':'')+'>'+yy+'</option>';
   return`<div class="ic" id="ci-${i}">
 <div class="ic-head"><span class="ic-title">${T('childN').replace('{n}',i+1)}${c.name?' — '+es(c.name):''}</span><button class="brm" onclick="remCh(${i})">✕</button></div>
 <div class="g3" style="margin-bottom:.65rem">
   <div class="ff"><label>${T('childFirstName')} <span class="req">*</span></label><input id="cn-${i}" value="${es(c.name)}" placeholder="${T('childFirstName')}" onchange="CH[${i}].name=this.value;rChT(${i})"><div class="emsg">${T('fieldRequired')}</div></div>
-  <div class="ff"><label>${T('childGender')}</label><select id="cg-${i}" onchange="CH[${i}].gender=this.value;updateBMVisibility(${i})"><option value="">${T('childGenderSelect')}</option><option value="זכר"${c.gender==='זכר'?' selected':''}>${T('childMale')}</option><option value="נקבה"${c.gender==='נקבה'?' selected':''}>${T('childFemale')}</option></select></div>
-  <div class="ff"><label>${T('childBirthDate')}</label><input type="date" id="c${i}-gd" value="${es(c.gd)}" onchange="CH[${i}].gd=this.value;autoHChild(${i})" style="direction:ltr"><div class="cdp" id="cdp-${i}" style="font-size:.75rem;color:var(--gold3);margin-top:.2rem">${c.gd?new Date(c.gd+'T12:00:00').toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'}):''}</div></div>
-</div>
-<div class="bm-section" id="bms-${i}" style="${c.gender==='נקבה'?'display:none':''}">
-  <label class="bm-toggle-row">
-    <input type="checkbox" id="cbm-${i}" ${c.wantsBM?'checked':''} onchange="toggleBM(${i})">
-    <span class="bm-toggle-lbl">${T('childBmRegister')}</span>
-  </label>
-  <div class="bm-details ${bmOn}" id="bmd-${i}">
-    <button class="bm-btn" id="bmc-${i}" onclick="calcBM(${i})" style="margin-bottom:.5rem">${T('childBmCalc')}</button>
-    <div class="bm-res" id="bmr-${i}">${c.parasha?`<span style="color:var(--gold3)">📖 ${T('childBmParasha')}: <strong>${es(c.parasha)}</strong></span>${c.barDate?'<br><span style="color:rgba(255,255,255,.7)">📅 '+T('calShabbat')+': '+fgd(c.barDate)+'</span>':''}`:''}</div>
-    <div class="div" style="margin:.65rem 0"></div>
-    <div class="g3">
-      <div class="ff"><label>${T('childBmParasha')}</label><input id="cp-${i}" value="${es(c.parasha)}" placeholder="${T('childBmAutoCalc')}" onchange="CH[${i}].parasha=this.value"></div>
-      <div class="ff"><label>${T('childBmTorahRead')}</label><select id="crp-${i}" onchange="CH[${i}].readP=this.value"><option value="">${T('optNotSpecified')}</option><option value="כן"${c.readP==='כן'?' selected':''}>${T('optYes')}</option><option value="לא"${c.readP==='לא'?' selected':''}>${T('optNo')}</option></select></div>
-      <div class="ff"><label>${T('childBmHaftarah')}</label><select id="crh-${i}" onchange="CH[${i}].readH=this.value"><option value="">${T('optNotSpecified')}</option><option value="כן"${c.readH==='כן'?' selected':''}>${T('optYes')}</option><option value="לא"${c.readH==='לא'?' selected':''}>${T('optNo')}</option></select></div>
-    </div>
-  </div>
+  <div class="ff"><label>${T('childGender')}</label><select id="cg-${i}" onchange="CH[${i}].gender=this.value"><option value="">${T('childGenderSelect')}</option><option value="זכר"${c.gender==='זכר'?' selected':''}>${T('childMale')}</option><option value="נקבה"${c.gender==='נקבה'?' selected':''}>${T('childFemale')}</option></select></div>
+  <div><div style="font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.25rem">${T('childBirthDate')}</div><div class="hrow" style="grid-template-columns:1fr 1fr 1fr"><select id="cd-${i}" onchange="updChGd(${i})">${dayOpts}</select><select id="cm-${i}" onchange="updChGd(${i})">${monOpts}</select><select id="cy-${i}" onchange="updChGd(${i})">${yrOpts}</select></div></div>
 </div>
 </div>`;}
-async function autoHChild(i){
-  var gd=CH[i].gd;
-  var dp=document.getElementById('cdp-'+i);
-  if(!gd){if(dp)dp.textContent='';return}
-  if(dp)dp.textContent=new Date(gd+'T12:00:00').toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
-  var parts=gd.split('-');
-  var h=await g2h(+parts[0],+parts[1],+parts[2]);
-  if(h){CH[i].hd=h.hd;CH[i].hm=h.hm;CH[i].hy=h.hy}
-}
-function updateBMVisibility(i){
-  var sec=document.getElementById('bms-'+i);
-  if(!sec)return;
-  if(CH[i].gender==='נקבה'){sec.style.display='none';CH[i].wantsBM=false;var cb=document.getElementById('cbm-'+i);if(cb)cb.checked=false;var det=document.getElementById('bmd-'+i);if(det)det.classList.remove('show')}
-  else{sec.style.display=''}
-}
-function toggleBM(i){
-  const cb=document.getElementById(`cbm-${i}`);
-  const det=document.getElementById(`bmd-${i}`);
-  if(!cb||!det)return;
-  CH[i].wantsBM=cb.checked;
-  det.classList.toggle('show',cb.checked);
+async function updChGd(i){
+  var dd=document.getElementById('cd-'+i);var mm=document.getElementById('cm-'+i);var yy=document.getElementById('cy-'+i);
+  if(!dd||!mm||!yy)return;
+  var dv=dd.value,mv=mm.value,yv=yy.value;
+  if(dv&&mv&&yv){
+    CH[i].gd=yv+'-'+mv+'-'+dv;
+    try{var h=await g2h(+yv,+mv,+dv);if(h){CH[i].hd=h.hd;CH[i].hm=h.hm;CH[i].hy=h.hy}}catch(e){}
+  }else{CH[i].gd=''}
 }
 function rChT(i){const el=document.querySelector(`#ci-${i} .ic-title`);if(el)el.textContent=T('childN').replace('{n}',i+1)+(CH[i].name?' — '+CH[i].name:'')}
 function renderCH(){const w=document.getElementById('cw');w.innerHTML=CH.map((_,i)=>chH(i)).join('');document.getElementById('badd-c').style.display='flex'}
@@ -1637,7 +1619,7 @@ function tCb(lblId,cbId){
 }
 
 // ── Form collect ────────────────────────────────────────
-function colCh(i){const c={...CH[i]};const gi=document.getElementById(`c${i}-gd`);if(gi)c.gd=gi.value;const ni=document.getElementById(`cn-${i}`);if(ni)c.name=ni.value.trim();const ge=document.getElementById(`cg-${i}`);if(ge)c.gender=ge.value;const wbm=document.getElementById(`cbm-${i}`);if(wbm)c.wantsBM=wbm.checked;const pi=document.getElementById(`cp-${i}`);if(pi)c.parasha=pi.value.trim();const rp=document.getElementById(`crp-${i}`);if(rp)c.readP=rp.value;const rh=document.getElementById(`crh-${i}`);if(rh)c.readH=rh.value;return c}
+function colCh(i){const c={...CH[i]};const dd=document.getElementById(`cd-${i}`);const mm=document.getElementById(`cm-${i}`);const yy=document.getElementById(`cy-${i}`);if(dd&&mm&&yy&&dd.value&&mm.value&&yy.value)c.gd=yy.value+'-'+mm.value+'-'+dd.value;const ni=document.getElementById(`cn-${i}`);if(ni)c.name=ni.value.trim();const ge=document.getElementById(`cg-${i}`);if(ge)c.gender=ge.value;return c}
 function colYr(i){const y={...YR[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`y${i}-${k}`);if(el)y[k]=el.value});const ni=document.getElementById(`yn-${i}`);if(ni)y.name=ni.value.trim();const yl=document.getElementById(`yl-${i}`);if(yl)y.lead=yl.value;const yh=document.getElementById(`yh-${i}`);if(yh)y.haft=yh.value;return y}
 function reqF(id){const el=document.getElementById(id);const ok=el&&el.value.trim().length>0;const ff=el?el.closest('.ff'):null;if(ff)ff.classList.toggle('err',!ok);return ok}
 
@@ -2089,8 +2071,7 @@ function showMemberDetail(m){
     for(var y=0;y<m.yahrzeits.length;y++){
       var yr=m.yahrzeits[y];
       var yinfo=[];
-      if(yr.hd&&yr.hm&&yr.hy)yinfo.push((_e?'Hebrew: ':'עברי: ')+fhd(yr.hd,yr.hm,yr.hy));
-      if(yr.gd)yinfo.push((_e?'Gregorian: ':'לועזי: ')+fgd(yr.gd));
+      if(yr.hd&&yr.hm&&yr.hy)yinfo.push(fhd(yr.hd,yr.hm,yr.hy));
       if(yr.lead==='כן')yinfo.push(_e?'Leads prayer':'לפני התיבה');
       if(yr.haft==='כן')yinfo.push(_e?'Haftarah':'הפטרה');
       h+='<div class="md-yr"><div class="md-yr-name">'+es(yr.name)+'</div>'+(yinfo.length?'<div class="md-yr-info">'+es(yinfo.join(' · '))+'</div>':'')+'</div>';
@@ -2393,7 +2374,7 @@ var I18N={
     children:'ילדים',
     addChild:'+ הוסף ילד',
     volunteering:'תחומי התנדבות',
-    yahrzeits:'יארצייט (יום זיכרון)',
+    yahrzeits:'יארצייט (יום זכרון)',
     addYahrzeit:'+ הוסף יארצייט',
     save:'💾 שמור פרטים',
     orgName:'עמותת מבשר ציון',
@@ -2571,7 +2552,7 @@ var I18N={
     dutyCol1Th:'תורן 1',
     dutyCol2Th:'תורן 2',
     // Yahrzeit tab
-    yrzTitle:'🕯 יארצייט (יום זיכרון)',
+    yrzTitle:'🕯 יארצייט (יום זכרון)',
     yrzFilterLabel:'סינון לפי חודש:',
     yrzAll:'הכל',
     hmTishrei:'תשרי',hmCheshvan:'חשון',hmKislev:'כסלו',hmTevet:'טבת',hmShvat:'שבט',
@@ -4441,11 +4422,15 @@ function getDutyStats(){
     if(pair&&pair[0]&&stats[pair[0]]){stats[pair[0]].count++;if(!stats[pair[0]].lastDate||dateKey>stats[pair[0]].lastDate)stats[pair[0]].lastDate=dateKey}
     if(pair&&pair[1]&&stats[pair[1]]){stats[pair[1]].count++;if(!stats[pair[1]].lastDate||dateKey>stats[pair[1]].lastDate)stats[pair[1]].lastDate=dateKey}
   }
+  // Count ALL swaps (past and future) — fairness should reflect what's actually scheduled, not just done
   for(var dateKey in swaps){
     var sw=swaps[dateKey];
     for(var s=0;s<2;s++){
       if(sw[s]&&typeof sw[s]==='string'&&stats[sw[s]]){
-        if(new Date(dateKey)<new Date()){stats[sw[s]].count++;if(!stats[sw[s]].lastDate||dateKey>stats[sw[s]].lastDate)stats[sw[s]].lastDate=dateKey}
+        // Skip if already counted in hist for the same date
+        if(hist[dateKey]&&(hist[dateKey][0]===sw[s]||hist[dateKey][1]===sw[s]))continue;
+        stats[sw[s]].count++;
+        if(!stats[sw[s]].lastDate||dateKey>stats[sw[s]].lastDate)stats[sw[s]].lastDate=dateKey;
       }
     }
   }
@@ -4512,6 +4497,9 @@ function clearDutySlot(dateKey,slot){
   if(!swaps[dateKey])swaps[dateKey]={};
   swaps[dateKey][slot]='__empty__';
   saveDutySwaps(swaps);
+  // Also clear in history (allows fixing past mistakes)
+  var hist=getDutyHistory();
+  if(hist[dateKey]){hist[dateKey][slot]=null;saveDutyHistory(hist)}
   _dutySyncToSheets();
   renderDutyTab();
 }
@@ -4522,8 +4510,9 @@ function getHolidayEves(year){
   return holidays;
 }
 async function getHolidayDutyDates(){
-  // Get holidays for next 4 months from Hebcal
-  var now=new Date();var end=new Date();end.setMonth(end.getMonth()+4);
+  // Get holidays covering the full duty navigation range (~10 months back, 14 months forward)
+  var now=new Date();now.setMonth(now.getMonth()-10);
+  var end=new Date();end.setMonth(end.getMonth()+14);
   var url='https://www.hebcal.com/hebcal?cfg=json&v=1&maj=on&i=on&lg=he&start='+d2s(now)+'&end='+d2s(end);
   try{
     var r=await hf(url);if(!r||!r.items)return[];
@@ -4599,16 +4588,20 @@ function suggestDutyForDate(dateKey,slot){
   document.getElementById('md-card').innerHTML=h;
   document.getElementById('md-ovl').classList.add('show');
 }
+// Holds context for the active swap dialog (so autocomplete clicks know dateKey/slot)
+var _swapCtx=null;
 function dutyAC(val){
-  var list=document.getElementById('duty-ac-list');if(!list)return;
+  var list=document.getElementById('duty-ac-list');if(!list||!_swapCtx)return;
   if(!val||val.length<1){list.style.display='none';return}
   var ms=getMs();var q=val.toLowerCase();
   var matches=ms.filter(function(m){return(m.firstName+' '+m.lastName).toLowerCase().indexOf(q)>=0}).slice(0,6);
   if(!matches.length){list.style.display='none';return}
   list.style.display='block';
+  var dk=_swapCtx.dateKey,sl=_swapCtx.slot;
   list.innerHTML=matches.map(function(m){
     var name=m.firstName+' '+m.lastName;
-    return'<div onclick="document.getElementById(\'duty-plus1-name\').value=\''+es(name)+'\';document.getElementById(\'duty-ac-list\').style.display=\'none\'" style="padding:6px 10px;cursor:pointer;font-size:.84rem;border-bottom:1px solid rgba(255,255,255,.08);color:var(--ink,#333)">'+es(name)+' <span style="font-size:.75rem;color:var(--ink3,#999)">'+es(m.phone||'')+'</span></div>';
+    // Click → assign as a real member (use member id), NOT as +1 guest
+    return'<div onclick="confirmSwapByDate(\''+dk+'\','+sl+',\''+m.id+'\')" style="padding:6px 10px;cursor:pointer;font-size:.84rem;border-bottom:1px solid rgba(255,255,255,.08);color:var(--ink,#333)">'+es(name)+' <span style="font-size:.75rem;color:var(--ink3,#999)">'+es(m.phone||'')+'</span></div>';
   }).join('');
 }
 function getDutyPairForDate(dateKey){
@@ -4628,12 +4621,14 @@ function getDutyPairForDate(dateKey){
   return[];
 }
 function swapDutyByDate(dateKey,slot,label){
+  _swapCtx={dateKey:dateKey,slot:slot};
   var roster=getDutyRoster();
-  var h='<div style="padding:.5rem"><h2 style="margin-bottom:.8rem">🔄 החלף תורן — '+es(label)+'</h2>';
+  var h='<div style="padding:.5rem"><h2 style="margin-bottom:.8rem">🔄 שיבוץ תורן — '+es(label)+'</h2>';
   h+='<button onclick="closeMD();suggestDutyForDate(\''+dateKey+'\','+slot+')" style="width:100%;padding:8px;margin-bottom:.8rem;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer">🤖 המלצה חכמה — מי צריך להיות?</button>';
+  // Search box: autocompletes from full member list, picks assign as roster member
   h+='<div style="background:var(--c2);border-radius:8px;padding:.7rem;margin-bottom:.8rem;border:1px solid var(--bd2)">';
-  h+='<div style="font-size:.8rem;font-weight:600;margin-bottom:.4rem">➕ שיבוץ +1 (אורח)</div>';
-  h+='<div style="position:relative"><div style="display:flex;gap:6px"><input type="text" id="duty-plus1-name" placeholder="התחל להקליד שם..." autocomplete="off" oninput="dutyAC(this.value)" style="flex:1;padding:6px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:.85rem"><button onclick="confirmSwapByDate(\''+dateKey+'\','+slot+',null)" style="padding:6px 12px;background:var(--gold);color:var(--bg1);border:none;border-radius:6px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap">שבץ</button></div><div id="duty-ac-list" style="position:absolute;top:100%;right:0;left:0;z-index:10;background:var(--card,#fff);border:1px solid var(--bd);border-radius:0 0 8px 8px;max-height:160px;overflow-y:auto;display:none"></div></div>';
+  h+='<div style="font-size:.8rem;font-weight:600;margin-bottom:.4rem">🔍 חיפוש מתפלל</div>';
+  h+='<div style="position:relative"><input type="text" id="duty-plus1-name" placeholder="התחל להקליד שם..." autocomplete="off" oninput="dutyAC(this.value)" style="width:100%;padding:6px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:.85rem"><div id="duty-ac-list" style="position:absolute;top:100%;right:0;left:0;z-index:10;background:var(--card,#fff);border:1px solid var(--bd);border-radius:0 0 8px 8px;max-height:160px;overflow-y:auto;display:none"></div></div>';
   h+='</div>';
   if(roster.length){
     h+='<p style="margin-bottom:.5rem;font-size:.85rem;color:var(--ink3)">או בחר מרשימת התורנים:</p>';
@@ -4641,16 +4636,32 @@ function swapDutyByDate(dateKey,slot,label){
       h+='<div class="mc" style="margin-bottom:4px;cursor:pointer" onclick="confirmSwapByDate(\''+dateKey+'\','+slot+',\''+m.id+'\')"><div class="mav">'+es((m.firstName||'').charAt(0)+(m.lastName||'').charAt(0))+'</div><div class="mi"><div class="mn">'+es(m.firstName+' '+m.lastName)+'</div></div></div>';
     });
   }
+  // Explicit guest (+1) section — only used when the admin really wants a non-roster guest
+  h+='<details style="margin-top:.7rem;border:1px dashed var(--bd);border-radius:8px;padding:.5rem"><summary style="cursor:pointer;font-size:.82rem;color:var(--ink3)">➕ שיבוץ אורח (+1) שאינו ברשימה</summary>';
+  h+='<div style="display:flex;gap:6px;margin-top:.5rem"><input type="text" id="duty-guest-name" placeholder="שם האורח" autocomplete="off" style="flex:1;padding:6px 10px;border:1.5px solid var(--bd);border-radius:6px;font-family:inherit;font-size:.85rem"><button onclick="confirmGuestSwap(\''+dateKey+'\','+slot+')" style="padding:6px 12px;background:var(--gold);color:var(--bg1);border:none;border-radius:6px;font-family:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap">שבץ אורח</button></div></details>';
   h+='<div style="margin-top:.8rem;display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button onclick="clearDutySlot(\''+dateKey+'\','+slot+');closeMD()" style="padding:6px 14px;background:rgba(192,57,43,.1);color:var(--red);border:1.5px solid rgba(192,57,43,.3);border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer">✕ הסר מתורנות</button><button class="md-btn-close" onclick="resetSwap(\''+dateKey+'\','+slot+')">↩ אפס לרוטציה</button><button class="md-btn-close" onclick="closeMD()">סגור</button></div></div>';
   document.getElementById('md-card').innerHTML=h;
   document.getElementById('md-ovl').classList.add('show');
 }
-function confirmSwapByDate(dateKey,slot,memberId){
+function confirmGuestSwap(dateKey,slot){
+  var name=(document.getElementById('duty-guest-name')||{}).value;
+  if(!name||!name.trim())return alert('הזן שם אורח');
   var swaps=getDutySwaps();
   if(!swaps[dateKey])swaps[dateKey]={};
-  if(memberId){swaps[dateKey][slot]=memberId}
-  else{var name=document.getElementById('duty-plus1-name').value.trim();if(!name)return alert(T('enterName'));swaps[dateKey][slot]={plus1:true,name:name}}
-  saveDutySwaps(swaps);_dutySyncToSheets();closeMD();renderDutyTab();
+  swaps[dateKey][slot]={plus1:true,name:name.trim()};
+  saveDutySwaps(swaps);
+  _dutySyncToSheets();closeMD();renderDutyTab();
+}
+function confirmSwapByDate(dateKey,slot,memberId){
+  if(!memberId)return; // Guest path uses confirmGuestSwap instead
+  var swaps=getDutySwaps();
+  if(!swaps[dateKey])swaps[dateKey]={};
+  swaps[dateKey][slot]=memberId;
+  saveDutySwaps(swaps);
+  // Also update history if past entry exists (allows fixing past mistakes)
+  var hist=getDutyHistory();
+  if(hist[dateKey]){hist[dateKey][slot]=memberId;saveDutyHistory(hist)}
+  _dutySyncToSheets();closeMD();renderDutyTab();
 }
 var _dutyPage=0; // 0 = current, negative = past, positive = future
 function dutyPageNav(dir){_dutyPage+=dir;renderDutyTab()}
@@ -4661,16 +4672,113 @@ function getCustomDuties(){try{return JSON.parse(localStorage.getItem(CUSTOM_DUT
 function saveCustomDuties(arr){localStorage.setItem(CUSTOM_DUTY_KEY,JSON.stringify(arr))}
 
 function addCustomDutyRow(){
-  var _e=curLang==='en';
-  var label=prompt(_e?'Event name (e.g. Holiday Eve):':'שם האירוע (למשל: ערב חג):');
-  if(!label)return;
-  var dateStr=prompt(_e?'Date (YYYY-MM-DD):':'תאריך (YYYY-MM-DD):',d2s(new Date()));
-  if(!dateStr||!/^\d{4}-\d{2}-\d{2}$/.test(dateStr))return alert(_e?'Invalid date format':'פורמט תאריך לא תקין');
+  var roster=getDutyRoster();
+  var today=d2s(new Date());
+  var rosterOpts='<option value="">— ללא שיבוץ —</option>';
+  for(var i=0;i<roster.length;i++){var m=roster[i];rosterOpts+='<option value="'+m.id+'">'+es(m.firstName+' '+m.lastName)+'</option>'}
+  var h='<div style="padding:.6rem"><h2 style="margin-bottom:.9rem;font-size:1.05rem">📌 הוסף תורנות ליום ספציפי</h2>';
+  h+='<p style="font-size:.78rem;color:var(--ink3);margin-bottom:.6rem">אם התאריך כבר קיים בלוח, השיבוץ ייושם עליו במקום ליצור יום חדש.</p>';
+  h+='<div style="margin-bottom:.7rem"><label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:.25rem">תאריך</label><input type="date" id="cd-date" value="'+today+'" style="width:100%;padding:8px 10px;border:1.5px solid var(--bd);border-radius:8px;font-family:inherit;font-size:.9rem;direction:ltr"></div>';
+  h+='<div style="margin-bottom:.7rem"><label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:.25rem">שם האירוע (אם זה יום חדש)</label><input type="text" id="cd-label" placeholder="למשל: ערב חג, חתונה, ברית" style="width:100%;padding:8px 10px;border:1.5px solid var(--bd);border-radius:8px;font-family:inherit;font-size:.9rem"></div>';
+  if(roster.length){
+    h+='<div style="margin-bottom:.5rem"><label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:.25rem">תורן 1 (אופציונלי)</label><select id="cd-t1" style="width:100%;padding:8px 10px;border:1.5px solid var(--bd);border-radius:8px;font-family:inherit;font-size:.9rem">'+rosterOpts+'</select></div>';
+    h+='<div style="margin-bottom:.7rem"><label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:.25rem">תורן 2 (אופציונלי)</label><select id="cd-t2" style="width:100%;padding:8px 10px;border:1.5px solid var(--bd);border-radius:8px;font-family:inherit;font-size:.9rem">'+rosterOpts+'</select></div>';
+  }
+  h+='<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem"><button class="md-btn-close" onclick="closeMD()">ביטול</button><button onclick="saveCustomDutyRow()" style="padding:7px 16px;background:var(--gold);color:var(--bg1);border:none;border-radius:8px;font-family:inherit;font-size:.88rem;font-weight:700;cursor:pointer">שמור</button></div></div>';
+  document.getElementById('md-card').innerHTML=h;
+  document.getElementById('md-ovl').classList.add('show');
+}
+function saveCustomDutyRow(){
+  var dateStr=(document.getElementById('cd-date')||{}).value;
+  var label=((document.getElementById('cd-label')||{}).value||'').trim();
+  if(!dateStr||!/^\d{4}-\d{2}-\d{2}$/.test(dateStr))return alert('בחר תאריך תקין');
+  var t1=(document.getElementById('cd-t1')||{}).value;
+  var t2=(document.getElementById('cd-t2')||{}).value;
+  // Remove from hidden if it was previously deleted (re-add)
+  var hidden=getDutyHidden();
+  var hiddenIdx=hidden.indexOf(dateStr);
+  if(hiddenIdx>=0){hidden.splice(hiddenIdx,1);saveDutyHidden(hidden)}
+  // Check if the date matches an existing entry: visible-window match, Shabbat (always rotates), or existing custom
+  var entries=_lastDutyEntries||[];
+  var existing=null;
+  for(var i=0;i<entries.length;i++){if(entries[i].dateKey===dateStr){existing=entries[i];break}}
+  if(!existing){
+    var nd=new Date(dateStr+'T12:00:00');
+    if(nd.getDay()===6)existing={dateKey:dateStr,isShabbat:true};
+    else if(getCustomDuties().some(function(c){return c.date===dateStr}))existing={dateKey:dateStr,isCustom:true};
+  }
+  if(existing){
+    // Existing day → just apply the slot assignments, ignore label
+    if(!t1&&!t2)return alert('יום זה כבר קיים בלוח. בחר תורן 1 או תורן 2 להוספת שיבוץ.');
+    var swaps=getDutySwaps();
+    if(!swaps[dateStr])swaps[dateStr]={};
+    if(t1)swaps[dateStr][0]=t1;
+    if(t2)swaps[dateStr][1]=t2;
+    saveDutySwaps(swaps);
+    _dutySyncToSheets();
+    closeMD();
+    renderDutyTab();
+    return;
+  }
+  // New custom day
+  if(!label)return alert('הזן שם לאירוע (או בחר תאריך של יום קיים בלוח)');
   var customs=getCustomDuties();
   customs.push({date:dateStr,label:label});
   saveCustomDuties(customs);
+  // Apply explicit slot assignments if given
+  if(t1||t2){
+    var swaps=getDutySwaps();
+    if(!swaps[dateStr])swaps[dateStr]={};
+    if(t1)swaps[dateStr][0]=t1;
+    if(t2)swaps[dateStr][1]=t2;
+    saveDutySwaps(swaps);
+  }
+  // If inserting in the middle of existing entries (and no manual assignment), offer to advance
+  var newDate=new Date(dateStr+'T12:00:00');
+  var laterEntries=entries.filter(function(e){return e.date>newDate});
+  closeMD();
+  if(laterEntries.length&&!t1&&!t2){
+    var ask=confirm('יש תורנויות מתוכננות אחרי התאריך שבחרת.\n\nהאם להקדים את התורנים — כך שהיום החדש יקבל את התורנים שהיו אמורים לבוא בתאריך הבא, וכל השאר יזוזו אחורה בהתאם?\n\nאישור = להקדים את הקיימים\nביטול = להשאיר את היום החדש ריק לשיבוץ ידני');
+    if(ask){advanceDutiesEarlier(dateStr,laterEntries)}
+  }
   _dutySyncToSheets();
+  // Jump to the page containing the new date if it's outside the current window
+  if(entries.length){
+    var firstD=entries[0].date,lastD=entries[entries.length-1].date;
+    if(newDate<firstD||newDate>lastD){
+      var weeksFromNow=Math.round((newDate-new Date())/(1000*60*60*24*7));
+      _dutyPage=Math.floor(weeksFromNow/8);
+    }
+  }
   renderDutyTab();
+}
+// Inverse cascade of deleteDutyDay: shift later entries earlier so the inserted day takes the next planned pair
+function advanceDutiesEarlier(insertDateKey,laterEntries){
+  if(!laterEntries||!laterEntries.length)return;
+  var swaps=getDutySwaps();
+  function enc(p){
+    if(!p)return'__empty__';
+    if(p._plus1)return{plus1:true,name:p.firstName};
+    if(p.id)return p.id;
+    return'__empty__';
+  }
+  // Insert day takes the first later entry's pair
+  var firstPair=(laterEntries[0].pair||[]).slice(0,2);
+  if(!swaps[insertDateKey])swaps[insertDateKey]={};
+  swaps[insertDateKey][0]=enc(firstPair[0]);
+  swaps[insertDateKey][1]=enc(firstPair[1]);
+  // Each later entry takes the next entry's pair
+  for(var k=0;k<laterEntries.length-1;k++){
+    var dk=laterEntries[k].dateKey;
+    var nextPair=(laterEntries[k+1].pair||[]).slice(0,2);
+    if(!swaps[dk])swaps[dk]={};
+    swaps[dk][0]=enc(nextPair[0]);
+    swaps[dk][1]=enc(nextPair[1]);
+  }
+  // Last later entry: clear its swap so it falls back to natural rotation
+  var lastDk=laterEntries[laterEntries.length-1].dateKey;
+  if(swaps[lastDk]){delete swaps[lastDk]}
+  saveDutySwaps(swaps);
 }
 
 function autoFillEmptySlots(){
@@ -4743,18 +4851,65 @@ function autoFillEmptySlots(){
   renderDutyTab();
 }
 
-function deleteCustomDuty(dateKey){
-  var _e=curLang==='en';
-  if(!confirm(_e?'Delete this duty entry?':'למחוק את התורנות הזו?'))return;
-  var customs=getCustomDuties();
-  customs=customs.filter(function(c){return c.date!==dateKey});
-  saveCustomDuties(customs);
-  // Also clear any swaps for this date
+// Hidden dates: dateKeys removed from the table (Shabbat/holiday/custom alike)
+var DUTY_HIDDEN_KEY='mbz_duty_hidden';
+function getDutyHidden(){try{return JSON.parse(localStorage.getItem(DUTY_HIDDEN_KEY)||'[]')}catch(e){return[]}}
+function saveDutyHidden(arr){localStorage.setItem(DUTY_HIDDEN_KEY,JSON.stringify(arr))}
+
+// Cache of the last rendered duty entries, used by deleteDutyDay to cascade pairs
+var _lastDutyEntries=[];
+
+function deleteDutyDay(dateKey){
+  if(!confirm('למחוק את היום הזה? התורנים שהיו ביום הזה יעברו ליום הבא, וכל שאר התורנויות יזוזו קדימה בהתאם.'))return;
+  var entries=_lastDutyEntries||[];
+  var idx=-1;
+  for(var i=0;i<entries.length;i++){if(entries[i].dateKey===dateKey){idx=i;break}}
+  if(idx<0)return;
   var swaps=getDutySwaps();
-  if(swaps[dateKey]){delete swaps[dateKey];saveDutySwaps(swaps)}
+  function enc(p){
+    if(!p)return'__empty__';
+    if(p._plus1)return{plus1:true,name:p.firstName};
+    if(p.id)return p.id;
+    return'__empty__';
+  }
+  // Cascade: every entry from idx+1 onward inherits the previous entry's pair
+  var carry=(entries[idx].pair||[]).slice(0,2);
+  for(var j=idx+1;j<entries.length;j++){
+    var cur=(entries[j].pair||[]).slice(0,2);
+    var dk=entries[j].dateKey;
+    if(!swaps[dk])swaps[dk]={};
+    swaps[dk][0]=enc(carry[0]);
+    swaps[dk][1]=enc(carry[1]);
+    carry=cur;
+  }
+  // Clear data tied to the deleted day
+  if(swaps[dateKey])delete swaps[dateKey];
+  saveDutySwaps(swaps);
+  var hist=getDutyHistory();
+  if(hist[dateKey]){delete hist[dateKey];saveDutyHistory(hist)}
+  var customs=getCustomDuties();
+  if(customs.some(function(c){return c.date===dateKey})){
+    customs=customs.filter(function(c){return c.date!==dateKey});
+    saveCustomDuties(customs);
+  }
+  // Hide the date so it won't reappear from the Shabbat/holiday auto-build
+  var hidden=getDutyHidden();
+  if(hidden.indexOf(dateKey)<0){hidden.push(dateKey);saveDutyHidden(hidden)}
   _dutySyncToSheets();
   renderDutyTab();
 }
+
+function restoreHiddenDuties(){
+  var hidden=getDutyHidden();
+  if(!hidden.length)return showToast('אין ימים מוסתרים');
+  if(!confirm('לשחזר '+hidden.length+' ימים שהוסתרו?'))return;
+  saveDutyHidden([]);
+  _dutySyncToSheets();
+  renderDutyTab();
+}
+
+// Backward-compat alias used by older callsites (now routes through deleteDutyDay)
+function deleteCustomDuty(dateKey){deleteDutyDay(dateKey)}
 
 async function renderDutyTab(){
   var roster=getDutyRoster();
@@ -4776,32 +4931,38 @@ async function renderDutyTab(){
   }
   // Build 8-week window: page 0 = weeks 0..7, page -1 = weeks -8..-1, page 1 = weeks 8..15
   var startWeek=_dutyPage*8;
+  var hiddenDates=getDutyHidden();
   var entries=[];
   for(var w=startWeek;w<startWeek+8;w++){
     var d=new Date();d.setDate(d.getDate()+w*7);
     var sh=getUpcomingShabbat(d);
+    var skKey=d2s(sh);
+    if(hiddenDates.indexOf(skKey)>=0)continue;
     var ds=sh.toLocaleDateString('he-IL',{day:'numeric',month:'long'});
     var pair=getDutyPairWithSwaps(w,_syncedQueue);
     var isPast=sh<new Date();
     var isCurrent=w===0;
     var displayLabel=ds+(isCurrent?' '+T('dutyCurrent'):'');
-    entries.push({date:sh,dateKey:d2s(sh),label:T('dutyShabbat'),display:displayLabel,pair:pair,weekOffset:w,isShabbat:true,isCurrent:isCurrent,isPast:isPast});
+    entries.push({date:sh,dateKey:skKey,label:T('dutyShabbat'),display:displayLabel,pair:pair,weekOffset:w,isShabbat:true,isCurrent:isCurrent,isPast:isPast});
   }
   // Fetch holidays for this range
   var holidays=await getHolidayDutyDates();
-  var firstDate=entries[0].date,lastDate=entries[entries.length-1].date;
+  var firstDate=entries.length?entries[0].date:new Date();
+  var lastDate=entries.length?entries[entries.length-1].date:new Date();
   for(var hi=0;hi<holidays.length;hi++){
     var hol=holidays[hi];
+    if(hiddenDates.indexOf(hol.dateKey)>=0)continue;
     if(hol.date<firstDate||hol.date>lastDate)continue;
     var isDup=entries.some(function(e){return e.dateKey===hol.dateKey});
     if(isDup)continue;
     var holPair=getDutyPairForDate(hol.dateKey);
     entries.push({date:hol.date,dateKey:hol.dateKey,label:hol.name,display:hol.date.toLocaleDateString('he-IL',{day:'numeric',month:'long'}),pair:holPair,isShabbat:false,isCurrent:false,isPast:hol.date<new Date()});
   }
-  // Add custom duty entries
+  // Add custom duty entries within the current page window
   var customs=getCustomDuties();
   for(var ci=0;ci<customs.length;ci++){
     var cd=customs[ci];
+    if(hiddenDates.indexOf(cd.date)>=0)continue;
     var cdDate=new Date(cd.date+'T12:00:00');
     if(cdDate<firstDate||cdDate>lastDate)continue;
     var isDup=entries.some(function(e){return e.dateKey===cd.date});
@@ -4810,6 +4971,7 @@ async function renderDutyTab(){
     entries.push({date:cdDate,dateKey:cd.date,label:cd.label||'תורנות',display:cdDate.toLocaleDateString('he-IL',{day:'numeric',month:'long'}),pair:cdPair,isShabbat:false,isCurrent:false,isPast:cdDate<new Date(),isCustom:true});
   }
   entries.sort(function(a,b){return a.date-b.date});
+  _lastDutyEntries=entries;
 
   // Update page label and buttons
   var pageLabel=document.getElementById('duty-page-label');
@@ -4847,18 +5009,18 @@ async function renderDutyTab(){
       var histPair=_histCache[e.dateKey];
       if(histPair){
         var rm={};roster.forEach(function(m){rm[m.id]=m});
-        n1=dutyCell(rm[histPair[0]],0,false);
-        n2=dutyCell(rm[histPair[1]],1,false);
+        n1=dutyCell(rm[histPair[0]],0,true);
+        n2=dutyCell(rm[histPair[1]],1,true);
       }else{
-        n1=dutyCell(e.pair[0],0,false);
-        n2=dutyCell(e.pair[1],1,false);
+        n1=dutyCell(e.pair[0],0,true);
+        n2=dutyCell(e.pair[1],1,true);
       }
     }else{
       n1=dutyCell(e.pair[0],0,true);
       n2=dutyCell(e.pair[1],1,true);
     }
     var rowClass=e.isCurrent?' class="current"':(e.isPast?' style="opacity:.6"':(e.isShabbat?'':' style="background:rgba(200,168,75,.06)"'));
-    var delBtn=e.isCustom?'<td><button onclick="deleteCustomDuty(\''+e.dateKey+'\')" style="border:none;background:none;color:var(--red);cursor:pointer;font-size:.9rem" title="מחק שורה">✕</button></td>':'<td></td>';
+    var delBtn='<td><button onclick="deleteDutyDay(\''+e.dateKey+'\')" style="border:none;background:none;color:var(--red);cursor:pointer;font-size:.9rem" title="מחק יום והעבר תורנים קדימה">✕</button></td>';
     h+='<tr'+rowClass+'><td>'+e.display+(e.isPast?' <span style="font-size:.7rem;color:var(--ink3)">✓</span>':'')+'</td><td>'+(e.isShabbat?'שבת':(e.isCustom?'📌 '+es(e.label):'🕎 '+es(e.label)))+'</td><td>'+n1+'</td><td>'+n2+'</td>'+delBtn+'</tr>';
   }
   body.innerHTML=h||'<tr><td colspan="4" style="text-align:center;color:var(--ink3);padding:1.5rem">'+T('dutyNone')+'</td></tr>';
