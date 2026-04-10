@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mbz-v4';
+const CACHE_NAME = 'mbz-v5';
 
 const PRECACHE_URLS = [
   './logo.jpg',
@@ -19,20 +19,26 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
-// Activate: delete ALL old caches and take control immediately
+// Activate: delete ALL old caches, take control, and force-reload all open tabs
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
       );
-    }).then(() => self.clients.claim())
+    })
+    .then(() => self.clients.claim())
+    .then(() => self.clients.matchAll({ type: 'window' }))
+    .then((clients) => {
+      // Force reload all open tabs so they get the latest HTML
+      clients.forEach((client) => client.navigate(client.url));
+    })
   );
 });
 
 // Fetch strategy:
 //  - HTML / navigation: network-first (always get latest, cache as fallback for offline)
-//  - API (hebcal): network-first with cache fallback
+//  - API (hebcal, sheets): network-first with cache fallback
 //  - Static assets (images, fonts, manifest): cache-first for speed
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
@@ -51,8 +57,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Hebcal API: network-first
-  if (url.hostname.includes('hebcal')) {
+  // API calls (hebcal, google sheets): network-first
+  if (url.hostname.includes('hebcal') || url.hostname.includes('script.google')) {
     event.respondWith(
       fetch(event.request)
         .then((response) => {

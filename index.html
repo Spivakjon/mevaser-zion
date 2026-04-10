@@ -3590,7 +3590,7 @@ async function getShabbatTimes(){
   try{
     // Primary: fetch from Hebcal with Tel Mond exact coordinates
     var sh=gSh();
-    var url='https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude=32.258&longitude=34.917&tzid=Asia/Jerusalem&m=50&lg=he&i=on&gy='+sh.getFullYear()+'&gm='+(sh.getMonth()+1)+'&gd='+sh.getDate();
+    var url='https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude=32.088&longitude=34.781&tzid=Asia/Jerusalem&b=21&m=50&lg=he&i=on&gy='+sh.getFullYear()+'&gm='+(sh.getMonth()+1)+'&gd='+sh.getDate();
     var r=await hf(url);
     if(r&&r.items){
       var times={candles:'',havdalah:'',parashaLink:''};
