@@ -671,7 +671,7 @@ body.light-mode .info-acc.open .info-acc-head{background:rgba(200,168,75,.08)}
 body.light-mode .info-acc-body{background:rgba(0,0,0,.015);border-color:var(--bd);color:var(--ink2)}
 body.light-mode .info-acc-body a{color:var(--gold)}
 body.light-mode .info-acc-body strong{color:var(--ink)}
-body.light-mode .site-footer{color:rgba(0,0,0,.3)}
+body.light-mode .site-footer{color:rgba(0,0,0,.4) !important}
 body.light-mode .wk-cd-days{color:var(--ink2)}
 body.light-mode .pending-ops-badge{background:#b45309;color:#fff}
 body.light-mode .mc{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.08)}
@@ -4047,48 +4047,27 @@ async function loadWeekSummary(){
   try{
     var sh=gSh();
     var key=d2s(sh);
-    function _safe(p){return Promise.race([p,new Promise(function(_,rej){setTimeout(function(){rej('timeout')},5000)})]).catch(function(){return null})}
-    // Check server-side Hebcal cache first
+    // Hebcal data comes from server (Apps Script daily trigger) — stored in localStorage via sheetsLoadAll
     var _hcSrv=null;
     try{var _hcRaw=localStorage.getItem('mbz_hebcal_week');if(_hcRaw){_hcSrv=JSON.parse(_hcRaw);if(!_hcSrv||_hcSrv.weekKey!==key)_hcSrv=null}}catch(e){_hcSrv=null}
-    var hd2,parName,shTimes,omerDayResult,zmanimResult,upcomingHolidays;
+    function _safe(p){return Promise.race([p,new Promise(function(_,rej){setTimeout(function(){rej('timeout')},5000)})]).catch(function(){return null})}
+    var hd2,parName,shTimes,omerDayResult,upcomingHolidays;
     if(_hcSrv){
-      // Use cached data — zero API calls
-      hd2=_hcSrv.hd2||null;
-      parName=_hcSrv.parName||_hcSrv.holiday||'';
-      shTimes=_hcSrv.shTimes||null;
+      // Server cache found — instant, zero API calls
+      hd2=_hcSrv.hd2||null;parName=_hcSrv.parName||'';shTimes=_hcSrv.shTimes||null;
       omerDayResult=_hcSrv.omerDay||0;
-      zmanimResult=null;
       upcomingHolidays=(_hcSrv.holidays||[]).map(function(h){return{name:h.name,date:new Date(h.date)}});
     }else{
-      // Fetch from single Hebcal /shabbat endpoint (parasha + times in one call)
+      // Fallback only — server cache missing (first ever load or trigger hasn't run yet)
       shTimes=await _safe(getShabbatTimes());
-      // getShabbatTimes already uses hf() which caches — now get parasha from same data
-      var shUrl='https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude='+_getHebcalParams().lat+'&longitude='+_getHebcalParams().lon+'&tzid=Asia/Jerusalem&b='+_getHebcalParams().b+'&m=50&lg=he&i=on&gy='+sh.getFullYear()+'&gm='+(sh.getMonth()+1)+'&gd='+sh.getDate();
-      var shData=await _safe(hf(shUrl)); // should be cached from getShabbatTimes
-      parName='';hd2=null;
-      if(shData&&shData.items){
-        for(var si=0;si<shData.items.length;si++){
-          var sit=shData.items[si];
-          if(sit.category==='parashat')parName=sit.hebrew||sit.title||'';
-          if(sit.category==='holiday'&&!parName)parName=sit.hebrew||sit.title||'';
-          if(sit.hdate){/* extract hebrew date from first item with hdate */
-            if(!hd2&&sit.hdate){var hp=sit.hdate.split(' ');if(hp.length>=3){hd2={hd:0,hm:'',hy:0}}} // fallback — will use g2h below
-          }
-        }
-      }
-      // Hebrew date — try from converter if not in shabbat response
-      if(!hd2)hd2=await _safe(g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate()));
-      // Non-critical: omer + holidays (fetch but don't block)
-      omerDayResult=0;upcomingHolidays=[];zmanimResult=null;
-      // Fire-and-forget for non-critical data — will show on next cached load
-      Promise.all([_safe(getOmerDay()),_safe(_fetchUpcomingHolidays(new Date(),new Date(Date.now()+14*86400000)))]).then(function(r){
-        var omer=r[0]||0;var hols=r[1]||[];
-        // Save everything to cache
-        var _saveHc={weekKey:key,hd2:hd2,parName:parName,shTimes:shTimes,omerDay:omer,holidays:hols.map(function(h){return{name:h.name,date:h.date.toISOString()}}),ts:Date.now()};
-        try{localStorage.setItem('mbz_hebcal_week',JSON.stringify(_saveHc))}catch(e){}
-        if(SHEETS_URL)sheetsPost({action:'saveSettings',settings:{hebcal_week:_saveHc}}).catch(function(){});
-      });
+      hd2=await _safe(g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate()));
+      var p=_getHebcalParams();var shData=await _safe(hf('https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude='+p.lat+'&longitude='+p.lon+'&tzid=Asia/Jerusalem&b='+p.b+'&m=50&lg=he&i=on&gy='+sh.getFullYear()+'&gm='+(sh.getMonth()+1)+'&gd='+sh.getDate()));
+      parName='';if(shData&&shData.items){for(var si=0;si<shData.items.length;si++){var sit=shData.items[si];if(sit.category==='parashat')parName=sit.hebrew||sit.title||'';if(sit.category==='holiday'&&!parName)parName=sit.hebrew||sit.title||''}}
+      omerDayResult=0;upcomingHolidays=[];
+      // Save to server+local so this never happens again
+      var _sv={weekKey:key,hd2:hd2,parName:parName,shTimes:shTimes,omerDay:0,holidays:[],ts:Date.now()};
+      try{localStorage.setItem('mbz_hebcal_week',JSON.stringify(_sv))}catch(e){}
+      if(SHEETS_URL)sheetsPost({action:'saveSettings',settings:{hebcal_week:_sv}}).catch(function(){});
     }
     var hebStr=hd2?fhd(hd2.hd,hd2.hm,hd2.hy):'';
     if(!parName)parName='';

@@ -427,6 +427,125 @@ function getAnalyticsStats() {
   };
 }
 
+// ════════════════════════════════════════════════════════
+//  Hebcal Server-Side Fetch (runs daily via trigger)
+//  Fetches parasha, shabbat times, omer, holidays from Hebcal
+//  and saves to Settings sheet — clients never call Hebcal directly
+// ════════════════════════════════════════════════════════
+function fetchWeeklyHebcal() {
+  // Calculate upcoming Shabbat (Saturday)
+  var now = new Date();
+  var day = now.getDay(); // 0=Sun..6=Sat
+  var daysUntilSat = (6 - day + 7) % 7;
+  if (daysUntilSat === 0) daysUntilSat = 0; // Saturday itself
+  var shabbat = new Date(now);
+  shabbat.setDate(now.getDate() + daysUntilSat);
+  var y = shabbat.getFullYear(), m = shabbat.getMonth() + 1, d = shabbat.getDate();
+  var weekKey = y + '-' + (m < 10 ? '0' + m : m) + '-' + (d < 10 ? '0' + d : d);
+
+  // Read zmanim settings for city selection
+  var settings = _getSettingsObj();
+  var zmanimCfg = settings.zmanim || {};
+  var cities = {
+    'tel-aviv': { lat: 32.088, lon: 34.781, b: 21 },
+    'jerusalem': { lat: 31.778, lon: 35.235, b: 40 },
+    'haifa': { lat: 32.794, lon: 34.990, b: 30 },
+    'beer-sheva': { lat: 31.252, lon: 34.791, b: 18 }
+  };
+  var city = cities[zmanimCfg.city || 'tel-aviv'] || cities['tel-aviv'];
+  var bVal = zmanimCfg.city === 'custom' ? (zmanimCfg.customB || 21) : city.b;
+
+  // 1. Fetch Shabbat times + parasha from Hebcal
+  var shUrl = 'https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude=' + city.lat +
+    '&longitude=' + city.lon + '&tzid=Asia/Jerusalem&b=' + bVal + '&m=50&lg=he&i=on' +
+    '&gy=' + y + '&gm=' + m + '&gd=' + d;
+  var shResp = UrlFetchApp.fetch(shUrl, { muteHttpExceptions: true });
+  var shData = JSON.parse(shResp.getContentText());
+
+  var parName = '', candles = '', havdalah = '';
+  if (shData && shData.items) {
+    for (var i = 0; i < shData.items.length; i++) {
+      var it = shData.items[i];
+      if (it.category === 'parashat') parName = it.hebrew || it.title || '';
+      if (it.category === 'holiday' && !parName) parName = it.hebrew || it.title || '';
+      if (it.category === 'candles' && it.date) candles = it.date.substring(11, 16);
+      if (it.category === 'havdalah' && it.date) havdalah = it.date.substring(11, 16);
+    }
+  }
+
+  // 2. Fetch Hebrew date
+  var hd2 = null;
+  var hdUrl = 'https://www.hebcal.com/converter?cfg=json&gy=' + y + '&gm=' + m + '&gd=' + d + '&g2h=1';
+  var hdResp = UrlFetchApp.fetch(hdUrl, { muteHttpExceptions: true });
+  var hdData = JSON.parse(hdResp.getContentText());
+  if (hdData && !hdData.error) {
+    hd2 = { hd: hdData.hd, hm: hdData.hm, hy: hdData.hy };
+  }
+
+  // 3. Fetch omer count for today
+  var todayStr = Utilities.formatDate(now, 'Asia/Jerusalem', 'yyyy-MM-dd');
+  var omerDay = 0;
+  var omerUrl = 'https://www.hebcal.com/hebcal?cfg=json&v=1&o=on&i=on&start=' + todayStr + '&end=' + todayStr;
+  var omerResp = UrlFetchApp.fetch(omerUrl, { muteHttpExceptions: true });
+  var omerData = JSON.parse(omerResp.getContentText());
+  if (omerData && omerData.items) {
+    for (var j = 0; j < omerData.items.length; j++) {
+      if (omerData.items[j].category === 'omer') omerDay = omerData.items[j].omer || 0;
+    }
+  }
+
+  // 4. Fetch upcoming holidays (2 weeks)
+  var endDate = new Date(now);
+  endDate.setDate(endDate.getDate() + 14);
+  var endStr = Utilities.formatDate(endDate, 'Asia/Jerusalem', 'yyyy-MM-dd');
+  var holidays = [];
+  var holUrl = 'https://www.hebcal.com/hebcal?cfg=json&v=1&maj=on&min=on&i=on&lg=he&start=' + todayStr + '&end=' + endStr;
+  var holResp = UrlFetchApp.fetch(holUrl, { muteHttpExceptions: true });
+  var holData = JSON.parse(holResp.getContentText());
+  if (holData && holData.items) {
+    for (var k = 0; k < holData.items.length; k++) {
+      var hi = holData.items[k];
+      if (hi.category === 'holiday' && hi.date) {
+        holidays.push({ name: hi.hebrew || hi.title, date: hi.date.substring(0, 10) + 'T00:00:00.000Z' });
+      }
+    }
+  }
+
+  // 5. Save to Settings sheet
+  var hebcalWeek = {
+    weekKey: weekKey,
+    hd2: hd2,
+    parName: parName,
+    shTimes: candles ? { candles: candles, havdalah: havdalah } : null,
+    omerDay: omerDay,
+    holidays: holidays,
+    ts: Date.now()
+  };
+
+  saveSettings({ hebcal_week: hebcalWeek });
+  Logger.log('Hebcal fetched for ' + weekKey + ': ' + parName + ', candles=' + candles + ', havdalah=' + havdalah);
+  return hebcalWeek;
+}
+
+// Run this once to set up the daily trigger:
+function setupDailyHebcalTrigger() {
+  // Remove existing triggers for this function
+  var triggers = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < triggers.length; i++) {
+    if (triggers[i].getHandlerFunction() === 'fetchWeeklyHebcal') {
+      ScriptApp.deleteTrigger(triggers[i]);
+    }
+  }
+  // Create new trigger: every day at 5:00-6:00 AM Israel time
+  ScriptApp.newTrigger('fetchWeeklyHebcal')
+    .timeBased()
+    .atHour(5)
+    .everyDays(1)
+    .inTimezone('Asia/Jerusalem')
+    .create();
+  Logger.log('Daily Hebcal trigger created (05:00 Israel time)');
+}
+
 function cleanupActiveSheet() {
   const sh = getActiveSheet();
   const rows = sh.getDataRange().getValues();
