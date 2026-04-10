@@ -1518,12 +1518,29 @@ function chH(i){const c=CH[i];
   var curY=new Date().getFullYear();
   var yrOpts='<option value="">שנה</option>';
   for(var yy=curY;yy>=curY-30;yy--)yrOpts+='<option value="'+yy+'"'+(gy===''+yy?' selected':'')+'>'+yy+'</option>';
+  const bmOn=c.wantsBM?'show':'';
   return`<div class="ic" id="ci-${i}">
 <div class="ic-head"><span class="ic-title">${T('childN').replace('{n}',i+1)}${c.name?' — '+es(c.name):''}</span><button class="brm" onclick="remCh(${i})">✕</button></div>
 <div class="g3" style="margin-bottom:.65rem">
   <div class="ff"><label>${T('childFirstName')} <span class="req">*</span></label><input id="cn-${i}" value="${es(c.name)}" placeholder="${T('childFirstName')}" onchange="CH[${i}].name=this.value;rChT(${i})"><div class="emsg">${T('fieldRequired')}</div></div>
-  <div class="ff"><label>${T('childGender')}</label><select id="cg-${i}" onchange="CH[${i}].gender=this.value"><option value="">${T('childGenderSelect')}</option><option value="זכר"${c.gender==='זכר'?' selected':''}>${T('childMale')}</option><option value="נקבה"${c.gender==='נקבה'?' selected':''}>${T('childFemale')}</option></select></div>
+  <div class="ff"><label>${T('childGender')}</label><select id="cg-${i}" onchange="CH[${i}].gender=this.value;updateBMVisibility(${i})"><option value="">${T('childGenderSelect')}</option><option value="זכר"${c.gender==='זכר'?' selected':''}>${T('childMale')}</option><option value="נקבה"${c.gender==='נקבה'?' selected':''}>${T('childFemale')}</option></select></div>
   <div><div style="font-size:.75rem;font-weight:600;color:var(--ink2);margin-bottom:.25rem">${T('childBirthDate')}</div><div class="hrow" style="grid-template-columns:1fr 1fr 1fr"><select id="cd-${i}" onchange="updChGd(${i})">${dayOpts}</select><select id="cm-${i}" onchange="updChGd(${i})">${monOpts}</select><select id="cy-${i}" onchange="updChGd(${i})">${yrOpts}</select></div></div>
+</div>
+<div class="bm-section" id="bms-${i}" style="${c.gender==='נקבה'?'display:none':''}">
+  <label class="bm-toggle-row">
+    <input type="checkbox" id="cbm-${i}" ${c.wantsBM?'checked':''} onchange="toggleBM(${i})">
+    <span class="bm-toggle-lbl">${T('childBmRegister')}</span>
+  </label>
+  <div class="bm-details ${bmOn}" id="bmd-${i}">
+    <button class="bm-btn" id="bmc-${i}" onclick="calcBM(${i})" style="margin-bottom:.5rem">${T('childBmCalc')}</button>
+    <div class="bm-res" id="bmr-${i}">${c.parasha?`<span style="color:var(--gold3)">📖 ${T('childBmParasha')}: <strong>${es(c.parasha)}</strong></span>${c.barDate?'<br><span style="color:rgba(255,255,255,.7)">📅 '+T('calShabbat')+': '+fgd(c.barDate)+'</span>':''}`:''}</div>
+    <div class="div" style="margin:.65rem 0"></div>
+    <div class="g3">
+      <div class="ff"><label>${T('childBmParasha')}</label><input id="cp-${i}" value="${es(c.parasha)}" placeholder="${T('childBmAutoCalc')}" onchange="CH[${i}].parasha=this.value"></div>
+      <div class="ff"><label>${T('childBmTorahRead')}</label><select id="crp-${i}" onchange="CH[${i}].readP=this.value"><option value="">${T('optNotSpecified')}</option><option value="כן"${c.readP==='כן'?' selected':''}>${T('optYes')}</option><option value="לא"${c.readP==='לא'?' selected':''}>${T('optNo')}</option></select></div>
+      <div class="ff"><label>${T('childBmHaftarah')}</label><select id="crh-${i}" onchange="CH[${i}].readH=this.value"><option value="">${T('optNotSpecified')}</option><option value="כן"${c.readH==='כן'?' selected':''}>${T('optYes')}</option><option value="לא"${c.readH==='לא'?' selected':''}>${T('optNo')}</option></select></div>
+    </div>
+  </div>
 </div>
 </div>`;}
 async function updChGd(i){
@@ -1534,6 +1551,19 @@ async function updChGd(i){
     CH[i].gd=yv+'-'+mv+'-'+dv;
     try{var h=await g2h(+yv,+mv,+dv);if(h){CH[i].hd=h.hd;CH[i].hm=h.hm;CH[i].hy=h.hy}}catch(e){}
   }else{CH[i].gd=''}
+}
+function updateBMVisibility(i){
+  var sec=document.getElementById('bms-'+i);
+  if(!sec)return;
+  if(CH[i].gender==='נקבה'){sec.style.display='none';CH[i].wantsBM=false;var cb=document.getElementById('cbm-'+i);if(cb)cb.checked=false;var det=document.getElementById('bmd-'+i);if(det)det.classList.remove('show')}
+  else{sec.style.display=''}
+}
+function toggleBM(i){
+  const cb=document.getElementById(`cbm-${i}`);
+  const det=document.getElementById(`bmd-${i}`);
+  if(!cb||!det)return;
+  CH[i].wantsBM=cb.checked;
+  det.classList.toggle('show',cb.checked);
 }
 function rChT(i){const el=document.querySelector(`#ci-${i} .ic-title`);if(el)el.textContent=T('childN').replace('{n}',i+1)+(CH[i].name?' — '+CH[i].name:'')}
 function renderCH(){const w=document.getElementById('cw');w.innerHTML=CH.map((_,i)=>chH(i)).join('');document.getElementById('badd-c').style.display='flex'}
@@ -1619,7 +1649,7 @@ function tCb(lblId,cbId){
 }
 
 // ── Form collect ────────────────────────────────────────
-function colCh(i){const c={...CH[i]};const dd=document.getElementById(`cd-${i}`);const mm=document.getElementById(`cm-${i}`);const yy=document.getElementById(`cy-${i}`);if(dd&&mm&&yy&&dd.value&&mm.value&&yy.value)c.gd=yy.value+'-'+mm.value+'-'+dd.value;const ni=document.getElementById(`cn-${i}`);if(ni)c.name=ni.value.trim();const ge=document.getElementById(`cg-${i}`);if(ge)c.gender=ge.value;return c}
+function colCh(i){const c={...CH[i]};const dd=document.getElementById(`cd-${i}`);const mm=document.getElementById(`cm-${i}`);const yy=document.getElementById(`cy-${i}`);if(dd&&mm&&yy&&dd.value&&mm.value&&yy.value)c.gd=yy.value+'-'+mm.value+'-'+dd.value;const ni=document.getElementById(`cn-${i}`);if(ni)c.name=ni.value.trim();const ge=document.getElementById(`cg-${i}`);if(ge)c.gender=ge.value;const wbm=document.getElementById(`cbm-${i}`);if(wbm)c.wantsBM=wbm.checked;const pi=document.getElementById(`cp-${i}`);if(pi)c.parasha=pi.value.trim();const rp=document.getElementById(`crp-${i}`);if(rp)c.readP=rp.value;const rh=document.getElementById(`crh-${i}`);if(rh)c.readH=rh.value;return c}
 function colYr(i){const y={...YR[i]};['hd','hm','hy'].forEach(k=>{const el=document.getElementById(`y${i}-${k}`);if(el)y[k]=el.value});const ni=document.getElementById(`yn-${i}`);if(ni)y.name=ni.value.trim();const yl=document.getElementById(`yl-${i}`);if(yl)y.lead=yl.value;const yh=document.getElementById(`yh-${i}`);if(yh)y.haft=yh.value;return y}
 function reqF(id){const el=document.getElementById(id);const ok=el&&el.value.trim().length>0;const ff=el?el.closest('.ff'):null;if(ff)ff.classList.toggle('err',!ok);return ok}
 
