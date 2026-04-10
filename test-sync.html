@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>בדיקת סנכרון</title>
+<style>
+body{font-family:sans-serif;background:#1a2744;color:#fff;padding:2rem;text-align:center}
+button{font-size:1.2rem;padding:1rem 2rem;margin:.5rem;border:none;border-radius:12px;cursor:pointer;font-family:inherit;font-weight:bold}
+.del{background:#e74c3c;color:#fff}
+.add{background:#2ecc71;color:#fff}
+.sync{background:#c8a84b;color:#1a2744}
+#log{margin-top:1.5rem;text-align:right;background:rgba(0,0,0,.3);padding:1rem;border-radius:10px;font-size:.85rem;max-height:300px;overflow:auto;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<h1>בדיקת סנכרון ל-Google Sheets</h1>
+<p>לחץ על הכפתורים לפי הסדר:</p>
+<button class="del" onclick="step1()">1. מחק הכל</button>
+<button class="add" onclick="step2()">2. צור 10 מתפללים</button>
+<button class="sync" onclick="step3()">3. סנכרן ל-Sheets</button>
+<div id="log">ממתין...</div>
+<script>
+var SHEETS_URL = localStorage.getItem('mbz_sheets_url') || '';
+var SK = 'mbz_v5';
+function log(msg){ document.getElementById('log').textContent += '\n' + msg; }
+
+function step1(){
+  localStorage.setItem(SK, '[]');
+  log('✅ כל המתפללים נמחקו מ-localStorage');
+}
+
+function step2(){
+  var t = new Date().toISOString();
+  var ms = [
+    {id:'t1',firstName:'אברהם',lastName:'ישראלי',fatherName:'יצחק',phone:'050-1111111',email:'avraham@test.com',address:'הרצל 1, תל מונד',birthDate:'1985-03-15',parasha:'וירא',dutyRoster:true,children:[],yahrzeits:[],volunteering:[],timestamp:t},
+    {id:'t2',firstName:'שרה',lastName:'כהן',fatherName:'דוד',phone:'052-2222222',email:'sarah@test.com',address:'הרצל 2, תל מונד',birthDate:'1990-07-20',dutyRoster:true,children:[],yahrzeits:[],volunteering:['קניות לקידוש'],timestamp:t},
+    {id:'t3',firstName:'יעקב',lastName:'לוי',fatherName:'משה',phone:'054-3333333',address:'הרצל 3, תל מונד',birthDate:'1978-11-05',dutyRoster:true,children:[{name:'דן',gender:'זכר',gd:'2015-06-10'}],yahrzeits:[],volunteering:[],timestamp:t},
+    {id:'t4',firstName:'רחל',lastName:'מזרחי',fatherName:'אלי',phone:'050-4444444',email:'rachel@test.com',address:'הרצל 4, תל מונד',dutyRoster:true,children:[],yahrzeits:[{name:'אלי מזרחי',hd:'15',hm:'7',hy:'5780',lead:'כן',haft:'לא'}],volunteering:['דבר תורה'],timestamp:t},
+    {id:'t5',firstName:'חיים',lastName:'ברקוביץ',fatherName:'שמואל',phone:'058-5555555',address:'הרצל 5, תל מונד',dutyRoster:true,children:[],yahrzeits:[],volunteering:[],timestamp:t},
+    {id:'t6',firstName:'מרים',lastName:'אדלר',fatherName:'נחמן',phone:'052-6666666',email:'miriam@test.com',address:'הרצל 6, תל מונד',birthDate:'1982-01-30',dutyRoster:true,spouse:{name:'יוסי',phone:'052-6666667'},children:[{name:'נועם',gender:'זכר',gd:'2018-04-12'}],yahrzeits:[],volunteering:['סידור קידוש'],timestamp:t},
+    {id:'t7',firstName:'דני',lastName:'שמעוני',fatherName:'עמוס',phone:'054-7777777',email:'dani@test.com',address:'הרצל 7, תל מונד',dutyRoster:true,children:[],yahrzeits:[],volunteering:[],timestamp:t},
+    {id:'t8',firstName:'טלי',lastName:'גולן',fatherName:'רפי',phone:'050-8888888',address:'הרצל 8, תל מונד',dutyRoster:false,children:[],yahrzeits:[],volunteering:['דבר תורה'],timestamp:t},
+    {id:'t9',firstName:'עמיר',lastName:'פרידמן',fatherName:'בני',phone:'058-9999999',email:'amir@test.com',address:'הרצל 9, תל מונד',birthDate:'1975-09-08',dutyRoster:true,children:[{name:'אור',gender:'נקבה',gd:'2012-02-14'},{name:'גיל',gender:'זכר',gd:'2016-08-03'}],yahrzeits:[],volunteering:[],timestamp:t},
+    {id:'t10',firstName:'נעמה',lastName:'רוזן',fatherName:'אורי',phone:'052-1010101',email:'naama@test.com',address:'הרצל 10, תל מונד',dutyRoster:true,children:[],yahrzeits:[{name:'אורי רוזן',hd:'3',hm:'1',hy:'5783',lead:'לא',haft:'כן'}],volunteering:['קניות לקידוש','סידור קידוש'],timestamp:t}
+  ];
+  localStorage.setItem(SK, JSON.stringify(ms));
+  log('✅ נוצרו 10 מתפללים חדשים ב-localStorage');
+}
+
+async function step3(){
+  if(!SHEETS_URL){
+    log('❌ לא מוגדר SHEETS_URL! הגדר אותו קודם בהגדרות האתר.');
+    return;
+  }
+  log('⏳ שולח ל-Sheets: ' + SHEETS_URL.substring(0,50) + '...');
+  try{
+    var ms = JSON.parse(localStorage.getItem(SK) || '[]');
+    log('📤 שולח ' + ms.length + ' מתפללים...');
+    var r = await fetch(SHEETS_URL, {
+      method: 'POST',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify({action:'sync', members:ms})
+    });
+    var text = await r.text();
+    log('📥 תשובה: ' + text.substring(0, 200));
+    log('✅ הסנכרון הושלם! פתח את ה-Google Sheet ותבדוק.');
+  }catch(e){
+    log('❌ שגיאה: ' + e.message);
+  }
+}
+</script>
+</body>
+</html>
