@@ -834,6 +834,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       </div>
     </div>
     <div id="sync-status" class="sync-status" style="display:none"></div>
+    <div id="pending-ops-badge" style="display:none;position:fixed;bottom:1rem;left:1rem;background:#d97706;color:#fff;padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:600;font-family:inherit;z-index:999;box-shadow:0 2px 10px rgba(0,0,0,.3);cursor:pointer" onclick="_flushPendingOps().then(function(){showToast('סנכרון הושלם')}).catch(function(){showToast('שגיאה בסנכרון')})"></div>
     <div class="stabs">
       <button class="stb active" onclick="showAt('cal')" data-i18n-text="tabWeekly">📅 לוח שבועי</button>
       <button class="stb" onclick="showAt('mem')" data-i18n-text="tabMembers">📋 מתפללים</button>
@@ -1782,47 +1783,129 @@ async function submitForm(){
   if(tzFF)tzFF.classList.remove('err');if(tzErr)tzErr.style.display='none';const vols=collectVols();var spouseFn=document.getElementById('sp-fn').value.trim();var spousePh=document.getElementById('sp-ph').value.trim();var spouseEm=document.getElementById('sp-em').value.trim();var spouseBd=getSpouseBirthDate();var spouse=(spouseFn||spousePh)?{name:spouseFn,phone:spousePh,email:spouseEm,birthDate:spouseBd}:null;var myParasha=(document.getElementById('my-parasha')||{}).value;var myReadP=(document.getElementById('my-readP')||{}).value;var myReadH=(document.getElementById('my-readH')||{}).value;const data={idNumber:tzVal||undefined,firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),birthDate:getBirthDate(),parasha:(myParasha||'').trim(),readP:myReadP||'',readH:myReadH||'',address:combineAddress(),spouse:spouse,volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};var dutyCb=document.getElementById('duty-reg-cb');data.dutyRoster=dutyCb?dutyCb.checked:true;data.membershipPaid=window._mbrPaidStatus||false;data.membershipPaidDate=window._mbrPaidStatus?new Date().toLocaleDateString('he-IL'):'';if(eid){var existing=getM(eid);if(existing){data.membershipPaid=existing.membershipPaid}}if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
 function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em','tz','sp-fn','sp-ph','sp-em','my-parasha','my-readP','my-readH'].forEach(id=>{var el=document.getElementById(id);if(el)el.value=''});document.getElementById('ad-street').value='';document.getElementById('ad-num').value='';document.getElementById('ad-apt').value='';document.getElementById('ad-city').value='תל מונד';renderVolCheckboxes([]);initForm();document.getElementById('main-card').classList.add('reg-collapsed');window._mbrPaidStatus=false;var ms=getMbrSettings();if(ms.year||ms.link){document.getElementById('main-card').style.display='none';document.getElementById('payment-msg-card').style.display='none';document.getElementById('membership-prompt-card').style.display=''}window.scrollTo(0,0)}
 
-// ── Storage: localStorage + Google Sheets ───────────────
+// ══════════════════════════════════════════════════════════
+//  Storage: Google Sheets = source of truth, localStorage = cache
+// ══════════════════════════════════════════════════════════
 let SHEETS_URL=localStorage.getItem('mbz_sheets_url')||'';
+var PENDING_OPS_KEY='mbz_pending_ops';
 
 var _msCache=null;
 function lsGet(){if(_msCache)return _msCache;try{_msCache=JSON.parse(localStorage.getItem(SK)||'[]')}catch(e){_msCache=[]}return _msCache}
 function lsSet(a){_msCache=a;try{localStorage.setItem(SK,JSON.stringify(a))}catch(e){}}
 function getMs(){return lsGet()}
 function getM(id){return lsGet().find(m=>m.id===id)||null}
-function addM(d){const a=lsGet();d.id=Date.now()+'_'+Math.random().toString(36).slice(2,7);a.push(d);lsSet(a);invalidateCalCache();if(d.dutyRoster){var q=getDutyQueue();if(q.indexOf(d.id)<0){q.push(d.id);saveDutyQueue(q)}}if(SHEETS_URL)sheetsPost({action:'add',member:d}).catch(e=>console.warn('Sheets sync error:',e))}
-function updM(id,d){const a=lsGet();const i=a.findIndex(m=>m.id===id);if(i>=0){a[i]={...a[i],...d,id};lsSet(a);invalidateCalCache();if(SHEETS_URL)sheetsPost({action:'update',member:a[i]}).catch(e=>console.warn('Sheets sync error:',e))}}
-function delM(id){lsSet(lsGet().filter(m=>m.id!==id));invalidateCalCache();if(SHEETS_URL)sheetsPost({action:'delete',id:id}).catch(e=>console.warn('Sheets sync error:',e))}
+
+// ── Offline operation queue ──────────────────────────────
+function _getPendingOps(){try{return JSON.parse(localStorage.getItem(PENDING_OPS_KEY)||'[]')}catch(e){return[]}}
+function _savePendingOps(ops){localStorage.setItem(PENDING_OPS_KEY,JSON.stringify(ops))}
+function _queueOp(op){var ops=_getPendingOps();ops.push({...op,ts:Date.now()});_savePendingOps(ops);_updatePendingBadge()}
+function _updatePendingBadge(){
+  var ops=_getPendingOps();var el=document.getElementById('pending-ops-badge');
+  if(!el)return;
+  if(ops.length){el.textContent=ops.length+' שינויים ממתינים לסנכרון';el.style.display='block'}
+  else{el.style.display='none'}
+}
+
+async function _flushPendingOps(){
+  if(!SHEETS_URL)return;
+  var ops=_getPendingOps();if(!ops.length)return;
+  var remaining=[];
+  for(var i=0;i<ops.length;i++){
+    try{
+      var r=await fetch(SHEETS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(ops[i]),mode:'cors'});
+      if(!r.ok)remaining.push(ops[i]);
+    }catch(e){remaining.push(ops[i])}
+  }
+  _savePendingOps(remaining);
+  _updatePendingBadge();
+}
+
+// ── Core CRUD — Sheets first, localStorage as cache ──────
+function addM(d){
+  const a=lsGet();d.id=Date.now()+'_'+Math.random().toString(36).slice(2,7);a.push(d);lsSet(a);invalidateCalCache();
+  if(d.dutyRoster){var q=getDutyQueue();if(q.indexOf(d.id)<0){q.push(d.id);saveDutyQueue(q)}}
+  if(SHEETS_URL){sheetsPost({action:'save',member:d}).catch(function(){_queueOp({action:'save',member:d})})}
+}
+function updM(id,d){
+  const a=lsGet();const i=a.findIndex(m=>m.id===id);
+  if(i>=0){a[i]={...a[i],...d,id};lsSet(a);invalidateCalCache();
+    if(SHEETS_URL){sheetsPost({action:'update',member:a[i]}).catch(function(){_queueOp({action:'update',member:a[i]})})}
+  }
+}
+function delM(id){
+  lsSet(lsGet().filter(m=>m.id!==id));invalidateCalCache();
+  if(SHEETS_URL){sheetsPost({action:'delete',id:id}).catch(function(){_queueOp({action:'delete',id:id})})}
+}
 
 // ── Google Sheets Integration ───────────────────────────
 async function sheetsPost(payload){
   if(!SHEETS_URL)return null;
-  const r=await fetch(SHEETS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload),mode:'no-cors'});
+  var r=await fetch(SHEETS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload),mode:'cors'});
+  if(!r.ok)throw new Error('HTTP '+r.status);
   return r;
 }
-async function sheetsFetch(){
-  if(!SHEETS_URL)return null;
+
+// ── Load ALL data from Sheets on startup ────────────────
+async function sheetsLoadAll(){
+  if(!SHEETS_URL)return false;
   try{
-    const r=await fetch(SHEETS_URL+'?action=getAll',{mode:'cors'});
-    if(!r.ok)return null;
-    const data=await r.json();
-    return data;
-  }catch(e){console.warn('Sheets fetch error:',e);return null}
+    var r=await fetch(SHEETS_URL+'?action=loadAll',{mode:'cors',cache:'no-store'});
+    if(!r.ok)return false;
+    var data=await r.json();
+    if(!data||data.status!=='ok')return false;
+    // Members
+    if(data.members&&Array.isArray(data.members)){lsSet(data.members)}
+    // Duty
+    if(data.duty){
+      if(data.duty.queue)saveDutyQueue(data.duty.queue);
+      if(data.duty.history)saveDutyHistory(data.duty.history);
+      if(data.duty.swaps)saveDutySwaps(data.duty.swaps);
+      if(data.duty.customs)saveCustomDuties(data.duty.customs);
+      if(data.duty.hidden)saveDutyHidden(data.duty.hidden);
+    }
+    // Settings
+    if(data.settings){
+      var s=data.settings;
+      if(s.aliyot)localStorage.setItem('mbz_aliyot',typeof s.aliyot==='string'?s.aliyot:JSON.stringify(s.aliyot));
+      if(s.kiddush)localStorage.setItem('mbz_kiddush',typeof s.kiddush==='string'?s.kiddush:JSON.stringify(s.kiddush));
+      if(s.announcements)localStorage.setItem('mbz_announcements',typeof s.announcements==='string'?s.announcements:JSON.stringify(s.announcements));
+      if(s.membership)localStorage.setItem('mbz_membership',typeof s.membership==='string'?s.membership:JSON.stringify(s.membership));
+      if(s.custom_texts)localStorage.setItem('mbz_custom_texts',typeof s.custom_texts==='string'?s.custom_texts:JSON.stringify(s.custom_texts));
+      if(s.vol_types)localStorage.setItem('mbz_vol_types',typeof s.vol_types==='string'?s.vol_types:JSON.stringify(s.vol_types));
+      if(s.custom_tags)localStorage.setItem('mbz_custom_tags',typeof s.custom_tags==='string'?s.custom_tags:JSON.stringify(s.custom_tags));
+      if(s.zmanim)localStorage.setItem('mbz_zmanim_settings',typeof s.zmanim==='string'?s.zmanim:JSON.stringify(s.zmanim));
+    }
+    // Flush any pending offline operations
+    await _flushPendingOps();
+    return true;
+  }catch(e){console.warn('sheetsLoadAll error:',e);return false}
 }
+
+// ── Sync settings TO Sheets ─────────────────────────────
+async function _syncSettingsToSheets(){
+  if(!SHEETS_URL)return;
+  var settings={};
+  try{settings.aliyot=JSON.parse(localStorage.getItem('mbz_aliyot')||'null')}catch(e){}
+  try{settings.kiddush=JSON.parse(localStorage.getItem('mbz_kiddush')||'null')}catch(e){}
+  try{settings.announcements=JSON.parse(localStorage.getItem('mbz_announcements')||'null')}catch(e){}
+  try{settings.membership=JSON.parse(localStorage.getItem('mbz_membership')||'null')}catch(e){}
+  try{settings.custom_texts=JSON.parse(localStorage.getItem('mbz_custom_texts')||'null')}catch(e){}
+  try{settings.vol_types=JSON.parse(localStorage.getItem('mbz_vol_types')||'null')}catch(e){}
+  try{settings.custom_tags=JSON.parse(localStorage.getItem('mbz_custom_tags')||'null')}catch(e){}
+  try{settings.zmanim=JSON.parse(localStorage.getItem('mbz_zmanim_settings')||'null')}catch(e){}
+  // Remove nulls
+  for(var k in settings){if(settings[k]==null)delete settings[k]}
+  sheetsPost({action:'saveSettings',settings:settings}).catch(function(e){console.warn('Settings sync error:',e)});
+}
+
 async function syncFromSheets(){
   updateSyncStatus('syncing',T('syncSyncing'));
   try{
-    const data=await sheetsFetch();
-    if(data&&Array.isArray(data)){
-      lsSet(data);
-      updateSyncStatus('connected',T('syncConnected')+' - '+data.length+' '+T('syncRecords'));
-      showToast(T('toastSyncDone').replace('{n}',data.length));
-      if(curAt==='mem')renderML();
-      return true;
-    }else if(data&&data.members&&Array.isArray(data.members)){
-      lsSet(data.members);
-      updateSyncStatus('connected',T('syncConnected')+' - '+data.members.length+' '+T('syncRecords'));
-      showToast(T('toastSyncDone').replace('{n}',data.members.length));
+    var ok=await sheetsLoadAll();
+    if(ok){
+      var ms=getMs();
+      updateSyncStatus('connected',T('syncConnected')+' - '+ms.length+' '+T('syncRecords'));
+      showToast(T('toastSyncDone').replace('{n}',ms.length));
       if(curAt==='mem')renderML();
       return true;
     }else{
@@ -1837,14 +1920,12 @@ async function syncFromSheets(){
   }
 }
 async function doSync(){
-  if(!SHEETS_URL){
-    showToast(T('toastSetSheets'));
-    toggleSheetsCfg();
-    return;
-  }
+  if(!SHEETS_URL){showToast(T('toastSetSheets'));toggleSheetsCfg();return}
   updateSyncStatus('syncing',T('toastSendingData'));
   try{
+    // Push local members + settings to Sheets
     await sheetsPost({action:'sync',members:lsGet()});
+    await _syncSettingsToSheets();
     showToast(T('toastSentToSheets'));
     updateSyncStatus('connected',T('syncConnected'));
   }catch(e){
@@ -4585,7 +4666,8 @@ function _dutySyncToSheets(){
     queue:getDutyQueue(),
     history:getDutyHistory(),
     swaps:getDutySwaps(),
-    customs:getCustomDuties()
+    customs:getCustomDuties(),
+    hidden:getDutyHidden()
   };
   sheetsPost({action:'saveDuty',duty:duty}).catch(function(e){console.warn('Duty sync error:',e)});
 }
@@ -5857,6 +5939,10 @@ function _startHeartbeat(){
 function _stopHeartbeat(){
   if(_hbInterval){clearInterval(_hbInterval);_hbInterval=null}
 }
+// Retry pending ops when coming back online + periodic flush
+window.addEventListener('online',function(){_flushPendingOps()});
+setInterval(function(){if(navigator.onLine)_flushPendingOps()},60000);
+
 // Track visit on page load, heartbeat while page is visible
 _trackPageVisit();
 _startHeartbeat();
@@ -5875,6 +5961,11 @@ initForm();
 loadWeekSummary();
 renderPublicAnnouncements();
 initMbrPrompt();
+// Load from Sheets as source of truth (in background)
+if(SHEETS_URL){sheetsLoadAll().then(function(ok){
+  if(ok){invalidateCalCache();mergeCustomTexts();applyLang();loadWeekSummary();renderPublicAnnouncements();_updatePendingBadge();console.log('Synced from Sheets')}
+}).catch(function(){})}
+_updatePendingBadge();
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').then(function(reg){
     // Force immediate check for new SW version on every page load
