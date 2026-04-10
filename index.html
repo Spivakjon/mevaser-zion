@@ -38,9 +38,13 @@ body.light-mode .wk-time{color:var(--ink2)}
 body.light-mode .wk-time strong{color:var(--ink)}
 body.light-mode .wk-times-grid{background:rgba(200,168,75,.06);border-color:rgba(200,168,75,.15)}
 body.light-mode .wk-tg-item{background:rgba(0,0,0,.04)}
+body.light-mode .wk-tg-label{color:#6b5a2e}
 body.light-mode .wk-tg-val{color:var(--ink)}
 body.light-mode .wk-duty{background:rgba(30,125,75,.06);border-color:rgba(30,125,75,.15)}
+body.light-mode .wk-duty{color:var(--ink2)}
 body.light-mode .wk-duty strong{color:var(--ink)}
+body.light-mode .wk-duty-label{color:#1a6b3a}
+body.light-mode .wk-omer{background:rgba(200,168,75,.08);border-color:rgba(200,168,75,.2);color:#6b5a2e}
 body.light-mode .wk-daily{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 body.light-mode .wk-daily-row{color:var(--ink2)}
 body.light-mode .wk-daily-row strong{color:var(--ink)}
@@ -667,6 +671,21 @@ body.light-mode .info-acc.open .info-acc-head{background:rgba(200,168,75,.08)}
 body.light-mode .info-acc-body{background:rgba(0,0,0,.015);border-color:var(--bd);color:var(--ink2)}
 body.light-mode .info-acc-body a{color:var(--gold)}
 body.light-mode .info-acc-body strong{color:var(--ink)}
+body.light-mode .site-footer{color:rgba(0,0,0,.3)}
+body.light-mode .wk-cd-days{color:var(--ink2)}
+body.light-mode .pending-ops-badge{background:#b45309;color:#fff}
+body.light-mode .mc{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.08)}
+body.light-mode .mn{color:var(--ink)}
+body.light-mode .ms2{color:var(--ink3)}
+body.light-mode .mav{background:rgba(200,168,75,.15);color:#6b5a2e}
+body.light-mode .ic{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.08)}
+body.light-mode .ic-head{color:var(--ink)}
+body.light-mode select{background:#fff;border-color:#d1d5db;color:var(--ink)}
+body.light-mode .hrow select{background:#fff;border-color:#d1d5db;color:var(--ink)}
+body.light-mode .bm-section{border-color:rgba(0,0,0,.08)}
+body.light-mode .bm-toggle-lbl{color:var(--ink2)}
+body.light-mode .bm-details{background:rgba(0,0,0,.02)}
+body.light-mode .duty-hero{color:#fff}
 @media(max-width:600px){
   .info-section{padding:0 .25rem}
   .info-welcome{padding:.9rem .85rem}
@@ -3069,7 +3088,7 @@ var I18N={
     addYahrzeit:'+ Add Yahrzeit',
     save:'💾 Save Details',
     orgName:'Mevaser Zion Community',
-    logoSub:'Synagogue \u00b7 23 HaTzofit St. \u00b7 Tel Mond',
+    logoSub:'Synagogue \u00b7 Nof Yeladot School \u00b7 Tel Mond',
     registerBtn:'📝 Register',
     welcomeTitle:'🕍 Mevaser Zion Community \u2014 Tel Mond',
     welcomeText:'Welcome! We are glad to have you as part of our community.<br>Here you can register as a synagogue member, stay updated on upcoming events, and manage your personal details.',
@@ -3157,7 +3176,7 @@ var I18N={
     dutyRosterSection:'Shabbat Duty',
     dutyRegLabel:'I would like to join the Shabbat duty roster',
     contactLine:'For details contact Nir Kaufman — 054-8882150',
-    footer:'Mevaser Zion Community · Tel Mond · Developed by Yehonatan Spivak',
+    footer:'Mevaser Zion Community · Tel Mond · Developed by Jonatan Spivak',
     // Admin login
     adminPanelTitle:'Admin Panel',
     adminPanelPrompt:'Enter password to access the admin panel',
@@ -6018,6 +6037,6 @@ if('serviceWorker' in navigator){
   });
 }
 </script>
-<div style="text-align:center;padding:1.5rem 0 calc(1rem + env(safe-area-inset-bottom,0px));font-size:.65rem;color:rgba(255,255,255,.2)" data-i18n="footer">קהילת מבשר ציון · תל מונד · פותח ע״י יהונתן ספיבק</div>
+<div class="site-footer" style="text-align:center;padding:1.5rem 0 calc(1rem + env(safe-area-inset-bottom,0px));font-size:.65rem;color:rgba(255,255,255,.2)" data-i18n="footer">קהילת מבשר ציון · תל מונד · פותח ע״י יהונתן ספיבק</div>
 </body>
 </html>
