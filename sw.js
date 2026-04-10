@@ -1,39 +1,52 @@
-const CACHE_NAME = 'mbz-v1';
+const CACHE_NAME = 'mbz-v2';
 
 const PRECACHE_URLS = [
-  './index.html',
   './logo.jpg',
   './manifest.json',
   'https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap'
 ];
 
-// Install: precache static assets
+// Install: precache static assets, skip waiting to activate immediately
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_URLS);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS))
   );
   self.skipWaiting();
 });
 
-// Activate: clean up old caches
+// Activate: delete ALL old caches and take control immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch: network-first for API, cache-first for static assets
+// Fetch strategy:
+//  - HTML / navigation: network-first (always get latest, cache as fallback for offline)
+//  - API (hebcal): network-first with cache fallback
+//  - Static assets (images, fonts, manifest): cache-first for speed
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Network-first for hebcal API calls
+  // Navigation requests (HTML pages): ALWAYS try network first
+  if (event.request.mode === 'navigate' || event.request.destination === 'document') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          return response;
+        })
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Hebcal API: network-first
   if (url.hostname.includes('hebcal')) {
     event.respondWith(
       fetch(event.request)
@@ -47,26 +60,17 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Cache-first for static assets, fallback to network
+  // Everything else (images, fonts, manifest): cache-first for speed
   event.respondWith(
     caches.match(event.request).then((cached) => {
-      if (cached) {
-        return cached;
-      }
-      return fetch(event.request)
-        .then((response) => {
-          if (response && response.status === 200 && response.type === 'basic') {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-          }
-          return response;
-        })
-        .catch(() => {
-          // Offline fallback: return cached index.html for navigation requests
-          if (event.request.mode === 'navigate') {
-            return caches.match('./index.html');
-          }
-        });
+      if (cached) return cached;
+      return fetch(event.request).then((response) => {
+        if (response && response.status === 200) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return response;
+      });
     })
   );
 });
