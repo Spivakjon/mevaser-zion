@@ -1548,7 +1548,7 @@ function initForm(m=null){_torahManual=!!m;eid=m?m.id:null;CH=m?JSON.parse(JSON.
     document.getElementById('ad-apt').value='';
     document.getElementById('ad-city').value='תל מונד';
     renderVolCheckboxes([]);
-    var dutyCb=document.getElementById('duty-reg-cb');if(dutyCb){dutyCb.checked=false;tCb('cb-duty','duty-reg-cb')}
+    var dutyCb=document.getElementById('duty-reg-cb');if(dutyCb){dutyCb.checked=true;tCb('cb-duty','duty-reg-cb')}
   }
   renderCH();renderYR()}
 
@@ -1747,7 +1747,7 @@ async function submitForm(){
     // Rate limit
     if(!checkRateLimit()){showToast(T('rateLimitMsg'));return}
   }
-  if(tzFF)tzFF.classList.remove('err');if(tzErr)tzErr.style.display='none';const vols=collectVols();var spouseFn=document.getElementById('sp-fn').value.trim();var spousePh=document.getElementById('sp-ph').value.trim();var spouseEm=document.getElementById('sp-em').value.trim();var spouseBd=getSpouseBirthDate();var spouse=(spouseFn||spousePh)?{name:spouseFn,phone:spousePh,email:spouseEm,birthDate:spouseBd}:null;var myParasha=(document.getElementById('my-parasha')||{}).value;var myReadP=(document.getElementById('my-readP')||{}).value;var myReadH=(document.getElementById('my-readH')||{}).value;const data={idNumber:tzVal||undefined,firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),birthDate:getBirthDate(),parasha:(myParasha||'').trim(),readP:myReadP||'',readH:myReadH||'',address:combineAddress(),spouse:spouse,volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};var dutyCb=document.getElementById('duty-reg-cb');data.dutyRoster=dutyCb?dutyCb.checked:false;data.membershipPaid=window._mbrPaidStatus||false;data.membershipPaidDate=window._mbrPaidStatus?new Date().toLocaleDateString('he-IL'):'';if(eid){var existing=getM(eid);if(existing){data.membershipPaid=existing.membershipPaid}}if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
+  if(tzFF)tzFF.classList.remove('err');if(tzErr)tzErr.style.display='none';const vols=collectVols();var spouseFn=document.getElementById('sp-fn').value.trim();var spousePh=document.getElementById('sp-ph').value.trim();var spouseEm=document.getElementById('sp-em').value.trim();var spouseBd=getSpouseBirthDate();var spouse=(spouseFn||spousePh)?{name:spouseFn,phone:spousePh,email:spouseEm,birthDate:spouseBd}:null;var myParasha=(document.getElementById('my-parasha')||{}).value;var myReadP=(document.getElementById('my-readP')||{}).value;var myReadH=(document.getElementById('my-readH')||{}).value;const data={idNumber:tzVal||undefined,firstName:document.getElementById('fn').value.trim(),lastName:document.getElementById('ln').value.trim(),fatherName:document.getElementById('fa').value.trim(),motherName:document.getElementById('mo').value.trim(),torahName:document.getElementById('tr').value.trim(),phone:document.getElementById('ph').value.trim(),email:document.getElementById('em').value.trim(),birthDate:getBirthDate(),parasha:(myParasha||'').trim(),readP:myReadP||'',readH:myReadH||'',address:combineAddress(),spouse:spouse,volunteering:vols,children:CH.map((_,i)=>colCh(i)).filter(c=>c.name),yahrzeits:YR.map((_,i)=>colYr(i)).filter(y=>y.name),timestamp:new Date().toISOString()};var dutyCb=document.getElementById('duty-reg-cb');data.dutyRoster=dutyCb?dutyCb.checked:true;data.membershipPaid=window._mbrPaidStatus||false;data.membershipPaidDate=window._mbrPaidStatus?new Date().toLocaleDateString('he-IL'):'';if(eid){var existing=getM(eid);if(existing){data.membershipPaid=existing.membershipPaid}}if(eid)updM(eid,data);else addM(data);document.getElementById('fv').style.display='none';document.getElementById('sv').style.display='block';window.scrollTo(0,0)}
 function resetForm(){_torahManual=false;document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';['fn','ln','fa','mo','tr','ph','em','tz','sp-fn','sp-ph','sp-em','my-parasha','my-readP','my-readH'].forEach(id=>{var el=document.getElementById(id);if(el)el.value=''});document.getElementById('ad-street').value='';document.getElementById('ad-num').value='';document.getElementById('ad-apt').value='';document.getElementById('ad-city').value='תל מונד';renderVolCheckboxes([]);initForm();document.getElementById('main-card').classList.add('reg-collapsed');window._mbrPaidStatus=false;var ms=getMbrSettings();if(ms.year||ms.link){document.getElementById('main-card').style.display='none';document.getElementById('payment-msg-card').style.display='none';document.getElementById('membership-prompt-card').style.display=''}window.scrollTo(0,0)}
 
 // ── Storage: localStorage + Google Sheets ───────────────
@@ -1758,7 +1758,7 @@ function lsGet(){if(_msCache)return _msCache;try{_msCache=JSON.parse(localStorag
 function lsSet(a){_msCache=a;try{localStorage.setItem(SK,JSON.stringify(a))}catch(e){}}
 function getMs(){return lsGet()}
 function getM(id){return lsGet().find(m=>m.id===id)||null}
-function addM(d){const a=lsGet();d.id=Date.now()+'_'+Math.random().toString(36).slice(2,7);a.push(d);lsSet(a);invalidateCalCache();if(SHEETS_URL)sheetsPost({action:'add',member:d}).catch(e=>console.warn('Sheets sync error:',e))}
+function addM(d){const a=lsGet();d.id=Date.now()+'_'+Math.random().toString(36).slice(2,7);a.push(d);lsSet(a);invalidateCalCache();if(d.dutyRoster){var q=getDutyQueue();if(q.indexOf(d.id)<0){q.push(d.id);saveDutyQueue(q)}}if(SHEETS_URL)sheetsPost({action:'add',member:d}).catch(e=>console.warn('Sheets sync error:',e))}
 function updM(id,d){const a=lsGet();const i=a.findIndex(m=>m.id===id);if(i>=0){a[i]={...a[i],...d,id};lsSet(a);invalidateCalCache();if(SHEETS_URL)sheetsPost({action:'update',member:a[i]}).catch(e=>console.warn('Sheets sync error:',e))}}
 function delM(id){lsSet(lsGet().filter(m=>m.id!==id));invalidateCalCache();if(SHEETS_URL)sheetsPost({action:'delete',id:id}).catch(e=>console.warn('Sheets sync error:',e))}
 
@@ -3549,20 +3549,31 @@ function _kzFmt(dt){
   return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
 }
 
-// ── Shabbat Times (Tel Mond) ─────────────────────────────
+// ── Shabbat Times (Tel Mond — via Hebcal API) ────────────
 async function getShabbatTimes(){
   try{
-    var sh=gSh(); // Saturday
-    var fri=new Date(sh);fri.setDate(fri.getDate()-1); // Friday
+    // Primary: fetch from Hebcal with Tel Mond exact coordinates
+    var sh=gSh();
+    var url='https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude=32.258&longitude=34.917&tzid=Asia/Jerusalem&m=50&lg=he&i=on&gy='+sh.getFullYear()+'&gm='+(sh.getMonth()+1)+'&gd='+sh.getDate();
+    var r=await hf(url);
+    if(r&&r.items){
+      var times={candles:'',havdalah:'',parashaLink:''};
+      for(var i=0;i<r.items.length;i++){
+        var it=r.items[i];
+        if(it.category==='candles'&&it.date){times.candles=it.date.slice(11,16)}
+        if(it.category==='havdalah'&&it.date){times.havdalah=it.date.slice(11,16)}
+      }
+      if(times.candles)return times;
+    }
+    // Fallback: local KosherZmanim calculation
+    var fri=new Date(sh);fri.setDate(fri.getDate()-1);
     var friCal=_kzCal(fri),satCal=_kzCal(sh);
-    var times={candles:'',havdalah:'',parashaLink:''};
-    // Candle lighting = Friday sunset minus 30 minutes
-    times.candles=_kzFmt(friCal.getCandleLighting());
-    // Havdalah = Saturday tzait 8.5 degrees
-    var tzais=satCal.getTzais();
-    times.havdalah=_kzFmt(tzais);
-    return times;
-  }catch(e){console.warn('Shabbat times error:',e);return null}
+    return{candles:_kzFmt(friCal.getCandleLighting()),havdalah:_kzFmt(satCal.getTzais()),parashaLink:''};
+  }catch(e){
+    console.warn('Shabbat times error:',e);
+    try{var fri2=new Date(gSh());fri2.setDate(fri2.getDate()-1);return{candles:_kzFmt(_kzCal(fri2).getCandleLighting()),havdalah:_kzFmt(_kzCal(gSh()).getTzais()),parashaLink:''}}
+    catch(e2){return null}
+  }
 }
 
 // ── Time helpers ─────────────────────────────────────────
@@ -5196,9 +5207,10 @@ function exportExcel(){
   var ms=getMs();var volTypes=getVolTypes();
   var BOM='\uFEFF';
   var headers=[
-    'מזהה','שם פרטי','שם משפחה','שם האב','שם האם','שם לעלייה לתורה',
-    'טלפון','דוא"ל','רחוב','מספר בית','דירה','עיר','כתובת מלאה',
-    'שם בן/בת זוג','טלפון בן/בת זוג','דוא"ל בן/בת זוג'
+    'מזהה','ת.ז.','שם פרטי','שם משפחה','שם האב','שם האם','שם לעלייה לתורה',
+    'טלפון','דוא"ל','תאריך לידה','פרשת בר מצווה','קריאה בתורה','הפטרה',
+    'רחוב','מספר בית','דירה','עיר','כתובת מלאה',
+    'שם בן/בת זוג','טלפון בן/בת זוג','דוא"ל בן/בת זוג','ת.לידה בן/בת זוג'
   ];
   // Add a column for each volunteering type
   for(var vi=0;vi<volTypes.length;vi++)headers.push('התנדבות: '+volTypes[vi]);
@@ -5219,10 +5231,10 @@ function exportExcel(){
     else{ap=typeof parseAddress==='function'?parseAddress(m.address||''):{street:'',num:'',apt:'',city:''}}
     var addrStr=typeof m.address==='string'?m.address:[ap.street,ap.num,ap.apt,ap.city].filter(Boolean).join(', ');
     var row=[
-      csvCell(m.id),csvCell(m.firstName),csvCell(m.lastName),csvCell(m.fatherName),csvCell(m.motherName),csvCell(m.torahName),
-      csvCell(m.phone),csvCell(m.email),
+      csvCell(m.id),csvCell(m.idNumber),csvCell(m.firstName),csvCell(m.lastName),csvCell(m.fatherName),csvCell(m.motherName),csvCell(m.torahName),
+      csvCell(m.phone),csvCell(m.email),csvCell(m.birthDate),csvCell(m.parasha),csvCell(m.readP),csvCell(m.readH),
       csvCell(ap.street),csvCell(ap.num),csvCell(ap.apt),csvCell(ap.city),csvCell(addrStr),
-      csvCell(sp.name),csvCell(sp.phone),csvCell(sp.email)
+      csvCell(sp.name),csvCell(sp.phone),csvCell(sp.email),csvCell(sp.birthDate)
     ];
     // Volunteering columns
     for(var vi=0;vi<volTypes.length;vi++){
