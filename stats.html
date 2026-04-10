@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>סטטיסטיקות — מבשר ציון</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Heebo',sans-serif;background:#0f1a2e;color:#e0e0e0;min-height:100vh;padding:1rem}
+.wrap{max-width:720px;margin:0 auto}
+h1{font-size:1.2rem;color:#c8a84b;margin-bottom:.3rem}
+.sub{font-size:.78rem;color:#8899aa;margin-bottom:1.2rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem;margin-bottom:1.2rem}
+.card{background:rgba(255,255,255,.04);border-radius:10px;padding:.8rem;text-align:center;border:1px solid rgba(255,255,255,.08)}
+.card .label{font-size:.75rem;color:#8899aa;margin-bottom:.3rem}
+.card .value{font-size:1.5rem;font-weight:700;color:#c8a84b}
+.card .sub2{font-size:.68rem;color:#8899aa;margin-top:.15rem}
+.section{background:rgba(255,255,255,.04);border-radius:10px;padding:.8rem;border:1px solid rgba(255,255,255,.08);margin-bottom:1rem}
+.section h2{font-size:.88rem;font-weight:600;margin-bottom:.6rem}
+.chart{display:flex;align-items:flex-end;gap:2px;height:140px;direction:ltr}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;min-width:0}
+.bar-val{font-size:.55rem;color:#8899aa;margin-bottom:2px}
+.bar{width:100%;max-width:18px;border-radius:3px 3px 0 0;min-height:2px}
+.bar-lbl{font-size:.5rem;color:#8899aa;margin-top:2px;white-space:nowrap}
+table{width:100%;font-size:.82rem;border-collapse:collapse}
+th{background:rgba(255,255,255,.06);font-weight:600;text-align:right;padding:6px 8px}
+td{padding:5px 8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.loading{text-align:center;padding:3rem;color:#8899aa;font-size:.9rem}
+.error{color:#f87171;padding:1.5rem;text-align:center}
+.btn{padding:7px 16px;background:#c8a84b;color:#0f1a2e;border:none;border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;margin-top:1rem}
+.btn:hover{opacity:.85}
+.pw-wrap{max-width:320px;margin:15vh auto;text-align:center}
+.pw-wrap input{width:100%;padding:10px;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:transparent;color:#e0e0e0;font-family:inherit;font-size:.9rem;margin:.8rem 0}
+.live{display:inline-block;width:8px;height:8px;background:#22c55e;border-radius:50%;margin-left:4px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="pw-screen" class="pw-wrap">
+    <div style="font-size:2.2rem;margin-bottom:.5rem">📈</div>
+    <h1>סטטיסטיקות מבשר ציון</h1>
+    <p style="font-size:.8rem;color:#8899aa;margin-top:.3rem">גישה למפתח בלבד</p>
+    <input type="password" id="pw" placeholder="סיסמה" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn" onclick="doLogin()" style="width:100%">כניסה</button>
+    <div id="pw-err" style="color:#f87171;font-size:.8rem;margin-top:.5rem;display:none">סיסמה שגויה</div>
+  </div>
+  <div id="main" style="display:none">
+    <h1>📈 סטטיסטיקות ביקורים <span class="live"></span></h1>
+    <div class="sub">מתעדכן אוטומטית כל 30 שניות</div>
+    <div id="content"><div class="loading">⏳ טוען נתונים...</div></div>
+  </div>
+</div>
+<script>
+var SHEETS_URL=localStorage.getItem('mbz_sheets_url')||'';
+var PW='Nir2026';
+function doLogin(){
+  var p=document.getElementById('pw').value;
+  if(p===PW){
+    document.getElementById('pw-screen').style.display='none';
+    document.getElementById('main').style.display='block';
+    loadStats();
+    setInterval(loadStats,30000);
+  }else{
+    document.getElementById('pw-err').style.display='block';
+    document.getElementById('pw').value='';
+  }
+}
+function es(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+async function loadStats(){
+  var el=document.getElementById('content');
+  if(!SHEETS_URL){
+    el.innerHTML='<div class="error">לא מוגדרת כתובת Google Sheets.<br>הגדר אותה בממשק המנהל של האתר ואז רענן דף זה.</div>';
+    return;
+  }
+  try{
+    var r=await fetch(SHEETS_URL+'?action=getStats',{mode:'cors'});
+    var data=await r.json();
+    if(!data||data.status!=='ok'){el.innerHTML='<div class="error">שגיאה בטעינה</div>';return}
+    render(el,data);
+  }catch(e){
+    el.innerHTML='<div class="error">שגיאה: '+(e.message||'לא ניתן להתחבר')+'</div>';
+  }
+}
+
+function render(el,d){
+  var h='';
+  // Cards
+  h+='<div class="cards">';
+  h+=card('👁 כרגע באתר',d.activeNow,d.activeAdmins?' ('+d.activeAdmins+' מנהלים)':'');
+  h+=card('📅 ביקורים היום',d.todayTotal,d.todayUnique+' ייחודיים');
+  h+=card('👤 מבקרים ייחודיים',d.totalUniqueAllTime,'כל הזמנים');
+  h+=card('📊 סה"כ ביקורים',d.totalVisitsAllTime,'כל הזמנים');
+  h+='</div>';
+
+  // 30-day chart
+  h+='<div class="section"><h2>📈 ביקורים — 30 יום אחרונים</h2>';
+  if(d.days&&d.days.length){
+    var maxV=1;for(var i=0;i<d.days.length;i++)if(d.days[i].total>maxV)maxV=d.days[i].total;
+    h+='<div class="chart">';
+    var todayStr=new Date().toISOString().slice(0,10);
+    for(var i=0;i<d.days.length;i++){
+      var day=d.days[i];
+      var pct=Math.max((day.total/maxV)*100,2);
+      var dt=new Date(day.date+'T12:00:00');
+      var lbl=dt.toLocaleDateString('he-IL',{day:'numeric',month:'numeric'});
+      var isToday=day.date===todayStr;
+      h+='<div class="bar-wrap" title="'+lbl+': '+day.total+' ביקורים ('+day.unique+' ייחודיים)">';
+      h+='<div class="bar-val">'+day.total+'</div>';
+      h+='<div class="bar" style="height:'+pct+'%;background:'+(isToday?'#c8a84b':'rgba(100,160,255,.5)')+'"></div>';
+      if(i%5===0||isToday)h+='<div class="bar-lbl">'+lbl+'</div>';
+      h+='</div>';
+    }
+    h+='</div>';
+  }
+  h+='</div>';
+
+  // 7-day table
+  if(d.days&&d.days.length){
+    var dayNames=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+    var last7=d.days.slice(-7);
+    h+='<div class="section"><h2>📋 פירוט 7 ימים אחרונים</h2>';
+    h+='<table><tr><th>יום</th><th>תאריך</th><th>ביקורים</th><th>ייחודיים</th></tr>';
+    for(var j=last7.length-1;j>=0;j--){
+      var dy=last7[j];var dt=new Date(dy.date+'T12:00:00');
+      var dn=dayNames[dt.getDay()];
+      var dl=dt.toLocaleDateString('he-IL',{day:'numeric',month:'long'});
+      h+='<tr><td>'+dn+'</td><td>'+dl+'</td><td style="font-weight:600">'+dy.total+'</td><td>'+dy.unique+'</td></tr>';
+    }
+    h+='</table></div>';
+  }
+
+  // Timestamp
+  h+='<div style="text-align:center;margin-top:.8rem;font-size:.72rem;color:#667788">עדכון אחרון: '+new Date().toLocaleTimeString('he-IL')+'</div>';
+  el.innerHTML=h;
+}
+
+function card(title,value,sub){
+  return'<div class="card"><div class="label">'+title+'</div><div class="value">'+value+'</div>'+(sub?'<div class="sub2">'+sub+'</div>':'')+'</div>';
+}
+</script>
+</body>
+</html>

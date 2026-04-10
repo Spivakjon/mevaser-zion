@@ -843,7 +843,6 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       <button class="stb" onclick="showAt('yrz')" data-i18n-text="tabYahrzeits">🕯 יארצייט</button>
       <button class="stb" onclick="showAt('vol')" data-i18n-text="tabVolunteers">🙏 מתנדבים</button>
       <button class="stb" onclick="showAt('ftbl')" data-i18n-text="tabFullTable">📊 טבלה מלאה</button>
-      <button class="stb" onclick="showAt('stats')">📈 סטטיסטיקה</button>
     </div>
     <div id="at-cal">
     <div class="jnav" id="jnav">
@@ -981,10 +980,6 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
       </div>
       <div style="overflow:auto;max-height:70vh;border-radius:8px;border:1px solid rgba(255,255,255,.14);-webkit-overflow-scrolling:touch" id="ftbl-wrap"></div>
       <button class="abt" onclick="exportExcel()" style="margin-top:.6rem;font-size:.8rem" data-i18n-text="ftblExportCSV">📊 ייצוא CSV</button>
-    </div>
-    <div id="at-stats" style="display:none">
-      <h3 style="color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:1rem;margin-bottom:.8rem">📈 סטטיסטיקת ביקורים</h3>
-      <div id="stats-content" style="color:var(--ink3);font-size:.88rem">טוען נתונים...</div>
     </div>
     <div id="at-settings" style="display:none">
       <div class="settings-panel">
@@ -1869,7 +1864,7 @@ function doLo(){document.getElementById('adm-pnl').style.display='none';document
 let calSt=gSh(),curAt='cal';
 function showAt(t){
   curAt=t;
-  var tabs=['cal','mem','ali','ann','mbr','duty','yrz','vol','ftbl','stats'];
+  var tabs=['cal','mem','ali','ann','mbr','duty','yrz','vol','ftbl'];
   document.querySelectorAll('.stb').forEach(function(b,i){b.classList.toggle('active',tabs[i]===t)});
   tabs.concat(['settings']).forEach(function(id){var el=document.getElementById('at-'+id);if(el)el.style.display=id===t?'block':'none'});
   if(t==='mem')renderML();
@@ -1880,10 +1875,9 @@ function showAt(t){
   if(t==='yrz')renderYrzTab();
   if(t==='vol')renderVolTab();
   if(t==='ftbl')renderFullTable();
-  if(t==='stats')renderStatsTab();
   if(t==='settings')populateSettingsFields();
 }
-function loadAdm(){initJNav();collapseJnavOnMobile();if(curAt==='cal')renderCal();else if(curAt==='mem')renderML();else if(curAt==='ali')renderAliyotAdmin();else if(curAt==='ann')renderAnnAdmin();else if(curAt==='mbr')renderMbrTab();else if(curAt==='duty')renderDutyTab();else if(curAt==='yrz')renderYrzTab();else if(curAt==='vol')renderVolTab();else if(curAt==='ftbl')renderFullTable();else if(curAt==='stats')renderStatsTab();else if(curAt==='settings')populateSettingsFields();}
+function loadAdm(){initJNav();collapseJnavOnMobile();if(curAt==='cal')renderCal();else if(curAt==='mem')renderML();else if(curAt==='ali')renderAliyotAdmin();else if(curAt==='ann')renderAnnAdmin();else if(curAt==='mbr')renderMbrTab();else if(curAt==='duty')renderDutyTab();else if(curAt==='yrz')renderYrzTab();else if(curAt==='vol')renderVolTab();else if(curAt==='ftbl')renderFullTable();else if(curAt==='settings')populateSettingsFields();}
 function calNav(w){if(w===0){calSt=gSh();}else{calSt=new Date(calSt);calSt.setDate(calSt.getDate()+w*7);}renderCal()}
 var CAL_CACHE_KEY='mbz_cal_cache';
 function getCalCache(startKey){try{var c=JSON.parse(localStorage.getItem(CAL_CACHE_KEY));if(c&&c.startKey===startKey&&c.html&&c.title)return c;return null}catch(e){return null}}
@@ -5655,74 +5649,6 @@ document.addEventListener('visibilitychange',function(){
   if(document.hidden)_stopHeartbeat();
   else _startHeartbeat();
 });
-
-// ── Stats tab renderer ──────────────────────────────────
-async function renderStatsTab(){
-  var el=document.getElementById('stats-content');
-  if(!el)return;
-  if(!SHEETS_URL){
-    el.innerHTML='<div style="padding:1.5rem;text-align:center;color:var(--ink3)"><p style="font-size:1rem;margin-bottom:.5rem">📊 סטטיסטיקות זמינות רק כאשר מוגדר חיבור לשרת Google Sheets</p><p style="font-size:.82rem">הגדר את כתובת ה-URL בהגדרות → Google Sheets</p></div>';
-    return;
-  }
-  el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--ink3)">⏳ טוען סטטיסטיקות...</div>';
-  try{
-    var r=await fetch(SHEETS_URL+'?action=getStats',{mode:'cors'});
-    var data=await r.json();
-    if(!data||data.status!=='ok'){el.innerHTML='<div style="color:var(--red);padding:1rem">שגיאה בטעינת סטטיסטיקות</div>';return}
-    renderStatsData(el,data);
-  }catch(e){
-    el.innerHTML='<div style="color:var(--red);padding:1rem">שגיאה: '+es(e.message||'לא ניתן להתחבר לשרת')+'</div>';
-  }
-}
-function renderStatsData(el,d){
-  var h='';
-  // ── Summary cards ──
-  h+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.7rem;margin-bottom:1.2rem">';
-  h+=statCard('👁 כרגע באתר',d.activeNow,d.activeAdmins?' ('+d.activeAdmins+' מנהלים)':'');
-  h+=statCard('📅 ביקורים היום',d.todayTotal,'מתוכם '+d.todayUnique+' ייחודיים');
-  h+=statCard('👤 מבקרים ייחודיים',d.totalUniqueAllTime,'מאז תחילת המעקב');
-  h+=statCard('📊 סה"כ ביקורים',d.totalVisitsAllTime,'כלל הזמנים');
-  h+='</div>';
-  // ── 30-day chart ──
-  h+='<div style="background:var(--c2,rgba(255,255,255,.04));border-radius:10px;padding:.8rem;border:1px solid var(--bd2,rgba(255,255,255,.08))">';
-  h+='<div style="font-weight:600;font-size:.88rem;margin-bottom:.6rem">📈 ביקורים — 30 הימים האחרונים</div>';
-  if(d.days&&d.days.length){
-    var maxV=1;for(var i=0;i<d.days.length;i++)if(d.days[i].total>maxV)maxV=d.days[i].total;
-    h+='<div style="display:flex;align-items:flex-end;gap:2px;height:120px;direction:ltr">';
-    for(var i=0;i<d.days.length;i++){
-      var day=d.days[i];var pct=Math.max((day.total/maxV)*100,2);
-      var dt=new Date(day.date+'T12:00:00');
-      var dayLabel=dt.toLocaleDateString('he-IL',{day:'numeric',month:'numeric'});
-      var isToday=day.date===(new Date()).toISOString().slice(0,10);
-      h+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;min-width:0" title="'+dayLabel+': '+day.total+' ביקורים ('+day.unique+' ייחודיים)">';
-      h+='<div style="font-size:.55rem;color:var(--ink3);margin-bottom:2px">'+day.total+'</div>';
-      h+='<div style="width:100%;max-width:18px;height:'+pct+'%;background:'+(isToday?'var(--gold)':'rgba(100,160,255,.5)')+';border-radius:3px 3px 0 0;min-height:2px"></div>';
-      if(i%5===0||isToday)h+='<div style="font-size:.5rem;color:var(--ink3);margin-top:2px;white-space:nowrap">'+dayLabel+'</div>';
-      h+='</div>';
-    }
-    h+='</div>';
-  }else{h+='<div style="text-align:center;color:var(--ink3);padding:1rem">אין נתונים</div>'}
-  h+='</div>';
-  // ── 7-day breakdown table ──
-  if(d.days&&d.days.length){
-    h+='<div style="margin-top:1rem"><div style="font-weight:600;font-size:.88rem;margin-bottom:.5rem">📋 פירוט 7 ימים אחרונים</div>';
-    h+='<table style="width:100%;font-size:.82rem;border-collapse:collapse"><tr style="background:var(--c2);font-weight:600"><td style="padding:6px 8px">יום</td><td style="padding:6px 8px">תאריך</td><td style="padding:6px 8px">ביקורים</td><td style="padding:6px 8px">ייחודיים</td></tr>';
-    var dayNames=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
-    var last7=d.days.slice(-7);
-    for(var j=last7.length-1;j>=0;j--){
-      var dy=last7[j];var dt=new Date(dy.date+'T12:00:00');
-      var dn=dayNames[dt.getDay()];
-      var dl=dt.toLocaleDateString('he-IL',{day:'numeric',month:'long'});
-      h+='<tr style="border-bottom:1px solid var(--bd2)"><td style="padding:5px 8px">'+dn+'</td><td style="padding:5px 8px">'+dl+'</td><td style="padding:5px 8px;font-weight:600">'+dy.total+'</td><td style="padding:5px 8px">'+dy.unique+'</td></tr>';
-    }
-    h+='</table></div>';
-  }
-  h+='<div style="margin-top:1rem;text-align:center"><button onclick="renderStatsTab()" style="padding:6px 14px;background:var(--gold);color:var(--bg1);border:none;border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer">🔄 רענן נתונים</button></div>';
-  el.innerHTML=h;
-}
-function statCard(title,value,sub){
-  return'<div style="background:var(--c2,rgba(255,255,255,.04));border-radius:10px;padding:.8rem;text-align:center;border:1px solid var(--bd2,rgba(255,255,255,.08))"><div style="font-size:.75rem;color:var(--ink3);margin-bottom:.3rem">'+title+'</div><div style="font-size:1.4rem;font-weight:700;color:var(--gold)">'+value+'</div>'+(sub?'<div style="font-size:.68rem;color:var(--ink3);margin-top:.15rem">'+sub+'</div>':'')+'</div>';
-}
 
 // ── Init ─────────────────────────────────────────────────
 mergeCustomTexts();
