@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mbz-v3';
+const CACHE_NAME = 'mbz-v4';
 
 const PRECACHE_URLS = [
   './logo.jpg',
@@ -12,6 +12,11 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS))
   );
   self.skipWaiting();
+});
+
+// Listen for skip-waiting message from client
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 // Activate: delete ALL old caches and take control immediately
