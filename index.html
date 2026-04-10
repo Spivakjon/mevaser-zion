@@ -5991,10 +5991,17 @@ initMbrPrompt();
 _updatePendingBadge();
 // Init flow: load Sheets first (gets Hebcal cache), THEN render week summary
 if(SHEETS_URL){
-  // Show instant skeleton from localStorage cache while Sheets loads
   loadWeekSummary();
   sheetsLoadAll().then(function(ok){
-    if(ok){invalidateCalCache();mergeCustomTexts();applyLang();loadWeekSummary();renderPublicAnnouncements();_updatePendingBadge();console.log('Synced from Sheets')}
+    if(ok){
+      // Only clear admin calendar cache, NOT the week summary cache
+      try{localStorage.removeItem(CAL_CACHE_KEY)}catch(e){}
+      mergeCustomTexts();applyLang();renderPublicAnnouncements();_updatePendingBadge();
+      // Only re-render week summary if Sheets brought newer hebcal data
+      var hcRaw=localStorage.getItem('mbz_hebcal_week');
+      if(hcRaw){try{var hc=JSON.parse(hcRaw);if(hc&&hc.weekKey===d2s(gSh())){localStorage.removeItem(WK_CACHE_KEY);loadWeekSummary()}}catch(e){}}
+      console.log('Synced from Sheets');
+    }
   }).catch(function(){});
 }else{
   loadWeekSummary();
