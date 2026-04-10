@@ -746,7 +746,7 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
     <button onclick="setLang('en')" aria-label="English">EN</button>
   </div>
 </div>
-<div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img id="main-logo" src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name" data-i18n="orgName">עמותת מבשר ציון</div><div class="logo-sub" data-i18n="logoSub">בית הכנסת · רח׳ הצופית 23 · תל מונד</div></div></div>
+<div class="logo-area"><div class="logo-wrap"><div class="logo-box"><img id="main-logo" src="logo.jpg" alt="מבשר ציון"></div><div class="logo-name" data-i18n="orgName">עמותת מבשר ציון</div><div class="logo-sub" data-i18n="logoSub">בית הכנסת · בית ספר נוף ילדות · תל מונד</div></div></div>
 <div class="week-card" id="week-card"><div class="wk-head"><span class="wk-par" data-i18n="weekLoading">📅 טוען פרשת השבוע...</span></div></div>
 <div id="announcements-public"></div>
 
@@ -2455,7 +2455,7 @@ var I18N={
     addYahrzeit:'+ הוסף יארצייט',
     save:'💾 שמור פרטים',
     orgName:'עמותת מבשר ציון',
-    logoSub:'בית הכנסת · רח׳ הצופית 23 · תל מונד',
+    logoSub:'בית הכנסת · בית ספר נוף ילדות · תל מונד',
     registerBtn:'📝 הרשמה',
     welcomeTitle:'🕍 קהילת מבשר ציון — תל מונד',
     welcomeText:'ברוכים הבאים! אנו שמחים לראותכם כחלק מקהילתנו.<br>באתר זה תוכלו להירשם כחברי בית הכנסת, להתעדכן באירועי השבוע הקרוב ולנהל את פרטיכם האישיים.',
@@ -3536,7 +3536,7 @@ var _kzGeo=new KosherZmanim.GeoLocation('Tel Mond',32.258,34.917,0,'Asia/Jerusal
 function _kzCal(date){
   var cal=new KosherZmanim.ComplexZmanimCalendar(_kzGeo);
   cal.setDate(date);
-  cal.setCandleLightingOffset(30);
+  cal.setCandleLightingOffset(20);
   return cal;
 }
 function _kzFmt(dt){
@@ -3853,7 +3853,7 @@ async function loadWeekSummary(){
     // Calculate adjusted times
     var candlesAdj=shTimes?shTimes.candles:'';
     var havdalahTime=shTimes?shTimes.havdalah:'';
-    var minchaErev=candlesAdj?timeAddMin(candlesAdj,-10):'';
+    var minchaErev=candlesAdj?timeAddMin(candlesAdj,10):'';
     var shacharit=isWinterTime()?'08:20':'08:30';
     var minchaShabbat=havdalahTime?timeAddMin(havdalahTime,-75):'';
 
@@ -3869,8 +3869,8 @@ async function loadWeekSummary(){
     // Shabbat times grid — ordered by prayer sequence
     if(candlesAdj||havdalahTime){
       h+='<div class="wk-times-grid">';
-      if(minchaErev)h+='<div class="wk-tg-item"><span class="wk-tg-icon">🙏</span><span class="wk-tg-label">'+(isEn?'Mincha Erev Shabbat':'מנחה ערב שבת')+'</span><span class="wk-tg-val">'+minchaErev+'</span></div>';
       if(candlesAdj)h+='<div class="wk-tg-item"><span class="wk-tg-icon">🕯️</span><span class="wk-tg-label">'+(isEn?'Candle Lighting':'הדלקת נרות')+'</span><span class="wk-tg-val">'+candlesAdj+'</span></div>';
+      if(minchaErev)h+='<div class="wk-tg-item"><span class="wk-tg-icon">🙏</span><span class="wk-tg-label">'+(isEn?'Mincha Erev Shabbat':'מנחה ערב שבת')+'</span><span class="wk-tg-val">'+minchaErev+'</span></div>';
       h+='<div class="wk-tg-item"><span class="wk-tg-icon">🌅</span><span class="wk-tg-label">'+(isEn?'Shacharit':'שחרית שבת')+'</span><span class="wk-tg-val">'+shacharit+'</span></div>';
       if(minchaShabbat)h+='<div class="wk-tg-item"><span class="wk-tg-icon">📖</span><span class="wk-tg-label">'+(isEn?'Mincha Shabbat':'מנחה שבת')+'</span><span class="wk-tg-val">'+minchaShabbat+'</span></div>';
       if(havdalahTime)h+='<div class="wk-tg-item"><span class="wk-tg-icon">✨</span><span class="wk-tg-label">'+(isEn?'Havdalah':'צאת שבת')+'</span><span class="wk-tg-val">'+havdalahTime+'</span></div>';
