@@ -1713,9 +1713,12 @@ async function submitForm(){
   var tzFF=tzEl?tzEl.closest('.ff'):null;
   var tzErr=document.getElementById('tz-err');
   if(!eid){
-    // ID required only for new registrations, not edits
+    // ID required for new registrations
     if(!tzVal){if(tzFF)tzFF.classList.add('err');if(tzErr){tzErr.textContent=T('idRequired');tzErr.style.display='block'}return}
-    if(!validateIsraeliID(tzVal)){if(tzFF)tzFF.classList.add('err');if(tzErr){tzErr.textContent=T('idInvalid');tzErr.style.display='block'}return}
+  }
+  // Always validate format if a value was entered (new or edit)
+  if(tzVal&&!validateIsraeliID(tzVal)){if(tzFF)tzFF.classList.add('err');if(tzErr){tzErr.textContent=T('idInvalid');tzErr.style.display='block'}return}
+  if(!eid&&tzVal){
     var dup=checkDuplicateID(tzVal,null);
     if(dup){if(tzFF)tzFF.classList.add('err');if(tzErr){tzErr.textContent=T('idDuplicate')+' ('+dup.firstName+' '+dup.lastName+')';tzErr.style.display='block'}return}
     // Rate limit
