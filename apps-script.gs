@@ -11,15 +11,19 @@ const VISITS_SHEET = 'ביקורים';
 const ACTIVE_SHEET = 'פעילים';
 
 // ── Sheet helpers ───────────────────────────────────────
+var MEMBER_HEADERS = ['id','ת.ז.','שם פרטי','שם משפחה','שם האב','שם האם','שם לתורה',
+  'טלפון','דוא"ל','תאריך לידה','פרשת בר מצווה','קריאה בתורה','הפטרה',
+  'כתובת','שם בן/בת זוג','טלפון בן/בת זוג','ת.לידה בן/בת זוג',
+  'התנדבות','תורן','דמי חבר','סכום','אמצעי תשלום',
+  'ילדים (JSON)','יארצייטים (JSON)','תאריך רישום','JSON מלא'];
+var JSON_COL = MEMBER_HEADERS.length; // last column = JSON מלא
+
 function getSheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   let sh = ss.getSheetByName(SHEET_NAME);
   if (!sh) {
     sh = ss.insertSheet(SHEET_NAME);
-    sh.appendRow(['id', 'שם פרטי', 'שם משפחה', 'שם האב', 'שם האם',
-                  'שם לתורה', 'טלפון', 'אימייל', 'כתובת',
-                  'התנדבות', 'ילדים (JSON)', 'יארצייטים (JSON)',
-                  'תאריך רישום', 'JSON מלא']);
+    sh.appendRow(MEMBER_HEADERS);
     sh.setFrozenRows(1);
     sh.getRange('1:1').setFontWeight('bold').setBackground('#1a2744').setFontColor('#c8a84b');
   }
@@ -170,12 +174,45 @@ function doPost(e) {
 // ════════════════════════════════════════════════════════
 //  Members
 // ════════════════════════════════════════════════════════
+function _memberToRow(m) {
+  var sp = m.spouse || {};
+  return [
+    m.id,
+    m.idNumber || '',
+    m.firstName || '',
+    m.lastName || '',
+    m.fatherName || '',
+    m.motherName || '',
+    m.torahName || '',
+    m.phone || '',
+    m.email || '',
+    m.birthDate || '',
+    m.parasha || '',
+    m.readP || '',
+    m.readH || '',
+    m.address || '',
+    sp.name || '',
+    sp.phone || '',
+    sp.birthDate || '',
+    (m.volunteering || []).join(', '),
+    m.dutyRoster ? 'כן' : 'לא',
+    m.membershipPaid ? 'כן' : 'לא',
+    m.paymentAmount || '',
+    m.paymentMethod || '',
+    JSON.stringify(m.children || []),
+    JSON.stringify(m.yahrzeits || []),
+    m.timestamp || new Date().toISOString(),
+    JSON.stringify(m)
+  ];
+}
+
 function _getAllMembers() {
   const sh = getSheet();
   const data = sh.getDataRange().getValues();
   const members = [];
+  const jCol = JSON_COL - 1; // 0-based index of JSON column
   for (let i = 1; i < data.length; i++) {
-    const jsonCol = data[i][13];
+    const jsonCol = data[i][jCol];
     if (!jsonCol) continue;
     try { members.push(JSON.parse(jsonCol)); } catch (err) {}
   }
@@ -187,14 +224,7 @@ function saveMember(m) {
   const sh = getSheet();
   const ids = sh.getRange(2, 1, Math.max(sh.getLastRow() - 1, 1), 1).getValues().flat();
   if (ids.includes(m.id)) return updateMember(m);
-
-  sh.appendRow([
-    m.id, m.firstName || '', m.lastName || '', m.fatherName || '', m.motherName || '',
-    m.torahName || '', m.phone || '', m.email || '', m.address || '',
-    (m.volunteering || []).join(', '),
-    JSON.stringify(m.children || []), JSON.stringify(m.yahrzeits || []),
-    m.timestamp || new Date().toISOString(), JSON.stringify(m)
-  ]);
+  sh.appendRow(_memberToRow(m));
   return { status: 'ok', id: m.id };
 }
 
@@ -205,18 +235,11 @@ function updateMember(m) {
   for (let i = 1; i < rows.length; i++) {
     if (rows[i][0] === m.id) {
       const r = i + 1;
-      sh.getRange(r, 2).setValue(m.firstName || '');
-      sh.getRange(r, 3).setValue(m.lastName || '');
-      sh.getRange(r, 4).setValue(m.fatherName || '');
-      sh.getRange(r, 5).setValue(m.motherName || '');
-      sh.getRange(r, 6).setValue(m.torahName || '');
-      sh.getRange(r, 7).setValue(m.phone || '');
-      sh.getRange(r, 8).setValue(m.email || '');
-      sh.getRange(r, 9).setValue(m.address || '');
-      sh.getRange(r, 10).setValue((m.volunteering || []).join(', '));
-      sh.getRange(r, 11).setValue(JSON.stringify(m.children || []));
-      sh.getRange(r, 12).setValue(JSON.stringify(m.yahrzeits || []));
-      sh.getRange(r, 14).setValue(JSON.stringify(m));
+      const row = _memberToRow(m);
+      // Update all columns (skip id column 1)
+      for (let c = 1; c < row.length; c++) {
+        sh.getRange(r, c + 1).setValue(row[c]);
+      }
       return { status: 'ok', id: m.id };
     }
   }
@@ -241,16 +264,12 @@ function syncAllMembers(members) {
   const sh = getSheet();
   // Clear all data rows (keep header)
   if (sh.getLastRow() > 1) sh.deleteRows(2, sh.getLastRow() - 1);
+  // Re-write header in case columns changed
+  sh.getRange(1, 1, 1, MEMBER_HEADERS.length).setValues([MEMBER_HEADERS]);
   // Write all members
-  for (const m of members) {
-    if (!m.id) continue;
-    sh.appendRow([
-      m.id, m.firstName || '', m.lastName || '', m.fatherName || '', m.motherName || '',
-      m.torahName || '', m.phone || '', m.email || '', m.address || '',
-      (m.volunteering || []).join(', '),
-      JSON.stringify(m.children || []), JSON.stringify(m.yahrzeits || []),
-      m.timestamp || new Date().toISOString(), JSON.stringify(m)
-    ]);
+  if (members.length > 0) {
+    var rows = members.filter(function(m){return m.id}).map(_memberToRow);
+    if (rows.length > 0) sh.getRange(2, 1, rows.length, rows[0].length).setValues(rows);
   }
   return { status: 'ok', count: members.length };
 }
