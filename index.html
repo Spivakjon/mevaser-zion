@@ -1095,6 +1095,38 @@ body.light-mode .info-acc-body strong{color:var(--ink)}
               </div>
             </div>
             <div class="settings-section full-width">
+              <h3 onclick="toggleSettingsSection(this)">🕐 זמני שבת ותפילות</h3>
+              <div class="settings-section-body">
+                <p style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:.6rem">שליטה בזמני השבת המוצגים בדף הראשי. הזמנים מחושבים אוטומטית לפי העיר שנבחרה, עם אפשרות התאמה ידנית.</p>
+                <div class="settings-row">
+                  <div class="settings-field"><label>עיר לחישוב זמנים</label>
+                    <select id="zmanim-city" onchange="saveZmanimSettings()" style="padding:.45rem .65rem;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;font-family:'Heebo',sans-serif;font-size:.84rem;color:#fff;background:rgba(0,0,0,.25);min-height:38px">
+                      <option value="tel-aviv">תל אביב / השרון (b=21)</option>
+                      <option value="jerusalem">ירושלים (b=40)</option>
+                      <option value="haifa">חיפה (b=30)</option>
+                      <option value="beer-sheva">באר שבע (b=18)</option>
+                      <option value="custom">מותאם אישית</option>
+                    </select>
+                  </div>
+                  <div class="settings-field" id="zmanim-custom-b-wrap" style="display:none"><label>דקות לפני שקיעה (b)</label><input type="number" id="zmanim-custom-b" min="0" max="60" value="21" onchange="saveZmanimSettings()" style="direction:ltr;text-align:center"></div>
+                </div>
+                <div style="font-size:.78rem;font-weight:600;color:var(--gold2);margin:.6rem 0 .3rem">התאמות ידניות (דקות + או −)</div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>🕯️ הדלקת נרות</label><input type="number" id="adj-candles" value="0" onchange="saveZmanimSettings()" style="direction:ltr;text-align:center"></div>
+                  <div class="settings-field"><label>🙏 מנחה ערב שבת</label><input type="number" id="adj-mincha-erev" value="0" onchange="saveZmanimSettings()" style="direction:ltr;text-align:center"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>🌅 שחרית שבת</label><input type="number" id="adj-shacharit" value="0" onchange="saveZmanimSettings()" style="direction:ltr;text-align:center"></div>
+                  <div class="settings-field"><label>📖 מנחה שבת</label><input type="number" id="adj-mincha-shab" value="0" onchange="saveZmanimSettings()" style="direction:ltr;text-align:center"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>✨ צאת שבת</label><input type="number" id="adj-havdalah" value="0" onchange="saveZmanimSettings()" style="direction:ltr;text-align:center"></div>
+                  <div class="settings-field"></div>
+                </div>
+                <button onclick="saveZmanimSettings();invalidateCalCache();loadWeekSummary();showToast('זמנים עודכנו')" style="margin-top:.5rem;padding:.45rem 1.2rem;background:var(--gold);color:var(--bg1);border:none;border-radius:8px;font-family:inherit;font-size:.84rem;font-weight:600;cursor:pointer">💾 שמור ורענן זמנים</button>
+              </div>
+            </div>
+            <div class="settings-section full-width">
               <h3 onclick="toggleSettingsSection(this)">ניהול סוגי התנדבות</h3>
               <div class="settings-section-body">
                 <div id="vol-types-list"></div>
@@ -3585,12 +3617,55 @@ function _kzFmt(dt){
   return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
 }
 
-// ── Shabbat Times (Tel Mond — via Hebcal API) ────────────
+// ── Zmanim Settings ─────────────────────────────────────
+var ZMANIM_KEY='mbz_zmanim_settings';
+var ZMANIM_CITIES={
+  'tel-aviv':{lat:32.088,lon:34.781,b:21,label:'תל אביב'},
+  'jerusalem':{lat:31.778,lon:35.235,b:40,label:'ירושלים'},
+  'haifa':{lat:32.794,lon:34.990,b:30,label:'חיפה'},
+  'beer-sheva':{lat:31.252,lon:34.791,b:18,label:'באר שבע'}
+};
+function getZmanimSettings(){
+  try{return JSON.parse(localStorage.getItem(ZMANIM_KEY))||{}}catch(e){return{}}
+}
+function saveZmanimSettings(){
+  var city=document.getElementById('zmanim-city').value;
+  var customB=+(document.getElementById('zmanim-custom-b')||{}).value||21;
+  var s={city:city,customB:customB,
+    adjCandles:+(document.getElementById('adj-candles')||{}).value||0,
+    adjMinchaErev:+(document.getElementById('adj-mincha-erev')||{}).value||0,
+    adjShacharit:+(document.getElementById('adj-shacharit')||{}).value||0,
+    adjMinchaShab:+(document.getElementById('adj-mincha-shab')||{}).value||0,
+    adjHavdalah:+(document.getElementById('adj-havdalah')||{}).value||0
+  };
+  localStorage.setItem(ZMANIM_KEY,JSON.stringify(s));
+  // Show/hide custom b field
+  var wrap=document.getElementById('zmanim-custom-b-wrap');
+  if(wrap)wrap.style.display=city==='custom'?'':'none';
+}
+function loadZmanimSettingsUI(){
+  var s=getZmanimSettings();
+  var cityEl=document.getElementById('zmanim-city');if(cityEl)cityEl.value=s.city||'tel-aviv';
+  var cbEl=document.getElementById('zmanim-custom-b');if(cbEl)cbEl.value=s.customB||21;
+  var wrap=document.getElementById('zmanim-custom-b-wrap');if(wrap)wrap.style.display=(s.city==='custom')?'':'none';
+  var ids=[['adj-candles','adjCandles'],['adj-mincha-erev','adjMinchaErev'],['adj-shacharit','adjShacharit'],['adj-mincha-shab','adjMinchaShab'],['adj-havdalah','adjHavdalah']];
+  for(var i=0;i<ids.length;i++){var el=document.getElementById(ids[i][0]);if(el)el.value=s[ids[i][1]]||0}
+}
+
+// ── Shabbat Times (via Hebcal API + admin settings) ──────
+function _getHebcalParams(){
+  var s=getZmanimSettings();
+  var city=s.city||'tel-aviv';
+  var c=ZMANIM_CITIES[city];
+  if(c)return{lat:c.lat,lon:c.lon,b:c.b};
+  // custom
+  return{lat:32.088,lon:34.781,b:s.customB||21};
+}
 async function getShabbatTimes(){
   try{
-    // Primary: fetch from Hebcal with Tel Mond exact coordinates
     var sh=gSh();
-    var url='https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude=32.088&longitude=34.781&tzid=Asia/Jerusalem&b=21&m=50&lg=he&i=on&gy='+sh.getFullYear()+'&gm='+(sh.getMonth()+1)+'&gd='+sh.getDate();
+    var p=_getHebcalParams();
+    var url='https://www.hebcal.com/shabbat?cfg=json&geo=pos&latitude='+p.lat+'&longitude='+p.lon+'&tzid=Asia/Jerusalem&b='+p.b+'&m=50&lg=he&i=on&gy='+sh.getFullYear()+'&gm='+(sh.getMonth()+1)+'&gd='+sh.getDate();
     var r=await hf(url);
     if(r&&r.items){
       var times={candles:'',havdalah:'',parashaLink:''};
@@ -3601,10 +3676,9 @@ async function getShabbatTimes(){
       }
       if(times.candles)return times;
     }
-    // Fallback: local KosherZmanim calculation
+    // Fallback: local KosherZmanim
     var fri=new Date(sh);fri.setDate(fri.getDate()-1);
-    var friCal=_kzCal(fri),satCal=_kzCal(sh);
-    return{candles:_kzFmt(friCal.getCandleLighting()),havdalah:_kzFmt(satCal.getTzais()),parashaLink:''};
+    return{candles:_kzFmt(_kzCal(fri).getCandleLighting()),havdalah:_kzFmt(_kzCal(sh).getTzais()),parashaLink:''};
   }catch(e){
     console.warn('Shabbat times error:',e);
     try{var fri2=new Date(gSh());fri2.setDate(fri2.getDate()-1);return{candles:_kzFmt(_kzCal(fri2).getCandleLighting()),havdalah:_kzFmt(_kzCal(gSh()).getTzais()),parashaLink:''}}
@@ -3680,7 +3754,7 @@ async function getNextEvent(ms,thisSh,curHY){
 
 // ── Week Summary Cache ────────────────────────────────────
 var WK_CACHE_KEY='mbz_week_cache';
-var WK_CACHE_VER='v5'; // bump this on any change to week summary rendering
+var WK_CACHE_VER='v6'; // bump this on any change to week summary rendering
 function getWeekCache(){
   try{var c=JSON.parse(localStorage.getItem(WK_CACHE_KEY));
   if(!c||!c.html||c.ver!==WK_CACHE_VER)return null;
@@ -3901,11 +3975,12 @@ async function loadWeekSummary(){
     var kiddush=getKiddush();
 
     // Calculate adjusted times
-    var candlesAdj=shTimes?shTimes.candles:'';
-    var havdalahTime=shTimes?shTimes.havdalah:'';
-    var minchaErev=candlesAdj?timeAddMin(candlesAdj,10):'';
-    var shacharit=isWinterTime()?'08:20':'08:30';
-    var minchaShabbat=havdalahTime?timeAddMin(havdalahTime,-75):'';
+    var _zs=getZmanimSettings();
+    var candlesAdj=shTimes?timeAddMin(shTimes.candles,_zs.adjCandles||0):'';
+    var havdalahTime=shTimes?timeAddMin(shTimes.havdalah,_zs.adjHavdalah||0):'';
+    var minchaErev=candlesAdj?timeAddMin(candlesAdj,10+(_zs.adjMinchaErev||0)):'';
+    var shacharit=timeAddMin(isWinterTime()?'08:20':'08:30',_zs.adjShacharit||0);
+    var minchaShabbat=havdalahTime?timeAddMin(havdalahTime,-75+(_zs.adjMinchaShab||0)):'';
 
     var isEn=curLang==='en';
     var locale=isEn?'en-IL':'he-IL';
@@ -4077,6 +4152,7 @@ function populateSettingsFields(){
   renderVolTypesList();
   renderCustomTagsList();
   initDailyTimesToggle();
+  loadZmanimSettingsUI();
 }
 function saveCustomTexts(){
   var custom=JSON.parse(localStorage.getItem('mbz_custom_texts')||'{"he":{},"en":{}}');
