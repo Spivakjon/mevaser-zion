@@ -2001,9 +2001,13 @@ async function getWkEvs(ms,sh,curHY){
   const evs=[],ss=d2s(sh);
   const ss2=new Date(sh);ss2.setDate(sh.getDate()-6);ss2.setHours(0,0,0);
   const se=new Date(sh);se.setHours(23,59,59);
-  // Collect bar mitzvahs (no API needed)
+  // Collect bar mitzvahs — this Shabbat + upcoming 4 weeks
+  var bmWindow=new Date(sh);bmWindow.setDate(bmWindow.getDate()+28);
   for(const m of ms){const fn=`${m.firstName} ${m.lastName}`;
-    for(const c of(m.children||[])){if(c.barDate&&c.barDate===ss)evs.push({t:'bm',child:c.name,parent:fn,torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH})}}
+    for(const c of(m.children||[])){if(!c.barDate)continue;
+      var bmD=new Date(c.barDate+'T12:00:00');
+      if(c.barDate===ss){evs.push({t:'bm',child:c.name,parent:fn,torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH})}
+      else if(bmD>sh&&bmD<=bmWindow){evs.push({t:'bm_upcoming',child:c.name,parent:fn,par:c.parasha,barDate:c.barDate})}}}
   // Batch all yahrzeit h2g calls in parallel
   var yrJobs=[];
   for(const m of ms){const fn=`${m.firstName} ${m.lastName}`;
@@ -3506,6 +3510,12 @@ async function getHebrewBirthdays(ms,sh){
     var dt=new Date(weekStart);dt.setDate(dt.getDate()+d);
     weekDates.push(dt);
   }
+  // Also collect Gregorian dates this week for member/spouse birthdays
+  var gregDates=[];
+  for(var g=0;g<7;g++){
+    var gdt=weekDates[g];
+    gregDates.push({m:gdt.getMonth()+1,d:gdt.getDate()});
+  }
   // Convert each day to Hebrew and collect day+month
   var hebWeek=[];
   for(var i=0;i<weekDates.length;i++){
@@ -3513,9 +3523,35 @@ async function getHebrewBirthdays(ms,sh){
     var hc=await g2h(wd.getFullYear(),wd.getMonth()+1,wd.getDate());
     if(hc)hebWeek.push({hd:hc.hd,hm:hc.hm});
   }
-  // Check each child's Hebrew birthday
   for(var mi=0;mi<ms.length;mi++){
     var m=ms[mi];
+    // Member's own birthday (Gregorian)
+    if(m.birthDate){
+      var bp=m.birthDate.split('-');
+      if(bp.length===3){
+        var bm=+bp[1],bd=+bp[2];
+        for(var gi=0;gi<gregDates.length;gi++){
+          if(gregDates[gi].m===bm&&gregDates[gi].d===bd){
+            results.push({childName:m.firstName+' '+m.lastName,parentName:'',gender:'',isMember:true});
+            break;
+          }
+        }
+      }
+    }
+    // Spouse birthday (Gregorian)
+    if(m.spouse&&m.spouse.birthDate){
+      var sp=m.spouse.birthDate.split('-');
+      if(sp.length===3){
+        var sm=+sp[1],sd=+sp[2];
+        for(var gi=0;gi<gregDates.length;gi++){
+          if(gregDates[gi].m===sm&&gregDates[gi].d===sd){
+            results.push({childName:m.spouse.name||'בן/בת זוג',parentName:m.firstName+' '+m.lastName,gender:'',isSpouse:true});
+            break;
+          }
+        }
+      }
+    }
+    // Children's Hebrew birthday
     for(var ci=0;ci<(m.children||[]).length;ci++){
       var ch=m.children[ci];
       if(!ch.hd||!ch.hm)continue;
@@ -3925,19 +3961,30 @@ async function loadWeekSummary(){
       h+='<div class="wk-countdown"><span class="wk-cd-icon">'+nextEvent.icon+'</span><span class="wk-cd-text">'+es(nextEvent.label)+'</span><span class="wk-cd-days">'+(isEn?'in '+nextEvent.days+' days':'בעוד '+nextEvent.days+' ימים')+'</span></div>';
     }
 
-    if(evs.length||birthdays.length||(aliyot&&aliyot.date===key)||(kiddush&&kiddush.date===key)){
+    var hasBmUpcoming=evs.some(function(e){return e.t==='bm_upcoming'});
+    if(evs.length||birthdays.length||hasBmUpcoming||(aliyot&&aliyot.date===key)||(kiddush&&kiddush.date===key)){
       h+='<div class="wk-events">';
       for(var i=0;i<evs.length;i++){
         var e=evs[i];
         if(e.t==='bm'){
-          h+='<div class="wk-ev"><span class="wk-ev-icon">✡</span><div class="wk-ev-text"><span class="wk-ev-name">'+T('wkBarMitzvah')+es(e.child)+'</span> '+T('calChildOf')+' '+es(e.parent)+(e.par?' — '+es(e.par):'')+'</div></div>';
+          h+='<div class="wk-ev"><span class="wk-ev-icon">✡</span><div class="wk-ev-text">🎉 <strong>מזל טוב!</strong> <span class="wk-ev-name">'+T('wkBarMitzvah')+es(e.child)+'</span> '+T('calChildOf')+' '+es(e.parent)+(e.par?' — '+es(e.par):'')+'</div></div>';
+        }else if(e.t==='bm_upcoming'){
+          var bmDt=new Date(e.barDate+'T12:00:00');var bmDays=Math.round((bmDt-sh)/(1000*60*60*24));
+          var bmDateStr=bmDt.toLocaleDateString('he-IL',{day:'numeric',month:'long'});
+          h+='<div class="wk-ev"><span class="wk-ev-icon">📅</span><div class="wk-ev-text">בר/בת מצווה בקרוב: <span class="wk-ev-name">'+es(e.child)+'</span> '+T('calChildOf')+' '+es(e.parent)+(e.par?' — '+es(e.par):'')+' <span style="color:var(--gold3);font-size:.78rem">('+bmDateStr+', בעוד '+bmDays+' ימים)</span></div></div>';
         }else{
           h+='<div class="wk-ev"><span class="wk-ev-icon">🕯</span><div class="wk-ev-text"><span class="wk-ev-name">'+T('wkYahrzeit')+es(e.dec)+'</span> '+T('calInMemory')+' '+es(e.mem)+(e.dh?' — '+es(e.dh):'')+'</div></div>';
         }
       }
       for(var bi=0;bi<birthdays.length;bi++){
         var bd=birthdays[bi];
-        h+='<div class="wk-ev"><span class="wk-ev-icon">🎂</span><div class="wk-ev-text">'+T('wkBirthday')+'<span class="wk-ev-name">'+es(bd.childName)+'</span> '+(bd.gender==='נקבה'?T('wkDaughter'):T('wkSon'))+' '+es(bd.parentName)+'</div></div>';
+        if(bd.isMember){
+          h+='<div class="wk-ev"><span class="wk-ev-icon">🎂</span><div class="wk-ev-text">🎉 <strong>מזל טוב!</strong> יום הולדת ל<span class="wk-ev-name">'+es(bd.childName)+'</span></div></div>';
+        }else if(bd.isSpouse){
+          h+='<div class="wk-ev"><span class="wk-ev-icon">🎂</span><div class="wk-ev-text">🎉 <strong>מזל טוב!</strong> יום הולדת ל<span class="wk-ev-name">'+es(bd.childName)+'</span> (בן/בת זוג של '+es(bd.parentName)+')</div></div>';
+        }else{
+          h+='<div class="wk-ev"><span class="wk-ev-icon">🎂</span><div class="wk-ev-text">🎉 <strong>מזל טוב!</strong> יום הולדת ל<span class="wk-ev-name">'+es(bd.childName)+'</span> '+(bd.gender==='נקבה'?T('wkDaughter'):T('wkSon'))+' '+es(bd.parentName)+'</div></div>';
+        }
       }
       if(aliyot&&aliyot.date===key&&aliyot.slots){
         var slotEntries=Object.entries(aliyot.slots);
