@@ -2,70 +2,184 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>בדיקת סנכרון</title>
+<title>בדיקת סנכרון — 100 מתפללים</title>
 <style>
 body{font-family:sans-serif;background:#1a2744;color:#fff;padding:2rem;text-align:center}
 button{font-size:1.2rem;padding:1rem 2rem;margin:.5rem;border:none;border-radius:12px;cursor:pointer;font-family:inherit;font-weight:bold}
 .del{background:#e74c3c;color:#fff}
 .add{background:#2ecc71;color:#fff}
 .sync{background:#c8a84b;color:#1a2744}
-#log{margin-top:1.5rem;text-align:right;background:rgba(0,0,0,.3);padding:1rem;border-radius:10px;font-size:.85rem;max-height:300px;overflow:auto;white-space:pre-wrap}
+#log{margin-top:1.5rem;text-align:right;background:rgba(0,0,0,.3);padding:1rem;border-radius:10px;font-size:.85rem;max-height:400px;overflow:auto;white-space:pre-wrap;direction:ltr;text-align:left}
+.stat{display:inline-block;background:rgba(255,255,255,.1);padding:.4rem .8rem;border-radius:8px;margin:.2rem;font-size:.8rem}
 </style>
 </head>
 <body>
-<h1>בדיקת סנכרון ל-Google Sheets</h1>
+<h1>בדיקת סנכרון — 100 מתפללים</h1>
 <p>לחץ על הכפתורים לפי הסדר:</p>
 <button class="del" onclick="step1()">1. מחק הכל</button>
-<button class="add" onclick="step2()">2. צור 10 מתפללים</button>
+<button class="add" onclick="step2()">2. צור 100 מתפללים</button>
 <button class="sync" onclick="step3()">3. סנכרן ל-Sheets</button>
+<div id="stats"></div>
 <div id="log">ממתין...</div>
 <script>
 var SHEETS_URL = localStorage.getItem('mbz_sheets_url') || '';
 var SK = 'mbz_v5';
-function log(msg){ document.getElementById('log').textContent += '\n' + msg; }
+function log(msg){ var el=document.getElementById('log'); el.textContent += '\n' + msg; el.scrollTop=el.scrollHeight; }
+
+// ── Data pools for realistic generation ──
+var firstNamesM=['אברהם','יצחק','יעקב','משה','אהרון','דוד','שלמה','אליהו','נתנאל','חיים','עמית','אורן','גדעון','בועז','דניאל','יונתן','עידן','ניר','גיא','אסף','רן','תומר','עמיר','שי','איתן','נדב','אורי','רועי','יובל','עומר','ליאור','מתן','אלעד','ערן','בני','צבי','מאיר','ברוך','אפרים','רפאל','מרדכי','שמעון','גבריאל','נועם','אביב','עידו','סהר','אלון','דור','טל'];
+var firstNamesF=['שרה','רבקה','רחל','לאה','מרים','חנה','דבורה','אסתר','רות','נעמי','תמר','יעל','שירה','נועה','מיכל','הדס','ליאת','ענת','קרן','אורלי','מיטל','שני','מורן','טלי','נעמה','דנה','חגית','נורית','גלית','עדי','ליבי','מאיה','הילה','דניאלה','שקד','אביגיל','נגה','איילה','עלמה','רותם'];
+var lastNames=['כהן','לוי','ישראלי','מזרחי','ברקוביץ','אדלר','שמעוני','גולן','פרידמן','רוזן','שפירא','פרץ','רוזנברג','גולדשטיין','ביטון','הלפרין','סגל','נחמיאס','קפלן','אשכנזי','פלד','דרעי','עוז','ברנד','אברהמי','ויס','דהן','אוחיון','חדד','מלכה','בן דוד','אבוטבול','סויסה','עמר','גבאי','אזולאי','טולדנו','נגר','אלבז','שטרן','וייס','פישר','ברגר','קליין','שוורץ','רוט','הורוביץ','קצנלנבוגן','בלום','זילברמן'];
+var fatherNames=['אברהם','יצחק','יעקב','משה','אהרון','דוד','שלמה','אליהו','חיים','שמואל','נחום','צבי','בנימין','עוזי','דב','רפי','אלי','עמוס','גבריאל','ראובן','שמעון','מרדכי','נחמן','זאב','בני','אורי','יוסי','מנחם','עזרא','ברוך'];
+var motherNames=['שרה','רבקה','רחל','לאה','מרים','חנה','דבורה','אסתר','רות','נעמי','דינה','פנינה','יפה','טובה','ציפורה','מזל','מרגלית','שושנה','פרידה','גיטל','בתיה','זהבה','חוה','עליזה','אורה'];
+var streets=['הרצל','הצופית','הדקל','התמר','השקד','מצדה','הורד','הגפן','הזית','הרימון','התאנה','סוקולוב','ויצמן','בן גוריון','ז\'בוטינסקי','רוטשילד','אלנבי','דרך העצמאות','הנשיא','הפלמ"ח','גולדה מאיר','מנחם בגין','הרב קוק','רבי עקיבא','בר אילן'];
+var parashot=['בראשית','נח','לך לך','וירא','חיי שרה','תולדות','ויצא','וישלח','וישב','מקץ','ויגש','ויחי','שמות','וארא','בא','בשלח','יתרו','משפטים','תרומה','תצוה','כי תשא','ויקהל','פקודי','ויקרא','צו','שמיני','תזריע','מצורע','אחרי מות','קדושים','אמור','בהר','בחוקותי','במדבר','נשא','בהעלותך','שלח','קורח','חוקת','בלק','פינחס','מטות','מסעי','דברים','ואתחנן','עקב','ראה','שופטים','כי תצא','כי תבוא','ניצבים','וילך','האזינו'];
+var volTypes=['קניות לקידוש','סידור קידוש','דבר תורה','ניקיון','הכנת שולחנות'];
+var childNamesM=['יונתן','אליהו','עידו','נועם','אביב','עומר','רועי','יובל','גיל','דביר','אסף','איתמר','עמרי','נדב','בן','תום','אור','ניב','שלו','ארי','לב','יהל','מאיר','איתי','סהר'];
+var childNamesF=['נועה','תמר','שירה','עדי','הילה','ליה','אביגיל','נגה','איילה','עלמה','שקד','ליבי','מאיה','דניאלה','מיה','רותם','שיר','יעל','אלה','לירון','תהל','נויה'];
+
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+function randDate(yearMin,yearMax){var y=randInt(yearMin,yearMax);var m=randInt(1,12);var d=randInt(1,28);return y+'-'+(m<10?'0'+m:m)+'-'+(d<10?'0'+d:d)}
+function randPhone(){var pref=['050','052','054','058','053'];return rand(pref)+'-'+randInt(1000000,9999999)}
+var usedNames={};
+
+function genMember(idx){
+  var isMale=Math.random()<0.7; // 70% male members
+  var fn=rand(isMale?firstNamesM:firstNamesF);
+  var ln=rand(lastNames);
+  var key=fn+ln;
+  while(usedNames[key]){fn=rand(isMale?firstNamesM:firstNamesF);ln=rand(lastNames);key=fn+ln}
+  usedNames[key]=true;
+
+  var fa=rand(fatherNames);
+  var mo=rand(motherNames);
+  var phone=randPhone();
+  var email=Math.random()<0.7?(fn.replace(/[^a-zA-Zא-ת]/g,'')+'.'+ln.charAt(0)+'@test.com'):'';
+  var street=rand(streets)+' '+randInt(1,80);
+  var bd=randDate(1960,2000);
+  var par=rand(parashot);
+  var readP=Math.random()<0.4?'כן':'';
+  var readH=Math.random()<0.3?'כן':'';
+
+  // Spouse (95%)
+  var spouse=null;
+  if(Math.random()<0.95){
+    var spFn=rand(isMale?firstNamesF:firstNamesM);
+    spouse={name:spFn,phone:randPhone(),email:Math.random()<0.5?(spFn+'@test.com'):'',birthDate:randDate(1962,2000)};
+  }
+
+  // Children (average 4, range 1-7)
+  var numKids=randInt(1,7);
+  var children=[];
+  for(var c=0;c<numKids;c++){
+    var cMale=Math.random()<0.5;
+    var cName=rand(cMale?childNamesM:childNamesF);
+    var cGd=randDate(2005,2024);
+    var wantsBM=cMale&&Math.random()<0.3;
+    children.push({
+      name:cName,gender:cMale?'זכר':'נקבה',gd:cGd,
+      hd:'',hm:'',hy:'',
+      wantsBM:wantsBM,
+      parasha:wantsBM?rand(parashot):'',
+      readP:wantsBM&&Math.random()<0.5?'כן':'',
+      readH:wantsBM&&Math.random()<0.4?'כן':'',
+      barDate:''
+    });
+  }
+
+  // Yahrzeits (average 2, range 0-4)
+  var numYr=randInt(0,4);
+  var yahrzeits=[];
+  for(var y=0;y<numYr;y++){
+    var decName=rand(fatherNames)+' '+ln;
+    yahrzeits.push({
+      name:decName,
+      hd:''+randInt(1,29),
+      hm:''+randInt(1,12),
+      hy:''+randInt(5740,5785),
+      gd:'',
+      lead:Math.random()<0.4?'כן':'לא',
+      haft:Math.random()<0.2?'כן':'לא'
+    });
+  }
+
+  // Volunteering (0-3)
+  var vols=[];
+  var numVol=randInt(0,3);
+  var volPool=volTypes.slice();
+  for(var v=0;v<numVol;v++){var vi=randInt(0,volPool.length-1);vols.push(volPool.splice(vi,1)[0])}
+
+  var paid=Math.random()<0.6;
+
+  return {
+    id:'m'+idx+'_'+Date.now(),
+    idNumber:'0'+randInt(10000000,99999999),
+    firstName:fn,lastName:ln,fatherName:fa,motherName:mo,
+    torahName:fn+' בן '+fa+' למשפחת '+ln,
+    phone:phone,email:email,
+    birthDate:bd,parasha:par,readP:readP,readH:readH,
+    address:street+', תל מונד',
+    spouse:spouse,children:children,yahrzeits:yahrzeits,
+    volunteering:vols,
+    dutyRoster:Math.random()<0.8,
+    membershipPaid:paid,
+    membershipPaidDate:paid?randInt(1,28)+'.'+randInt(1,12)+'.2025':'',
+    paymentMethod:paid?rand(['אשראי','העברה בנקאית','ביט/פייבוקס','הוראת קבע','מזומן']):'',
+    paymentAmount:paid?''+rand([800,1000,1200,1400,1500,1800]):'',
+    customTags:[],
+    timestamp:new Date().toISOString()
+  };
+}
 
 function step1(){
   localStorage.setItem(SK, '[]');
-  log('✅ כל המתפללים נמחקו מ-localStorage');
+  usedNames={};
+  log('✅ כל המתפללים נמחקו');
 }
 
 function step2(){
-  var t = new Date().toISOString();
-  var ms = [
-    {id:'t1',firstName:'אברהם',lastName:'ישראלי',fatherName:'יצחק',phone:'050-1111111',email:'avraham@test.com',address:'הרצל 1, תל מונד',birthDate:'1985-03-15',parasha:'וירא',dutyRoster:true,children:[],yahrzeits:[],volunteering:[],timestamp:t},
-    {id:'t2',firstName:'שרה',lastName:'כהן',fatherName:'דוד',phone:'052-2222222',email:'sarah@test.com',address:'הרצל 2, תל מונד',birthDate:'1990-07-20',dutyRoster:true,children:[],yahrzeits:[],volunteering:['קניות לקידוש'],timestamp:t},
-    {id:'t3',firstName:'יעקב',lastName:'לוי',fatherName:'משה',phone:'054-3333333',address:'הרצל 3, תל מונד',birthDate:'1978-11-05',dutyRoster:true,children:[{name:'דן',gender:'זכר',gd:'2015-06-10'}],yahrzeits:[],volunteering:[],timestamp:t},
-    {id:'t4',firstName:'רחל',lastName:'מזרחי',fatherName:'אלי',phone:'050-4444444',email:'rachel@test.com',address:'הרצל 4, תל מונד',dutyRoster:true,children:[],yahrzeits:[{name:'אלי מזרחי',hd:'15',hm:'7',hy:'5780',lead:'כן',haft:'לא'}],volunteering:['דבר תורה'],timestamp:t},
-    {id:'t5',firstName:'חיים',lastName:'ברקוביץ',fatherName:'שמואל',phone:'058-5555555',address:'הרצל 5, תל מונד',dutyRoster:true,children:[],yahrzeits:[],volunteering:[],timestamp:t},
-    {id:'t6',firstName:'מרים',lastName:'אדלר',fatherName:'נחמן',phone:'052-6666666',email:'miriam@test.com',address:'הרצל 6, תל מונד',birthDate:'1982-01-30',dutyRoster:true,spouse:{name:'יוסי',phone:'052-6666667'},children:[{name:'נועם',gender:'זכר',gd:'2018-04-12'}],yahrzeits:[],volunteering:['סידור קידוש'],timestamp:t},
-    {id:'t7',firstName:'דני',lastName:'שמעוני',fatherName:'עמוס',phone:'054-7777777',email:'dani@test.com',address:'הרצל 7, תל מונד',dutyRoster:true,children:[],yahrzeits:[],volunteering:[],timestamp:t},
-    {id:'t8',firstName:'טלי',lastName:'גולן',fatherName:'רפי',phone:'050-8888888',address:'הרצל 8, תל מונד',dutyRoster:false,children:[],yahrzeits:[],volunteering:['דבר תורה'],timestamp:t},
-    {id:'t9',firstName:'עמיר',lastName:'פרידמן',fatherName:'בני',phone:'058-9999999',email:'amir@test.com',address:'הרצל 9, תל מונד',birthDate:'1975-09-08',dutyRoster:true,children:[{name:'אור',gender:'נקבה',gd:'2012-02-14'},{name:'גיל',gender:'זכר',gd:'2016-08-03'}],yahrzeits:[],volunteering:[],timestamp:t},
-    {id:'t10',firstName:'נעמה',lastName:'רוזן',fatherName:'אורי',phone:'052-1010101',email:'naama@test.com',address:'הרצל 10, תל מונד',dutyRoster:true,children:[],yahrzeits:[{name:'אורי רוזן',hd:'3',hm:'1',hy:'5783',lead:'לא',haft:'כן'}],volunteering:['קניות לקידוש','סידור קידוש'],timestamp:t}
-  ];
+  usedNames={};
+  var ms=[];
+  for(var i=0;i<100;i++) ms.push(genMember(i));
+
+  // Stats
+  var totalKids=0,totalYr=0,married=0;
+  for(var j=0;j<ms.length;j++){
+    totalKids+=ms[j].children.length;
+    totalYr+=ms[j].yahrzeits.length;
+    if(ms[j].spouse)married++;
+  }
+
   localStorage.setItem(SK, JSON.stringify(ms));
-  log('✅ נוצרו 10 מתפללים חדשים ב-localStorage');
+  log('✅ נוצרו 100 מתפללים!');
+  document.getElementById('stats').innerHTML=
+    '<span class="stat">👤 100 מתפללים</span>'+
+    '<span class="stat">💍 '+married+' נשואים ('+Math.round(married)+'%)</span>'+
+    '<span class="stat">👶 '+totalKids+' ילדים (ממוצע '+(totalKids/100).toFixed(1)+')</span>'+
+    '<span class="stat">🕯 '+totalYr+' יארצייט (ממוצע '+(totalYr/100).toFixed(1)+')</span>';
 }
 
 async function step3(){
   if(!SHEETS_URL){
-    log('❌ לא מוגדר SHEETS_URL! הגדר אותו קודם בהגדרות האתר.');
+    log('❌ לא מוגדר SHEETS_URL!\nהיכנס לאתר הראשי → ניהול → הגדרות → Google Sheets\nהגדר את ה-URL ואז חזור לכאן.');
     return;
   }
-  log('⏳ שולח ל-Sheets: ' + SHEETS_URL.substring(0,50) + '...');
+  var ms = JSON.parse(localStorage.getItem(SK) || '[]');
+  log('⏳ שולח '+ms.length+' מתפללים ל-Sheets...');
+  log('URL: '+SHEETS_URL.substring(0,60)+'...');
   try{
-    var ms = JSON.parse(localStorage.getItem(SK) || '[]');
-    log('📤 שולח ' + ms.length + ' מתפללים...');
     var r = await fetch(SHEETS_URL, {
-      method: 'POST',
-      headers: {'Content-Type': 'text/plain'},
-      body: JSON.stringify({action:'sync', members:ms})
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({action:'sync', members:ms})
     });
     var text = await r.text();
-    log('📥 תשובה: ' + text.substring(0, 200));
-    log('✅ הסנכרון הושלם! פתח את ה-Google Sheet ותבדוק.');
+    log('📥 תשובה: '+text.substring(0,300));
+    log('✅ הסנכרון הושלם! פתח את ה-Google Sheet ובדוק.');
   }catch(e){
-    log('❌ שגיאה: ' + e.message);
+    log('❌ שגיאה: '+e.message);
+    log('ודא שה-Apps Script עודכן ונפרס מחדש (New Deployment)');
   }
 }
 </script>
