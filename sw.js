@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mbz-v5';
+const CACHE_NAME = 'mbz-v6';
 
 const PRECACHE_URLS = [
   './logo.jpg',
@@ -43,6 +43,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
+  // Skip unsupported schemes (chrome-extension, etc.) and non-GET requests for caching
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return;
+
   // Navigation requests (HTML pages): ALWAYS try network first
   if (event.request.mode === 'navigate' || event.request.destination === 'document') {
     event.respondWith(
@@ -57,8 +60,9 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // API calls (hebcal, google sheets): network-first
+  // API calls (hebcal, google sheets): network-first, only cache GET
   if (url.hostname.includes('hebcal') || url.hostname.includes('script.google')) {
+    if (event.request.method !== 'GET') return;
     event.respondWith(
       fetch(event.request)
         .then((response) => {

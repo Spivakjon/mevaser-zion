@@ -1806,6 +1806,8 @@ function resetForm(){_torahManual=false;document.getElementById('fv').style.disp
 //  Storage: Google Sheets = source of truth, localStorage = cache
 // ══════════════════════════════════════════════════════════
 var DEFAULT_SHEETS_URL='https://script.google.com/macros/s/AKfycbwP1zsHQuoDbn4B2NluoOPYh89SZWNCiMJrAIkyucoKX9_J4xOTvwtps9nPGQEMD-O36w/exec';
+// Clear stale localStorage URL that doesn't match current deployment
+(function(){try{var stored=localStorage.getItem('mbz_sheets_url');if(stored&&stored!==DEFAULT_SHEETS_URL)localStorage.removeItem('mbz_sheets_url')}catch(e){}})();
 let SHEETS_URL=localStorage.getItem('mbz_sheets_url')||DEFAULT_SHEETS_URL;
 var PENDING_OPS_KEY='mbz_pending_ops';
 
@@ -3856,7 +3858,7 @@ async function getNextEvent(ms,thisSh,curHY){
 
 // ── Week Summary Cache ────────────────────────────────────
 var WK_CACHE_KEY='mbz_week_cache';
-var WK_CACHE_VER='v9'; // bump this on any change to week summary rendering
+var WK_CACHE_VER='v10'; // bump this on any change to week summary rendering
 function getWeekCache(){
   try{var c=JSON.parse(localStorage.getItem(WK_CACHE_KEY));
   if(!c||!c.html||c.ver!==WK_CACHE_VER)return null;
@@ -4117,7 +4119,7 @@ async function loadWeekSummary(){
     }
 
     // Daily prayer times (weekday) — controlled by setting
-    var zmanim=zmanimResult;
+    var zmanim=typeof zmanimResult!=='undefined'?zmanimResult:null;
     var showDaily=localStorage.getItem('mbz_show_daily_times')==='true';
     if(zmanim&&showDaily){
       h+='<div class="wk-daily"><div class="wk-daily-title">🕐 '+(isEn?'Weekday Prayer Times':'זמני תפילה יומיים')+'</div><div class="wk-daily-row">';
@@ -4134,7 +4136,7 @@ async function loadWeekSummary(){
     }
 
     // Upcoming event countdown (only check 3 weeks to avoid slow loading)
-    var nextEvent=await getNextEventFast(ms,sh,curHY);
+    var nextEvent=await _safe(getNextEventFast(ms,sh,curHY));
     if(nextEvent){
       h+='<div class="wk-countdown"><span class="wk-cd-icon">'+nextEvent.icon+'</span><span class="wk-cd-text">'+es(nextEvent.label)+'</span><span class="wk-cd-days">'+(isEn?'in '+nextEvent.days+' days':'בעוד '+nextEvent.days+' ימים')+'</span></div>';
     }
@@ -4204,7 +4206,7 @@ async function loadWeekSummary(){
     card.innerHTML=h;
     setWeekCache(key,h);
   }catch(err){
-    console.warn('Week summary error:',err);
+    console.error('Week summary error:',err,err&&err.stack);
     if(!cached){
       var sh2=gSh();var ds2=sh2.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
       card.innerHTML='<div class="wk-head"><span class="wk-par">📖 שבת הקרובה</span><span class="wk-date">'+ds2+'</span></div><div class="wk-none" style="color:var(--ink3);font-size:.82rem">⚠️ לא ניתן לטעון נתונים מהשרת. בדוק חיבור אינטרנט ורענן.</div>';
