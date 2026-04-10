@@ -3680,15 +3680,14 @@ async function getNextEvent(ms,thisSh,curHY){
 
 // ── Week Summary Cache ────────────────────────────────────
 var WK_CACHE_KEY='mbz_week_cache';
+var WK_CACHE_VER='v5'; // bump this on any change to week summary rendering
 function getWeekCache(){
   try{var c=JSON.parse(localStorage.getItem(WK_CACHE_KEY));
-  if(!c||!c.html)return null;
-  // Return cache if it's for current week OR if it's less than 24h old (stale but better than loading spinner)
+  if(!c||!c.html||c.ver!==WK_CACHE_VER)return null;
   if(c.key===d2s(gSh()))return c;
-  if(Date.now()-c.ts<86400000)return c;// show last week's data for up to 24h while refreshing
   return null}catch(e){return null}
 }
-function setWeekCache(key,html){try{localStorage.setItem(WK_CACHE_KEY,JSON.stringify({key:key,html:html,ts:Date.now()}))}catch(e){}}
+function setWeekCache(key,html){try{localStorage.setItem(WK_CACHE_KEY,JSON.stringify({key:key,html:html,ts:Date.now(),ver:WK_CACHE_VER}))}catch(e){}}
 
 // ── My Area (unified: Shabbat + Edit + Register) ────────
 function openMyArea(){
@@ -5791,6 +5790,8 @@ document.addEventListener('visibilitychange',function(){
 });
 
 // ── Init ─────────────────────────────────────────────────
+// Clear stale week cache from older versions
+try{var _wc=JSON.parse(localStorage.getItem(WK_CACHE_KEY)||'{}');if(_wc.ver!==WK_CACHE_VER)localStorage.removeItem(WK_CACHE_KEY)}catch(e){localStorage.removeItem(WK_CACHE_KEY)}
 mergeCustomTexts();
 initTheme();
 initLang();
