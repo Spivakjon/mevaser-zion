@@ -3835,7 +3835,7 @@ async function getNextEvent(ms,thisSh,curHY){
 
 // ── Week Summary Cache ────────────────────────────────────
 var WK_CACHE_KEY='mbz_week_cache';
-var WK_CACHE_VER='v6'; // bump this on any change to week summary rendering
+var WK_CACHE_VER='v7'; // bump this on any change to week summary rendering
 function getWeekCache(){
   try{var c=JSON.parse(localStorage.getItem(WK_CACHE_KEY));
   if(!c||!c.html||c.ver!==WK_CACHE_VER)return null;
@@ -4031,18 +4031,19 @@ async function loadWeekSummary(){
     // Run all API calls in parallel
     // Also fetch upcoming holidays for the next 14 days
     var holidayEnd=new Date();holidayEnd.setDate(holidayEnd.getDate()+14);
+    function _safe(p){return Promise.race([p,new Promise(function(_,rej){setTimeout(function(){rej('timeout')},8000)})]).catch(function(){return null})}
     var results=await Promise.all([
-      g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate()),
-      fetchParashot(d1,d2n),
-      getShabbatTimes(),
-      getOmerDay(),
-      getDailyZmanim(),
-      _fetchUpcomingHolidays(new Date(),holidayEnd)
+      _safe(g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate())),
+      _safe(fetchParashot(d1,d2n)),
+      _safe(getShabbatTimes()),
+      _safe(getOmerDay()),
+      _safe(getDailyZmanim()),
+      _safe(_fetchUpcomingHolidays(new Date(),holidayEnd))
     ]);
     var hd2=results[0];
-    var parMap=results[1];
+    var parMap=results[1]||{};
     var shTimes=results[2];
-    var omerDayResult=results[3];
+    var omerDayResult=results[3]||0;
     var zmanimResult=results[4];
     var upcomingHolidays=results[5]||[];
     var hebStr=hd2?fhd(hd2.hd,hd2.hm,hd2.hy):'';
@@ -4182,7 +4183,10 @@ async function loadWeekSummary(){
     setWeekCache(key,h);
   }catch(err){
     console.warn('Week summary error:',err);
-    if(!cached)card.innerHTML='<div class="wk-head"><span class="wk-par">📅 '+(curLang==='en'?'Unable to load':'לא ניתן לטעון')+'</span></div>';
+    if(!cached){
+      var sh2=gSh();var ds2=sh2.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
+      card.innerHTML='<div class="wk-head"><span class="wk-par">📖 שבת הקרובה</span><span class="wk-date">'+ds2+'</span></div><div class="wk-none" style="color:var(--ink3);font-size:.82rem">⚠️ לא ניתן לטעון נתונים מהשרת. בדוק חיבור אינטרנט ורענן.</div>';
+    }
   }
 }
 
