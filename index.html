@@ -4033,7 +4033,7 @@ async function loadWeekSummary(){
     // Run all API calls in parallel
     // Also fetch upcoming holidays for the next 14 days
     var holidayEnd=new Date();holidayEnd.setDate(holidayEnd.getDate()+14);
-    function _safe(p){return Promise.race([p,new Promise(function(_,rej){setTimeout(function(){rej('timeout')},8000)})]).catch(function(){return null})}
+    function _safe(p){return Promise.race([p,new Promise(function(_,rej){setTimeout(function(){rej('timeout')},5000)})]).catch(function(){return null})}
     // Check server-side Hebcal cache first
     var _hcSrv=null;
     try{var _hcRaw=localStorage.getItem('mbz_hebcal_week');if(_hcRaw){_hcSrv=JSON.parse(_hcRaw);if(!_hcSrv||_hcSrv.weekKey!==key)_hcSrv=null}}catch(e){_hcSrv=null}
@@ -5987,14 +5987,19 @@ mergeCustomTexts();
 initTheme();
 initLang();
 initForm();
-loadWeekSummary();
 renderPublicAnnouncements();
 initMbrPrompt();
-// Load from Sheets as source of truth (in background)
-if(SHEETS_URL){sheetsLoadAll().then(function(ok){
-  if(ok){invalidateCalCache();mergeCustomTexts();applyLang();loadWeekSummary();renderPublicAnnouncements();_updatePendingBadge();console.log('Synced from Sheets')}
-}).catch(function(){})}
 _updatePendingBadge();
+// Init flow: load Sheets first (gets Hebcal cache), THEN render week summary
+if(SHEETS_URL){
+  // Show instant skeleton from localStorage cache while Sheets loads
+  loadWeekSummary();
+  sheetsLoadAll().then(function(ok){
+    if(ok){invalidateCalCache();mergeCustomTexts();applyLang();loadWeekSummary();renderPublicAnnouncements();_updatePendingBadge();console.log('Synced from Sheets')}
+  }).catch(function(){});
+}else{
+  loadWeekSummary();
+}
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').then(function(reg){
     // Force immediate check for new SW version on every page load
