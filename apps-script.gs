@@ -15,7 +15,7 @@ var MEMBER_HEADERS = ['id','ת.ז.','שם פרטי','שם משפחה','שם הא
   'טלפון','דוא"ל','תאריך לידה','פרשת בר מצווה','קריאה בתורה','הפטרה',
   'כתובת','שם בן/בת זוג','טלפון בן/בת זוג','ת.לידה בן/בת זוג',
   'התנדבות','תורן','דמי חבר','סכום','אמצעי תשלום',
-  'ילדים (JSON)','יארצייטים (JSON)','תאריך רישום','JSON מלא'];
+  'ילדים (JSON)','יארצייטים (JSON)','תאריך רישום','סטטוס','תאריך מחיקה','JSON מלא'];
 var JSON_COL = MEMBER_HEADERS.length; // last column = JSON מלא
 
 function getSheet() {
@@ -202,6 +202,8 @@ function _memberToRow(m) {
     JSON.stringify(m.children || []),
     JSON.stringify(m.yahrzeits || []),
     m.timestamp || new Date().toISOString(),
+    m._deleted ? 'לא פעיל' : 'פעיל',
+    m._deletedAt || '',
     JSON.stringify(m)
   ];
 }
@@ -210,8 +212,11 @@ function _getAllMembers() {
   const sh = getSheet();
   const data = sh.getDataRange().getValues();
   const members = [];
-  const jCol = JSON_COL - 1; // 0-based index of JSON column
+  const jCol = JSON_COL - 1; // 0-based index of JSON מלא column
+  const statusCol = JSON_COL - 3; // סטטוס column (2 before JSON)
   for (let i = 1; i < data.length; i++) {
+    // Skip inactive (deleted) members
+    if (data[i][statusCol] === 'לא פעיל') continue;
     const jsonCol = data[i][jCol];
     if (!jsonCol) continue;
     try { members.push(JSON.parse(jsonCol)); } catch (err) {}
@@ -250,10 +255,15 @@ function deleteMember(id) {
   if (!id) return { status: 'error', msg: 'Missing id' };
   const sh = getSheet();
   const rows = sh.getDataRange().getValues();
+  const now = Utilities.formatDate(new Date(), 'Asia/Jerusalem', 'yyyy-MM-dd HH:mm');
+  const statusColIdx = MEMBER_HEADERS.indexOf('סטטוס') + 1; // 1-based
+  const deletedAtColIdx = MEMBER_HEADERS.indexOf('תאריך מחיקה') + 1;
   for (let i = 1; i < rows.length; i++) {
     if (rows[i][0] === id) {
-      sh.deleteRow(i + 1);
-      return { status: 'ok', deleted: id };
+      const r = i + 1;
+      sh.getRange(r, statusColIdx).setValue('לא פעיל');
+      sh.getRange(r, deletedAtColIdx).setValue(now);
+      return { status: 'ok', deleted: id, markedInactive: true };
     }
   }
   return { status: 'error', msg: 'Member not found: ' + id };
