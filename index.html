@@ -2211,19 +2211,19 @@ async function getWkEvs(ms,sh,curHY,currentParasha){
       // Match by date
       if(hasDate&&c.barDate===ss){evs.push({t:'bm',child:c.name,parent:fn,torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH});bmAdded.add(m.id)}
       else if(hasDate&&bmD>sh&&bmD<=bmWindow){evs.push({t:'bm_upcoming',child:c.name,parent:fn,par:c.parasha,barDate:c.barDate});bmAdded.add(m.id)}
-      // Match by parasha name if no date match yet
-      else if(!bmAdded.has(m.id)&&c.parasha&&currentParasha&&parashaMatch(c.parasha,currentParasha)){evs.push({t:'bm',child:c.name,parent:fn,torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH});bmAdded.add(m.id)}}
+      // Match by parasha name if no date match yet — parasha anniversary
+      else if(!bmAdded.has(m.id)&&c.parasha&&currentParasha&&parashaMatch(c.parasha,currentParasha)){evs.push({t:'bm_parasha',name:c.name+' ('+fn+')',torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH});bmAdded.add(m.id)}}
     // Also check member-level bar mitzvah data (admin or public reg) if not already matched
     if(!bmAdded.has(m.id)){
       // Date-based match: bmShabbatDate from admin
       if(m.bmShabbatDate&&m.bmShabbatDate===ss){
         evs.push({t:'bm',child:m.firstName,parent:fn,torah:m.torahName,par:m.bmParsha||'',rp:m.bmAliyah||'',rh:m.bmHaftarah||''});bmAdded.add(m.id)
       }
-      // Parasha-based match: handles double/single pairs
+      // Parasha-based match: adult member whose bar mitzvah parasha falls this week
       else if(currentParasha){
         var mPar=m.bmParsha||m.parasha||'';
         if(mPar&&parashaMatch(mPar,currentParasha)){
-          evs.push({t:'bm',child:m.firstName,parent:fn,torah:m.torahName,par:mPar,rp:m.bmAliyah||m.readP||'',rh:m.bmHaftarah||m.readH||''});bmAdded.add(m.id)}}}}
+          evs.push({t:'bm_parasha',name:m.firstName+' '+m.lastName,torah:m.torahName,par:mPar,rp:m.bmAliyah||m.readP||'',rh:m.bmHaftarah||m.readH||''});bmAdded.add(m.id)}}}}
   // Batch all yahrzeit h2g calls in parallel
   var yrJobs=[];
   for(const m of ms){const fn=`${m.firstName} ${m.lastName}`;
@@ -2239,7 +2239,7 @@ async function getWkEvs(ms,sh,curHY,currentParasha){
   return evs}
 function renderWR(sh,parInfo,hd2,evs){
   const key=d2s(sh);const row=document.getElementById(`wr-${key}`);if(!row)return;
-  const hasBM=evs.some(x=>x.t==='bm'),hasY=evs.some(x=>x.t==='yr');
+  const hasBM=evs.some(x=>x.t==='bm'||x.t==='bm_parasha'),hasY=evs.some(x=>x.t==='yr');
   if(evs.length)row.classList.add('pin');
   const hs=hd2?fhd(hd2.hd,hd2.hm,hd2.hy):'';
   let pLabel='';
@@ -2248,9 +2248,10 @@ function renderWR(sh,parInfo,hd2,evs){
   if(parInfo.holiday)pLabel+=` <span class="hol-tag">🕎 ${es(parInfo.holiday)}</span>`;
   if(parInfo.special)pLabel+=` <span class="par-tag">✡ ${es(parInfo.special)}</span>`;
   const eH=evs.map(x=>x.t==='bm'?`<div class="evi"><span class="etag t-bm">${T('calBarMitzvah')}</span><div class="evb"><div class="en">${es(x.child)}</div><div class="es">${T('calChildOf')} ${es(x.parent)}${x.torah?' | '+T('calTorah')+': '+es(x.torah):''}${x.par?' | '+T('calParasha')+': '+es(x.par):''}${x.rp?' | '+T('calReading')+': '+es(x.rp):''}${x.rh?' | '+T('calHaftarahLabel')+': '+es(x.rh):''}</div></div></div>`:
+    x.t==='bm_parasha'?`<div class="evi"><span class="etag t-bm" style="opacity:.75">📖 ${T('wkBmParasha').replace(/ $/,'')}</span><div class="evb"><div class="en">${es(x.name)}</div><div class="es">${x.par?T('calParasha')+': '+es(x.par):''}${x.rp?' | '+T('calReading')+': '+es(x.rp):''}${x.rh?' | '+T('calHaftarahLabel')+': '+es(x.rh):''}</div></div></div>`:
     `<div class="evi"><span class="etag t-yr">${T('calYahrzeit')}</span><div class="evb"><div class="en">${es(x.dec)}</div><div class="es">${T('calInMemory')}: ${es(x.mem)}${x.lead?' | '+T('calLeadPrayer')+': '+es(x.lead):''}${x.haft?' | '+T('calHaftarahLabel')+': '+es(x.haft):''}${x.dh?' | '+es(x.dh):''}</div></div></div>`).join('')||'<div style="padding:.45rem 0;color:var(--ink3);font-size:.79rem">'+T('calNoEvents')+'</div>';
   var _loc=curLang==='en'?'en-IL':'he-IL';
-  row.innerHTML=`<div class="wh" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.parentElement.classList.contains('open')?'block':'none'"><div class="wdates"><span class="wheb">${T('calShabbat')} ${hs}</span><span class="wgreg">${sh.toLocaleDateString(_loc,{day:'numeric',month:'long',year:'numeric'})}</span></div><div class="wpar">${pLabel} <a href="${CHBD}" target="_blank" rel="noopener">${T('calReadParasha')}</a></div><div class="wbdgs">${hasBM?`<span class="wbdg bdg-bm">✡ ${evs.filter(x=>x.t==='bm').length} ${T('calBarMitzvah')}</span>`:''}${hasY?`<span class="wbdg bdg-yr">🕯 ${evs.filter(x=>x.t==='yr').length} ${T('calYahrzeit')}</span>`:''}</div><div class="wtgl">▾</div></div><div class="wevs"${evs.length?' style="display:block"':''}>${eH}</div>`;
+  row.innerHTML=`<div class="wh" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.parentElement.classList.contains('open')?'block':'none'"><div class="wdates"><span class="wheb">${T('calShabbat')} ${hs}</span><span class="wgreg">${sh.toLocaleDateString(_loc,{day:'numeric',month:'long',year:'numeric'})}</span></div><div class="wpar">${pLabel} <a href="${CHBD}" target="_blank" rel="noopener">${T('calReadParasha')}</a></div><div class="wbdgs">${hasBM?`<span class="wbdg bdg-bm">✡ ${evs.filter(x=>x.t==='bm'||x.t==='bm_parasha').length} ${T('calBarMitzvah')}</span>`:''}${hasY?`<span class="wbdg bdg-yr">🕯 ${evs.filter(x=>x.t==='yr').length} ${T('calYahrzeit')}</span>`:''}</div><div class="wtgl">▾</div></div><div class="wevs"${evs.length?' style="display:block"':''}>${eH}</div>`;
   if(evs.length)row.classList.add('open');}
 
 // ── Members list + filters ──────────────────────────────
@@ -2998,6 +2999,7 @@ var I18N={
     wkParashat:'פרשת',
     wkThisShabbat:'שבת הקרובה',
     wkBarMitzvah:'בר מצווה: ',
+    wkBmParasha:'שבת פרשת בר/בת המצווה של ',
     wkYahrzeit:'יארצייט: ',
     wkBirthday:'יום הולדת עברי: ',
     wkSon:'בן',
@@ -3490,6 +3492,7 @@ var I18N={
     wkParashat:'Parashat ',
     wkThisShabbat:'This Shabbat',
     wkBarMitzvah:'Bar Mitzvah: ',
+    wkBmParasha:'Bar/Bat Mitzvah Parasha of ',
     wkYahrzeit:'Yahrzeit: ',
     wkBirthday:'Hebrew Birthday: ',
     wkSon:'son of',
@@ -4231,6 +4234,8 @@ async function loadWeekSummary(){
         var e=evs[i];
         if(e.t==='bm'){
           h+='<div class="wk-ev"><span class="wk-ev-icon">✡</span><div class="wk-ev-text">🎉 <strong>מזל טוב!</strong> <span class="wk-ev-name">'+T('wkBarMitzvah')+es(e.child)+'</span> '+T('calChildOf')+' '+es(e.parent)+(e.par?' — '+es(e.par):'')+'</div></div>';
+        }else if(e.t==='bm_parasha'){
+          h+='<div class="wk-ev"><span class="wk-ev-icon">📖</span><div class="wk-ev-text"><span class="wk-ev-name">'+T('wkBmParasha')+es(e.name)+'</span>'+(e.par?' — '+es(e.par):'')+'</div></div>';
         }else if(e.t==='bm_upcoming'){
           var bmDt=new Date(e.barDate+'T12:00:00');var bmDays=Math.round((bmDt-sh)/(1000*60*60*24));
           var bmDateStr=bmDt.toLocaleDateString('he-IL',{day:'numeric',month:'long'});
