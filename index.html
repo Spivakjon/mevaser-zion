@@ -904,18 +904,25 @@ body.light-mode .duty-hero{color:#fff}
           </div>
           <div style="border-top:1px solid #e5e7eb;padding-top:.8rem;margin-bottom:.8rem">
             <h4 style="font-size:.8rem;color:#555;margin-bottom:.5rem">עריכת אזור תשלום</h4>
+            <div class="ff" style="margin-bottom:.5rem"><label style="font-size:.72rem">כותרת אזור תשלום</label><input type="text" id="pay-text-title" placeholder="💳 תשלום דמי חבר" style="padding:5px 8px;font-size:.83rem"></div>
+            <div class="ff" style="margin-bottom:.5rem"><label style="font-size:.72rem">הערת מס / טקסט עליון</label><textarea id="pay-text-taxnote" rows="2" placeholder="התשלום לעמותה מוכר לפי סעיף 46..." style="padding:5px 8px;font-size:.83rem;width:100%;border:1.5px solid #d1d5db;border-radius:8px;font-family:inherit;resize:vertical"></textarea></div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.5rem">
+              <div class="ff" style="flex:2;min-width:200px"><label style="font-size:.72rem">תיאור מסלול שנתי</label><input type="text" id="pay-text-annual" placeholder="דמי חבר שנתיים למשפחה:" style="padding:5px 8px;font-size:.83rem"></div>
               <div class="ff" style="flex:1;min-width:120px"><label style="font-size:.72rem">תשלום שנתי (ש"ח)</label><input type="text" id="pay-annual-amount" placeholder="2,760" style="padding:5px 8px;font-size:.83rem"></div>
               <div class="ff" style="flex:2;min-width:180px"><label style="font-size:.72rem">קישור תשלום שנתי</label><input type="text" id="pay-annual-link" placeholder="https://..." dir="ltr" style="text-align:left;padding:5px 8px;font-size:.83rem"></div>
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.5rem">
+              <div class="ff" style="flex:2;min-width:200px"><label style="font-size:.72rem">תיאור מסלול מופחת</label><input type="text" id="pay-text-reduced" placeholder="דמי חבר מופחתים — מתפללי מניין נוף ילדות:" style="padding:5px 8px;font-size:.83rem"></div>
               <div class="ff" style="flex:1;min-width:120px"><label style="font-size:.72rem">תשלום מופחת (ש"ח)</label><input type="text" id="pay-reduced-amount" placeholder="1,800" style="padding:5px 8px;font-size:.83rem"></div>
               <div class="ff" style="flex:1;min-width:100px"><label style="font-size:.72rem">תשלום חודשי (ש"ח)</label><input type="text" id="pay-monthly-amount" placeholder="150" style="padding:5px 8px;font-size:.83rem"></div>
               <div class="ff" style="flex:2;min-width:180px"><label style="font-size:.72rem">קישור תשלום מופחת</label><input type="text" id="pay-reduced-link" placeholder="https://..." dir="ltr" style="text-align:left;padding:5px 8px;font-size:.83rem"></div>
             </div>
+            <div class="ff" style="margin-bottom:.5rem"><label style="font-size:.72rem">הערה למסלול מופחת</label><input type="text" id="pay-text-reduced-note" placeholder="(12 תשלומים של 150 ש״ח — למתפללים שאינם מגיעים עם משפחותיהם)" style="padding:5px 8px;font-size:.83rem"></div>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.5rem">
+              <div class="ff" style="flex:2;min-width:200px"><label style="font-size:.72rem">תיאור תרומה חד-פעמית</label><input type="text" id="pay-text-donation" placeholder="תרומה חד־פעמית" style="padding:5px 8px;font-size:.83rem"></div>
               <div class="ff" style="flex:2;min-width:180px"><label style="font-size:.72rem">קישור תרומה חד-פעמית</label><input type="text" id="pay-donation-link" placeholder="https://..." dir="ltr" style="text-align:left;padding:5px 8px;font-size:.83rem"></div>
             </div>
+            <div class="ff" style="margin-bottom:.5rem"><label style="font-size:.72rem">הערה לתרומה</label><input type="text" id="pay-text-donation-note" placeholder="(אורחים ומתפללי שישי)" style="padding:5px 8px;font-size:.83rem"></div>
           </div>
           <button class="abt" onclick="saveMbrCfg()" style="padding:6px 14px;font-size:.8rem;white-space:nowrap" data-i18n-text="btnSaveShort">💾 שמור</button>
         </div>
@@ -4446,6 +4453,14 @@ function applyPaymentSettings(s){
   if(s.payAnnual&&strongs[0]){var t=strongs[0].textContent;var m=t.match(/[\d,]+/);if(m)strongs[0].textContent=t.replace(m[0],s.payAnnual)}
   if(s.payReduced&&strongs[1]){var t=strongs[1].textContent;var m=t.match(/[\d,]+/);if(m)strongs[1].textContent=t.replace(m[0],s.payReduced)}
   if(s.payMonthly){var notes=sec.querySelectorAll('p[style*="font-size:.8rem"]');if(notes[0]){var t=notes[0].textContent;var m=t.match(/\d+(?= ש)/);if(m)notes[0].textContent=t.replace(m[0],s.payMonthly)}}
+  // Update text content
+  if(s.payTextTitle){var h=sec.querySelector('h2');if(h)h.textContent=s.payTextTitle}
+  if(s.payTextTaxNote){var tn=sec.querySelector('p[data-i18n="payTaxNote"]');if(tn)tn.textContent=s.payTextTaxNote}
+  if(s.payTextAnnual&&strongs[0])strongs[0].textContent=s.payTextAnnual+(s.payAnnual?' '+s.payAnnual+' ש"ח':'');
+  if(s.payTextReduced&&strongs[1])strongs[1].textContent=s.payTextReduced+(s.payReduced?' '+s.payReduced+' ש"ח':'');
+  if(s.payTextReducedNote){var rn=sec.querySelector('p[data-i18n="payReducedNote"]');if(rn)rn.textContent=s.payTextReducedNote}
+  if(s.payTextDonation&&strongs[2])strongs[2].textContent=s.payTextDonation;
+  if(s.payTextDonationNote){var dn=sec.querySelector('span[data-i18n="payDonationNote"]');if(dn)dn.textContent=s.payTextDonationNote}
 }
 function scrollToPayInfo(){
   var card=document.getElementById('payment-msg-card');
@@ -4476,6 +4491,8 @@ function saveMbrCfg(){
   var pma=document.getElementById('pay-monthly-amount');if(pma&&pma.value.trim())s.payMonthly=pma.value.trim();
   var prl=document.getElementById('pay-reduced-link');if(prl&&prl.value.trim())s.payReducedLink=prl.value.trim();
   var pdl=document.getElementById('pay-donation-link');if(pdl&&pdl.value.trim())s.payDonationLink=pdl.value.trim();
+  var ptf=[['pay-text-title','payTextTitle'],['pay-text-taxnote','payTextTaxNote'],['pay-text-annual','payTextAnnual'],['pay-text-reduced','payTextReduced'],['pay-text-reduced-note','payTextReducedNote'],['pay-text-donation','payTextDonation'],['pay-text-donation-note','payTextDonationNote']];
+  ptf.forEach(function(p){var el=document.getElementById(p[0]);if(el&&el.value.trim())s[p[1]]=el.value.trim();});
   saveMbrSettings(s);
   applyPaymentSettings(s);
   initMbrPrompt();
@@ -4580,6 +4597,8 @@ function renderMbrTab(){
   var pma=document.getElementById('pay-monthly-amount');if(pma)pma.value=s.payMonthly||'';
   var prl=document.getElementById('pay-reduced-link');if(prl)prl.value=s.payReducedLink||'';
   var pdl=document.getElementById('pay-donation-link');if(pdl)pdl.value=s.payDonationLink||'';
+  var ptf=[['pay-text-title','payTextTitle'],['pay-text-taxnote','payTextTaxNote'],['pay-text-annual','payTextAnnual'],['pay-text-reduced','payTextReduced'],['pay-text-reduced-note','payTextReducedNote'],['pay-text-donation','payTextDonation'],['pay-text-donation-note','payTextDonationNote']];
+  ptf.forEach(function(p){var el=document.getElementById(p[0]);if(el)el.value=s[p[1]]||'';});
   var tpl=document.getElementById('mbr-msg-tpl');
   var tplR=document.getElementById('mbr-msg-tpl-renew');
   var tplO=document.getElementById('mbr-msg-tpl-overdue');
