@@ -2173,15 +2173,27 @@ var PARASHA_PAIRS=[
   ['מטות','מסעי','מטות-מסעי'],
   ['ניצבים','וילך','ניצבים-וילך']
 ];
+function normParasha(s){
+  if(!s)return'';
+  return s.replace(/^פרשת\s+/,'').replace(/[-־–]/g,'-').replace(/[ּׁׂ]/g,'').replace(/וֹ|ו/g,'ו').replace(/\s+/g,' ').trim();
+}
 function parashaMatch(stored,current){
   if(!stored||!current)return false;
-  var a=stored.replace(/[-־]/g,'-').trim();
-  var b=current.replace(/[-־]/g,'-').trim();
+  var a=normParasha(stored);
+  var b=normParasha(current);
   if(a===b)return true;
+  // Check if one contains the other (e.g. "מצרע" in "תזריע-מצרע")
+  if(b.indexOf(a)!==-1||a.indexOf(b)!==-1)return true;
+  // Check split parts: "תזריע-מצרע" should match "מצרע" or "תזריע"
+  var bp=b.split('-');var ap=a.split('-');
+  for(var i=0;i<bp.length;i++){for(var j=0;j<ap.length;j++){if(bp[i].trim()===ap[j].trim())return true}}
+  // Check known pairs
   for(var i=0;i<PARASHA_PAIRS.length;i++){
     var p=PARASHA_PAIRS[i];
-    var d=p[2];
-    if((a===p[0]||a===p[1]||a===d)&&(b===p[0]||b===p[1]||b===d))return true;
+    var np=p.map(normParasha);
+    var aMatch=np.indexOf(a)!==-1||np.some(function(x){return x.indexOf(a)!==-1||a.indexOf(x)!==-1});
+    var bMatch=np.indexOf(b)!==-1||np.some(function(x){return x.indexOf(b)!==-1||b.indexOf(x)!==-1});
+    if(aMatch&&bMatch)return true;
   }
   return false;
 }
@@ -2193,10 +2205,14 @@ async function getWkEvs(ms,sh,curHY,currentParasha){
   var bmWindow=new Date(sh);bmWindow.setDate(bmWindow.getDate()+28);
   var bmAdded=new Set();
   for(const m of ms){const fn=`${m.firstName} ${m.lastName}`;
-    for(const c of(m.children||[])){if(!c.barDate)continue;
-      var bmD=new Date(c.barDate+'T12:00:00');
-      if(c.barDate===ss){evs.push({t:'bm',child:c.name,parent:fn,torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH});bmAdded.add(m.id)}
-      else if(bmD>sh&&bmD<=bmWindow){evs.push({t:'bm_upcoming',child:c.name,parent:fn,par:c.parasha,barDate:c.barDate});bmAdded.add(m.id)}}
+    for(const c of(m.children||[])){
+      var hasDate=!!c.barDate;
+      var bmD=hasDate?new Date(c.barDate+'T12:00:00'):null;
+      // Match by date
+      if(hasDate&&c.barDate===ss){evs.push({t:'bm',child:c.name,parent:fn,torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH});bmAdded.add(m.id)}
+      else if(hasDate&&bmD>sh&&bmD<=bmWindow){evs.push({t:'bm_upcoming',child:c.name,parent:fn,par:c.parasha,barDate:c.barDate});bmAdded.add(m.id)}
+      // Match by parasha name if no date match yet
+      else if(!bmAdded.has(m.id)&&c.parasha&&currentParasha&&parashaMatch(c.parasha,currentParasha)){evs.push({t:'bm',child:c.name,parent:fn,torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH});bmAdded.add(m.id)}}
     // Also check member-level bar mitzvah data (admin or public reg) if not already matched
     if(!bmAdded.has(m.id)){
       // Date-based match: bmShabbatDate from admin
