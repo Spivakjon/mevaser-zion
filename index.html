@@ -756,6 +756,7 @@ body.light-mode .duty-hero{color:#fff}
 <body>
 <div class="top-actions">
   <button onclick="openMyArea()" data-i18n="myAreaBtn">🕍 האזור שלי</button>
+  <button onclick="toggleReg()" data-i18n="regBtn">📝 הרשמה</button>
   <button onclick="scrollToPayInfo()" id="top-pay-btn" style="color:var(--gold)" data-i18n="payBtn">💳 תשלום</button>
   <button onclick="openAdm()" data-i18n="adminBtn">🔒 ניהול</button>
   <button id="pwa-install-btn" onclick="installPWA()" style="display:none;color:var(--gold)" data-i18n="installBtn">📲 התקן</button>
@@ -897,11 +898,26 @@ body.light-mode .duty-hero{color:#fff}
       <div style="margin-bottom:.8rem">
         <button class="abt" onclick="toggleCollapse('mbr-cfg-body')" style="width:100%;text-align:right;font-size:.85rem;padding:8px 12px;border:1px solid #d1d5db;border-radius:8px;background:#f3f4f6" data-i18n-text="mbrSettingsTitle">⚙ הגדרות דמי חבר <span style="float:left">▾</span></button>
         <div id="mbr-cfg-body" style="display:none;background:#f9fafb;border-radius:0 0 10px 10px;padding:1rem;border:1px solid #d1d5db;border-top:0">
-          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:.8rem">
             <div class="ff" style="flex:1;min-width:120px"><label style="font-size:.75rem" data-i18n-text="billingYear">שנת גבייה</label><input type="text" id="mbr-year-cfg" placeholder="תשפ״ו" style="padding:6px 10px;font-size:.85rem"></div>
             <div class="ff" style="flex:2;min-width:180px"><label style="font-size:.75rem" data-i18n-text="paymentLink">קישור לתשלום</label><input type="text" id="mbr-link-cfg" placeholder="https://..." dir="ltr" style="text-align:left;padding:6px 10px;font-size:.85rem"></div>
-            <button class="abt" onclick="saveMbrCfg()" style="padding:6px 14px;font-size:.8rem;white-space:nowrap" data-i18n-text="btnSaveShort">💾 שמור</button>
           </div>
+          <div style="border-top:1px solid #e5e7eb;padding-top:.8rem;margin-bottom:.8rem">
+            <h4 style="font-size:.8rem;color:#555;margin-bottom:.5rem">עריכת אזור תשלום</h4>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.5rem">
+              <div class="ff" style="flex:1;min-width:120px"><label style="font-size:.72rem">תשלום שנתי (ש"ח)</label><input type="text" id="pay-annual-amount" placeholder="2,760" style="padding:5px 8px;font-size:.83rem"></div>
+              <div class="ff" style="flex:2;min-width:180px"><label style="font-size:.72rem">קישור תשלום שנתי</label><input type="text" id="pay-annual-link" placeholder="https://..." dir="ltr" style="text-align:left;padding:5px 8px;font-size:.83rem"></div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.5rem">
+              <div class="ff" style="flex:1;min-width:120px"><label style="font-size:.72rem">תשלום מופחת (ש"ח)</label><input type="text" id="pay-reduced-amount" placeholder="1,800" style="padding:5px 8px;font-size:.83rem"></div>
+              <div class="ff" style="flex:1;min-width:100px"><label style="font-size:.72rem">תשלום חודשי (ש"ח)</label><input type="text" id="pay-monthly-amount" placeholder="150" style="padding:5px 8px;font-size:.83rem"></div>
+              <div class="ff" style="flex:2;min-width:180px"><label style="font-size:.72rem">קישור תשלום מופחת</label><input type="text" id="pay-reduced-link" placeholder="https://..." dir="ltr" style="text-align:left;padding:5px 8px;font-size:.83rem"></div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:.5rem">
+              <div class="ff" style="flex:2;min-width:180px"><label style="font-size:.72rem">קישור תרומה חד-פעמית</label><input type="text" id="pay-donation-link" placeholder="https://..." dir="ltr" style="text-align:left;padding:5px 8px;font-size:.83rem"></div>
+            </div>
+          </div>
+          <button class="abt" onclick="saveMbrCfg()" style="padding:6px 14px;font-size:.8rem;white-space:nowrap" data-i18n-text="btnSaveShort">💾 שמור</button>
         </div>
       </div>
       <div id="mbr-stats" style="display:flex;gap:10px;margin-bottom:1rem;flex-wrap:wrap;cursor:pointer"></div>
@@ -2127,23 +2143,57 @@ async function renderCal(){
     const key=d2s(sh);
     const pi=parMap[key]||{};
     const parInfo={parasha:pi.parasha||'',holiday:pi.holiday||'',special:pi.special||''};
-    const[hd2,evs]=await Promise.all([g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate()),getWkEvs(ms,sh,curHY)]);
+    const[hd2,evs]=await Promise.all([g2h(sh.getFullYear(),sh.getMonth()+1,sh.getDate()),getWkEvs(ms,sh,curHY,parInfo.parasha)]);
     renderWR(sh,parInfo,hd2,evs);
   }));
   // Save to cache
   setCalCache(startKey,titleText,grid.innerHTML,mh);
 }
-async function getWkEvs(ms,sh,curHY){
+// Double/single parasha pairs — each sub-array is [single1, single2, double]
+var PARASHA_PAIRS=[
+  ['ויקהל','פקודי','ויקהל-פקודי'],
+  ['תזריע','מצורע','תזריע-מצורע'],
+  ['אחרי מות','קדושים','אחרי מות-קדושים'],
+  ['בהר','בחוקותי','בהר-בחוקותי'],
+  ['חוקת','בלק','חוקת-בלק'],
+  ['מטות','מסעי','מטות-מסעי'],
+  ['ניצבים','וילך','ניצבים-וילך']
+];
+function parashaMatch(stored,current){
+  if(!stored||!current)return false;
+  var a=stored.replace(/[-־]/g,'-').trim();
+  var b=current.replace(/[-־]/g,'-').trim();
+  if(a===b)return true;
+  for(var i=0;i<PARASHA_PAIRS.length;i++){
+    var p=PARASHA_PAIRS[i];
+    var d=p[2];
+    if((a===p[0]||a===p[1]||a===d)&&(b===p[0]||b===p[1]||b===d))return true;
+  }
+  return false;
+}
+async function getWkEvs(ms,sh,curHY,currentParasha){
   const evs=[],ss=d2s(sh);
   const ss2=new Date(sh);ss2.setDate(sh.getDate()-6);ss2.setHours(0,0,0);
   const se=new Date(sh);se.setHours(23,59,59);
   // Collect bar mitzvahs — this Shabbat + upcoming 4 weeks
   var bmWindow=new Date(sh);bmWindow.setDate(bmWindow.getDate()+28);
+  var bmAdded=new Set();
   for(const m of ms){const fn=`${m.firstName} ${m.lastName}`;
     for(const c of(m.children||[])){if(!c.barDate)continue;
       var bmD=new Date(c.barDate+'T12:00:00');
-      if(c.barDate===ss){evs.push({t:'bm',child:c.name,parent:fn,torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH})}
-      else if(bmD>sh&&bmD<=bmWindow){evs.push({t:'bm_upcoming',child:c.name,parent:fn,par:c.parasha,barDate:c.barDate})}}}
+      if(c.barDate===ss){evs.push({t:'bm',child:c.name,parent:fn,torah:m.torahName,par:c.parasha,rp:c.readP,rh:c.readH});bmAdded.add(m.id)}
+      else if(bmD>sh&&bmD<=bmWindow){evs.push({t:'bm_upcoming',child:c.name,parent:fn,par:c.parasha,barDate:c.barDate});bmAdded.add(m.id)}}
+    // Also check member-level bar mitzvah data (admin or public reg) if not already matched
+    if(!bmAdded.has(m.id)){
+      // Date-based match: bmShabbatDate from admin
+      if(m.bmShabbatDate&&m.bmShabbatDate===ss){
+        evs.push({t:'bm',child:m.firstName,parent:fn,torah:m.torahName,par:m.bmParsha||'',rp:m.bmAliyah||'',rh:m.bmHaftarah||''});bmAdded.add(m.id)
+      }
+      // Parasha-based match: handles double/single pairs
+      else if(currentParasha){
+        var mPar=m.bmParsha||m.parasha||'';
+        if(mPar&&parashaMatch(mPar,currentParasha)){
+          evs.push({t:'bm',child:m.firstName,parent:fn,torah:m.torahName,par:mPar,rp:m.bmAliyah||m.readP||'',rh:m.bmHaftarah||m.readH||''});bmAdded.add(m.id)}}}}
   // Batch all yahrzeit h2g calls in parallel
   var yrJobs=[];
   for(const m of ms){const fn=`${m.firstName} ${m.lastName}`;
@@ -2461,6 +2511,7 @@ function saveAliyot(){
   }
   setAliyot({date:shDate,slots:slots});
   showToast(T('toastAliyotSaved'));
+  _syncSettingsToSheets().catch(function(){});
 }
 function saveKiddush(){
   var sh=gSh();var shDate=d2s(sh);
@@ -2468,6 +2519,7 @@ function saveKiddush(){
   var notes=(document.getElementById('kid-notes').value||'').trim();
   setKiddush({date:shDate,who:who,notes:notes});
   showToast(T('toastKiddushSaved'));
+  _syncSettingsToSheets().catch(function(){});
 }
 
 // ── Announcements Management ─────────────────────────────
@@ -2617,6 +2669,7 @@ var I18N={
     myShabbatShow:'הצג',
     myShabbatBtn:'🕍 השבת שלי',
     myAreaBtn:'🕍 האזור שלי',
+    regBtn:'📝 הרשמה',
     selfEditErrEmpty:'אנא הזן טלפון, שם מלא ושם האב',
     selfEditErrName:'טלפון נמצא אך השם או שם האב אינם תואמים',
     selfEditErrNotFound:'לא נמצא מתפלל עם פרטים אלו',
@@ -3108,6 +3161,7 @@ var I18N={
     myShabbatShow:'Show',
     myShabbatBtn:'🕍 My Shabbat',
     myAreaBtn:'🕍 My Area',
+    regBtn:'📝 Register',
     selfEditErrEmpty:'Please enter phone, full name and father\'s name',
     selfEditErrName:'Phone found but name or father\'s name don\'t match',
     selfEditErrNotFound:'No member found with these details',
@@ -4075,7 +4129,7 @@ async function loadWeekSummary(){
     if(!parName)parName='';
     var ms=getMs();
     var curHY=hd2?hd2.hy:5786;
-    var evs=await _safe(getWkEvs(ms,sh,curHY))||[];
+    var evs=await _safe(getWkEvs(ms,sh,curHY,parName))||[];
     var birthdays=await _safe(getHebrewBirthdays(ms,sh))||[];
     var aliyot=getAliyot();
     var kiddush=getKiddush();
@@ -4218,6 +4272,7 @@ async function loadWeekSummary(){
 function toggleReg(){
   var mc=document.getElementById('main-card');
   if(!mc)return;
+  mc.style.display='';
   mc.classList.toggle('reg-collapsed');
   if(!mc.classList.contains('reg-collapsed')){
     mc.scrollIntoView({behavior:'smooth'});
@@ -4378,6 +4433,20 @@ function initMbrPrompt(){
     document.getElementById('main-card').style.display='';
   }
 }
+function applyPaymentSettings(s){
+  if(!s)s=getMbrSettings();
+  var sec=document.getElementById('pay-info-section');if(!sec)return;
+  // Update amounts and links dynamically
+  var links=sec.querySelectorAll('a.pay-link');
+  if(s.payAnnualLink&&links[0])links[0].href=s.payAnnualLink;
+  if(s.payReducedLink&&links[1])links[1].href=s.payReducedLink;
+  if(s.payDonationLink&&links[2])links[2].href=s.payDonationLink;
+  // Update displayed amounts
+  var strongs=sec.querySelectorAll('strong[style*="gold2"]');
+  if(s.payAnnual&&strongs[0]){var t=strongs[0].textContent;var m=t.match(/[\d,]+/);if(m)strongs[0].textContent=t.replace(m[0],s.payAnnual)}
+  if(s.payReduced&&strongs[1]){var t=strongs[1].textContent;var m=t.match(/[\d,]+/);if(m)strongs[1].textContent=t.replace(m[0],s.payReduced)}
+  if(s.payMonthly){var notes=sec.querySelectorAll('p[style*="font-size:.8rem"]');if(notes[0]){var t=notes[0].textContent;var m=t.match(/\d+(?= ש)/);if(m)notes[0].textContent=t.replace(m[0],s.payMonthly)}}
+}
 function scrollToPayInfo(){
   var card=document.getElementById('payment-msg-card');
   if(card){card.style.display='';card.scrollIntoView({behavior:'smooth',block:'start'})}
@@ -4400,9 +4469,18 @@ function showFormAnyway(){
 function saveMbrCfg(){
   var y=document.getElementById('mbr-year-cfg');
   var l=document.getElementById('mbr-link-cfg');
-  saveMbrSettings({year:y?y.value.trim():'',link:l?l.value.trim():''});
+  var s={year:y?y.value.trim():'',link:l?l.value.trim():''};
+  var paa=document.getElementById('pay-annual-amount');if(paa&&paa.value.trim())s.payAnnual=paa.value.trim();
+  var pal=document.getElementById('pay-annual-link');if(pal&&pal.value.trim())s.payAnnualLink=pal.value.trim();
+  var pra=document.getElementById('pay-reduced-amount');if(pra&&pra.value.trim())s.payReduced=pra.value.trim();
+  var pma=document.getElementById('pay-monthly-amount');if(pma&&pma.value.trim())s.payMonthly=pma.value.trim();
+  var prl=document.getElementById('pay-reduced-link');if(prl&&prl.value.trim())s.payReducedLink=prl.value.trim();
+  var pdl=document.getElementById('pay-donation-link');if(pdl&&pdl.value.trim())s.payDonationLink=pdl.value.trim();
+  saveMbrSettings(s);
+  applyPaymentSettings(s);
   initMbrPrompt();
   renderMbrTab();
+  _syncSettingsToSheets().catch(function(){});
   alert(T('savedReminders'));
 }
 function toggleMbrField(id,field){
@@ -4496,6 +4574,12 @@ function renderMbrTab(){
   var s=getMbrSettings();
   var yc=document.getElementById('mbr-year-cfg');if(yc)yc.value=s.year||'';
   var lc=document.getElementById('mbr-link-cfg');if(lc)lc.value=s.link||'';
+  var paa=document.getElementById('pay-annual-amount');if(paa)paa.value=s.payAnnual||'';
+  var pal=document.getElementById('pay-annual-link');if(pal)pal.value=s.payAnnualLink||'';
+  var pra=document.getElementById('pay-reduced-amount');if(pra)pra.value=s.payReduced||'';
+  var pma=document.getElementById('pay-monthly-amount');if(pma)pma.value=s.payMonthly||'';
+  var prl=document.getElementById('pay-reduced-link');if(prl)prl.value=s.payReducedLink||'';
+  var pdl=document.getElementById('pay-donation-link');if(pdl)pdl.value=s.payDonationLink||'';
   var tpl=document.getElementById('mbr-msg-tpl');
   var tplR=document.getElementById('mbr-msg-tpl-renew');
   var tplO=document.getElementById('mbr-msg-tpl-overdue');
@@ -5829,7 +5913,7 @@ function renderFullTable(){
   var ms=getMs();
   if(ftblFilter==='vol')ms=ms.filter(function(m){return(m.volunteering||[]).length>0});
   else if(ftblFilter==='yr')ms=ms.filter(function(m){return(m.yahrzeits||[]).length>0});
-  else if(ftblFilter==='bm')ms=ms.filter(function(m){return(m.children||[]).some(function(c){return c.parasha})});
+  else if(ftblFilter==='bm')ms=ms.filter(function(m){return m.bmParsha||m.parasha||(m.children||[]).some(function(c){return c.parasha})});
   var wrap=document.getElementById('ftbl-wrap');
   if(!ms.length){wrap.innerHTML='<div style="text-align:center;color:rgba(255,255,255,.35);padding:2rem">'+T('ftblNoData')+'</div>';return}
   var headers=['#','שם פרטי','שם משפחה','שם האב','שם לעלייה','טלפון','דוא"ל','כתובת','התנדבות','תורן','דמי חבר'];
@@ -5988,6 +6072,7 @@ initLang();
 initForm();
 renderPublicAnnouncements();
 initMbrPrompt();
+applyPaymentSettings();
 _updatePendingBadge();
 // Init flow: load Sheets first (gets Hebcal cache), THEN render week summary
 // Load Sheets data first (brings hebcal cache), then render week summary once
@@ -5999,7 +6084,7 @@ if(SHEETS_URL){
   loadWeekSummary();
 }
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').then(function(reg){
+  navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(reg){
     // Force immediate check for new SW version on every page load
     reg.update();
     // If a new SW is waiting, activate it immediately

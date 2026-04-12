@@ -1147,6 +1147,7 @@ function collectFormData() {
     membershipPaid: document.getElementById('membershipPaid').value === 'true',
     bmBirthDate: val('bmBirthDate'),
     bmParsha: val('bmParsha'),
+    bmShabbatDate: _calcBmShabbatDate||'',
     bmAliyah: val('bmAliyah'),
     bmHaftarah: val('bmHaftarah'),
     memorials: getMemorialData()
@@ -1538,6 +1539,7 @@ function saveMemberFromModal() {
     membershipPaid: document.getElementById('mf_membershipPaid').checked,
     bmBirthDate: document.getElementById('mf_bmBirthDate').value,
     bmParsha: document.getElementById('mf_bmParsha').value.trim(),
+    bmShabbatDate: _calcBmShabbatDateModal||'',
     bmAliyah: document.getElementById('mf_bmAliyah').value,
     bmHaftarah: document.getElementById('mf_bmHaftarah').value,
     memorials: memorials
@@ -2345,13 +2347,16 @@ function countHolidayShabbatot(hyear) {
   return count;
 }
 
+var _calcBmShabbatDate='';
+var _calcBmShabbatDateModal='';
 function calcBarMitzvah() {
   var bdStr = document.getElementById('bmBirthDate').value;
-  if (!bdStr) return;
+  if (!bdStr) { _calcBmShabbatDate=''; return; }
   var bd = new Date(bdStr);
   var bmDate = new Date(bd.getFullYear() + 13, bd.getMonth(), bd.getDate());
   var shabbat = getNextShabbat(bmDate);
   var parsha = getParshaForShabbat(shabbat);
+  _calcBmShabbatDate = shabbat.getFullYear()+'-'+String(shabbat.getMonth()+1).padStart(2,'0')+'-'+String(shabbat.getDate()).padStart(2,'0');
   if (parsha) {
     document.getElementById('bmParsha').value = parsha;
   }
@@ -2359,11 +2364,12 @@ function calcBarMitzvah() {
 
 function calcBarMitzvahModal() {
   var bdStr = document.getElementById('mf_bmBirthDate').value;
-  if (!bdStr) return;
+  if (!bdStr) { _calcBmShabbatDateModal=''; return; }
   var bd = new Date(bdStr);
   var bmDate = new Date(bd.getFullYear() + 13, bd.getMonth(), bd.getDate());
   var shabbat = getNextShabbat(bmDate);
   var parsha = getParshaForShabbat(shabbat);
+  _calcBmShabbatDateModal = shabbat.getFullYear()+'-'+String(shabbat.getMonth()+1).padStart(2,'0')+'-'+String(shabbat.getDate()).padStart(2,'0');
   if (parsha) {
     document.getElementById('mf_bmParsha').value = parsha;
   }
