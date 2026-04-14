@@ -5737,7 +5737,8 @@ async function renderDutyTab(){
       if(nd){var ndD=new Date(nd);var daysUntil=Math.round((ndD-new Date())/(1000*60*60*24));label=daysUntil<=0?'השבת הקרובה':daysUntil<=7?'השבת הבאה':'בעוד '+daysUntil+' ימים'}
       else{label='ממתין בתור'}
       var isNext=i<2;
-      return'<div class="mc" style="margin-bottom:6px;display:flex;align-items:center;border-right:3px solid '+(isNext?'#1e7d4b':'transparent')+'"><div class="mav" style="'+(isNext?'background:#1e7d4b':'')+'">'+(i+1)+'</div><div class="mi" style="flex:1"><div class="mn">'+es(m.firstName+' '+m.lastName)+(isNext?' <span style="font-size:.7rem;color:#1e7d4b;font-weight:700">הבא בתור</span>':'')+'</div><div class="ms2">'+es(m.phone)+' · '+sc+' שיבוצים ב-8 שבועות · '+label+'</div></div><button onclick="removeDutyMember(\''+m.id+'\')" style="padding:4px 10px;border:1px solid #c0392b;color:#c0392b;border-radius:6px;background:none;cursor:pointer;font-size:.75rem;font-family:inherit;white-space:nowrap">✕ הסר</button></div>'}).join('');
+      var _pageWin=_dutyPage===0?'ב-8 השבועות הקרובים':(_dutyPage<0?'בעמוד הנוכחי':'בעמוד המוצג');
+      return'<div class="mc" style="margin-bottom:6px;display:flex;align-items:center;border-right:3px solid '+(isNext?'#1e7d4b':'transparent')+'"><div class="mav" style="'+(isNext?'background:#1e7d4b':'')+'">'+(i+1)+'</div><div class="mi" style="flex:1"><div class="mn">'+es(m.firstName+' '+m.lastName)+(isNext?' <span style="font-size:.7rem;color:#1e7d4b;font-weight:700">הבא בתור</span>':'')+'</div><div class="ms2">'+es(m.phone)+' · '+sc+' שיבוצים '+_pageWin+' · '+label+'</div></div><button onclick="removeDutyMember(\''+m.id+'\')" style="padding:4px 10px;border:1px solid #c0392b;color:#c0392b;border-radius:6px;background:none;cursor:pointer;font-size:.75rem;font-family:inherit;white-space:nowrap">✕ הסר</button></div>'}).join('');
   }else{
     rh='<div style="text-align:center;color:var(--ink3);padding:1rem">אין תורנים ברשימה</div>';
   }
