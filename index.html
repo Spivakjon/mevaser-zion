@@ -44,6 +44,9 @@ body.light-mode .wk-duty{background:rgba(30,125,75,.06);border-color:rgba(30,125
 body.light-mode .wk-duty{color:var(--ink2)}
 body.light-mode .wk-duty strong{color:var(--ink)}
 body.light-mode .wk-duty-label{color:#1a6b3a}
+body.light-mode .wk-duty-table th{color:#1a6b3a;border-bottom-color:rgba(0,0,0,.1)}
+body.light-mode .wk-duty-table td{color:var(--ink2);border-bottom-color:rgba(0,0,0,.05)}
+body.light-mode .wk-duty-table tr.wk-duty-current td{color:var(--ink);font-weight:600}
 body.light-mode .wk-omer{background:rgba(200,168,75,.08);border-color:rgba(200,168,75,.2);color:#6b5a2e}
 body.light-mode .wk-daily{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
 body.light-mode .wk-daily-row{color:var(--ink2)}
@@ -134,7 +137,7 @@ body.light-mode .stb:focus-visible{background:rgba(200,168,75,.1);color:var(--go
 
 .logo-area{text-align:center;padding:1rem 1rem 1rem}
 .logo-wrap{display:inline-flex;flex-direction:column;align-items:center;gap:.5rem}
-.logo-box{width:112px;height:112px;background:#fff;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(0,0,0,.3),0 0 0 2px var(--gold);position:relative;overflow:hidden;padding:8px}
+.logo-box{width:168px;height:168px;background:#fff;border-radius:20px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(0,0,0,.3),0 0 0 2px var(--gold);position:relative;overflow:hidden;padding:10px}
 .logo-box img{width:100%;height:100%;object-fit:contain}
 .logo-name{color:#fff;font-family:'Frank Ruhl Libre',serif;font-size:1.75rem;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,.4)}
 .logo-sub{color:rgba(255,255,255,.5);font-size:.82rem;font-weight:300;margin-top:.1rem}
@@ -332,6 +335,20 @@ body.light-mode .lang-toggle button.active{background:rgba(0,0,0,.1);color:var(-
 .wk-duty{padding:.5rem .7rem;background:rgba(30,125,75,.12);border:1px solid rgba(30,125,75,.25);border-radius:8px;margin-bottom:.5rem;font-size:.85rem;color:rgba(255,255,255,.8);text-align:center}
 .wk-duty-label{font-weight:600;color:var(--grn)}
 .wk-duty strong{color:#fff}
+.wk-duty-table{width:100%;border-collapse:collapse;margin-top:.4rem;font-size:.78rem}
+.wk-duty-table th{color:var(--gold2);font-weight:600;padding:.25rem .4rem;border-bottom:1px solid rgba(255,255,255,.15);text-align:right}
+.wk-duty-table td{padding:.25rem .4rem;color:rgba(255,255,255,.75);border-bottom:1px solid rgba(255,255,255,.06)}
+.wk-duty-table tr.wk-duty-current td{color:#fff;font-weight:600}
+.wk-section-head{display:flex;align-items:center;gap:.4rem;margin:1rem 0 .5rem;padding:.4rem .6rem;font-family:'Frank Ruhl Libre',serif;font-size:1rem;font-weight:700;color:var(--gold2);background:linear-gradient(90deg,rgba(200,168,75,.18),rgba(200,168,75,0));border-right:3px solid var(--gold);border-radius:6px}
+body.light-mode .wk-section-head{color:#9b7a2f;background:linear-gradient(90deg,rgba(200,168,75,.12),rgba(200,168,75,0))}
+.parasha-ac-wrap{position:relative}
+.parasha-ac-list{position:absolute;top:100%;right:0;left:0;max-height:200px;overflow-y:auto;background:var(--card,#1e293b);border:1px solid var(--bd,rgba(255,255,255,.15));border-radius:8px;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,.35);display:none}
+.parasha-ac-list.show{display:block}
+.parasha-ac-item{padding:.45rem .7rem;cursor:pointer;font-size:.85rem;color:rgba(255,255,255,.85)}
+.parasha-ac-item:hover,.parasha-ac-item.active{background:rgba(200,168,75,.2);color:#fff}
+body.light-mode .parasha-ac-list{background:#fff;border-color:#d1d5db;box-shadow:0 4px 16px rgba(0,0,0,.1)}
+body.light-mode .parasha-ac-item{color:var(--ink2)}
+body.light-mode .parasha-ac-item:hover,body.light-mode .parasha-ac-item.active{background:rgba(200,168,75,.15);color:var(--ink)}
 .wk-omer{text-align:center;padding:.4rem .6rem;background:rgba(200,168,75,.12);border:1px solid rgba(200,168,75,.2);border-radius:8px;margin-bottom:.5rem;font-size:.88rem;color:var(--gold2);font-weight:600}
 .wk-daily{padding:.45rem .6rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;margin-bottom:.5rem}
 .wk-daily-title{font-size:.75rem;color:var(--gold2);margin-bottom:.3rem;font-weight:600}
@@ -497,7 +514,7 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
   .sec{padding:1rem .85rem}
   .sh{padding:.55rem 1rem}
   .logo-area{padding:1rem .75rem .75rem}
-  .logo-box{width:88px;height:88px;padding:6px}
+  .logo-box{width:132px;height:132px;padding:8px}
   .logo-name{font-size:1.35rem}
   .logo-sub{font-size:.78rem;max-width:280px;margin:0 auto;line-height:1.5}
   .hrow{grid-template-columns:48px 1fr}
@@ -570,7 +587,7 @@ body.light-mode .ann-item{background:rgba(0,0,0,.03)}
   .sec{padding:.85rem .6rem}
   .sh{padding:.5rem .7rem}
   .sh-t{font-size:.88rem}
-  .logo-box{width:72px;height:72px;padding:5px}
+  .logo-box{width:108px;height:108px;padding:7px}
   .logo-name{font-size:1.15rem}
   .ff label{font-size:.73rem}
   .wh{padding:.55rem .45rem}
@@ -778,7 +795,6 @@ body.light-mode .duty-hero{color:#fff}
 
 <div class="main-card" id="membership-prompt-card">
   <div class="mbr-prompt">
-    <h2 data-i18n="mbrPromptTitle">🕍 ברוכים הבאים לקהילת מבשר ציון</h2>
     <p style="font-size:.9rem;color:var(--ink3);margin-bottom:.8rem" data-i18n="mbrPromptText">בית הכנסת שלנו נבנה ומתוחזק מכספי החברים.<br>האם שילמת דמי חבר?</p>
     <div class="mbr-btns">
       <button class="mbr-yes" onclick="membershipAnswer(true)" data-i18n="mbrYes">✓ כן, שילמתי</button>
@@ -1301,9 +1317,13 @@ body.light-mode .duty-hero{color:#fff}
 <div class="se-ovl" id="myarea-ovl" onclick="if(event.target===this)closeMyArea()">
   <div class="se-card" style="max-width:460px">
     <h2>🕍 האזור שלי</h2>
-    <p style="font-size:.85rem;color:var(--ink3);margin-bottom:.8rem">הזן מספר טלפון כדי לצפות במידע האישי שלך</p>
-    <div class="ff">
-      <label>טלפון</label>
+    <p style="font-size:.85rem;color:var(--ink3);margin-bottom:.8rem" id="ma-subtitle">הזן תעודת זהות כדי לצפות במידע האישי שלך</p>
+    <div class="ff" id="ma-id-field">
+      <label>תעודת זהות</label>
+      <input type="tel" id="ma-id" placeholder="123456789" dir="ltr" maxlength="9" onkeydown="if(event.key==='Enter')doMyArea()">
+    </div>
+    <div class="ff" id="ma-phone-field" style="display:none">
+      <label>מספר טלפון</label>
       <input type="tel" id="ma-phone" placeholder="050-1234567" dir="ltr" onkeydown="if(event.key==='Enter')doMyArea()">
     </div>
     <button class="se-btn" onclick="doMyArea()">🔍 חפש</button>
@@ -1694,7 +1714,10 @@ function toggleBM(i){
   det.classList.toggle('show',cb.checked);
 }
 function rChT(i){const el=document.querySelector(`#ci-${i} .ic-title`);if(el)el.textContent=T('childN').replace('{n}',i+1)+(CH[i].name?' — '+CH[i].name:'')}
-function renderCH(){const w=document.getElementById('cw');w.innerHTML=CH.map((_,i)=>chH(i)).join('');document.getElementById('badd-c').style.display='flex'}
+function renderCH(){const w=document.getElementById('cw');w.innerHTML=CH.map((_,i)=>chH(i)).join('');document.getElementById('badd-c').style.display='flex';
+  // Init parasha autocomplete on each child's parasha field
+  for(var _ci=0;_ci<CH.length;_ci++){var _cpEl=document.getElementById('cp-'+_ci);if(_cpEl&&!_cpEl._parashaAC){_cpEl._parashaAC=true;(function(idx){initParashaAC(_cpEl,function(val){CH[idx].parasha=val})}(_ci))}}
+}
 function addCh(){CH.push(bC());renderCH();document.getElementById(`ci-${CH.length-1}`).scrollIntoView({behavior:'smooth'})}
 function remCh(i){CH.splice(i,1);renderCH()}
 async function calcBM(i){
@@ -1767,6 +1790,9 @@ document.addEventListener('DOMContentLoaded',function(){
   var trEl=document.getElementById('tr');
   if(trEl)trEl.addEventListener('input',function(){_torahManual=true});
   if(localStorage.getItem(LOGO_KEY))applyCustomLogo();
+  // Init parasha autocomplete on member-level field
+  var myPar=document.getElementById('my-parasha');
+  if(myPar)initParashaAC(myPar);
 });
 
 // ── Checkbox toggle ──
@@ -2164,6 +2190,14 @@ async function renderCal(){
   setCalCache(startKey,titleText,grid.innerHTML,mh);
 }
 // Double/single parasha pairs — each sub-array is [single1, single2, double]
+var ALL_PARASHOT=[
+  'בראשית','נח','לך לך','וירא','חיי שרה','תולדות','ויצא','וישלח','וישב','מקץ','ויגש','ויחי',
+  'שמות','וארא','בא','בשלח','יתרו','משפטים','תרומה','תצווה','כי תישא','ויקהל','פקודי',
+  'ויקרא','צו','שמיני','תזריע','מצורע','אחרי מות','קדושים','אמור','בהר','בחוקותי',
+  'במדבר','נשא','בהעלותך','שלח','קורח','חוקת','בלק','פינחס','מטות','מסעי',
+  'דברים','ואתחנן','עקב','ראה','שופטים','כי תצא','כי תבוא','ניצבים','וילך','האזינו','וזאת הברכה',
+  'ויקהל-פקודי','תזריע-מצורע','אחרי מות-קדושים','בהר-בחוקותי','חוקת-בלק','מטות-מסעי','ניצבים-וילך'
+];
 var PARASHA_PAIRS=[
   ['ויקהל','פקודי','ויקהל-פקודי'],
   ['תזריע','מצורע','תזריע-מצורע'],
@@ -2196,6 +2230,45 @@ function parashaMatch(stored,current){
     if(aMatch&&bMatch)return true;
   }
   return false;
+}
+// ── Parasha Autocomplete ────────────────────────────────
+function initParashaAC(inputEl,onSelect){
+  var wrap=document.createElement('div');
+  wrap.className='parasha-ac-wrap';
+  inputEl.parentNode.insertBefore(wrap,inputEl);
+  wrap.appendChild(inputEl);
+  var list=document.createElement('div');
+  list.className='parasha-ac-list';
+  wrap.appendChild(list);
+  var activeIdx=-1;
+  function render(filter){
+    var q=normParasha(filter);
+    var matches=q?ALL_PARASHOT.filter(function(p){return normParasha(p).indexOf(q)!==-1}):ALL_PARASHOT.slice();
+    if(!matches.length){list.classList.remove('show');return}
+    list.innerHTML=matches.map(function(p,i){return'<div class="parasha-ac-item" data-idx="'+i+'" data-val="'+es(p)+'">'+es(p)+'</div>'}).join('');
+    activeIdx=-1;
+    list.classList.add('show');
+    var items=list.querySelectorAll('.parasha-ac-item');
+    for(var i=0;i<items.length;i++){(function(it){
+      it.addEventListener('mousedown',function(ev){ev.preventDefault();pick(it.getAttribute('data-val'))});
+    })(items[i])}
+  }
+  function pick(val){inputEl.value=val;list.classList.remove('show');if(onSelect)onSelect(val)}
+  function setActive(items){
+    for(var i=0;i<items.length;i++)items[i].classList.remove('active');
+    if(activeIdx>=0&&activeIdx<items.length){items[activeIdx].classList.add('active');items[activeIdx].scrollIntoView({block:'nearest'})}
+  }
+  inputEl.addEventListener('input',function(){render(this.value)});
+  inputEl.addEventListener('focus',function(){render(this.value)});
+  inputEl.addEventListener('blur',function(){setTimeout(function(){list.classList.remove('show')},150)});
+  inputEl.addEventListener('keydown',function(ev){
+    var items=list.querySelectorAll('.parasha-ac-item');
+    if(!items.length)return;
+    if(ev.key==='ArrowDown'){ev.preventDefault();activeIdx=Math.min(activeIdx+1,items.length-1);setActive(items)}
+    else if(ev.key==='ArrowUp'){ev.preventDefault();activeIdx=Math.max(activeIdx-1,0);setActive(items)}
+    else if(ev.key==='Enter'&&activeIdx>=0){ev.preventDefault();pick(items[activeIdx].getAttribute('data-val'))}
+    else if(ev.key==='Escape'){list.classList.remove('show')}
+  });
 }
 async function getWkEvs(ms,sh,curHY,currentParasha){
   const evs=[],ss=d2s(sh);
@@ -2247,12 +2320,24 @@ function renderWR(sh,parInfo,hd2,evs){
   else if(!parInfo.holiday&&!parInfo.special)pLabel=T('calNotAvailable');
   if(parInfo.holiday)pLabel+=` <span class="hol-tag">🕎 ${es(parInfo.holiday)}</span>`;
   if(parInfo.special)pLabel+=` <span class="par-tag">✡ ${es(parInfo.special)}</span>`;
-  const eH=evs.map(x=>x.t==='bm'?`<div class="evi"><span class="etag t-bm">${T('calBarMitzvah')}</span><div class="evb"><div class="en">${es(x.child)}</div><div class="es">${T('calChildOf')} ${es(x.parent)}${x.torah?' | '+T('calTorah')+': '+es(x.torah):''}${x.par?' | '+T('calParasha')+': '+es(x.par):''}${x.rp?' | '+T('calReading')+': '+es(x.rp):''}${x.rh?' | '+T('calHaftarahLabel')+': '+es(x.rh):''}</div></div></div>`:
+  // ── Duty pair for this Shabbat ──
+  var curSh=gSh();
+  var weekOffset=Math.round((sh-curSh)/(7*24*60*60*1000));
+  var dutyPair=getDutyPairWithSwaps(weekOffset);
+  var dutyHtml='';
+  var isEn=curLang==='en';
+  if(dutyPair&&(dutyPair[0]||dutyPair[1])){
+    var d1=dutyPair[0]?es(dutyPair[0].firstName+' '+dutyPair[0].lastName):'—';
+    var d2Name=dutyPair[1]?es(dutyPair[1].firstName+' '+dutyPair[1].lastName):'—';
+    dutyHtml=`<div class="evi" style="background:rgba(30,125,75,.08);border-right:3px solid var(--grn,#2d9d5e)"><span class="etag t-duty" style="background:rgba(30,125,75,.2);color:#2d9d5e">🧹 ${isEn?'Duty':'תורנים'}</span><div class="evb"><div class="en">${d1} &amp; ${d2Name}</div></div></div>`;
+  }
+  const eH=(dutyHtml+evs.map(x=>x.t==='bm'?`<div class="evi"><span class="etag t-bm">${T('calBarMitzvah')}</span><div class="evb"><div class="en">${es(x.child)}</div><div class="es">${T('calChildOf')} ${es(x.parent)}${x.torah?' | '+T('calTorah')+': '+es(x.torah):''}${x.par?' | '+T('calParasha')+': '+es(x.par):''}${x.rp?' | '+T('calReading')+': '+es(x.rp):''}${x.rh?' | '+T('calHaftarahLabel')+': '+es(x.rh):''}</div></div></div>`:
     x.t==='bm_parasha'?`<div class="evi"><span class="etag t-bm" style="opacity:.75">📖 ${T('wkBmParasha').replace(/ $/,'')}</span><div class="evb"><div class="en">${es(x.name)}</div><div class="es">${x.par?T('calParasha')+': '+es(x.par):''}${x.rp?' | '+T('calReading')+': '+es(x.rp):''}${x.rh?' | '+T('calHaftarahLabel')+': '+es(x.rh):''}</div></div></div>`:
-    `<div class="evi"><span class="etag t-yr">${T('calYahrzeit')}</span><div class="evb"><div class="en">${es(x.dec)}</div><div class="es">${T('calInMemory')}: ${es(x.mem)}${x.lead?' | '+T('calLeadPrayer')+': '+es(x.lead):''}${x.haft?' | '+T('calHaftarahLabel')+': '+es(x.haft):''}${x.dh?' | '+es(x.dh):''}</div></div></div>`).join('')||'<div style="padding:.45rem 0;color:var(--ink3);font-size:.79rem">'+T('calNoEvents')+'</div>';
+    `<div class="evi"><span class="etag t-yr">${T('calYahrzeit')}</span><div class="evb"><div class="en">${es(x.dec)}</div><div class="es">${T('calInMemory')}: ${es(x.mem)}${x.lead?' | '+T('calLeadPrayer')+': '+es(x.lead):''}${x.haft?' | '+T('calHaftarahLabel')+': '+es(x.haft):''}${x.dh?' | '+es(x.dh):''}</div></div></div>`).join(''))||'<div style="padding:.45rem 0;color:var(--ink3);font-size:.79rem">'+T('calNoEvents')+'</div>';
   var _loc=curLang==='en'?'en-IL':'he-IL';
-  row.innerHTML=`<div class="wh" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.parentElement.classList.contains('open')?'block':'none'"><div class="wdates"><span class="wheb">${T('calShabbat')} ${hs}</span><span class="wgreg">${sh.toLocaleDateString(_loc,{day:'numeric',month:'long',year:'numeric'})}</span></div><div class="wpar">${pLabel} <a href="${CHBD}" target="_blank" rel="noopener">${T('calReadParasha')}</a></div><div class="wbdgs">${hasBM?`<span class="wbdg bdg-bm">✡ ${evs.filter(x=>x.t==='bm'||x.t==='bm_parasha').length} ${T('calBarMitzvah')}</span>`:''}${hasY?`<span class="wbdg bdg-yr">🕯 ${evs.filter(x=>x.t==='yr').length} ${T('calYahrzeit')}</span>`:''}</div><div class="wtgl">▾</div></div><div class="wevs"${evs.length?' style="display:block"':''}>${eH}</div>`;
-  if(evs.length)row.classList.add('open');}
+  var dutyBadge=dutyPair&&(dutyPair[0]||dutyPair[1])?`<span class="wbdg bdg-duty" style="background:rgba(30,125,75,.15);color:#2d9d5e">🧹 ${isEn?'Duty':'תורנים'}</span>`:'';
+  row.innerHTML=`<div class="wh" onclick="this.parentElement.classList.toggle('open');this.nextElementSibling.style.display=this.parentElement.classList.contains('open')?'block':'none'"><div class="wdates"><span class="wheb">${T('calShabbat')} ${hs}</span><span class="wgreg">${sh.toLocaleDateString(_loc,{day:'numeric',month:'long',year:'numeric'})}</span></div><div class="wpar">${pLabel} <a href="${CHBD}" target="_blank" rel="noopener">${T('calReadParasha')}</a></div><div class="wbdgs">${hasBM?`<span class="wbdg bdg-bm">✡ ${evs.filter(x=>x.t==='bm'||x.t==='bm_parasha').length} ${T('calBarMitzvah')}</span>`:''}${hasY?`<span class="wbdg bdg-yr">🕯 ${evs.filter(x=>x.t==='yr').length} ${T('calYahrzeit')}</span>`:''}${dutyBadge}</div><div class="wtgl">▾</div></div><div class="wevs"${evs.length||dutyHtml?' style="display:block"':''}>${eH}</div>`;
+  if(evs.length||dutyHtml)row.classList.add('open');}
 
 // ── Members list + filters ──────────────────────────────
 let mflt='',mFilterType='all';
@@ -3694,7 +3779,7 @@ function applyLang(){
     var reqSpan=el.querySelector('.req');
     if(reqSpan){
       el.innerHTML=dict[key]+' <span class="req">*</span>';
-    }else if(key==='welcomeText'||key==='successBody'){
+    }else if(key==='welcomeText'||key==='successBody'||key==='mbrPromptText'){
       // These keys contain HTML (<br> tags)
       el.innerHTML=dict[key];
     }else{
@@ -3945,7 +4030,7 @@ async function getNextEvent(ms,thisSh,curHY){
 
 // ── Week Summary Cache ────────────────────────────────────
 var WK_CACHE_KEY='mbz_week_cache';
-var WK_CACHE_VER='v10'; // bump this on any change to week summary rendering
+var WK_CACHE_VER='v11'; // bump this on any change to week summary rendering
 function getWeekCache(){
   try{var c=JSON.parse(localStorage.getItem(WK_CACHE_KEY));
   if(!c||!c.html||c.ver!==WK_CACHE_VER)return null;
@@ -3955,10 +4040,17 @@ function getWeekCache(){
 function setWeekCache(key,html){try{localStorage.setItem(WK_CACHE_KEY,JSON.stringify({key:key,html:html,ts:Date.now(),ver:WK_CACHE_VER}))}catch(e){}}
 
 // ── My Area (unified: Shabbat + Edit + Register) ────────
+var _maIdFailCount=0;
 function openMyArea(){
   document.getElementById('myarea-ovl').classList.add('show');
-  document.getElementById('ma-phone').value='';
+  var idEl=document.getElementById('ma-id');if(idEl)idEl.value='';
+  var phEl=document.getElementById('ma-phone');if(phEl)phEl.value='';
   document.getElementById('ma-result').innerHTML='';
+  _maIdFailCount=0;
+  // Reset to ID-only view
+  document.getElementById('ma-id-field').style.display='';
+  document.getElementById('ma-phone-field').style.display='none';
+  document.getElementById('ma-subtitle').textContent='הזן תעודת זהות כדי לצפות במידע האישי שלך';
 }
 function closeMyArea(){document.getElementById('myarea-ovl').classList.remove('show')}
 // Keep old functions as aliases for backward compatibility
@@ -3967,20 +4059,51 @@ function closeMyShabbat(){closeMyArea()}
 function openSelfEdit(){openMyArea()}
 function closeSelfEdit(){closeMyArea()}
 async function doMyArea(){
-  var phone=document.getElementById('ma-phone').value.trim();
+  var idVal=(document.getElementById('ma-id').value||'').trim();
+  var phoneVal=(document.getElementById('ma-phone').value||'').trim();
   var res=document.getElementById('ma-result');
   var isEn=curLang==='en';
-  if(!phone){res.innerHTML='<div style="color:#c0392b;text-align:center;margin-top:.5rem">'+(isEn?'Enter phone number':'הזן מספר טלפון')+'</div>';return}
-  var np=phone.replace(/[-\s()]/g,'');
+  var phoneVisible=document.getElementById('ma-phone-field').style.display!=='none';
   var ms=getMs();
-  var m=ms.find(function(x){return(x.phone||'').replace(/[-\s()]/g,'')===np});
+  var m=null;
+  // Try ID first (normalize — digits only)
+  if(idVal){
+    var nid=idVal.replace(/\D/g,'');
+    if(nid){
+      m=ms.find(function(x){return(x.idNumber||'').replace(/\D/g,'')===nid});
+    }
+  }
+  // If ID didn't match and phone is visible, try phone
+  if(!m&&phoneVisible&&phoneVal){
+    var np=phoneVal.replace(/[-\s()]/g,'');
+    m=ms.find(function(x){return(x.phone||'').replace(/[-\s()]/g,'')===np});
+  }
   if(!m){
-    // Not found - offer registration
+    // Require some input
+    if(!idVal&&!(phoneVisible&&phoneVal)){
+      res.innerHTML='<div style="color:#c0392b;text-align:center;margin-top:.5rem">'+(isEn?'Enter ID number':'הזן תעודת זהות')+'</div>';
+      return;
+    }
+    _maIdFailCount++;
+    if(_maIdFailCount>=3&&!phoneVisible){
+      // Offer phone fallback after 3 failures
+      document.getElementById('ma-phone-field').style.display='';
+      document.getElementById('ma-subtitle').innerHTML='לא הצלחנו לאתר אותך עם תעודת הזהות.<br>נסה להתחבר באמצעות מספר הטלפון:';
+      res.innerHTML='<div style="color:#c0392b;text-align:center;margin-top:.5rem;font-size:.88rem">'+(isEn?'3 failed attempts — try phone number':'3 ניסיונות נכשלו — נסה באמצעות נייד')+'</div>';
+      var phEl=document.getElementById('ma-phone');if(phEl)setTimeout(function(){phEl.focus()},100);
+      return;
+    }
+    var remaining=Math.max(0,3-_maIdFailCount);
+    var errMsg=phoneVisible?(isEn?'No member found with these details.':'לא נמצא מתפלל עם הפרטים שהוזנו.'):(isEn?'No member found with this ID number.':'לא נמצא מתפלל עם תעודת הזהות הזו.');
+    var hint=!phoneVisible&&remaining>0?'<div style="font-size:.78rem;color:var(--ink3);margin-top:.3rem">'+(isEn?'Attempts remaining: '+remaining:'ניסיונות שנותרו: '+remaining)+'</div>':'';
     res.innerHTML='<div style="margin-top:.8rem;border-top:1px solid var(--bd);padding-top:.8rem;text-align:center">'
-      +'<div style="font-size:.9rem;color:var(--ink3);margin-bottom:.8rem">'+(isEn?'No member found with this phone number.':'לא נמצא מתפלל עם מספר טלפון זה.')+'</div>'
+      +'<div style="font-size:.9rem;color:var(--ink3);margin-bottom:.3rem">'+errMsg+'</div>'
+      +hint
       +'</div>';
     return;
   }
+  // Success — reset counter
+  _maIdFailCount=0;
   var h='<div style="margin-top:.8rem;border-top:1px solid var(--bd);padding-top:.8rem">';
   h+='<div style="font-size:1.1rem;font-weight:700;color:var(--gold2);margin-bottom:.6rem;text-align:center">'+(isEn?'Shabbat Shalom, ':'שבת שלום, ')+es(m.firstName)+'!</div>';
 
@@ -4215,20 +4338,20 @@ async function loadWeekSummary(){
       h+='</div></div>';
     }
 
-    // Duty roster for this week
+    // ── "תורנים השבוע" heading line (single line with names) ──
     var dutyPair=getDutyPairWithSwaps(0);
-    if(dutyPair.length>=2&&dutyPair[0]&&dutyPair[1]){
+    var hasDutyThisWeek=dutyPair.length>=2&&dutyPair[0]&&dutyPair[1];
+    if(hasDutyThisWeek){
       h+='<div class="wk-duty"><span class="wk-duty-label">🧹 '+(isEn?'This Week\'s Duty':'תורנים השבוע')+':</span> <strong>'+es(dutyPair[0].firstName+' '+dutyPair[0].lastName)+'</strong> &amp; <strong>'+es(dutyPair[1].firstName+' '+dutyPair[1].lastName)+'</strong></div>';
     }
 
-    // Upcoming event countdown (only check 3 weeks to avoid slow loading)
-    var nextEvent=await _safe(getNextEventFast(ms,sh,curHY));
-    if(nextEvent){
-      h+='<div class="wk-countdown"><span class="wk-cd-icon">'+nextEvent.icon+'</span><span class="wk-cd-text">'+es(nextEvent.label)+'</span><span class="wk-cd-days">'+(isEn?'in '+nextEvent.days+' days':'בעוד '+nextEvent.days+' ימים')+'</span></div>';
-    }
-
-    var hasBmUpcoming=evs.some(function(e){return e.t==='bm_upcoming'});
-    if(evs.length||birthdays.length||hasBmUpcoming||(aliyot&&aliyot.date===key)||(kiddush&&kiddush.date===key)){
+    // ═══════════════════════════════════════════════
+    // Section 1: השבוע הקרוב (This Week)
+    // ═══════════════════════════════════════════════
+    h+='<div class="wk-section-head">📌 '+(isEn?'This Week':'השבוע הקרוב')+'</div>';
+    var thisWeekBmUpcoming=evs.filter(function(e){return e.t==='bm_upcoming'&&(Math.round((new Date(e.barDate+'T12:00:00')-sh)/(1000*60*60*24)))<=7});
+    var hasThisWeekContent=evs.some(function(e){return e.t!=='bm_upcoming'})||thisWeekBmUpcoming.length||birthdays.length||(aliyot&&aliyot.date===key)||(kiddush&&kiddush.date===key);
+    if(hasThisWeekContent){
       h+='<div class="wk-events">';
       for(var i=0;i<evs.length;i++){
         var e=evs[i];
@@ -4237,9 +4360,10 @@ async function loadWeekSummary(){
         }else if(e.t==='bm_parasha'){
           h+='<div class="wk-ev"><span class="wk-ev-icon">📖</span><div class="wk-ev-text"><span class="wk-ev-name">'+T('wkBmParasha')+es(e.name)+'</span>'+(e.par?' — '+es(e.par):'')+'</div></div>';
         }else if(e.t==='bm_upcoming'){
-          var bmDt=new Date(e.barDate+'T12:00:00');var bmDays=Math.round((bmDt-sh)/(1000*60*60*24));
-          var bmDateStr=bmDt.toLocaleDateString('he-IL',{day:'numeric',month:'long'});
-          h+='<div class="wk-ev"><span class="wk-ev-icon">📅</span><div class="wk-ev-text">בר/בת מצווה בקרוב: <span class="wk-ev-name">'+es(e.child)+'</span> '+T('calChildOf')+' '+es(e.parent)+(e.par?' — '+es(e.par):'')+' <span style="color:var(--gold3);font-size:.78rem">('+bmDateStr+', בעוד '+bmDays+' ימים)</span></div></div>';
+          var _bmDt=new Date(e.barDate+'T12:00:00');var _bmDays=Math.round((_bmDt-sh)/(1000*60*60*24));
+          if(_bmDays>7)continue; // show in month section
+          var bmDateStr=_bmDt.toLocaleDateString('he-IL',{day:'numeric',month:'long'});
+          h+='<div class="wk-ev"><span class="wk-ev-icon">📅</span><div class="wk-ev-text">בר/בת מצווה בקרוב: <span class="wk-ev-name">'+es(e.child)+'</span> '+T('calChildOf')+' '+es(e.parent)+(e.par?' — '+es(e.par):'')+' <span style="color:var(--gold3);font-size:.78rem">('+bmDateStr+', בעוד '+_bmDays+' ימים)</span></div></div>';
         }else{
           h+='<div class="wk-ev"><span class="wk-ev-icon">🕯</span><div class="wk-ev-text"><span class="wk-ev-name">'+T('wkYahrzeit')+es(e.dec)+'</span> '+T('calInMemory')+' '+es(e.mem)+(e.dh?' — '+es(e.dh):'')+'</div></div>';
         }
@@ -4269,23 +4393,58 @@ async function loadWeekSummary(){
     }else{
       h+='<div class="wk-none">'+((I18N[curLang]||I18N.he).noEvents||'אין אירועים מיוחדים השבת')+'</div>';
     }
-    // Upcoming holidays (Pesach, Sukkot, etc.)
-    if(upcomingHolidays.length){
-      h+='<div class="wk-events">';
-      for(var hi2=0;hi2<upcomingHolidays.length;hi2++){
-        var hol=upcomingHolidays[hi2];
-        var holDays=Math.round((hol.date-new Date())/(1000*60*60*24));
-        var holWhen=holDays<=0?(isEn?'Today':'היום'):holDays===1?(isEn?'Tomorrow':'מחר'):(isEn?'in '+holDays+' days':'בעוד '+holDays+' ימים');
-        h+='<div class="wk-ev"><span class="wk-ev-icon">🕎</span><div class="wk-ev-text"><span class="wk-ev-name">'+es(hol.name)+'</span> <span style="font-size:.75rem;color:var(--ink3)">'+hol.date.toLocaleDateString(locale,{weekday:'short',day:'numeric',month:'short'})+' — '+holWhen+'</span></div></div>';
-      }
-      h+='</div>';
-    }
 
     // Shabbat Shalom greeting on Friday/Saturday
     var dayOfWeek=new Date().getDay();
     if(dayOfWeek===5||dayOfWeek===6){
       h+='<div style="text-align:center;padding:.8rem .5rem;font-family:\'Frank Ruhl Libre\',serif;font-size:1.3rem;font-weight:700;color:var(--gold2)">'+(isEn?'Shabbat Shalom! ✨':'שבת שלום! ✨')+'</div>';
     }
+
+    // ═══════════════════════════════════════════════
+    // Section 2: החודש הקרוב (Upcoming Month)
+    // ═══════════════════════════════════════════════
+    var nextEvent=await _safe(getNextEventFast(ms,sh,curHY));
+    var monthBmUpcoming=evs.filter(function(e){return e.t==='bm_upcoming'&&(Math.round((new Date(e.barDate+'T12:00:00')-sh)/(1000*60*60*24)))>7});
+    var hasMonthContent=nextEvent||upcomingHolidays.length||monthBmUpcoming.length;
+    if(hasMonthContent){
+      h+='<div class="wk-section-head">📅 '+(isEn?'Upcoming Month':'החודש הקרוב')+'</div>';
+      if(nextEvent){
+        h+='<div class="wk-countdown"><span class="wk-cd-icon">'+nextEvent.icon+'</span><span class="wk-cd-text">'+es(nextEvent.label)+'</span><span class="wk-cd-days">'+(isEn?'in '+nextEvent.days+' days':'בעוד '+nextEvent.days+' ימים')+'</span></div>';
+      }
+      if(monthBmUpcoming.length||upcomingHolidays.length){
+        h+='<div class="wk-events">';
+        for(var bmi=0;bmi<monthBmUpcoming.length;bmi++){
+          var eM=monthBmUpcoming[bmi];
+          var bmDtM=new Date(eM.barDate+'T12:00:00');var bmDaysM=Math.round((bmDtM-sh)/(1000*60*60*24));
+          var bmDateStrM=bmDtM.toLocaleDateString('he-IL',{day:'numeric',month:'long'});
+          h+='<div class="wk-ev"><span class="wk-ev-icon">📅</span><div class="wk-ev-text">בר/בת מצווה בקרוב: <span class="wk-ev-name">'+es(eM.child)+'</span> '+T('calChildOf')+' '+es(eM.parent)+(eM.par?' — '+es(eM.par):'')+' <span style="color:var(--gold3);font-size:.78rem">('+bmDateStrM+', בעוד '+bmDaysM+' ימים)</span></div></div>';
+        }
+        for(var hi2=0;hi2<upcomingHolidays.length;hi2++){
+          var hol=upcomingHolidays[hi2];
+          var holDays=Math.round((hol.date-new Date())/(1000*60*60*24));
+          var holWhen=holDays<=0?(isEn?'Today':'היום'):holDays===1?(isEn?'Tomorrow':'מחר'):(isEn?'in '+holDays+' days':'בעוד '+holDays+' ימים');
+          h+='<div class="wk-ev"><span class="wk-ev-icon">🕎</span><div class="wk-ev-text"><span class="wk-ev-name">'+es(hol.name)+'</span> <span style="font-size:.75rem;color:var(--ink3)">'+hol.date.toLocaleDateString(locale,{weekday:'short',day:'numeric',month:'short'})+' — '+holWhen+'</span></div></div>';
+        }
+        h+='</div>';
+      }
+    }
+
+    // ═══════════════════════════════════════════════
+    // Section 3: טבלת תורנים — 4 שבועות קדימה
+    // ═══════════════════════════════════════════════
+    h+='<div class="wk-section-head">🧹 '+(isEn?'Duty Roster — Next 4 Weeks':'טבלת תורנים — 4 שבועות קדימה')+'</div>';
+    h+='<div class="wk-duty" style="background:rgba(30,125,75,.08)">';
+    h+='<table class="wk-duty-table"><thead><tr><th>'+(isEn?'Date':'תאריך')+'</th><th>'+(isEn?'Duty 1':'תורן 1')+'</th><th>'+(isEn?'Duty 2':'תורן 2')+'</th></tr></thead><tbody>';
+    for(var _dw=0;_dw<4;_dw++){
+      var _dp=getDutyPairWithSwaps(_dw);
+      var _dd=new Date();_dd.setDate(_dd.getDate()+_dw*7);
+      var _dsh=getUpcomingShabbat(_dd);
+      var _dstr=_dsh.toLocaleDateString(locale,{day:'numeric',month:'short'});
+      var _dn0=_dp[0]?es(_dp[0].firstName+' '+_dp[0].lastName):'—';
+      var _dn1=_dp[1]?es(_dp[1].firstName+' '+_dp[1].lastName):'—';
+      h+='<tr'+(_dw===0?' class="wk-duty-current"':'')+'><td>'+_dstr+'</td><td>'+_dn0+'</td><td>'+_dn1+'</td></tr>';
+    }
+    h+='</tbody></table></div>';
 
     if(parName){
       h+='<a class="wk-link" href="'+CHBD+'" target="_blank" rel="noopener">'+T('wkReadParasha')+'</a> ';
