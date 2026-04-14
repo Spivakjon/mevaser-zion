@@ -1422,17 +1422,24 @@ try{localStorage.setItem(HC_KEY,JSON.stringify(c))}catch(qe){
   var drop=Math.ceil(keys.length/2);for(var j=0;j<drop;j++)delete c[keys[j]];
   try{localStorage.setItem(HC_KEY,JSON.stringify(c))}catch(qe2){}
 }}catch(x){}}
+var _hfInflight={};
 async function hf(url){
   if(_c[url])return _c[url];
   var cached=_hcGet(url);if(cached){_c[url]=cached;return cached}
-  try{
-    const r=await fetch(url,{mode:'cors',credentials:'omit',cache:'default'});
-    if(!r.ok){console.warn('Hebcal HTTP',r.status,url);return null}
-    const txt=await r.text();
-    let d;try{d=JSON.parse(txt)}catch(pe){console.warn('Hebcal JSON parse error',pe,txt.slice(0,200));return null}
-    if(d&&!d.error){_c[url]=d;_hcSet(url,d);return d}
-    console.warn('Hebcal API error',d);return null;
-  }catch(e){console.warn('Hebcal fetch failed',e,url);return null}
+  // Dedup concurrent requests for the same URL
+  if(_hfInflight[url])return _hfInflight[url];
+  _hfInflight[url]=(async function(){
+    try{
+      const r=await fetch(url,{mode:'cors',credentials:'omit',cache:'default'});
+      if(!r.ok){console.warn('Hebcal HTTP',r.status,url);return null}
+      const txt=await r.text();
+      let d;try{d=JSON.parse(txt)}catch(pe){console.warn('Hebcal JSON parse error',pe,txt.slice(0,200));return null}
+      if(d&&!d.error){_c[url]=d;_hcSet(url,d);return d}
+      console.warn('Hebcal API error',d);return null;
+    }catch(e){console.warn('Hebcal fetch failed',e,url);return null}
+    finally{delete _hfInflight[url]}
+  })();
+  return _hfInflight[url];
 }
 async function g2h(y,m,d){const r=await hf(`https://www.hebcal.com/converter?cfg=json&gy=${y}&gm=${m}&gd=${d}&g2h=1`);return(r&&!r.error)?{hd:r.hd,hm:normHm(r.hm),hy:r.hy}:null}
 async function h2g(hy,hm,hd){
@@ -4335,8 +4342,17 @@ async function loadWeekSummary(){
     if(!parName)parName='';
     var ms=getMs();
     var curHY=hd2?hd2.hy:5786;
-    var evs=await _safe(getWkEvs(ms,sh,curHY,parName))||[];
-    var birthdays=await _safe(getHebrewBirthdays(ms,sh))||[];
+    // Run evs + birthdays + nextEvent in parallel — they share the h2g cache so duplicate
+    // Hebcal calls get deduped at the hf() layer.
+    var _parallelStart=Date.now();
+    var _parallelResults=await Promise.all([
+      _safe(getWkEvs(ms,sh,curHY,parName)),
+      _safe(getHebrewBirthdays(ms,sh)),
+      _safe(getNextEventFast(ms,sh,curHY))
+    ]);
+    var evs=_parallelResults[0]||[];
+    var birthdays=_parallelResults[1]||[];
+    var _preloadedNextEvent=_parallelResults[2];
     var aliyot=getAliyot();
     var kiddush=getKiddush();
 
@@ -4352,7 +4368,8 @@ async function loadWeekSummary(){
     var locale=isEn?'en-IL':'he-IL';
 
     var h='<div class="wk-head">';
-    h+='<span class="wk-par">📖 '+(isEn?'Parashat ':'פרשת ')+(parName?es(parName):(isEn?'This Shabbat':'שבת הקרובה'))+'</span>';
+    var _parClean=parName?parName.replace(/^(פרשת|Parashat)\s+/i,''):'';
+    h+='<span class="wk-par">📖 '+(isEn?'Parashat ':'פרשת ')+(_parClean?es(_parClean):(isEn?'This Shabbat':'שבת הקרובה'))+'</span>';
     h+='<span class="wk-heb">'+(isEn?'Shabbat ':'שבת ')+es(hebStr)+'</span>';
     h+='<span class="wk-date">'+sh.toLocaleDateString(locale,{day:'numeric',month:'long',year:'numeric'})+'</span>';
     h+='</div>';
@@ -4454,7 +4471,7 @@ async function loadWeekSummary(){
     // ═══════════════════════════════════════════════
     // Section 2: החודש הקרוב (Upcoming Month)
     // ═══════════════════════════════════════════════
-    var nextEvent=await _safe(getNextEventFast(ms,sh,curHY));
+    var nextEvent=_preloadedNextEvent;
     var monthBmUpcoming=evs.filter(function(e){return e.t==='bm_upcoming'&&(Math.round((new Date(e.barDate+'T12:00:00')-sh)/(1000*60*60*24)))>7});
     var hasMonthContent=nextEvent||upcomingHolidays.length||monthBmUpcoming.length;
     if(hasMonthContent){
