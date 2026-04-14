@@ -2415,7 +2415,7 @@ function renderML(f){
     return`<div class="mc" style="cursor:pointer" onclick="showMemberDetail(getM('${m.id}'))"><div class="mav">${es(init)}</div><div class="mi"><div class="mn">${es(m.firstName)} <strong>${es(m.lastName)}</strong></div><div class="ms2">${es(m.phone||'')}${famLine}${kidNames}</div></div><div class="mts">${tags.join('')}</div><div class="mas">${dutyToggle}<button class="med" onclick="event.stopPropagation();doEditMx('${m.id}')">✏️ ${_e?'Edit':'עריכה'}</button><button class="mde" onclick="event.stopPropagation();delMx('${m.id}')">${_e?'Delete':'מחק'}</button></div></div>`}).join('')}
 function filtM(v){renderML(v)}
 function editMx(id){var m=getM(id);if(!m)return;showMemberDetail(m)}
-function doEditMx(id){var m=getM(id);if(!m)return;closeMD();closeAdm();initForm(m);document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';document.getElementById('main-card').classList.remove('reg-collapsed');window.scrollTo(0,0)}
+function doEditMx(id){var m=getM(id);if(!m)return;closeMD();closeAdm();initForm(m);document.getElementById('fv').style.display='block';document.getElementById('sv').style.display='none';var mc=document.getElementById('main-card');mc.style.display='';mc.classList.remove('reg-collapsed');window.scrollTo(0,0)}
 function closeMD(){document.getElementById('md-ovl').classList.remove('show')}
 function showMemberDetail(m){
   var _e=curLang==='en';
@@ -4251,7 +4251,9 @@ function doSelfEditDirect(memberId){
   initForm(m);
   document.getElementById('fv').style.display='block';
   document.getElementById('sv').style.display='none';
-  document.getElementById('main-card').classList.remove('reg-collapsed');
+  var mc=document.getElementById('main-card');
+  mc.style.display='';
+  mc.classList.remove('reg-collapsed');
   window.scrollTo(0,0);
   showToast(T('toastDetailsLoaded'));
 }
