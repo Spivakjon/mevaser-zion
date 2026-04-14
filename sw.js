@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mbz-v10';
+const CACHE_NAME = 'mbz-v11';
 
 const PRECACHE_URLS = [
   './logo.jpg',

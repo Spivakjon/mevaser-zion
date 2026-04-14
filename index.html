@@ -1398,12 +1398,30 @@ function dbH(p,dt={},isY=false){const hd=dt.hd||'',hm=dt.hm||'',hy=dt.hy||'',gd=
 function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2500)}
 
 // ── Hebcal API (cached, iOS-safe) ───────────────────────
+// Converter calls (g2h/h2g) are immutable math — cache them forever (90d TTL).
+// Range queries (parashot/holidays) may get minor updates — 30d TTL.
+// Shabbat times queries (geo-specific) — 7d TTL (location settings can change).
 const _c={};
 var HC_KEY='mbz_hc_cache';
-function _hcGet(url){try{var c=JSON.parse(localStorage.getItem(HC_KEY)||'{}');var e=c[url];if(e&&Date.now()-e.ts<21600000)return e.d;return null}catch(x){return null}}
-function _hcSet(url,d){try{var c=JSON.parse(localStorage.getItem(HC_KEY)||'{}');c[url]={d:d,ts:Date.now()};// keep max 30 entries
-var keys=Object.keys(c);if(keys.length>30){keys.sort(function(a,b){return c[a].ts-c[b].ts});for(var i=0;i<keys.length-30;i++)delete c[keys[i]]}
-localStorage.setItem(HC_KEY,JSON.stringify(c))}catch(x){}}
+var HC_TTL_CONVERTER=90*24*60*60*1000; // 90 days
+var HC_TTL_RANGE=30*24*60*60*1000;     // 30 days
+var HC_TTL_SHABBAT=7*24*60*60*1000;    // 7 days
+var HC_MAX_ENTRIES=5000;
+function _hcTTL(url){
+  if(url.indexOf('/converter?')>=0)return HC_TTL_CONVERTER;
+  if(url.indexOf('/shabbat?')>=0)return HC_TTL_SHABBAT;
+  return HC_TTL_RANGE;
+}
+function _hcGet(url){try{var c=JSON.parse(localStorage.getItem(HC_KEY)||'{}');var e=c[url];if(e&&Date.now()-e.ts<_hcTTL(url))return e.d;return null}catch(x){return null}}
+function _hcSet(url,d){try{var c=JSON.parse(localStorage.getItem(HC_KEY)||'{}');c[url]={d:d,ts:Date.now()};
+var keys=Object.keys(c);
+if(keys.length>HC_MAX_ENTRIES){keys.sort(function(a,b){return c[a].ts-c[b].ts});for(var i=0;i<keys.length-HC_MAX_ENTRIES;i++)delete c[keys[i]]}
+try{localStorage.setItem(HC_KEY,JSON.stringify(c))}catch(qe){
+  // Quota exceeded — drop oldest half and retry once
+  keys=Object.keys(c);keys.sort(function(a,b){return c[a].ts-c[b].ts});
+  var drop=Math.ceil(keys.length/2);for(var j=0;j<drop;j++)delete c[keys[j]];
+  try{localStorage.setItem(HC_KEY,JSON.stringify(c))}catch(qe2){}
+}}catch(x){}}
 async function hf(url){
   if(_c[url])return _c[url];
   var cached=_hcGet(url);if(cached){_c[url]=cached;return cached}
@@ -4020,9 +4038,50 @@ async function getNextEvent(ms,thisSh,curHY){
   return closest;
 }
 
+// ── Hebcal Cache Prewarm ──────────────────────────────────
+// Runs once per session to populate the h2g/g2h cache for all yahrzeit dates
+// and the next ~3 months of days. After this, admin calendar loads instantly.
+var _prewarmDone=false;
+async function prewarmHebcalCache(ms,curHY){
+  if(_prewarmDone)return;_prewarmDone=true;
+  try{
+    // 1) All yahrzeit h2g conversions for current + next Hebrew year
+    var yrJobs=[];var seen={};
+    for(var mi=0;mi<ms.length;mi++){
+      var m=ms[mi];
+      for(var yi=0;yi<(m.yahrzeits||[]).length;yi++){
+        var y=m.yahrzeits[yi];if(!y||!y.hm||!y.hd)continue;
+        var hm=+y.hm,hd=+y.hd;
+        for(var dy=0;dy<=1;dy++){
+          var tY=curHY+dy;var k=tY+'|'+hm+'|'+hd;
+          if(seen[k])continue;seen[k]=1;
+          yrJobs.push({tY:tY,hm:hm,hd:hd});
+        }
+      }
+    }
+    // 2) Next 12 weeks of Gregorian → Hebrew conversions (for birthdays/week ranges)
+    var today=new Date();
+    for(var w=0;w<12*7;w++){
+      var dt=new Date(today);dt.setDate(dt.getDate()+w);
+      yrJobs.push({_g:1,y:dt.getFullYear(),m:dt.getMonth()+1,d:dt.getDate()});
+    }
+    // Throttle: 8 parallel, small delay between batches to avoid rate limiting
+    var BATCH=8;
+    for(var bi=0;bi<yrJobs.length;bi+=BATCH){
+      var batch=yrJobs.slice(bi,bi+BATCH);
+      await Promise.all(batch.map(function(j){
+        if(j._g)return g2h(j.y,j.m,j.d).catch(function(){return null});
+        return h2g(j.tY,j.hm,j.hd).catch(function(){return null});
+      }));
+      // tiny yield
+      await new Promise(function(res){setTimeout(res,50)});
+    }
+  }catch(e){console.warn('Prewarm failed',e)}
+}
+
 // ── Week Summary Cache ────────────────────────────────────
 var WK_CACHE_KEY='mbz_week_cache';
-var WK_CACHE_VER='v11'; // bump this on any change to week summary rendering
+var WK_CACHE_VER='v12'; // bump this on any change to week summary rendering
 function getWeekCache(){
   try{var c=JSON.parse(localStorage.getItem(WK_CACHE_KEY));
   if(!c||!c.html||c.ver!==WK_CACHE_VER)return null;
@@ -4444,6 +4503,9 @@ async function loadWeekSummary(){
     }
     card.innerHTML=h;
     setWeekCache(key,h);
+    // Warm the Hebcal cache in the background (converter calls for all yahrzeits & birthdays).
+    // Ensures admin calendar and subsequent loads are instant.
+    setTimeout(function(){prewarmHebcalCache(ms,curHY)},1500);
   }catch(err){
     console.error('Week summary error:',err,err&&err.stack);
     if(!cached){
