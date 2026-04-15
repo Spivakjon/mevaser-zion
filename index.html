@@ -5123,9 +5123,9 @@ function openRemindersModal(memberId){
     +'<div class="rem-channels">'
     +'<div class="rem-ch-title">'+(isEn?'Delivery channel':'ערוצי העברה')+'</div>'
     +'<label class="rem-chk"><input type="checkbox" id="rem-ch-web"'+(m.reminders.channels.web?' checked':'')+'><span>'+(isEn?'Browser notification':'התראה בדפדפן')+'</span></label>'
-    +'<label class="rem-chk"><input type="checkbox" id="rem-ch-tel"'+(m.reminders.channels.telegram?' checked':'')+'><span>'+(isEn?'Telegram':'טלגרם')+'</span></label>'
+    +'<label class="rem-chk rem-chk-dis" title="'+(isEn?'Coming soon':'בקרוב')+'"><input type="checkbox" id="rem-ch-tel" disabled><span>'+(isEn?'Telegram — coming soon':'טלגרם — בקרוב')+'</span></label>'
     +'<label class="rem-chk rem-chk-dis" title="'+(isEn?'Coming soon':'בקרוב')+'"><input type="checkbox" disabled><span>'+(isEn?'Push (FCM) — coming soon':'Web Push — בקרוב')+'</span></label>'
-    +'<div class="rem-tel-row" id="rem-tel-row"'+(m.reminders.channels.telegram?'':' style="display:none"')+'>'
+    +'<div class="rem-tel-row" id="rem-tel-row" style="display:none">'
     +(m.reminders.telegramChatId?
       ('<div class="rem-tel-linked">✓ '+(isEn?'Linked — Chat ID:':'מקושר — Chat ID:')+' <code>'+es(m.reminders.telegramChatId)+'</code></div>'
       +'<a href="https://t.me/'+TELEGRAM_BOT_USERNAME+'" target="_blank" class="rem-tel-btn rem-tel-btn-sec">'+(isEn?'Open bot':'פתח את הבוט')+'</a>')
@@ -5158,9 +5158,6 @@ function openRemindersModal(memberId){
     +'</div>'
     +'</div></div>';
   document.body.insertAdjacentHTML('beforeend',html);
-  document.getElementById('rem-ch-tel').addEventListener('change',function(){
-    document.getElementById('rem-tel-row').style.display=this.checked?'':'none';
-  });
 }
 function _renderRemOffset(k,off){
   var isEn=curLang==='en';
@@ -5197,7 +5194,7 @@ function saveReminders(){
     enabled:document.getElementById('rem-enabled').checked,
     channels:{
       web:document.getElementById('rem-ch-web').checked,
-      telegram:document.getElementById('rem-ch-tel').checked,
+      telegram:false,
       fcm:false
     },
     telegramChatId:(m.reminders&&m.reminders.telegramChatId)||'',
