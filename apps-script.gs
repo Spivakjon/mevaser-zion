@@ -656,10 +656,25 @@ function _linkMemberToChat(memberId, chatId) {
 // ── Webhook detection + handler (plugged into doPost) ───
 function _handleTelegramUpdate(update) {
   try {
+    // Deduplicate — Telegram re-delivers the same update_id if we don't
+    // respond within its timeout window. Cache the id for 60 seconds.
+    if (update && update.update_id) {
+      const cache = CacheService.getScriptCache();
+      const key = 'tgupd_' + update.update_id;
+      if (cache.get(key)) return { status: 'ok', duplicate: true };
+      cache.put(key, '1', 60);
+    }
     const msg = update.message || update.edited_message || (update.callback_query && update.callback_query.message);
     if (!msg) return { status: 'ok', ignored: true };
     const chatId = String(msg.chat.id);
-    const text = (update.message && update.message.text) || '';
+    let text = (update.message && update.message.text) || '';
+    // Normalize: lowercase commands, strip @BotName suffix
+    text = text.replace(/@\w+/g, '').trim();
+    if (text.indexOf('/') === 0) {
+      const firstSpace = text.indexOf(' ');
+      if (firstSpace > 0) text = text.substring(0, firstSpace).toLowerCase() + text.substring(firstSpace);
+      else text = text.toLowerCase();
+    }
     const isAdmin = _tgIsAdmin(chatId);
 
     // Deep-linked /start <memberId>
