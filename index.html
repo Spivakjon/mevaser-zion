@@ -4480,8 +4480,10 @@ function initLang(){
   });
 }
 function setLang(lang){
-  curLang=lang;
+  var prev=localStorage.getItem('mbz_lang')||'he';
   localStorage.setItem('mbz_lang',lang);
+  if(prev!==lang){location.reload();return}
+  curLang=lang;
   applyLang();
   document.querySelectorAll('#lang-toggle button').forEach(function(b){
     b.classList.toggle('active',b.textContent.trim()===(lang==='he'?'עב':'EN'));
