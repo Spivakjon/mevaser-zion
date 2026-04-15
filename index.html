@@ -1913,10 +1913,8 @@ body.dark-mode .adm-ovl{z-index:100}
       <div class="exp-sub">גיבוי של כל נתוני הקהילה — מתפללים, תורנויות, עליות, מודעות, הגדרות</div>
       <div class="exp-summary" id="exp-summary">טוען...</div>
     </div>
-    <button class="mbtn mbtn-gold" onclick="expDownload()"><span class="mbtn-ic">⤓</span><div class="mbtn-tx"><strong>הורד קובץ גיבוי</strong><span>JSON מלא — כולל את כל הפרטים</span></div></button>
-    <button class="mbtn mbtn-dark" onclick="expCSV()"><span class="mbtn-ic">▦</span><div class="mbtn-tx"><strong>ייצוא לאקסל (CSV)</strong><span>טבלה עם כל שדות המתפללים</span></div></button>
-    <button class="mbtn mbtn-outline" onclick="expCopy()"><span class="mbtn-ic">⧉</span><div class="mbtn-tx"><strong>העתק ללוח</strong><span>להדבקה בכל אפליקציה</span></div></button>
-    <button class="mbtn mbtn-outline" onclick="expTab()"><span class="mbtn-ic">↗</span><div class="mbtn-tx"><strong>פתח בטאב חדש</strong><span>לשמירה ידנית במכשיר</span></div></button>
+    <button class="mbtn mbtn-gold" onclick="expCSV()"><span class="mbtn-ic">▦</span><div class="mbtn-tx"><strong>ייצוא לאקסל</strong><span>קובץ CSV עם כל שדות המתפללים</span></div></button>
+    <button class="mbtn mbtn-dark" onclick="expPDF()"><span class="mbtn-ic">⎙</span><div class="mbtn-tx"><strong>ייצוא ל-PDF</strong><span>דוח מודפס לצפייה והדפסה</span></div></button>
     <button class="mbtn mbtn-gray" onclick="document.getElementById('exp-modal').classList.remove('show')">ביטול</button>
   </div>
 </div>
@@ -2721,6 +2719,117 @@ function expTab(){
 // ── CSV Export ───────────────────────────────────────────
 function expCSV(){
   exportExcel();
+  try{document.getElementById('exp-modal').classList.remove('show')}catch(e){}
+}
+// ── PDF Export (print-to-PDF via window.print) ──────────
+function expPDF(){
+  var ms=getMs();
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')};
+  var today=new Date().toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
+  var css='@page{size:A4;margin:14mm}'
+    +'*{box-sizing:border-box}'
+    +'body{font-family:"David","Times New Roman",serif;direction:rtl;color:#1a1308;background:#faf3e1;padding:0;margin:0;line-height:1.5}'
+    +'.pg{max-width:180mm;margin:0 auto;padding:8mm}'
+    +'.hd{text-align:center;border-bottom:2px solid #8a6d2e;padding-bottom:10px;margin-bottom:16px}'
+    +'.hd h1{font-family:"Frank Ruhl Libre","David",serif;font-size:22pt;color:#8a6d2e;margin:0 0 6px;letter-spacing:.5px}'
+    +'.hd .sub{font-size:10pt;color:#6b4d2e}'
+    +'.hd .meta{font-size:9pt;color:#8a7350;margin-top:4px}'
+    +'.mbr{page-break-inside:avoid;border:1px solid #d4c49a;border-radius:8px;padding:10px 14px;margin-bottom:10px;background:#fbf6e8}'
+    +'.mbr h2{font-family:"Frank Ruhl Libre","David",serif;font-size:13pt;color:#5c3f22;margin:0 0 6px;border-bottom:1px solid #c8a84b;padding-bottom:4px}'
+    +'.grd{display:grid;grid-template-columns:1fr 1fr;gap:3px 14px;font-size:9pt}'
+    +'.grd .k{color:#8a6d2e;font-weight:600}.grd .v{color:#1a1308}'
+    +'.sec{margin-top:6px;padding-top:4px;border-top:1px dashed #d4c49a;font-size:9pt}'
+    +'.sec h3{font-size:10pt;color:#8a6d2e;margin:0 0 3px;font-weight:700}'
+    +'.sec ul{margin:0;padding:0 14px 0 0;list-style:disc}'
+    +'.sec li{margin-bottom:2px}'
+    +'.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}'
+    +'.tag{background:#e8d9b0;color:#5c3f22;padding:2px 8px;border-radius:10px;font-size:8pt}'
+    +'.ft{text-align:center;font-size:8pt;color:#8a7350;margin-top:20px;padding-top:8px;border-top:1px solid #d4c49a}'
+    +'@media print{body{background:#fff}.mbr{background:#fff;page-break-inside:avoid}.noprint{display:none}button{display:none}}';
+  var body='<div class="pg"><div class="hd"><h1>קהילת מבשר ציון — תל מונד</h1><div class="sub">רשימת מתפללים — דוח מלא</div><div class="meta">הודפס: '+esc(today)+' · סה״כ '+ms.length+' מתפללים</div></div>';
+  for(var i=0;i<ms.length;i++){
+    var m=ms[i];var sp=m.spouse||{};
+    var addr='';
+    if(typeof m.address==='object'&&m.address){addr=[m.address.street,m.address.num,m.address.apt,m.address.city].filter(Boolean).join(', ')}
+    else{addr=m.address||''}
+    body+='<div class="mbr"><h2>'+(i+1)+'. '+esc(m.firstName||'')+' '+esc(m.lastName||'')+'</h2>';
+    body+='<div class="grd">';
+    if(m.idNumber)body+='<div class="k">ת.ז.</div><div class="v">'+esc(m.idNumber)+'</div>';
+    if(m.fatherName)body+='<div class="k">שם האב</div><div class="v">'+esc(m.fatherName)+'</div>';
+    if(m.motherName)body+='<div class="k">שם האם</div><div class="v">'+esc(m.motherName)+'</div>';
+    if(m.torahName)body+='<div class="k">שם לעלייה</div><div class="v">'+esc(m.torahName)+'</div>';
+    if(m.phone)body+='<div class="k">טלפון</div><div class="v">'+esc(m.phone)+'</div>';
+    if(m.email)body+='<div class="k">דוא״ל</div><div class="v">'+esc(m.email)+'</div>';
+    if(addr)body+='<div class="k">כתובת</div><div class="v">'+esc(addr)+'</div>';
+    if(m.birthDate)body+='<div class="k">תאריך לידה</div><div class="v">'+esc(m.birthDate)+'</div>';
+    body+='</div>';
+    if(sp.name||sp.phone||sp.email){
+      body+='<div class="sec"><h3>בן/בת זוג</h3><div class="grd">';
+      if(sp.name)body+='<div class="k">שם</div><div class="v">'+esc(sp.name)+'</div>';
+      if(sp.phone)body+='<div class="k">טלפון</div><div class="v">'+esc(sp.phone)+'</div>';
+      if(sp.email)body+='<div class="k">דוא״ל</div><div class="v">'+esc(sp.email)+'</div>';
+      if(sp.birthDate)body+='<div class="k">ת.לידה</div><div class="v">'+esc(sp.birthDate)+'</div>';
+      body+='</div></div>';
+    }
+    if(m.children&&m.children.length){
+      body+='<div class="sec"><h3>ילדים ('+m.children.length+')</h3><ul>';
+      for(var ci=0;ci<m.children.length;ci++){
+        var ch=m.children[ci];var parts=[];
+        if(ch.name)parts.push('<strong>'+esc(ch.name)+'</strong>');
+        if(ch.gender)parts.push(esc(ch.gender));
+        var hd=(ch.hd&&ch.hm&&ch.hy)?ch.hd+'/'+ch.hm+'/'+ch.hy:'';
+        if(hd)parts.push('ת.לידה עברית: '+esc(hd));
+        if(ch.gd)parts.push('לועזית: '+esc(ch.gd));
+        if(ch.parasha)parts.push('פרשת בר מצווה: '+esc(ch.parasha));
+        if(ch.barDate)parts.push('תאריך בר מצווה: '+esc(ch.barDate));
+        if(ch.readP)parts.push('קריאה: '+esc(ch.readP));
+        if(ch.readH)parts.push('הפטרה: '+esc(ch.readH));
+        body+='<li>'+parts.join(' · ')+'</li>';
+      }
+      body+='</ul></div>';
+    }
+    if(m.yahrzeits&&m.yahrzeits.length){
+      body+='<div class="sec"><h3>יארצייטים ('+m.yahrzeits.length+')</h3><ul>';
+      for(var yi=0;yi<m.yahrzeits.length;yi++){
+        var yr=m.yahrzeits[yi];var yparts=[];
+        if(yr.name)yparts.push('<strong>'+esc(yr.name)+'</strong>');
+        var yhd=(yr.hd&&yr.hm&&yr.hy)?yr.hd+'/'+yr.hm+'/'+yr.hy:'';
+        if(yhd)yparts.push('תאריך עברי: '+esc(yhd));
+        if(yr.gd)yparts.push('לועזי: '+esc(yr.gd));
+        if(yr.lead)yparts.push('לפני התיבה: '+esc(yr.lead));
+        if(yr.haft)yparts.push('הפטרה: '+esc(yr.haft));
+        body+='<li>'+yparts.join(' · ')+'</li>';
+      }
+      body+='</ul></div>';
+    }
+    if(m.volunteering&&m.volunteering.length){
+      body+='<div class="sec"><h3>התנדבות</h3><div class="tags">';
+      for(var vi=0;vi<m.volunteering.length;vi++)body+='<span class="tag">'+esc(m.volunteering[vi])+'</span>';
+      body+='</div></div>';
+    }
+    if(m.customTags&&m.customTags.length){
+      body+='<div class="sec"><h3>תגיות</h3><div class="tags">';
+      for(var ti=0;ti<m.customTags.length;ti++)body+='<span class="tag">'+esc(m.customTags[ti])+'</span>';
+      body+='</div></div>';
+    }
+    var payParts=[];
+    if(m.membershipPaid)payParts.push('שולם ✓');else payParts.push('לא שולם');
+    if(m.membershipPaidDate)payParts.push('תאריך: '+esc(m.membershipPaidDate));
+    if(m.paymentMethod)payParts.push('אמצעי: '+esc(m.paymentMethod));
+    if(m.paymentAmount)payParts.push('סכום: ₪'+esc(m.paymentAmount));
+    if(m.paymentNotes)payParts.push(esc(m.paymentNotes));
+    body+='<div class="sec"><h3>חברות ותורנות</h3>'+payParts.join(' · ')+(m.dutyRoster?' · <strong>רשום לתורנות</strong>':'')+'</div>';
+    body+='</div>';
+  }
+  body+='<div class="ft">קהילת מבשר ציון · תל מונד · פותח ע״י יהונתן ספיבק</div></div>';
+  var html='<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><title>רשימת מתפללים — מבשר ציון</title><style>'+css+'</style></head><body>'+body+'<div class="noprint" style="position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:10px"><button onclick="window.print()" style="padding:10px 22px;background:#8a6d2e;color:#fff;border:none;border-radius:8px;font-size:13pt;font-family:sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)">הדפס / שמור כ-PDF</button><button onclick="window.close()" style="padding:10px 22px;background:transparent;color:#8a6d2e;border:1.5px solid #8a6d2e;border-radius:8px;font-size:13pt;font-family:sans-serif;cursor:pointer">סגור</button></div></body></html>';
+  var w=window.open('','_blank');
+  if(w){
+    w.document.write(html);w.document.close();
+    setTimeout(function(){try{w.focus();w.print()}catch(e){}},400);
+  }else{
+    showToast('אנא אשר פתיחת חלונות (popup) בדפדפן');
+  }
   try{document.getElementById('exp-modal').classList.remove('show')}catch(e){}
 }
 function csvCell(val){
