@@ -302,8 +302,8 @@ body.light-mode .lang-toggle button.active{background:rgba(0,0,0,.1);color:var(-
 .bm-details.show{display:block}
 
 /* Export/Import modal */
-.modal-bg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(20,12,4,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);-webkit-overflow-scrolling:touch}
-.modal-bg.show{display:flex;justify-content:center;align-items:center;padding:1rem}
+.modal-bg{display:none;position:fixed !important;top:0;left:0;right:0;bottom:0;z-index:9999 !important;background:rgba(20,12,4,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);-webkit-overflow-scrolling:touch}
+.modal-bg.show{display:flex !important;justify-content:center;align-items:center;padding:1rem}
 .modal-box{background:#faf3e1;border-radius:18px;max-width:460px;width:100%;padding:1.6rem 1.4rem;box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(101,65,30,.2);text-align:center;max-height:90vh;overflow-y:auto}
 .modal-box h3{font-family:'Frank Ruhl Libre',serif;font-size:1.1rem;margin-bottom:1rem;color:var(--ink)}
 body.dark-mode .modal-box{background:linear-gradient(145deg,#2a1f12,#241a0e);box-shadow:0 24px 60px rgba(0,0,0,.7),0 0 0 1px rgba(212,175,90,.25);color:#e8d9b0}
@@ -827,7 +827,7 @@ body:not(.dark-mode)::after{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse at center,transparent 55%,rgba(90,55,20,.22) 100%);
 }
-body:not(.dark-mode) > *{position:relative;z-index:1}
+body:not(.dark-mode) > *:not(.modal-bg):not(.md-ovl):not(.se-ovl):not(.pay-modal-ovl):not(.toast):not(#adm-ovl){position:relative;z-index:1}
 
 /* Top bar */
 body:not(.dark-mode) .top-actions{
@@ -1057,7 +1057,7 @@ body.dark-mode::after{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.45) 100%)
 }
-body.dark-mode > *{position:relative;z-index:1}
+body.dark-mode > *:not(.modal-bg):not(.md-ovl):not(.se-ovl):not(.pay-modal-ovl):not(.toast):not(#adm-ovl){position:relative;z-index:1}
 
 /* Top bar */
 body.dark-mode .top-actions{
