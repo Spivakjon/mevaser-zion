@@ -132,6 +132,11 @@ function doPost(e) {
     return jsonResp({ status: 'error', msg: 'Invalid JSON' });
   }
 
+  // Telegram webhook: body has update_id and either message/callback
+  if (payload && typeof payload.update_id !== 'undefined') {
+    return jsonResp(_handleTelegramUpdate(payload));
+  }
+
   const { action, member, id } = payload;
 
   // Member CRUD
@@ -553,4 +558,295 @@ function cleanupActiveSheet() {
   const del = [];
   for (let i = 1; i < rows.length; i++) if (new Date(rows[i][1]) < cutoff) del.push(i + 1);
   for (let j = del.length - 1; j >= 0; j--) sh.deleteRow(del[j]);
+}
+
+// ════════════════════════════════════════════════════════
+//  TELEGRAM BOT — @MevaserZionBot
+//  Token is read from Script Properties (NOT stored in code).
+//  Setup: Run `telegramSetup()` once from the editor, passing your
+//  bot token — it stores the token and registers the webhook.
+// ════════════════════════════════════════════════════════
+const TELEGRAM_API = 'https://api.telegram.org/bot';
+const TG_REMIND_SHEET = 'תזכורות שנשלחו';
+const TG_ADMINS_KEY = 'TELEGRAM_ADMINS'; // CSV of chat IDs allowed to run admin commands
+const TG_TOKEN_KEY = 'TELEGRAM_BOT_TOKEN';
+
+function _tgToken() {
+  return PropertiesService.getScriptProperties().getProperty(TG_TOKEN_KEY) || '';
+}
+function _tgAdmins() {
+  const raw = PropertiesService.getScriptProperties().getProperty(TG_ADMINS_KEY) || '';
+  return raw.split(',').map(s => s.trim()).filter(Boolean);
+}
+function _tgIsAdmin(chatId) {
+  return _tgAdmins().indexOf(String(chatId)) >= 0;
+}
+
+function tgSend(chatId, text, opts) {
+  opts = opts || {};
+  const token = _tgToken();
+  if (!token) { Logger.log('TELEGRAM_BOT_TOKEN not set'); return null; }
+  const body = { chat_id: chatId, text: text, parse_mode: opts.parse_mode || 'HTML', disable_web_page_preview: true };
+  if (opts.reply_markup) body.reply_markup = opts.reply_markup;
+  try {
+    const resp = UrlFetchApp.fetch(TELEGRAM_API + token + '/sendMessage', {
+      method: 'post',
+      contentType: 'application/json',
+      payload: JSON.stringify(body),
+      muteHttpExceptions: true
+    });
+    return JSON.parse(resp.getContentText());
+  } catch (e) { Logger.log('tgSend error: ' + e); return null; }
+}
+
+// ── Setup helpers (run from editor) ──────────────────────
+function telegramSetToken(token) {
+  if (!token) throw new Error('Pass the bot token as argument');
+  PropertiesService.getScriptProperties().setProperty(TG_TOKEN_KEY, String(token).trim());
+  return 'Token saved. Now run telegramSetWebhook() with your /exec URL.';
+}
+function telegramSetAdmins(csvChatIds) {
+  PropertiesService.getScriptProperties().setProperty(TG_ADMINS_KEY, String(csvChatIds || '').trim());
+  return 'Admins updated: ' + csvChatIds;
+}
+function telegramSetWebhook(execUrl) {
+  const token = _tgToken();
+  if (!token) throw new Error('Token not set. Run telegramSetToken() first.');
+  if (!execUrl) throw new Error('Pass your /exec URL (from Deploy → Web app)');
+  const url = TELEGRAM_API + token + '/setWebhook?url=' + encodeURIComponent(execUrl);
+  const resp = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+  return resp.getContentText();
+}
+function telegramGetWebhookInfo() {
+  const token = _tgToken();
+  if (!token) throw new Error('Token not set');
+  const resp = UrlFetchApp.fetch(TELEGRAM_API + token + '/getWebhookInfo');
+  return resp.getContentText();
+}
+
+// ── Member lookup helpers ───────────────────────────────
+function _findMemberByTelegramChatId(chatId) {
+  const members = _getAllMembers();
+  for (const m of members) {
+    if (m.reminders && String(m.reminders.telegramChatId || '') === String(chatId)) return m;
+  }
+  return null;
+}
+function _linkMemberToChat(memberId, chatId) {
+  const sh = getSheet();
+  const rows = sh.getDataRange().getValues();
+  const jCol = JSON_COL;
+  for (let i = 1; i < rows.length; i++) {
+    if (rows[i][0] === memberId) {
+      const r = i + 1;
+      const json = rows[i][jCol - 1];
+      let m;
+      try { m = JSON.parse(json); } catch (e) { m = {}; }
+      m.reminders = m.reminders || { enabled: true, channels: { web: false, telegram: true }, events: {} };
+      m.reminders.channels = m.reminders.channels || {};
+      m.reminders.channels.telegram = true;
+      m.reminders.telegramChatId = String(chatId);
+      sh.getRange(r, jCol).setValue(JSON.stringify(m));
+      return m;
+    }
+  }
+  return null;
+}
+
+// ── Webhook detection + handler (plugged into doPost) ───
+function _handleTelegramUpdate(update) {
+  try {
+    const msg = update.message || update.edited_message || (update.callback_query && update.callback_query.message);
+    if (!msg) return { status: 'ok', ignored: true };
+    const chatId = String(msg.chat.id);
+    const text = (update.message && update.message.text) || '';
+    const isAdmin = _tgIsAdmin(chatId);
+
+    // Deep-linked /start <memberId>
+    if (/^\/start(\s|$)/.test(text)) {
+      const arg = (text.split(/\s+/)[1] || '').trim();
+      if (arg.indexOf('LINK_') === 0) {
+        const memberId = arg.substring(5);
+        const m = _linkMemberToChat(memberId, chatId);
+        if (m) {
+          tgSend(chatId, '✓ <b>החשבון קושר בהצלחה</b>\n\nשלום ' + (m.firstName || '') + '!\nמעתה תקבל/י תזכורות לטלגרם לפי ההעדפות שהגדרת.\n\nשלח /status כדי לראות את ההעדפות שלך.');
+          return { status: 'ok' };
+        }
+        tgSend(chatId, '⚠ לא נמצא מתפלל עם המזהה הזה. אנא פתח/י את הקישור מהאזור האישי באפליקציה.');
+        return { status: 'ok' };
+      }
+      tgSend(chatId, '🕍 <b>ברוכים הבאים לבוט קהילת מבשר ציון</b>\n\nלקישור החשבון: פתח/י את "האזור שלי" באפליקציה → תזכורות → לחץ/י "קשר לטלגרם".\n\nפקודות זמינות:\n/status — הצג העדפות תזכורות\n/help — עזרה' + (isAdmin ? '\n\n<b>פקודות מנהל:</b>\n/pending /duty /stats /announce' : ''));
+      return { status: 'ok' };
+    }
+
+    if (text === '/help') {
+      const help = '<b>פקודות:</b>\n/start — התחלה / קישור\n/status — ההעדפות שלי\n/unlink — ניתוק מהחשבון' + (isAdmin ? '\n\n<b>מנהל:</b>\n/pending — מתפללים שלא שילמו\n/duty — תורנים השבוע\n/stats — סטטיסטיקות\n/announce [טקסט] — שליחת הכרזה לכולם' : '');
+      tgSend(chatId, help);
+      return { status: 'ok' };
+    }
+
+    if (text === '/status') {
+      const m = _findMemberByTelegramChatId(chatId);
+      if (!m) { tgSend(chatId, '⚠ החשבון לא מקושר. שלח /start מהאפליקציה.'); return { status: 'ok' }; }
+      const r = m.reminders || {};
+      let out = '👤 <b>' + (m.firstName || '') + ' ' + (m.lastName || '') + '</b>\n';
+      out += r.enabled ? '✓ תזכורות פעילות\n' : '✗ תזכורות מושבתות\n';
+      const evs = r.events || {};
+      const names = { candles: 'הדלקת נרות', minchaErev: 'מנחה ערב שבת', shacharit: 'שחרית שבת', havdalah: 'צאת שבת', yahrzeit: 'יארצייט', barMitzvah: 'בר/בת מצווה', duty: 'תורנות', birthday: 'יום הולדת' };
+      const units = { minutes: 'דקות', hours: 'שעות', days: 'ימים', weeks: 'שבועות' };
+      for (const k in evs) {
+        if (!evs[k] || !evs[k].length) continue;
+        const parts = evs[k].map(o => o.n + ' ' + (units[o.unit] || o.unit)).join(', ');
+        out += '• ' + (names[k] || k) + ': ' + parts + ' לפני\n';
+      }
+      tgSend(chatId, out);
+      return { status: 'ok' };
+    }
+
+    if (text === '/unlink') {
+      const m = _findMemberByTelegramChatId(chatId);
+      if (!m) { tgSend(chatId, 'לא מקושר.'); return { status: 'ok' }; }
+      _linkMemberToChat(m.id, ''); // clears
+      tgSend(chatId, '✓ החשבון נותק.');
+      return { status: 'ok' };
+    }
+
+    // Admin commands
+    if (!isAdmin) {
+      tgSend(chatId, 'פקודה לא מוכרת. שלח /help.');
+      return { status: 'ok' };
+    }
+
+    if (text === '/pending') {
+      const ms = _getAllMembers().filter(m => !m.membershipPaid);
+      let out = '<b>מתפללים שטרם שילמו (' + ms.length + ')</b>\n';
+      ms.slice(0, 40).forEach((m, i) => { out += (i + 1) + '. ' + (m.firstName || '') + ' ' + (m.lastName || '') + (m.phone ? ' — ' + m.phone : '') + '\n'; });
+      if (ms.length > 40) out += '\n(מוצגים 40 ראשונים)';
+      tgSend(chatId, out);
+      return { status: 'ok' };
+    }
+
+    if (text === '/duty') {
+      const duty = _getDutyObj();
+      const queue = duty.queue || [];
+      const members = _getAllMembers();
+      const names = queue.slice(0, 2).map(id => { const m = members.find(x => x.id === id); return m ? (m.firstName + ' ' + m.lastName) : id; });
+      tgSend(chatId, '🧹 <b>תורנים הקרובים:</b>\n' + (names.length ? names.join(' · ') : 'לא הוגדרו'));
+      return { status: 'ok' };
+    }
+
+    if (text === '/stats') {
+      const members = _getAllMembers();
+      const paid = members.filter(m => m.membershipPaid).length;
+      const duty = members.filter(m => m.dutyRoster).length;
+      const kids = members.reduce((s, m) => s + ((m.children || []).length), 0);
+      const linked = members.filter(m => m.reminders && m.reminders.telegramChatId).length;
+      tgSend(chatId, '📊 <b>סטטיסטיקות</b>\n• משפחות: ' + members.length + '\n• שילמו: ' + paid + '/' + members.length + '\n• ילדים: ' + kids + '\n• בתורנות: ' + duty + '\n• מקושרים לטלגרם: ' + linked);
+      return { status: 'ok' };
+    }
+
+    if (/^\/announce\s+/.test(text)) {
+      const msgText = text.replace(/^\/announce\s+/, '').trim();
+      if (!msgText) { tgSend(chatId, 'שימוש: /announce <טקסט>'); return { status: 'ok' }; }
+      const members = _getAllMembers();
+      let count = 0;
+      for (const m of members) {
+        const cid = m.reminders && m.reminders.telegramChatId;
+        if (cid && m.reminders.enabled) { tgSend(cid, '📢 <b>הכרזה:</b>\n' + msgText); count++; }
+      }
+      tgSend(chatId, '✓ נשלח ל־' + count + ' מקושרים.');
+      return { status: 'ok' };
+    }
+
+    tgSend(chatId, 'פקודה לא מוכרת. שלח /help.');
+    return { status: 'ok' };
+  } catch (e) {
+    Logger.log('Telegram update error: ' + e);
+    return { status: 'error', msg: String(e) };
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  Reminder scheduler — runs on a time-based trigger
+//  Checks upcoming events and sends due reminders.
+//  Call setupReminderTrigger() once to register a 10-min trigger.
+// ════════════════════════════════════════════════════════
+function setupReminderTrigger() {
+  const triggers = ScriptApp.getProjectTriggers();
+  for (const t of triggers) if (t.getHandlerFunction() === 'sendDueReminders') ScriptApp.deleteTrigger(t);
+  ScriptApp.newTrigger('sendDueReminders').timeBased().everyMinutes(10).create();
+  return 'Reminder trigger set (every 10 min)';
+}
+
+function _getSentLogSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(TG_REMIND_SHEET);
+  if (!sh) {
+    sh = ss.insertSheet(TG_REMIND_SHEET);
+    sh.appendRow(['memberId', 'eventKey', 'offsetKey', 'eventDate', 'sentAt']);
+    sh.setFrozenRows(1);
+  }
+  return sh;
+}
+function _wasSent(memberId, eventKey, offsetKey, eventDate) {
+  const sh = _getSentLogSheet();
+  const rows = sh.getDataRange().getValues();
+  for (let i = 1; i < rows.length; i++) {
+    if (rows[i][0] === memberId && rows[i][1] === eventKey && rows[i][2] === offsetKey && String(rows[i][3]) === String(eventDate)) return true;
+  }
+  return false;
+}
+function _markSent(memberId, eventKey, offsetKey, eventDate) {
+  _getSentLogSheet().appendRow([memberId, eventKey, offsetKey, eventDate, new Date().toISOString()]);
+}
+
+function _offsetMs(off) {
+  const u = off.unit; const n = +off.n || 0;
+  if (u === 'minutes') return n * 60000;
+  if (u === 'hours') return n * 3600000;
+  if (u === 'days') return n * 86400000;
+  if (u === 'weeks') return n * 604800000;
+  return 0;
+}
+
+function sendDueReminders() {
+  const now = Date.now();
+  const window = 10 * 60 * 1000; // 10-minute fire window
+  const members = _getAllMembers();
+  const weekCache = _getWeeklyHebcal();
+  const candleTs = _parseDateTime(weekCache && weekCache.shTimes && weekCache.shTimes.candlesISO);
+  const havdalahTs = _parseDateTime(weekCache && weekCache.shTimes && weekCache.shTimes.havdalahISO);
+
+  for (const m of members) {
+    const r = m.reminders;
+    if (!r || !r.enabled) continue;
+    if (!(r.channels && r.channels.telegram && r.telegramChatId)) continue;
+
+    const evs = r.events || {};
+    // Fixed Shabbat events
+    if (evs.candles && candleTs) {
+      for (const off of evs.candles) { const fire = candleTs - _offsetMs(off); if (_inWindow(fire, now, window) && !_wasSent(m.id, 'candles', off.n + off.unit, candleTs)) { tgSend(r.telegramChatId, '🕯 <b>הדלקת נרות</b> בעוד ' + _humanOffset(off) + ' (' + _fmtTime(candleTs) + ')'); _markSent(m.id, 'candles', off.n + off.unit, candleTs); } }
+    }
+    if (evs.havdalah && havdalahTs) {
+      for (const off of evs.havdalah) { const fire = havdalahTs - _offsetMs(off); if (_inWindow(fire, now, window) && !_wasSent(m.id, 'havdalah', off.n + off.unit, havdalahTs)) { tgSend(r.telegramChatId, '✨ <b>צאת שבת</b> בעוד ' + _humanOffset(off) + ' (' + _fmtTime(havdalahTs) + ')'); _markSent(m.id, 'havdalah', off.n + off.unit, havdalahTs); } }
+    }
+    // TODO: yahrzeit, barMitzvah, duty, birthday — require Hebrew date calculation per member.
+    // Those are scheduled once we confirm the Shabbat flow works.
+  }
+  return 'done';
+}
+
+function _parseDateTime(s) { if (!s) return null; const d = new Date(s); return isNaN(d) ? null : d.getTime(); }
+function _inWindow(fire, now, win) { return fire >= now - win / 2 && fire <= now + win / 2; }
+function _humanOffset(off) {
+  const names = { minutes: 'דקות', hours: 'שעות', days: 'ימים', weeks: 'שבועות' };
+  return off.n + ' ' + (names[off.unit] || off.unit);
+}
+function _fmtTime(ts) { return Utilities.formatDate(new Date(ts), 'Asia/Jerusalem', 'HH:mm'); }
+
+function _getWeeklyHebcal() {
+  const sh = getSettingsSheet();
+  const rows = sh.getDataRange().getValues();
+  for (let i = 1; i < rows.length; i++) if (rows[i][0] === 'hebcal_week') { try { return JSON.parse(rows[i][1]); } catch (e) {} }
+  return null;
 }

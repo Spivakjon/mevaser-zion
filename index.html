@@ -410,6 +410,12 @@ body.dark-mode .rem-tel-hint{color:#c9b381}
 body.dark-mode .rem-tel-row input{background:rgba(212,175,90,.08);border-color:rgba(212,175,90,.3);color:#f0d48a}
 .rem-tel-row input:focus{outline:none;border-color:#8a6d2e}
 body.dark-mode .rem-tel-row input:focus{border-color:#d4af5a}
+.rem-tel-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.2rem;background:linear-gradient(135deg,#0088cc 0%,#229ED9 100%);color:#fff;border-radius:10px;font-family:'Heebo',sans-serif;font-weight:600;font-size:.9rem;text-decoration:none;box-shadow:0 4px 14px rgba(34,158,217,.3);transition:.15s}
+.rem-tel-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.rem-tel-btn-sec{background:transparent;color:#229ED9;border:1.5px solid #229ED9;box-shadow:none;margin-top:.5rem;padding:.4rem .9rem;font-size:.82rem}
+.rem-tel-linked{font-size:.85rem;color:#1e7d4b;background:rgba(30,125,75,.1);padding:.5rem .8rem;border-radius:8px;border:1px solid rgba(30,125,75,.25)}
+.rem-tel-linked code{font-family:'Heebo',monospace;background:rgba(0,0,0,.1);padding:1px 6px;border-radius:4px}
+body.dark-mode .rem-tel-linked{color:#9ddcb2;background:rgba(30,125,75,.15);border-color:rgba(45,157,94,.35)}
 
 .rem-events{margin-bottom:1.2rem}
 .rem-ev{padding:.7rem .9rem;background:rgba(138,97,48,.04);border:1px solid rgba(101,65,30,.15);border-radius:10px;margin-bottom:.5rem}
@@ -5062,6 +5068,7 @@ async function doMyArea(){
 }
 
 // ── Reminders (user-configurable per-event) ──────────────
+var TELEGRAM_BOT_USERNAME='MevaserZionBot';
 var _remEventTypes=[
   {k:'candles',he:'הדלקת נרות',en:'Candle Lighting',u:'time'},
   {k:'minchaErev',he:'מנחה ערב שבת',en:'Mincha Erev Shabbat',u:'time'},
@@ -5106,9 +5113,14 @@ function openRemindersModal(memberId){
     +'<label class="rem-chk"><input type="checkbox" id="rem-ch-tel"'+(m.reminders.channels.telegram?' checked':'')+'><span>'+(isEn?'Telegram':'טלגרם')+'</span></label>'
     +'<label class="rem-chk rem-chk-dis" title="'+(isEn?'Coming soon':'בקרוב')+'"><input type="checkbox" disabled><span>'+(isEn?'Push (FCM) — coming soon':'Web Push — בקרוב')+'</span></label>'
     +'<div class="rem-tel-row" id="rem-tel-row"'+(m.reminders.channels.telegram?'':' style="display:none"')+'>'
-    +'<div class="rem-tel-hint">'+(isEn?'Telegram Chat ID (leave blank to link via bot):':'מזהה צ\'אט בטלגרם (השאר ריק כדי לקשר דרך הבוט):')+'</div>'
-    +'<input type="text" id="rem-tel-id" placeholder="123456789" dir="ltr" value="'+es(m.reminders.telegramChatId||'')+'">'
-    +'<div class="rem-tel-hint" style="font-size:.72rem;opacity:.75;margin-top:.3rem">'+(isEn?'Open the bot and send /start to get your ID':'פתחו את הבוט ושלחו /start לקבלת המזהה')+'</div>'
+    +(m.reminders.telegramChatId?
+      ('<div class="rem-tel-linked">✓ '+(isEn?'Linked — Chat ID:':'מקושר — Chat ID:')+' <code>'+es(m.reminders.telegramChatId)+'</code></div>'
+      +'<a href="https://t.me/'+TELEGRAM_BOT_USERNAME+'" target="_blank" class="rem-tel-btn rem-tel-btn-sec">'+(isEn?'Open bot':'פתח את הבוט')+'</a>')
+      :
+      ('<div class="rem-tel-hint">'+(isEn?'Tap the button below to link your account via the bot:':'לחץ/י על הכפתור לקישור החשבון דרך הבוט:')+'</div>'
+      +'<a href="https://t.me/'+TELEGRAM_BOT_USERNAME+'?start=LINK_'+es(m.id)+'" target="_blank" class="rem-tel-btn">🔗 '+(isEn?'Link to @'+TELEGRAM_BOT_USERNAME:'קשר לטלגרם (@'+TELEGRAM_BOT_USERNAME+')')+'</a>'
+      +'<div class="rem-tel-hint" style="font-size:.72rem;opacity:.75;margin-top:.5rem">'+(isEn?'After pressing /start in the bot, refresh this page to see your Chat ID.':'אחרי לחיצה על /start בבוט — רענן/י את הדף כדי לראות את ה-Chat ID.')+'</div>')
+    )
     +'</div>'
     +'</div>'
     +'<div class="rem-events" id="rem-events">';
