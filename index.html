@@ -364,6 +364,77 @@ body.dark-mode .ih-tx b{color:#d4af5a}
 body.dark-mode .ih-ic{background:rgba(212,175,90,.08);border-color:rgba(212,175,90,.25)}
 body.dark-mode .ih-ic svg{stroke:#d4af5a !important}
 body.dark-mode .ih-ic circle[fill]{fill:#d4af5a !important}
+
+/* My Area action buttons */
+.ma-act-btn{padding:.5rem 1.1rem;border-radius:9px;font-family:'Heebo',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;border:1.5px solid;transition:all .18s}
+.ma-edit-btn{background:rgba(99,102,241,.12);color:#6366f1;border-color:rgba(99,102,241,.35)}
+.ma-edit-btn:hover{background:rgba(99,102,241,.2);border-color:#6366f1}
+.ma-rem-btn{background:rgba(200,168,75,.12);color:#8a6d2e;border-color:rgba(138,97,48,.35)}
+body.dark-mode .ma-rem-btn{color:#d4af5a;border-color:rgba(212,175,90,.4);background:rgba(212,175,90,.1)}
+.ma-rem-btn:hover{background:rgba(200,168,75,.22);border-color:#8a6d2e}
+
+/* Reminders modal */
+.rem-modal-box{text-align:right;max-width:520px;max-height:92vh;overflow-y:auto}
+.rem-head{text-align:center;padding-bottom:.9rem;margin-bottom:1rem;border-bottom:1px solid rgba(101,65,30,.18)}
+body.dark-mode .rem-head{border-bottom-color:rgba(212,175,90,.2)}
+.rem-title{font-family:'Frank Ruhl Libre',serif;font-size:1.25rem;font-weight:700;color:#3a2817;margin-bottom:.3rem;letter-spacing:.3px}
+body.dark-mode .rem-title{color:#f0d48a}
+.rem-sub{font-size:.82rem;color:#6b4d2e;line-height:1.5}
+body.dark-mode .rem-sub{color:#c9b381}
+
+.rem-master{display:flex;align-items:center;gap:.85rem;padding:.8rem 1rem;background:rgba(138,97,48,.08);border:1px solid rgba(101,65,30,.18);border-radius:11px;margin-bottom:1rem}
+body.dark-mode .rem-master{background:rgba(212,175,90,.08);border-color:rgba(212,175,90,.22)}
+.rem-master-tx strong{font-size:.93rem;color:#3a2817}
+body.dark-mode .rem-master-tx strong{color:#f0d48a}
+.rem-switch{position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0}
+.rem-switch input{opacity:0;width:0;height:0}
+.rem-switch span{position:absolute;inset:0;background:#d4c49a;border-radius:26px;cursor:pointer;transition:.2s}
+.rem-switch span::before{content:"";position:absolute;width:20px;height:20px;right:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 2px 4px rgba(0,0,0,.2)}
+.rem-switch input:checked + span{background:linear-gradient(135deg,#c8a84b,#ddb95e)}
+.rem-switch input:checked + span::before{transform:translateX(-20px)}
+
+.rem-channels{padding:.8rem 1rem;background:rgba(138,97,48,.04);border:1px solid rgba(101,65,30,.15);border-radius:11px;margin-bottom:1rem}
+body.dark-mode .rem-channels{background:rgba(212,175,90,.05);border-color:rgba(212,175,90,.2)}
+.rem-ch-title{font-size:.78rem;font-weight:700;color:#8a6d2e;margin-bottom:.5rem;letter-spacing:.3px}
+body.dark-mode .rem-ch-title{color:#d4af5a}
+.rem-chk{display:flex;align-items:center;gap:.55rem;padding:.35rem 0;cursor:pointer;font-size:.88rem;color:#3a2817}
+body.dark-mode .rem-chk{color:#e8d9b0}
+.rem-chk input{accent-color:#8a6d2e;width:18px;height:18px;cursor:pointer}
+body.dark-mode .rem-chk input{accent-color:#d4af5a}
+.rem-chk-dis{opacity:.55;cursor:not-allowed}
+.rem-tel-row{margin-top:.65rem;padding-top:.65rem;border-top:1px dashed rgba(101,65,30,.25)}
+body.dark-mode .rem-tel-row{border-top-color:rgba(212,175,90,.25)}
+.rem-tel-hint{font-size:.78rem;color:#6b4d2e;margin-bottom:.35rem}
+body.dark-mode .rem-tel-hint{color:#c9b381}
+.rem-tel-row input{width:100%;padding:.5rem .75rem;border:1.5px solid rgba(101,65,30,.25);border-radius:8px;background:#fbf6e8;color:#3a2817;font-family:'Heebo',sans-serif;font-size:.9rem}
+body.dark-mode .rem-tel-row input{background:rgba(212,175,90,.08);border-color:rgba(212,175,90,.3);color:#f0d48a}
+.rem-tel-row input:focus{outline:none;border-color:#8a6d2e}
+body.dark-mode .rem-tel-row input:focus{border-color:#d4af5a}
+
+.rem-events{margin-bottom:1.2rem}
+.rem-ev{padding:.7rem .9rem;background:rgba(138,97,48,.04);border:1px solid rgba(101,65,30,.15);border-radius:10px;margin-bottom:.5rem}
+body.dark-mode .rem-ev{background:rgba(212,175,90,.04);border-color:rgba(212,175,90,.18)}
+.rem-ev-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.rem-ev-name{font-family:'Frank Ruhl Libre',serif;font-weight:700;color:#5c3f22;font-size:.95rem}
+body.dark-mode .rem-ev-name{color:#d4af5a}
+.rem-add-off{background:transparent;border:1.5px dashed rgba(138,97,48,.4);color:#8a6d2e;padding:.25rem .7rem;border-radius:7px;font-size:.75rem;font-family:'Heebo',sans-serif;font-weight:600;cursor:pointer;transition:.15s}
+.rem-add-off:hover{background:rgba(138,97,48,.1);border-style:solid}
+body.dark-mode .rem-add-off{color:#d4af5a;border-color:rgba(212,175,90,.4)}
+body.dark-mode .rem-add-off:hover{background:rgba(212,175,90,.1)}
+.rem-offsets{display:flex;flex-direction:column;gap:.35rem}
+.rem-off{display:flex;align-items:center;gap:.5rem;padding:.35rem .5rem;background:#fbf6e8;border-radius:8px;border:1px solid rgba(101,65,30,.12)}
+body.dark-mode .rem-off{background:rgba(212,175,90,.06);border-color:rgba(212,175,90,.18)}
+.rem-off-n{width:64px;padding:.35rem;border:1px solid rgba(101,65,30,.25);border-radius:6px;text-align:center;font-family:'Heebo',sans-serif;font-size:.85rem;background:#fff;color:#3a2817;-webkit-appearance:none;appearance:none}
+body.dark-mode .rem-off-n{background:#2a1f12;border-color:rgba(212,175,90,.3);color:#f0d48a}
+.rem-off-u{padding:.35rem .5rem;border:1px solid rgba(101,65,30,.25);border-radius:6px;background:#fff;font-family:'Heebo',sans-serif;font-size:.85rem;color:#3a2817}
+body.dark-mode .rem-off-u{background:#2a1f12;border-color:rgba(212,175,90,.3);color:#f0d48a}
+.rem-off-tx{font-size:.82rem;color:#6b4d2e;flex:1}
+body.dark-mode .rem-off-tx{color:#c9b381}
+.rem-off-rm{background:transparent;border:none;color:#c0392b;font-size:1rem;cursor:pointer;padding:.2rem .5rem;border-radius:6px;transition:.15s}
+.rem-off-rm:hover{background:rgba(192,57,43,.12)}
+
+.rem-actions{display:flex;flex-direction:column;gap:.5rem}
+.rem-actions .mbtn{margin-bottom:0}
 .mbtn{display:block;width:100%;padding:.72rem;border:none;border-radius:10px;font-family:'Heebo',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;margin-bottom:.5rem;min-height:48px}
 .mbtn-gold{background:var(--gold);color:var(--ink)}
 .mbtn-dark{background:var(--ink);color:var(--gold2)}
@@ -4908,9 +4979,10 @@ async function doMyArea(){
   var h='<div style="margin-top:.8rem;border-top:1px solid var(--bd);padding-top:.8rem">';
   h+='<div style="font-size:1.1rem;font-weight:700;color:var(--gold2);margin-bottom:.6rem;text-align:center">'+(isEn?'Shabbat Shalom, ':'שבת שלום, ')+es(m.firstName)+'!</div>';
 
-  // Action buttons: Edit details
-  h+='<div style="display:flex;gap:8px;justify-content:center;margin-bottom:.8rem">';
-  h+='<button onclick="closeMyArea();doSelfEditDirect(\''+es(m.id)+'\')" style="padding:6px 16px;background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);border-radius:8px;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer">'+(isEn?'Edit My Details':'📝 עריכת הפרטים שלי')+'</button>';
+  // Action buttons: Edit details + Reminders
+  h+='<div style="display:flex;gap:8px;justify-content:center;margin-bottom:.8rem;flex-wrap:wrap">';
+  h+='<button onclick="closeMyArea();doSelfEditDirect(\''+es(m.id)+'\')" class="ma-act-btn ma-edit-btn">'+(isEn?'Edit My Details':'עריכת הפרטים שלי')+'</button>';
+  h+='<button onclick="openRemindersModal(\''+es(m.id)+'\')" class="ma-act-btn ma-rem-btn">'+(isEn?'Reminders':'תזכורות')+'</button>';
   h+='</div>';
 
   // Payment status
@@ -4988,7 +5060,133 @@ async function doMyArea(){
   h+='</div>';
   res.innerHTML=h;
 }
-function doSelfEditDirect(memberId){
+
+// ── Reminders (user-configurable per-event) ──────────────
+var _remEventTypes=[
+  {k:'candles',he:'הדלקת נרות',en:'Candle Lighting',u:'time'},
+  {k:'minchaErev',he:'מנחה ערב שבת',en:'Mincha Erev Shabbat',u:'time'},
+  {k:'shacharit',he:'שחרית שבת',en:'Shabbat Shacharit',u:'time'},
+  {k:'havdalah',he:'צאת שבת / הבדלה',en:'Havdalah',u:'time'},
+  {k:'yahrzeit',he:'יארצייט (אישי)',en:'Yahrzeit',u:'day'},
+  {k:'barMitzvah',he:'בר/בת מצווה של ילד',en:'Child\'s Bar/Bat Mitzvah',u:'day'},
+  {k:'duty',he:'תורנות שלי',en:'My Duty',u:'time'},
+  {k:'birthday',he:'יום הולדת עברי',en:'Hebrew Birthday',u:'day'}
+];
+var _remDefaults={
+  candles:[{n:30,unit:'minutes'}],
+  minchaErev:[{n:15,unit:'minutes'}],
+  shacharit:[{n:30,unit:'minutes'}],
+  havdalah:[],
+  yahrzeit:[{n:7,unit:'days'},{n:1,unit:'days'}],
+  barMitzvah:[{n:2,unit:'weeks'},{n:2,unit:'days'}],
+  duty:[{n:2,unit:'days'},{n:3,unit:'hours'}],
+  birthday:[{n:1,unit:'days'}]
+};
+var _remCurMember=null;
+function openRemindersModal(memberId){
+  var m=getM(memberId);if(!m)return;
+  _remCurMember=memberId;
+  closeMyArea();
+  if(!m.reminders)m.reminders={enabled:true,channels:{web:true,telegram:false,fcm:false},telegramChatId:'',events:{}};
+  if(!m.reminders.events)m.reminders.events={};
+  var isEn=curLang==='en';
+  var html='<div class="modal-bg show" id="rem-modal" onclick="if(event.target===this)closeRemModal()">'
+    +'<div class="modal-box rem-modal-box">'
+    +'<div class="rem-head">'
+    +'<div class="rem-title">'+(isEn?'My Reminders':'התזכורות שלי')+'</div>'
+    +'<div class="rem-sub">'+(isEn?'Choose which events to be reminded about and when':'בחרו על אילו אירועים לקבל תזכורות ומתי')+'</div>'
+    +'</div>'
+    +'<div class="rem-master">'
+    +'<label class="rem-switch"><input type="checkbox" id="rem-enabled"'+(m.reminders.enabled?' checked':'')+'><span></span></label>'
+    +'<div class="rem-master-tx"><strong>'+(isEn?'Enable reminders':'הפעל תזכורות')+'</strong></div>'
+    +'</div>'
+    +'<div class="rem-channels">'
+    +'<div class="rem-ch-title">'+(isEn?'Delivery channel':'ערוצי העברה')+'</div>'
+    +'<label class="rem-chk"><input type="checkbox" id="rem-ch-web"'+(m.reminders.channels.web?' checked':'')+'><span>'+(isEn?'Browser notification':'התראה בדפדפן')+'</span></label>'
+    +'<label class="rem-chk"><input type="checkbox" id="rem-ch-tel"'+(m.reminders.channels.telegram?' checked':'')+'><span>'+(isEn?'Telegram':'טלגרם')+'</span></label>'
+    +'<label class="rem-chk rem-chk-dis" title="'+(isEn?'Coming soon':'בקרוב')+'"><input type="checkbox" disabled><span>'+(isEn?'Push (FCM) — coming soon':'Web Push — בקרוב')+'</span></label>'
+    +'<div class="rem-tel-row" id="rem-tel-row"'+(m.reminders.channels.telegram?'':' style="display:none"')+'>'
+    +'<div class="rem-tel-hint">'+(isEn?'Telegram Chat ID (leave blank to link via bot):':'מזהה צ\'אט בטלגרם (השאר ריק כדי לקשר דרך הבוט):')+'</div>'
+    +'<input type="text" id="rem-tel-id" placeholder="123456789" dir="ltr" value="'+es(m.reminders.telegramChatId||'')+'">'
+    +'<div class="rem-tel-hint" style="font-size:.72rem;opacity:.75;margin-top:.3rem">'+(isEn?'Open the bot and send /start to get your ID':'פתחו את הבוט ושלחו /start לקבלת המזהה')+'</div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="rem-events" id="rem-events">';
+  for(var i=0;i<_remEventTypes.length;i++){
+    var ev=_remEventTypes[i];
+    var label=isEn?ev.en:ev.he;
+    var offsets=(m.reminders.events[ev.k]&&m.reminders.events[ev.k].length)?m.reminders.events[ev.k]:(m.reminders.events[ev.k]===null?[]:(_remDefaults[ev.k]||[]));
+    html+='<div class="rem-ev" data-k="'+ev.k+'">'
+      +'<div class="rem-ev-head"><span class="rem-ev-name">'+label+'</span>'
+      +'<button class="rem-add-off" type="button" onclick="addRemOffset(\''+ev.k+'\')">+ '+(isEn?'Add':'הוסף')+'</button></div>'
+      +'<div class="rem-offsets" id="rem-off-'+ev.k+'">';
+    for(var j=0;j<offsets.length;j++)html+=_renderRemOffset(ev.k,offsets[j]);
+    html+='</div></div>';
+  }
+  html+='</div>'
+    +'<div class="rem-actions">'
+    +'<button class="mbtn mbtn-gold" onclick="saveReminders()"><span class="mbtn-ic">✓</span><div class="mbtn-tx"><strong>'+(isEn?'Save':'שמור')+'</strong><span>'+(isEn?'Preferences applied immediately':'ההעדפות ישמרו מיד')+'</span></div></button>'
+    +'<button class="mbtn mbtn-gray" onclick="closeRemModal()">'+(isEn?'Cancel':'ביטול')+'</button>'
+    +'</div>'
+    +'</div></div>';
+  document.body.insertAdjacentHTML('beforeend',html);
+  document.getElementById('rem-ch-tel').addEventListener('change',function(){
+    document.getElementById('rem-tel-row').style.display=this.checked?'':'none';
+  });
+}
+function _renderRemOffset(k,off){
+  var isEn=curLang==='en';
+  var units={minutes:isEn?'minutes':'דקות',hours:isEn?'hours':'שעות',days:isEn?'days':'ימים',weeks:isEn?'weeks':'שבועות'};
+  var h='<div class="rem-off" data-k="'+k+'">'
+    +'<input type="number" class="rem-off-n" min="1" max="999" value="'+(off.n||1)+'">'
+    +'<select class="rem-off-u">';
+  for(var u in units)h+='<option value="'+u+'"'+(off.unit===u?' selected':'')+'>'+units[u]+'</option>';
+  h+='</select>'
+    +'<span class="rem-off-tx">'+(isEn?'before':'לפני')+'</span>'
+    +'<button class="rem-off-rm" type="button" onclick="this.parentElement.remove()">✕</button>'
+    +'</div>';
+  return h;
+}
+function addRemOffset(k){
+  var cont=document.getElementById('rem-off-'+k);
+  if(!cont)return;
+  cont.insertAdjacentHTML('beforeend',_renderRemOffset(k,{n:1,unit:'hours'}));
+}
+function closeRemModal(){var m=document.getElementById('rem-modal');if(m)m.remove();_remCurMember=null}
+function saveReminders(){
+  if(!_remCurMember)return;
+  var m=getM(_remCurMember);if(!m)return;
+  var prefs={
+    enabled:document.getElementById('rem-enabled').checked,
+    channels:{
+      web:document.getElementById('rem-ch-web').checked,
+      telegram:document.getElementById('rem-ch-tel').checked,
+      fcm:false
+    },
+    telegramChatId:(document.getElementById('rem-tel-id').value||'').trim(),
+    events:{}
+  };
+  for(var i=0;i<_remEventTypes.length;i++){
+    var k=_remEventTypes[i].k;
+    var list=[];
+    document.querySelectorAll('#rem-off-'+k+' .rem-off').forEach(function(row){
+      var n=parseInt(row.querySelector('.rem-off-n').value,10);
+      var u=row.querySelector('.rem-off-u').value;
+      if(n>0)list.push({n:n,unit:u});
+    });
+    prefs.events[k]=list;
+  }
+  m.reminders=prefs;
+  updM(m);
+  if(prefs.channels.web){
+    if('Notification' in window&&Notification.permission==='default'){
+      Notification.requestPermission();
+    }
+  }
+  try{if(SHEETS_URL)sheetsPost({action:'update',member:m}).catch(function(){})}catch(e){}
+  closeRemModal();
+  showToast(curLang==='en'?'Reminders saved':'התזכורות נשמרו');
+}
   var m=getM(memberId);
   if(!m)return;
   initForm(m);
