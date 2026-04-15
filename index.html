@@ -302,10 +302,47 @@ body.light-mode .lang-toggle button.active{background:rgba(0,0,0,.1);color:var(-
 .bm-details.show{display:block}
 
 /* Export/Import modal */
-.modal-bg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:2000;background:rgba(0,0,0,.55);-webkit-overflow-scrolling:touch}
+.modal-bg{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(20,12,4,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);-webkit-overflow-scrolling:touch}
 .modal-bg.show{display:flex;justify-content:center;align-items:center;padding:1rem}
-.modal-box{background:#fff;border-radius:16px;max-width:420px;width:100%;padding:1.6rem;box-shadow:var(--shd);text-align:center}
+.modal-box{background:#faf3e1;border-radius:18px;max-width:460px;width:100%;padding:1.6rem 1.4rem;box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(101,65,30,.2);text-align:center;max-height:90vh;overflow-y:auto}
 .modal-box h3{font-family:'Frank Ruhl Libre',serif;font-size:1.1rem;margin-bottom:1rem;color:var(--ink)}
+body.dark-mode .modal-box{background:linear-gradient(145deg,#2a1f12,#241a0e);box-shadow:0 24px 60px rgba(0,0,0,.7),0 0 0 1px rgba(212,175,90,.25);color:#e8d9b0}
+
+/* Export modal — refined layout */
+.exp-modal-box{text-align:right}
+.exp-head{text-align:center;margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid rgba(101,65,30,.18)}
+body.dark-mode .exp-head{border-bottom-color:rgba(212,175,90,.2)}
+.exp-title{font-family:'Frank Ruhl Libre',serif;font-size:1.2rem;font-weight:700;color:#3a2817;margin-bottom:.35rem;letter-spacing:.3px}
+body.dark-mode .exp-title{color:#f0d48a}
+.exp-sub{font-size:.8rem;color:#6b4d2e;line-height:1.55;margin-bottom:.6rem}
+body.dark-mode .exp-sub{color:#c9b381}
+.exp-summary{display:inline-block;font-size:.76rem;color:#8a6d2e;background:rgba(138,97,48,.08);padding:.35rem .8rem;border-radius:20px;border:1px solid rgba(101,65,30,.18);font-family:'Heebo',sans-serif;letter-spacing:.2px}
+body.dark-mode .exp-summary{color:#d4af5a;background:rgba(212,175,90,.1);border-color:rgba(212,175,90,.25)}
+.mbtn{display:flex;align-items:center;gap:.9rem;width:100%;padding:.85rem 1rem;margin-bottom:.55rem;border-radius:11px;border:1.5px solid transparent;font-family:'Heebo',sans-serif;font-size:.9rem;cursor:pointer;text-align:right;transition:all .18s;min-height:58px}
+.mbtn-ic{flex-shrink:0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:700}
+.mbtn-tx{flex:1;display:flex;flex-direction:column;gap:.1rem;text-align:right}
+.mbtn-tx strong{font-size:.92rem;font-weight:700}
+.mbtn-tx span{font-size:.73rem;opacity:.78;font-weight:400}
+.mbtn-gold{background:linear-gradient(135deg,#c8a84b 0%,#ddb95e 100%);color:#241a0e;border-color:#a88828;box-shadow:0 4px 14px rgba(200,168,75,.35)}
+.mbtn-gold .mbtn-ic{background:rgba(36,26,14,.15);color:#241a0e}
+.mbtn-gold:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.mbtn-dark{background:#2a1f12;color:#f0d48a;border-color:#3a2817}
+.mbtn-dark .mbtn-ic{background:rgba(212,175,90,.15);color:#f0d48a}
+.mbtn-dark:hover{background:#3a2817}
+.mbtn-grn{background:#1e7d4b;color:#fff;border-color:#166b3e}
+.mbtn-grn .mbtn-ic{background:rgba(255,255,255,.18);color:#fff}
+.mbtn-grn:hover{filter:brightness(1.08)}
+.mbtn-outline{background:transparent;color:#5c3f22;border-color:rgba(101,65,30,.3)}
+.mbtn-outline .mbtn-ic{background:rgba(138,97,48,.12);color:#8a6d2e}
+.mbtn-outline:hover{background:rgba(138,97,48,.08);border-color:rgba(101,65,30,.5)}
+body.dark-mode .mbtn-outline{color:#d4af5a;border-color:rgba(212,175,90,.3)}
+body.dark-mode .mbtn-outline .mbtn-ic{background:rgba(212,175,90,.12);color:#d4af5a}
+body.dark-mode .mbtn-outline:hover{background:rgba(212,175,90,.08)}
+.mbtn-gray{background:transparent;color:#8a7350;border-color:rgba(101,65,30,.25);display:block;text-align:center;padding:.7rem;font-size:.85rem;min-height:auto;margin-top:.2rem}
+.mbtn-gray:hover{background:rgba(138,97,48,.06);color:#5c3f22}
+body.dark-mode .mbtn-gray{color:#a89366;border-color:rgba(212,175,90,.2)}
+body.dark-mode .mbtn-gray:hover{background:rgba(212,175,90,.06);color:#d4af5a}
+.mhint{font-size:.72rem;color:#8a7350;margin-top:-.35rem;margin-bottom:.55rem;text-align:center}
 .mbtn{display:block;width:100%;padding:.72rem;border:none;border-radius:10px;font-family:'Heebo',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;margin-bottom:.5rem;min-height:48px}
 .mbtn-gold{background:var(--gold);color:var(--ink)}
 .mbtn-dark{background:var(--ink);color:var(--gold2)}
@@ -1158,6 +1195,145 @@ body.dark-mode .site-footer::before{
 
 /* Keep admin overlay dark (already dark, just ensure z-index) */
 body.dark-mode .adm-ovl{z-index:100}
+
+/* ══════════════════════════════════════════════════════
+   ADMIN PANEL — Professional refinement (both themes)
+   ══════════════════════════════════════════════════════ */
+#adm-ovl{
+  background:
+    radial-gradient(ellipse at 20% 10%,rgba(80,50,20,.4) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 85%,rgba(30,20,8,.55) 0%,transparent 55%),
+    linear-gradient(135deg,#1a1308 0%,#241a0e 50%,#14100a 100%) !important
+}
+#adm-ovl::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.85 0 0 0 0 0.7 0 0 0 0 0.4 0 0 0 0.07 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode:screen;opacity:.3
+}
+.adm-pnl{position:relative;z-index:1}
+
+/* Header */
+.adm-hdr{
+  background:linear-gradient(145deg,rgba(42,31,18,.8) 0%,rgba(36,26,14,.7) 100%);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(212,175,90,.22);
+  border-radius:14px;
+  padding:1.1rem 1.3rem !important;
+  margin-bottom:1.5rem !important;
+  box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(212,175,90,.1);
+  align-items:center
+}
+.adm-title{
+  color:#f0d48a !important;
+  font-family:'Frank Ruhl Libre',serif !important;
+  font-size:1.3rem !important;
+  letter-spacing:.3px;
+  text-shadow:0 2px 10px rgba(212,175,90,.18)
+}
+.adm-acts{gap:.5rem !important}
+.abt{
+  background:rgba(212,175,90,.08) !important;
+  border:1px solid rgba(212,175,90,.28) !important;
+  color:#d4af5a !important;
+  font-size:.82rem !important;
+  padding:.48rem 1rem !important;
+  border-radius:9px !important;
+  transition:all .18s;
+  letter-spacing:.2px;
+  backdrop-filter:blur(4px)
+}
+.abt:hover,.abt.active{
+  background:rgba(212,175,90,.18) !important;
+  border-color:rgba(240,212,138,.55) !important;
+  color:#f0d48a !important;
+  transform:translateY(-1px);
+  box-shadow:0 4px 12px rgba(212,175,90,.2)
+}
+
+/* Close button */
+.adm-x{
+  background:rgba(212,175,90,.1) !important;
+  border:1px solid rgba(212,175,90,.3) !important;
+  color:#d4af5a !important;
+  backdrop-filter:blur(4px)
+}
+.adm-x:hover{background:rgba(212,175,90,.2) !important;color:#f0d48a !important}
+
+/* Stat cards */
+.stats-row{gap:.6rem !important;margin-bottom:1.5rem !important}
+.stat-card{
+  background:linear-gradient(145deg,rgba(42,31,18,.7) 0%,rgba(36,26,14,.6) 100%) !important;
+  border:1px solid rgba(212,175,90,.22) !important;
+  border-radius:12px !important;
+  padding:.8rem .7rem !important;
+  box-shadow:0 4px 14px rgba(0,0,0,.3),inset 0 1px 0 rgba(212,175,90,.08);
+  transition:all .2s;
+  backdrop-filter:blur(4px)
+}
+.stat-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(212,175,90,.4) !important;
+  box-shadow:0 8px 22px rgba(0,0,0,.4),inset 0 1px 0 rgba(212,175,90,.15)
+}
+.stat-icon{font-size:1.35rem !important;margin-bottom:.3rem !important;filter:drop-shadow(0 1px 3px rgba(212,175,90,.25))}
+.stat-num{
+  font-family:'Frank Ruhl Libre',serif !important;
+  font-size:1.5rem !important;
+  font-weight:700 !important;
+  color:#f0d48a !important;
+  letter-spacing:.5px
+}
+.stat-label{color:rgba(212,175,90,.65) !important;font-size:.7rem !important;letter-spacing:.3px}
+
+/* Tab buttons */
+.stb{
+  color:rgba(212,175,90,.6) !important;
+  padding:.6rem 1.1rem !important;
+  border-radius:9px !important;
+  font-size:.88rem !important;
+  letter-spacing:.2px;
+  transition:all .15s
+}
+.stb:hover{color:#d4af5a !important;background:rgba(212,175,90,.06) !important}
+.stb.active{
+  background:rgba(212,175,90,.14) !important;
+  color:#f0d48a !important;
+  box-shadow:0 2px 8px rgba(212,175,90,.18),inset 0 0 0 1px rgba(212,175,90,.25)
+}
+
+/* Login card */
+.lg-card{
+  background:linear-gradient(145deg,rgba(42,31,18,.95) 0%,rgba(36,26,14,.9) 100%) !important;
+  border:1px solid rgba(212,175,90,.3) !important;
+  box-shadow:0 20px 50px rgba(0,0,0,.55),0 0 40px rgba(212,175,90,.1),inset 0 1px 0 rgba(212,175,90,.12) !important;
+  border-radius:20px !important
+}
+.lg-card h2{color:#f0d48a !important;font-family:'Frank Ruhl Libre',serif}
+.lg-card p{color:rgba(212,175,90,.65) !important}
+.lg-card input{
+  background:rgba(212,175,90,.06) !important;
+  border:1.5px solid rgba(212,175,90,.25) !important;
+  color:#f0d48a !important;
+  letter-spacing:4px;
+  text-align:center
+}
+.lg-card input:focus{border-color:#d4af5a !important;background:rgba(212,175,90,.1) !important}
+.blg{
+  background:linear-gradient(135deg,#c8a84b 0%,#ddb95e 100%) !important;
+  color:#241a0e !important;
+  font-family:'Frank Ruhl Libre',serif !important;
+  font-weight:700 !important;
+  letter-spacing:.5px;
+  box-shadow:0 6px 20px rgba(200,168,75,.35)
+}
+.blg:hover{filter:brightness(1.08);transform:translateY(-1px)}
+
+/* Mobile header adjustments */
+@media(max-width:600px){
+  .adm-hdr{padding:.9rem 1rem !important;margin-bottom:1rem !important}
+  .adm-title{font-size:1.1rem !important}
+  .abt{font-size:.75rem !important;padding:.42rem .8rem !important}
+}
 </style>
 <script src="https://unpkg.com/kosher-zmanim@0.9.0/dist/kosher-zmanim.min.js"></script>
 </head>
@@ -1731,15 +1907,17 @@ body.dark-mode .adm-ovl{z-index:100}
 
 <!-- Modals -->
 <div class="modal-bg" id="exp-modal" onclick="if(event.target===this)this.classList.remove('show')">
-  <div class="modal-box">
-    <h3>💾 ייצוא נתונים</h3>
-    <button class="mbtn mbtn-gold" onclick="expCopy()">📋 העתק ללוח</button>
-    <div class="mhint">להדבקה בכל אפליקציה</div>
-    <button class="mbtn mbtn-dark" onclick="expTab()">🔗 פתח בטאב חדש</button>
-    <div class="mhint">לשמירה: □↑ → "שמור ב-Files"</div>
-    <button class="mbtn mbtn-grn" onclick="expCSV()">📊 ייצוא לאקסל (CSV)</button>
-    <div class="mhint">קובץ CSV עם כל הנתונים</div>
-    <button class="mbtn mbtn-gray" onclick="document.getElementById('exp-modal').classList.remove('show')">סגור</button>
+  <div class="modal-box exp-modal-box">
+    <div class="exp-head">
+      <div class="exp-title">ייצוא מלא של מסד הנתונים</div>
+      <div class="exp-sub">גיבוי של כל נתוני הקהילה — מתפללים, תורנויות, עליות, מודעות, הגדרות</div>
+      <div class="exp-summary" id="exp-summary">טוען...</div>
+    </div>
+    <button class="mbtn mbtn-gold" onclick="expDownload()"><span class="mbtn-ic">⤓</span><div class="mbtn-tx"><strong>הורד קובץ גיבוי</strong><span>JSON מלא — כולל את כל הפרטים</span></div></button>
+    <button class="mbtn mbtn-dark" onclick="expCSV()"><span class="mbtn-ic">▦</span><div class="mbtn-tx"><strong>ייצוא לאקסל (CSV)</strong><span>טבלה עם כל שדות המתפללים</span></div></button>
+    <button class="mbtn mbtn-outline" onclick="expCopy()"><span class="mbtn-ic">⧉</span><div class="mbtn-tx"><strong>העתק ללוח</strong><span>להדבקה בכל אפליקציה</span></div></button>
+    <button class="mbtn mbtn-outline" onclick="expTab()"><span class="mbtn-ic">↗</span><div class="mbtn-tx"><strong>פתח בטאב חדש</strong><span>לשמירה ידנית במכשיר</span></div></button>
+    <button class="mbtn mbtn-gray" onclick="document.getElementById('exp-modal').classList.remove('show')">ביטול</button>
   </div>
 </div>
 <div class="modal-bg" id="imp-modal" onclick="if(event.target===this)this.classList.remove('show')">
@@ -2492,8 +2670,21 @@ function doSelfEdit(){openMyArea()}
 
 // ── Export / Import (iOS-safe) ────────
 let _expJSON='';
+function buildFullDbDump(){
+  var dump={_type:'mevaser-zion-backup',_version:1,_exportedAt:new Date().toISOString(),keys:{}};
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(!k||k.indexOf('mbz_')!==0)continue;
+    var raw=localStorage.getItem(k);
+    try{dump.keys[k]=JSON.parse(raw)}catch(e){dump.keys[k]=raw}
+  }
+  return dump;
+}
 function expData(){
-  _expJSON=JSON.stringify(getMs(),null,2);
+  _expJSON=JSON.stringify(buildFullDbDump(),null,2);
+  var mb=getMs().length;var kc=Object.keys(JSON.parse(_expJSON).keys).length;
+  var cnt=document.getElementById('exp-summary');
+  if(cnt)cnt.textContent=mb+' מתפללים · '+kc+' מפתחות · '+(new Blob([_expJSON]).size/1024).toFixed(1)+' KB';
   document.getElementById('exp-modal').classList.add('show');
 }
 function expCopy(){
@@ -2507,10 +2698,22 @@ function expCopy(){
   document.body.removeChild(ta);
   document.getElementById('exp-modal').classList.remove('show');
 }
+function expDownload(){
+  try{
+    var blob=new Blob([_expJSON],{type:'application/json;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;a.download='mevaser_zion_backup_'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('הגיבוי הורד');
+  }catch(e){expTab()}
+  document.getElementById('exp-modal').classList.remove('show');
+}
 function expTab(){
   const w=window.open('','_blank');
   if(w){
-    w.document.write('<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>גיבוי מבשר ציון</title></head><body style="font-family:sans-serif;padding:1.5rem;direction:rtl;background:#f0f2f5"><h2>💾 גיבוי — מבשר ציון</h2><p style="color:#666;font-size:.85rem;margin:.5rem 0">לשמירה באייפון: לחץ □↑ → "שמור ב-Files"</p><textarea id="d" style="width:100%;height:70vh;direction:ltr;font-size:13px;border:1px solid #ccc;border-radius:8px;padding:.8rem" readonly>'+_expJSON.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</textarea><br><button onclick="var t=document.getElementById(\'d\');t.select();document.execCommand(\'copy\')" style="margin-top:.8rem;padding:.6rem 1.5rem;background:#1a2744;color:#ddb95e;border:none;border-radius:8px;font-size:.9rem;cursor:pointer">📋 העתק הכל</button></body></html>');
+    w.document.write('<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>גיבוי מבשר ציון</title></head><body style="font-family:sans-serif;padding:1.5rem;direction:rtl;background:#f0f2f5"><h2>גיבוי מלא — מבשר ציון</h2><p style="color:#666;font-size:.85rem;margin:.5rem 0">לשמירה באייפון: לחץ □↑ ← "שמור ב-Files"</p><textarea id="d" style="width:100%;height:70vh;direction:ltr;font-size:13px;border:1px solid #ccc;border-radius:8px;padding:.8rem" readonly>'+_expJSON.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</textarea><br><button onclick="var t=document.getElementById(\'d\');t.select();document.execCommand(\'copy\')" style="margin-top:.8rem;padding:.6rem 1.5rem;background:#1a2744;color:#ddb95e;border:none;border-radius:8px;font-size:.9rem;cursor:pointer">העתק הכל</button></body></html>');
     w.document.close();
   }
   document.getElementById('exp-modal').classList.remove('show');
