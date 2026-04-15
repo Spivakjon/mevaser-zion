@@ -767,6 +767,153 @@ body.light-mode .duty-hero{color:#fff}
 .pay-modal .pm-btns{display:flex;gap:8px;margin-top:1rem}
 .pay-modal .pm-btns button{flex:1;padding:8px;border:none;border-radius:8px;font-family:inherit;font-size:.9rem;cursor:pointer;font-weight:600}
 .spouse-sec{background:var(--c2);border-radius:8px;padding:.8rem;margin-top:.5rem;border:1px solid var(--bd2)}
+
+/* ══════════════════════════════════════════════════════
+   PARCHMENT THEME — Main page (vintage paper look)
+   ══════════════════════════════════════════════════════ */
+body:not(.light-mode){
+  background:
+    radial-gradient(ellipse at 18% 8%,rgba(138,97,48,.14) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 85%,rgba(101,65,30,.18) 0%,transparent 55%),
+    radial-gradient(circle at 55% 45%,rgba(255,251,235,.5) 0%,transparent 60%),
+    linear-gradient(135deg,#f2e8d1 0%,#e8d9b8 45%,#dcc89b 100%) !important;
+  background-attachment:fixed;
+  color:#3a2817;
+  font-family:'Frank Ruhl Libre','Heebo',serif;
+}
+body:not(.light-mode)::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.28 0 0 0 0 0.14 0 0 0 0.14 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode:multiply;opacity:.55;
+}
+body:not(.light-mode)::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(90,55,20,.22) 100%);
+}
+body:not(.light-mode) > *{position:relative;z-index:1}
+
+/* Top bar */
+body:not(.light-mode) .top-actions{
+  background:rgba(252,244,220,.7);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  border-bottom:1px solid rgba(101,65,30,.18);
+  box-shadow:0 2px 12px rgba(70,45,20,.06)
+}
+body:not(.light-mode) .top-actions button{color:#5c3f22}
+body:not(.light-mode) .top-actions button:hover,
+body:not(.light-mode) .top-actions button:active{color:#3a2817;background:rgba(138,97,48,.12)}
+body:not(.light-mode) #top-pay-btn{color:#8a6d2e !important}
+body:not(.light-mode) #pwa-install-btn{color:#8a6d2e !important}
+
+/* Logo — circular coffee-ring frame */
+body:not(.light-mode) .logo-area{padding:1.8rem 1rem 1.2rem}
+body:not(.light-mode) .logo-box{
+  width:186px;height:186px;border-radius:50%;
+  background:#fbf4e2;padding:22px;
+  box-shadow:
+    inset 0 0 0 3px rgba(138,97,48,.22),
+    inset 0 0 48px rgba(138,97,48,.2),
+    0 10px 28px rgba(90,55,20,.25);
+  border:3px solid rgba(101,65,30,.4);
+  position:relative
+}
+body:not(.light-mode) .logo-box::before{
+  content:"";position:absolute;inset:-10px;border-radius:50%;
+  background:radial-gradient(circle,transparent 60%,rgba(101,65,30,.32) 62%,rgba(138,97,48,.18) 68%,transparent 74%);
+  pointer-events:none
+}
+body:not(.light-mode) .logo-box::after{
+  content:"";position:absolute;inset:8px;border-radius:50%;
+  border:1px dashed rgba(101,65,30,.25);pointer-events:none
+}
+body:not(.light-mode) .logo-name{
+  color:#3a2817;font-family:'Frank Ruhl Libre',serif;
+  text-shadow:0 1px 0 rgba(255,251,235,.6);letter-spacing:.5px
+}
+body:not(.light-mode) .logo-sub{color:#6b4d2e;font-weight:400}
+
+/* Week card — aged paper */
+body:not(.light-mode) .week-card{
+  background:#faf3e1 !important;
+  border:1px solid rgba(101,65,30,.22) !important;
+  box-shadow:0 12px 32px rgba(70,45,20,.16),0 2px 8px rgba(101,65,30,.1),inset 0 0 60px rgba(138,97,48,.04) !important;
+  color:#3a2817;position:relative
+}
+body:not(.light-mode) .week-card::before{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:radial-gradient(ellipse at 10% 0%,rgba(138,97,48,.1) 0%,transparent 40%),radial-gradient(ellipse at 100% 100%,rgba(101,65,30,.08) 0%,transparent 45%);
+}
+body:not(.light-mode) .wk-par{color:#8a6d2e !important;font-family:'Frank Ruhl Libre',serif !important;font-weight:700}
+body:not(.light-mode) .wk-date{color:#6b4d2e !important}
+body:not(.light-mode) .wk-heb{color:#5c3f22 !important}
+body:not(.light-mode) .wk-ev{background:rgba(138,97,48,.1) !important;color:#3a2817 !important;border-color:rgba(101,65,30,.15) !important}
+body:not(.light-mode) .wk-ev-name{color:#3a2817 !important}
+body:not(.light-mode) .wk-none{color:#8a7350 !important}
+body:not(.light-mode) .wk-times{background:rgba(200,168,75,.16) !important;border-color:rgba(138,97,48,.3) !important}
+body:not(.light-mode) .wk-time{color:#3a2817 !important}
+body:not(.light-mode) .wk-time strong{color:#3a2817 !important}
+body:not(.light-mode) .wk-times-grid{background:rgba(200,168,75,.12) !important;border-color:rgba(138,97,48,.22) !important}
+body:not(.light-mode) .wk-tg-item{background:rgba(138,97,48,.1) !important}
+body:not(.light-mode) .wk-tg-label{color:#8a6d2e !important}
+body:not(.light-mode) .wk-tg-val{color:#3a2817 !important}
+body:not(.light-mode) .wk-duty{background:rgba(101,65,30,.08) !important;border-color:rgba(101,65,30,.22) !important;color:#3a2817 !important}
+body:not(.light-mode) .wk-duty strong{color:#3a2817 !important}
+body:not(.light-mode) .wk-duty-label{color:#6b4d2e !important}
+body:not(.light-mode) .wk-duty-table th{color:#6b4d2e !important;border-bottom-color:rgba(101,65,30,.18) !important}
+body:not(.light-mode) .wk-duty-table td{color:#3a2817 !important;border-bottom-color:rgba(101,65,30,.1) !important}
+body:not(.light-mode) .wk-duty-table tr.wk-duty-current td{color:#1a6b3a !important;font-weight:700 !important}
+body:not(.light-mode) .wk-omer{background:rgba(200,168,75,.15) !important;border-color:rgba(138,97,48,.28) !important;color:#6b4d2e !important}
+body:not(.light-mode) .wk-daily{background:rgba(138,97,48,.06) !important;border-color:rgba(101,65,30,.18) !important}
+body:not(.light-mode) .wk-daily-row{color:#3a2817 !important}
+body:not(.light-mode) .wk-daily-row strong{color:#3a2817 !important}
+body:not(.light-mode) .wk-countdown{background:rgba(138,97,48,.1) !important;border-color:rgba(101,65,30,.2) !important}
+body:not(.light-mode) .wk-cd-text{color:#5c3f22 !important}
+body:not(.light-mode) .wk-link{color:#8a6d2e !important;border-color:rgba(138,97,48,.3) !important;background:rgba(255,248,222,.4) !important}
+body:not(.light-mode) .wk-link:hover{background:rgba(138,97,48,.12) !important}
+
+/* Main cards & announcements */
+body:not(.light-mode) .main-card,
+body:not(.light-mode) #payment-msg-card,
+body:not(.light-mode) #membership-prompt-card{
+  background:#faf3e1 !important;
+  border:1px solid rgba(101,65,30,.22) !important;
+  box-shadow:0 12px 32px rgba(70,45,20,.18),0 2px 8px rgba(101,65,30,.1) !important
+}
+body:not(.light-mode) .ann-card{background:#faf3e1 !important;border:1px solid rgba(101,65,30,.22) !important;box-shadow:0 8px 24px rgba(70,45,20,.12) !important}
+body:not(.light-mode) .ann-title{color:#3a2817 !important}
+body:not(.light-mode) .ann-body{color:#5c3f22 !important}
+body:not(.light-mode) .ann-date{color:#8a7350 !important}
+body:not(.light-mode) .ann-head{color:#3a2817 !important}
+
+/* Info section / accordion */
+body:not(.light-mode) .info-section{color:#3a2817}
+body:not(.light-mode) .info-section p{color:#5c3f22}
+body:not(.light-mode) .info-section a{color:#8a6d2e}
+body:not(.light-mode) .acc{background:#faf3e1 !important;border:1px solid rgba(101,65,30,.22) !important}
+body:not(.light-mode) .acc-title{color:#3a2817 !important;border-bottom-color:rgba(101,65,30,.18) !important}
+body:not(.light-mode) .acc-body{color:#5c3f22 !important}
+
+/* Payment card fairness note restyled */
+body:not(.light-mode) .pay-msg{color:#3a2817}
+body:not(.light-mode) .pay-msg h2{color:#8a6d2e !important;font-family:'Frank Ruhl Libre',serif}
+body:not(.light-mode) .pay-msg p{color:#3a2817}
+body:not(.light-mode) .pay-msg strong{color:#6b4d2e !important}
+body:not(.light-mode) .pay-link{background:linear-gradient(135deg,#8a6d2e 0%,#a6833a 100%) !important;color:#fbf4e2 !important;border:1px solid rgba(70,45,20,.3) !important;box-shadow:0 4px 12px rgba(70,45,20,.2) !important}
+body:not(.light-mode) .pay-link:hover{filter:brightness(1.1)}
+body:not(.light-mode) .pay-continue{border-color:rgba(101,65,30,.35) !important;color:#5c3f22 !important;background:rgba(255,248,222,.5) !important}
+
+/* Membership prompt buttons keep green/red but warmer */
+body:not(.light-mode) #membership-prompt-card h2{color:#8a6d2e !important}
+
+/* Admin/register/my-area buttons in nav stay warm */
+body:not(.light-mode) #top-pay-btn,
+body:not(.light-mode) #pwa-install-btn{color:#8a6d2e !important}
+
+/* Footer */
+body:not(.light-mode) .footer,body:not(.light-mode) footer{color:#6b4d2e !important}
+
+/* Keep admin overlay dark (unaffected — renders above ::before/::after) */
+body:not(.light-mode) .adm-ovl{z-index:100}
 </style>
 <script src="https://unpkg.com/kosher-zmanim@0.9.0/dist/kosher-zmanim.min.js"></script>
 </head>
