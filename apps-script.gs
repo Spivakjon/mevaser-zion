@@ -824,42 +824,174 @@ function _offsetMs(off) {
 
 function sendDueReminders() {
   const now = Date.now();
-  const window = 10 * 60 * 1000; // 10-minute fire window
+  const win = 12 * 60 * 1000; // 12-min fire window (trigger runs every 10 min)
   const members = _getAllMembers();
   const weekCache = _getWeeklyHebcal();
-  const candleTs = _parseDateTime(weekCache && weekCache.shTimes && weekCache.shTimes.candlesISO);
-  const havdalahTs = _parseDateTime(weekCache && weekCache.shTimes && weekCache.shTimes.havdalahISO);
+  const shabbatKey = weekCache && weekCache.weekKey; // yyyy-mm-dd of Shabbat
+  const candleTs = _shabbatEventTs(shabbatKey, weekCache && weekCache.shTimes && weekCache.shTimes.candles, -1); // Friday
+  const havdalahTs = _shabbatEventTs(shabbatKey, weekCache && weekCache.shTimes && weekCache.shTimes.havdalah, 0); // Saturday
+  const minchaErevTs = candleTs ? candleTs - 10 * 60000 : null; // 10 min before candles
+  const shacharitTs = _shabbatEventTs(shabbatKey, _isWinterTime(new Date()) ? '08:20' : '08:30', 0);
+  const duty = _getDutyObj();
+  const dutyIds = (duty && duty.queue && duty.queue.slice(0, 2)) || [];
 
+  // Personal Hebrew events for the next 30 days (cached once per run)
+  const personalByMember = _computePersonalEvents(members, 30);
+
+  let sent = 0;
   for (const m of members) {
     const r = m.reminders;
     if (!r || !r.enabled) continue;
     if (!(r.channels && r.channels.telegram && r.telegramChatId)) continue;
-
+    const cid = r.telegramChatId;
     const evs = r.events || {};
-    // Fixed Shabbat events
-    if (evs.candles && candleTs) {
-      for (const off of evs.candles) { const fire = candleTs - _offsetMs(off); if (_inWindow(fire, now, window) && !_wasSent(m.id, 'candles', off.n + off.unit, candleTs)) { tgSend(r.telegramChatId, '🕯 <b>הדלקת נרות</b> בעוד ' + _humanOffset(off) + ' (' + _fmtTime(candleTs) + ')'); _markSent(m.id, 'candles', off.n + off.unit, candleTs); } }
+
+    // Shabbat times
+    _checkAndSend(m, cid, evs.candles, candleTs, 'candles', now, win, (off) => '🕯 <b>הדלקת נרות</b> בעוד ' + _humanOffset(off) + ' (' + _fmtTime(candleTs) + ')') && sent++;
+    _checkAndSend(m, cid, evs.havdalah, havdalahTs, 'havdalah', now, win, (off) => '✨ <b>צאת שבת</b> בעוד ' + _humanOffset(off) + ' (' + _fmtTime(havdalahTs) + ')') && sent++;
+    _checkAndSend(m, cid, evs.minchaErev, minchaErevTs, 'minchaErev', now, win, (off) => '🙏 <b>מנחה ערב שבת</b> בעוד ' + _humanOffset(off) + ' (' + _fmtTime(minchaErevTs) + ')') && sent++;
+    _checkAndSend(m, cid, evs.shacharit, shacharitTs, 'shacharit', now, win, (off) => '🌅 <b>שחרית שבת</b> בעוד ' + _humanOffset(off) + ' (' + _fmtTime(shacharitTs) + ')') && sent++;
+
+    // Duty: if member is in this week's duty pair
+    if (evs.duty && dutyIds.indexOf(m.id) >= 0 && candleTs) {
+      for (const off of evs.duty) {
+        const fire = candleTs - _offsetMs(off);
+        const key = off.n + off.unit;
+        if (_inWindow(fire, now, win) && !_wasSent(m.id, 'duty', key, candleTs)) {
+          tgSend(cid, '🧹 <b>תזכורת תורנות</b>\nאת/ה בתורנות השבת הקרובה — בעוד ' + _humanOffset(off));
+          _markSent(m.id, 'duty', key, candleTs);
+          sent++;
+        }
+      }
     }
-    if (evs.havdalah && havdalahTs) {
-      for (const off of evs.havdalah) { const fire = havdalahTs - _offsetMs(off); if (_inWindow(fire, now, window) && !_wasSent(m.id, 'havdalah', off.n + off.unit, havdalahTs)) { tgSend(r.telegramChatId, '✨ <b>צאת שבת</b> בעוד ' + _humanOffset(off) + ' (' + _fmtTime(havdalahTs) + ')'); _markSent(m.id, 'havdalah', off.n + off.unit, havdalahTs); } }
+
+    // Personal: yahrzeit / bar mitzvah / birthday
+    const personal = personalByMember[m.id] || [];
+    for (const p of personal) {
+      const eventTs = p.ts;
+      const offsets = evs[p.type];
+      if (!offsets || !offsets.length) continue;
+      for (const off of offsets) {
+        const fire = eventTs - _offsetMs(off);
+        const key = p.type + ':' + (p.subject || '') + ':' + off.n + off.unit;
+        if (_inWindow(fire, now, win) && !_wasSent(m.id, p.type, key, eventTs)) {
+          let msg = '';
+          if (p.type === 'yahrzeit') msg = '🕯 <b>יארצייט קרוב</b>\n' + (p.subject || '') + ' — ' + _fmtDate(eventTs) + ' (בעוד ' + _humanOffset(off) + ')';
+          else if (p.type === 'barMitzvah') msg = '✡ <b>בר/בת מצווה קרובה</b>\n' + (p.subject || '') + ' — ' + _fmtDate(eventTs) + ' (בעוד ' + _humanOffset(off) + ')';
+          else if (p.type === 'birthday') msg = '🎂 <b>יום הולדת עברי</b>\n' + (p.subject || '') + ' — ' + _fmtDate(eventTs) + ' (בעוד ' + _humanOffset(off) + ')';
+          if (msg) { tgSend(cid, msg); _markSent(m.id, p.type, key, eventTs); sent++; }
+        }
+      }
     }
-    // TODO: yahrzeit, barMitzvah, duty, birthday — require Hebrew date calculation per member.
-    // Those are scheduled once we confirm the Shabbat flow works.
   }
-  return 'done';
+  return 'done, sent=' + sent;
 }
 
-function _parseDateTime(s) { if (!s) return null; const d = new Date(s); return isNaN(d) ? null : d.getTime(); }
+function _checkAndSend(m, cid, offsets, eventTs, typeKey, now, win, msgBuilder) {
+  if (!offsets || !eventTs) return false;
+  let any = false;
+  for (const off of offsets) {
+    const fire = eventTs - _offsetMs(off);
+    const key = off.n + off.unit;
+    if (_inWindow(fire, now, win) && !_wasSent(m.id, typeKey, key, eventTs)) {
+      tgSend(cid, msgBuilder(off));
+      _markSent(m.id, typeKey, key, eventTs);
+      any = true;
+    }
+  }
+  return any;
+}
+
+function _shabbatEventTs(shabbatKey, hhmm, dayOffset) {
+  if (!shabbatKey || !hhmm) return null;
+  const parts = shabbatKey.split('-');
+  if (parts.length !== 3) return null;
+  const d = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+  d.setDate(d.getDate() + dayOffset);
+  const hm = hhmm.split(':'); if (hm.length !== 2) return null;
+  d.setHours(+hm[0], +hm[1], 0, 0);
+  return d.getTime();
+}
+function _isWinterTime(d) { const m = d.getMonth() + 1; return m <= 3 || m >= 10; }
 function _inWindow(fire, now, win) { return fire >= now - win / 2 && fire <= now + win / 2; }
 function _humanOffset(off) {
   const names = { minutes: 'דקות', hours: 'שעות', days: 'ימים', weeks: 'שבועות' };
   return off.n + ' ' + (names[off.unit] || off.unit);
 }
 function _fmtTime(ts) { return Utilities.formatDate(new Date(ts), 'Asia/Jerusalem', 'HH:mm'); }
+function _fmtDate(ts) { return Utilities.formatDate(new Date(ts), 'Asia/Jerusalem', 'dd/MM'); }
 
 function _getWeeklyHebcal() {
   const sh = getSettingsSheet();
   const rows = sh.getDataRange().getValues();
   for (let i = 1; i < rows.length; i++) if (rows[i][0] === 'hebcal_week') { try { return JSON.parse(rows[i][1]); } catch (e) {} }
   return null;
+}
+
+// ── Hebrew → Gregorian (cached) via Hebcal API ──────────
+function _hebrewToGregorian(hd, hm, gyear) {
+  if (!hd || !hm || !gyear) return null;
+  const cache = CacheService.getScriptCache();
+  const key = 'h2g_' + hd + '_' + hm + '_' + gyear;
+  const hit = cache.get(key); if (hit) { try { return JSON.parse(hit); } catch (e) {} }
+  try {
+    const hy = _approxHebrewYearForGregorian(gyear, hm);
+    const url = 'https://www.hebcal.com/converter?cfg=json&hy=' + hy + '&hm=' + encodeURIComponent(_hmToEngName(hm)) + '&hd=' + hd + '&h2g=1&strict=1';
+    const r = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+    const j = JSON.parse(r.getContentText());
+    if (j && j.gy && j.gm && j.gd) {
+      const out = { gy: j.gy, gm: j.gm, gd: j.gd };
+      cache.put(key, JSON.stringify(out), 21600); // 6h
+      return out;
+    }
+  } catch (e) { Logger.log('h2g: ' + e); }
+  return null;
+}
+function _approxHebrewYearForGregorian(gyear, hm) { // Tishrei-Elul crosses Gregorian year
+  // hm 7..12 (Tishrei..Elul-earlyTishrei) — Hebrew year = gy + 3761 roughly
+  return gyear + 3760;
+}
+function _hmToEngName(hm) {
+  const names = { 1: 'Nisan', 2: 'Iyyar', 3: 'Sivan', 4: 'Tamuz', 5: 'Av', 6: 'Elul', 7: 'Tishrei', 8: 'Cheshvan', 9: 'Kislev', 10: 'Tevet', 11: 'Shvat', 12: 'Adar' };
+  return names[hm] || hm;
+}
+
+function _computePersonalEvents(members, daysAhead) {
+  const out = {};
+  const now = new Date();
+  const horizon = now.getTime() + daysAhead * 86400000;
+  for (const m of members) {
+    const list = [];
+    // Yahrzeits — re-occur each Hebrew year
+    for (const y of (m.yahrzeits || [])) {
+      if (!y.hd || !y.hm) continue;
+      const tryYears = [now.getFullYear(), now.getFullYear() + 1];
+      for (const gy of tryYears) {
+        const g = _hebrewToGregorian(+y.hd, +y.hm, gy);
+        if (!g) continue;
+        const ts = new Date(g.gy, g.gm - 1, g.gd, 19, 0, 0).getTime();
+        if (ts >= now.getTime() - 86400000 && ts <= horizon) list.push({ type: 'yahrzeit', ts, subject: y.name || '' });
+      }
+    }
+    // Bar mitzvah — child.barDate is absolute Gregorian
+    for (const c of (m.children || [])) {
+      if (!c.barDate) continue;
+      const ts = Date.parse(c.barDate + 'T08:30:00+03:00');
+      if (isNaN(ts)) continue;
+      if (ts >= now.getTime() - 86400000 && ts <= horizon) list.push({ type: 'barMitzvah', ts, subject: c.name || '' });
+    }
+    // Hebrew birthday (for each child who has hd/hm)
+    for (const c of (m.children || [])) {
+      if (!c.hd || !c.hm) continue;
+      const tryYears = [now.getFullYear(), now.getFullYear() + 1];
+      for (const gy of tryYears) {
+        const g = _hebrewToGregorian(+c.hd, +c.hm, gy);
+        if (!g) continue;
+        const ts = new Date(g.gy, g.gm - 1, g.gd, 10, 0, 0).getTime();
+        if (ts >= now.getTime() - 86400000 && ts <= horizon) list.push({ type: 'birthday', ts, subject: c.name || '' });
+      }
+    }
+    if (list.length) out[m.id] = list;
+  }
+  return out;
 }
