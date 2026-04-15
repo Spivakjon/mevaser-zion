@@ -675,7 +675,20 @@ function _handleTelegramUpdate(update) {
         tgSend(chatId, '⚠ לא נמצא מתפלל עם המזהה הזה. אנא פתח/י את הקישור מהאזור האישי באפליקציה.');
         return { status: 'ok' };
       }
-      tgSend(chatId, '🕍 <b>ברוכים הבאים לבוט קהילת מבשר ציון</b>\n\nלקישור החשבון: פתח/י את "האזור שלי" באפליקציה → תזכורות → לחץ/י "קשר לטלגרם".\n\nפקודות זמינות:\n/status — הצג העדפות תזכורות\n/help — עזרה' + (isAdmin ? '\n\n<b>פקודות מנהל:</b>\n/pending /duty /stats /announce' : ''));
+      tgSend(chatId, '🕍 <b>ברוכים הבאים לבוט קהילת מבשר ציון</b>\n\n<b>לקישור החשבון</b>, יש שתי דרכים:\n1. מהאפליקציה: "האזור שלי" ← תזכורות ← "קשר לטלגרם" (עדיף)\n2. להעתיק את קוד הקישור מהאפליקציה ולשלוח כאן: <code>/link &lt;הקוד&gt;</code>\n\n<b>פקודות:</b>\n/status — הצג העדפות\n/unlink — ניתוק\n/help — עזרה' + (isAdmin ? '\n\n<b>פקודות מנהל:</b>\n/pending /duty /stats /announce' : ''));
+      return { status: 'ok' };
+    }
+
+    // Manual linking fallback: /link MEMBER_ID
+    if (/^\/link\s+/.test(text)) {
+      const memberId = text.replace(/^\/link\s+/, '').trim();
+      if (!memberId) { tgSend(chatId, 'שימוש: /link <קוד הקישור מהאפליקציה>'); return { status: 'ok' }; }
+      const m = _linkMemberToChat(memberId, chatId);
+      if (m) {
+        tgSend(chatId, '✓ <b>החשבון קושר בהצלחה</b>\n\nשלום ' + (m.firstName || '') + '!\nמעתה תקבל/י תזכורות לטלגרם לפי ההעדפות שהגדרת.');
+      } else {
+        tgSend(chatId, '⚠ לא נמצא מתפלל עם הקוד הזה. ודא/י שהעתקת את הקוד המלא מהאפליקציה.');
+      }
       return { status: 'ok' };
     }
 

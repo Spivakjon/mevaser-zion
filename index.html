@@ -416,6 +416,19 @@ body.dark-mode .rem-tel-row input:focus{border-color:#d4af5a}
 .rem-tel-linked{font-size:.85rem;color:#1e7d4b;background:rgba(30,125,75,.1);padding:.5rem .8rem;border-radius:8px;border:1px solid rgba(30,125,75,.25)}
 .rem-tel-linked code{font-family:'Heebo',monospace;background:rgba(0,0,0,.1);padding:1px 6px;border-radius:4px}
 body.dark-mode .rem-tel-linked{color:#9ddcb2;background:rgba(30,125,75,.15);border-color:rgba(45,157,94,.35)}
+.rem-tel-divider{text-align:center;font-size:.75rem;color:#8a7350;margin:.7rem 0;position:relative}
+.rem-tel-divider::before,.rem-tel-divider::after{content:"";position:absolute;top:50%;width:40%;height:1px;background:rgba(101,65,30,.2)}
+.rem-tel-divider::before{right:0}.rem-tel-divider::after{left:0}
+body.dark-mode .rem-tel-divider{color:#a89366}
+body.dark-mode .rem-tel-divider::before,body.dark-mode .rem-tel-divider::after{background:rgba(212,175,90,.22)}
+.rem-tel-copy{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.55rem .75rem;background:#fbf6e8;border:1.5px dashed rgba(101,65,30,.3);border-radius:8px;cursor:pointer;transition:.15s;margin-top:.3rem}
+.rem-tel-copy:hover{border-style:solid;background:rgba(138,97,48,.08)}
+.rem-tel-copy code{font-family:'Heebo',monospace;color:#3a2817;font-size:.85rem;direction:ltr;text-align:left;flex:1;word-break:break-all}
+.rem-tel-copy-btn{font-size:.78rem;color:#8a6d2e;font-weight:600;flex-shrink:0;padding:.25rem .6rem;background:rgba(200,168,75,.15);border-radius:6px;white-space:nowrap}
+body.dark-mode .rem-tel-copy{background:rgba(212,175,90,.06);border-color:rgba(212,175,90,.3)}
+body.dark-mode .rem-tel-copy:hover{background:rgba(212,175,90,.12)}
+body.dark-mode .rem-tel-copy code{color:#f0d48a}
+body.dark-mode .rem-tel-copy-btn{color:#d4af5a;background:rgba(212,175,90,.12)}
 
 .rem-events{margin-bottom:1.2rem}
 .rem-ev{padding:.7rem .9rem;background:rgba(138,97,48,.04);border:1px solid rgba(101,65,30,.15);border-radius:10px;margin-bottom:.5rem}
@@ -5117,9 +5130,12 @@ function openRemindersModal(memberId){
       ('<div class="rem-tel-linked">✓ '+(isEn?'Linked — Chat ID:':'מקושר — Chat ID:')+' <code>'+es(m.reminders.telegramChatId)+'</code></div>'
       +'<a href="https://t.me/'+TELEGRAM_BOT_USERNAME+'" target="_blank" class="rem-tel-btn rem-tel-btn-sec">'+(isEn?'Open bot':'פתח את הבוט')+'</a>')
       :
-      ('<div class="rem-tel-hint">'+(isEn?'Tap the button below to link your account via the bot:':'לחץ/י על הכפתור לקישור החשבון דרך הבוט:')+'</div>'
+      ('<div class="rem-tel-hint">'+(isEn?'Option 1 — one-click link via the bot:':'אפשרות 1 — קישור מהיר דרך הבוט:')+'</div>'
       +'<a href="https://t.me/'+TELEGRAM_BOT_USERNAME+'?start=LINK_'+es(m.id)+'" target="_blank" class="rem-tel-btn">🔗 '+(isEn?'Link to @'+TELEGRAM_BOT_USERNAME:'קשר לטלגרם (@'+TELEGRAM_BOT_USERNAME+')')+'</a>'
-      +'<div class="rem-tel-hint" style="font-size:.72rem;opacity:.75;margin-top:.5rem">'+(isEn?'After pressing /start in the bot, refresh this page to see your Chat ID.':'אחרי לחיצה על /start בבוט — רענן/י את הדף כדי לראות את ה-Chat ID.')+'</div>')
+      +'<div class="rem-tel-divider">'+(isEn?'or':'או')+'</div>'
+      +'<div class="rem-tel-hint">'+(isEn?'Option 2 — send this command manually to the bot:':'אפשרות 2 — שלח/י לבוט את הפקודה:')+'</div>'
+      +'<div class="rem-tel-copy" onclick="copyLinkCode(\''+es(m.id)+'\',this)"><code>/link '+es(m.id)+'</code><span class="rem-tel-copy-btn">'+(isEn?'Copy':'העתק')+'</span></div>'
+      +'<div class="rem-tel-hint" style="font-size:.72rem;opacity:.75;margin-top:.5rem">'+(isEn?'After linking, close and reopen this dialog to see your Chat ID.':'אחרי הקישור — סגור ופתח שוב את החלון הזה כדי לראות את ה-Chat ID.')+'</div>')
     )
     +'</div>'
     +'</div>'
@@ -5165,6 +5181,15 @@ function addRemOffset(k){
   cont.insertAdjacentHTML('beforeend',_renderRemOffset(k,{n:1,unit:'hours'}));
 }
 function closeRemModal(){var m=document.getElementById('rem-modal');if(m)m.remove();_remCurMember=null}
+function copyLinkCode(memberId,el){
+  var cmd='/link '+memberId;
+  var done=function(){
+    if(el){var btn=el.querySelector('.rem-tel-copy-btn');if(btn){var old=btn.textContent;btn.textContent=curLang==='en'?'✓ Copied':'✓ הועתק';btn.style.color='#1e7d4b';setTimeout(function(){btn.textContent=old;btn.style.color=''},2000)}}
+    showToast(curLang==='en'?'Command copied':'הפקודה הועתקה');
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(cmd).then(done).catch(function(){done()})}
+  else{var ta=document.createElement('textarea');ta.value=cmd;ta.style.cssText='position:fixed;top:-9999px';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}document.body.removeChild(ta);done()}
+}
 function saveReminders(){
   if(!_remCurMember)return;
   var m=getM(_remCurMember);if(!m)return;
