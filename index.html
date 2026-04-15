@@ -4562,9 +4562,9 @@ function toggleReg(){
     return;
   }
   var s=getMbrSettings();
-  if(pc&&(s.year||s.link)){
+  if(pc){
     var py=document.getElementById('prompt-year');
-    if(py&&s.year)py.textContent=s.year;
+    if(py)py.textContent=s.year||'תשפ״ו';
     pc.style.display='';
     mc.classList.add('reg-collapsed');
     pc.scrollIntoView({behavior:'smooth',block:'start'});
