@@ -343,6 +343,27 @@ body.dark-mode .mbtn-outline:hover{background:rgba(212,175,90,.08)}
 body.dark-mode .mbtn-gray{color:#a89366;border-color:rgba(212,175,90,.2)}
 body.dark-mode .mbtn-gray:hover{background:rgba(212,175,90,.06);color:#d4af5a}
 .mhint{font-size:.72rem;color:#8a7350;margin-top:-.35rem;margin-bottom:.55rem;text-align:center}
+
+/* Install help modal */
+.ih-box{text-align:right;max-width:480px}
+.ih-head{text-align:center;padding-bottom:1rem;margin-bottom:1rem;border-bottom:1px solid rgba(101,65,30,.18)}
+body.dark-mode .ih-head{border-bottom-color:rgba(212,175,90,.2)}
+.ih-title{font-family:'Frank Ruhl Libre',serif;font-size:1.2rem;font-weight:700;color:#3a2817;margin-bottom:.4rem}
+body.dark-mode .ih-title{color:#f0d48a}
+.ih-sub{font-size:.85rem;color:#6b4d2e;line-height:1.5}
+body.dark-mode .ih-sub{color:#c9b381}
+.ih-steps{margin-bottom:1rem}
+.ih-step{display:flex;align-items:center;gap:.85rem;padding:.8rem .9rem;background:rgba(138,97,48,.06);border:1px solid rgba(101,65,30,.15);border-radius:10px;margin-bottom:.55rem}
+body.dark-mode .ih-step{background:rgba(212,175,90,.06);border-color:rgba(212,175,90,.18)}
+.ih-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#c8a84b 0%,#ddb95e 100%);color:#241a0e;display:flex;align-items:center;justify-content:center;font-family:'Frank Ruhl Libre',serif;font-weight:700;font-size:1rem;box-shadow:0 2px 6px rgba(138,97,48,.3)}
+.ih-tx{flex:1;font-size:.88rem;color:#3a2817;line-height:1.5}
+body.dark-mode .ih-tx{color:#e8d9b0}
+.ih-tx b{color:#8a6d2e;font-weight:700}
+body.dark-mode .ih-tx b{color:#d4af5a}
+.ih-ic{flex-shrink:0;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:#faf3e1;border-radius:8px;border:1px solid rgba(101,65,30,.2)}
+body.dark-mode .ih-ic{background:rgba(212,175,90,.08);border-color:rgba(212,175,90,.25)}
+body.dark-mode .ih-ic svg{stroke:#d4af5a !important}
+body.dark-mode .ih-ic circle[fill]{fill:#d4af5a !important}
 .mbtn{display:block;width:100%;padding:.72rem;border:none;border-radius:10px;font-family:'Heebo',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;margin-bottom:.5rem;min-height:48px}
 .mbtn-gold{background:var(--gold);color:var(--ink)}
 .mbtn-dark{background:var(--ink);color:var(--gold2)}
@@ -4992,16 +5013,42 @@ function installPWA(){
     _deferredPrompt.userChoice.then(function(){_deferredPrompt=null;var btn=document.getElementById('pwa-install-btn');if(btn)btn.style.display='none'});
     return;
   }
-  // iOS/Safari - show manual instructions
-  var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-  var isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   var isStandalone=window.navigator.standalone||window.matchMedia('(display-mode:standalone)').matches;
   if(isStandalone)return;
+  showInstallHelpModal();
+}
+function showInstallHelpModal(){
+  var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+  var isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
   var isEn=curLang==='en';
-  var msg=isIOS||isSafari?
-    (isEn?'To install: tap the Share button (□↑) then "Add to Home Screen"':'להתקנה: לחצו על כפתור השיתוף (□↑) ואז "הוסף למסך הבית"'):
-    (isEn?'To install: open browser menu (⋮) then "Install App" or "Add to Home Screen"':'להתקנה: פתחו תפריט דפדפן (⋮) ואז "התקן אפליקציה" או "הוסף למסך הבית"');
-  alert(msg);
+  var existing=document.getElementById('install-help-modal');if(existing)existing.remove();
+  var step=function(n,txt,ic){return '<div class="ih-step"><span class="ih-num">'+n+'</span><div class="ih-tx">'+txt+'</div>'+(ic?'<div class="ih-ic">'+ic+'</div>':'')+'</div>'};
+  var shareIc='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8a6d2e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 V15 M7 8 L12 3 L17 8 M5 13 V20 A1 1 0 0 0 6 21 H18 A1 1 0 0 0 19 20 V13"/></svg>';
+  var addIc='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8a6d2e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8 V16 M8 12 H16"/></svg>';
+  var menuIc='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8a6d2e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="6" r="1.5" fill="#8a6d2e"/><circle cx="12" cy="12" r="1.5" fill="#8a6d2e"/><circle cx="12" cy="18" r="1.5" fill="#8a6d2e"/></svg>';
+  var title=isEn?'Install app on home screen':'התקנת האפליקציה במסך הבית';
+  var sub=isIOS||isSafari?
+    (isEn?'On iPhone / iPad, iOS requires a manual step — follow the instructions below:':'ב-iPhone ו-iPad iOS מחייב שלב ידני — עקבו אחר ההוראות:'):
+    (isEn?'Open your browser menu and choose "Install App":':'פתחו את תפריט הדפדפן ובחרו "התקן אפליקציה":');
+  var steps;
+  if(isIOS||isSafari){
+    steps=
+      step(1,isEn?'Tap the <b>Share</b> button at the bottom of Safari':'לחצו על כפתור <b>השיתוף</b> בתחתית Safari',shareIc)
+     +step(2,isEn?'Scroll down and tap <b>Add to Home Screen</b>':'גללו למטה ובחרו <b>הוסף למסך הבית</b>',addIc)
+     +step(3,isEn?'Tap <b>Add</b> in the top corner — the app icon appears on your home screen':'לחצו <b>הוסף</b> בפינה העליונה — האייקון יופיע במסך הבית');
+  }else{
+    steps=
+      step(1,isEn?'Tap the three-dot menu (<b>⋮</b>) in your browser':'לחצו על תפריט שלוש-הנקודות (<b>⋮</b>) בדפדפן',menuIc)
+     +step(2,isEn?'Choose <b>Install App</b> or <b>Add to Home Screen</b>':'בחרו <b>התקן אפליקציה</b> או <b>הוסף למסך הבית</b>',addIc)
+     +step(3,isEn?'Confirm to install — the icon appears on your home screen':'אשרו את ההתקנה — האייקון יופיע במסך הבית');
+  }
+  var html='<div class="modal-bg show" id="install-help-modal" onclick="if(event.target===this)this.remove()">'
+    +'<div class="modal-box ih-box">'
+    +'<div class="ih-head"><div class="ih-title">'+title+'</div><div class="ih-sub">'+sub+'</div></div>'
+    +'<div class="ih-steps">'+steps+'</div>'
+    +'<button class="mbtn mbtn-gold" onclick="document.getElementById(\'install-help-modal\').remove()">'+(isEn?'Got it':'הבנתי')+'</button>'
+    +'</div></div>';
+  document.body.insertAdjacentHTML('beforeend',html);
 }
 // Show install button on iOS too (no beforeinstallprompt there)
 (function(){
