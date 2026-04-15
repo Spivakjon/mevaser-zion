@@ -5175,7 +5175,7 @@ function saveReminders(){
       telegram:document.getElementById('rem-ch-tel').checked,
       fcm:false
     },
-    telegramChatId:(document.getElementById('rem-tel-id').value||'').trim(),
+    telegramChatId:(m.reminders&&m.reminders.telegramChatId)||'',
     events:{}
   };
   for(var i=0;i<_remEventTypes.length;i++){
@@ -5199,6 +5199,7 @@ function saveReminders(){
   closeRemModal();
   showToast(curLang==='en'?'Reminders saved':'התזכורות נשמרו');
 }
+function doSelfEditDirect(memberId){
   var m=getM(memberId);
   if(!m)return;
   initForm(m);
