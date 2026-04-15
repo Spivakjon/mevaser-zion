@@ -4810,7 +4810,7 @@ async function prewarmHebcalCache(ms,curHY){
 
 // ── Week Summary Cache ────────────────────────────────────
 var WK_CACHE_KEY='mbz_week_cache';
-var WK_CACHE_VER='v12'; // bump this on any change to week summary rendering
+var WK_CACHE_VER='v13'; // bump this on any change to week summary rendering
 function getWeekCache(){
   try{var c=JSON.parse(localStorage.getItem(WK_CACHE_KEY));
   if(!c||!c.html||c.ver!==WK_CACHE_VER)return null;
@@ -7093,14 +7093,18 @@ renderPublicAnnouncements();
 initMbrPrompt();
 applyPaymentSettings();
 _updatePendingBadge();
-// Init flow: load Sheets first (gets Hebcal cache), THEN render week summary
-// Load Sheets data first (brings hebcal cache), then render week summary once
+// Init flow: render week summary IMMEDIATELY from local cache,
+// then refresh Sheets data in the background and re-render if data changed.
+loadWeekSummary();
 if(SHEETS_URL){
   sheetsLoadAll().then(function(ok){
-    if(ok){try{localStorage.removeItem(CAL_CACHE_KEY)}catch(e){} mergeCustomTexts();applyLang();renderPublicAnnouncements();_updatePendingBadge()}
-  }).catch(function(){}).finally(function(){loadWeekSummary()});
-}else{
-  loadWeekSummary();
+    if(ok){
+      try{localStorage.removeItem(CAL_CACHE_KEY)}catch(e){}
+      try{localStorage.removeItem(WK_CACHE_KEY)}catch(e){}
+      mergeCustomTexts();applyLang();renderPublicAnnouncements();_updatePendingBadge();
+      loadWeekSummary();
+    }
+  }).catch(function(){});
 }
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(reg){
