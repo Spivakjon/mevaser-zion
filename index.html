@@ -914,6 +914,55 @@ body:not(.light-mode) .footer,body:not(.light-mode) footer{color:#6b4d2e !import
 
 /* Keep admin overlay dark (unaffected — renders above ::before/::after) */
 body:not(.light-mode) .adm-ovl{z-index:100}
+
+/* ── Elegant SVG icons for top-nav buttons ──────────────── */
+.top-actions button[data-i18n]::before{
+  content:"";display:inline-block;width:17px;height:17px;margin-inline-end:6px;
+  vertical-align:-3px;background:center/contain no-repeat;opacity:.9
+}
+/* Star of David — My Area */
+.top-actions button[data-i18n="myAreaBtn"]::before{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a6d2e' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2.5 L21.5 19 L2.5 19 Z'/><path d='M12 21.5 L2.5 5 L21.5 5 Z'/></svg>")
+}
+/* Quill / fountain pen — Register */
+.top-actions button[data-i18n="regBtn"]::before{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a6d2e' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><path d='M20.5 3.5 C 15 5.5 8.5 11 5.5 18 L3 21 L6 18.5 C 13 15.5 18.5 9 20.5 3.5 Z'/><path d='M6.5 18 L11.5 13'/><path d='M15 6 L18 9'/></svg>")
+}
+/* Shekel/coin — Payment */
+.top-actions button[data-i18n="payBtn"]::before{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a6d2e' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M8.5 7.5 V16.5 M15.5 16.5 V7.5 M8.5 7.5 H12 A 2.5 2.5 0 0 1 14.5 10 V12 M15.5 16.5 H12 A 2.5 2.5 0 0 1 9.5 14 V12'/></svg>")
+}
+/* Ornate key — Admin */
+.top-actions button[data-i18n="adminBtn"]::before{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a6d2e' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><circle cx='7.5' cy='12' r='3.5'/><circle cx='7.5' cy='12' r='1' fill='%238a6d2e'/><path d='M11 12 L21.5 12 M18 12 V15.5 M15 12 V14.5'/></svg>")
+}
+/* Install arrow — elegant line */
+.top-actions button[data-i18n="installBtn"]::before{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a6d2e' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3 V15.5 M6.5 10 L12 15.5 L17.5 10 M4 20.5 H20'/></svg>")
+}
+
+/* ── Logo area: add Hebrew-inspired ornament above org name ── */
+body:not(.light-mode) .logo-wrap::after{
+  content:"";display:block;width:72px;height:14px;margin:.35rem auto -.15rem;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 14' fill='none' stroke='%238a6d2e' stroke-width='1' stroke-linecap='round'><path d='M0 7 H24 M48 7 H72'/><circle cx='36' cy='7' r='2' fill='%238a6d2e' stroke='none'/><circle cx='28' cy='7' r='1' fill='%238a6d2e' stroke='none'/><circle cx='44' cy='7' r='1' fill='%238a6d2e' stroke='none'/></svg>") center/contain no-repeat;
+  opacity:.7
+}
+
+/* ── Footer credit — make it prominent & elegant ───────── */
+body:not(.light-mode) .site-footer{
+  color:#3a2817 !important;
+  font-size:.85rem !important;
+  font-family:'Frank Ruhl Libre',serif !important;
+  font-weight:500 !important;
+  padding:2rem 1rem calc(1.5rem + env(safe-area-inset-bottom,0px)) !important;
+  letter-spacing:.3px;
+  position:relative
+}
+body:not(.light-mode) .site-footer::before{
+  content:"";display:block;width:140px;height:14px;margin:0 auto 1rem;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 14' fill='none' stroke='%235c3f22' stroke-width='1.1' stroke-linecap='round'><path d='M0 7 H52 M88 7 H140'/><path d='M70 1.5 L76 7 L70 12.5 L64 7 Z' fill='%238a6d2e' stroke='%235c3f22' stroke-width='.8'/><circle cx='58' cy='7' r='1.3' fill='%235c3f22' stroke='none'/><circle cx='82' cy='7' r='1.3' fill='%235c3f22' stroke='none'/></svg>") center/contain no-repeat;
+  opacity:.85
+}
 </style>
 <script src="https://unpkg.com/kosher-zmanim@0.9.0/dist/kosher-zmanim.min.js"></script>
 </head>
@@ -942,7 +991,7 @@ body:not(.light-mode) .adm-ovl{z-index:100}
 
 <div class="main-card" id="membership-prompt-card" style="display:none">
   <div class="pay-msg" style="text-align:center;padding:1.5rem 1.2rem">
-    <h2 style="color:var(--gold);margin-bottom:1rem" data-i18n="mbrPromptTitle">🕍 ברוכים הבאים לקהילת מבשר ציון</h2>
+    <h2 style="color:var(--gold);margin-bottom:1rem" data-i18n="mbrPromptTitle">ברוכים הבאים לקהילת מבשר ציון</h2>
     <p style="font-size:1rem;line-height:1.9;margin-bottom:1.4rem" data-i18n="mbrPromptText">אנו שמחים לרשום את פרטי המתפלל לשנת <strong id="prompt-year" style="color:var(--gold2)">תשפ״ו</strong>.<br>האם שולמו דמי החבר לשנה זו?</p>
     <div style="display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap">
       <button onclick="membershipAnswer(true)" class="pay-continue" style="background:var(--grn);color:#fff;border-color:var(--grn);min-width:140px;font-size:.95rem" data-i18n="mbrYes">✓ כן, שולם</button>
@@ -2946,7 +2995,7 @@ var I18N={
     welcomeTitle:'🕍 קהילת מבשר ציון — תל מונד',
     welcomeText:'ברוכים הבאים! אנו שמחים לראותכם כחלק מקהילתנו.<br>באתר זה תוכלו להירשם כחברי בית הכנסת, להתעדכן באירועי השבוע הקרוב ולנהל את פרטיכם האישיים.',
     communityInfo:'📋 מידע על הקהילה ותל מונד',
-    adminBtn:'🔒 ניהול',
+    adminBtn:'ניהול',
     selfEditTitle:'📝 עריכת הפרטים שלי',
     selfEditSubtitle:'הזן את הפרטים הבאים לזיהוי',
     selfEditPhone:'טלפון',
@@ -2958,8 +3007,8 @@ var I18N={
     myShabbatSubtitle:'הזן טלפון לצפייה במידע האישי שלך',
     myShabbatShow:'הצג',
     myShabbatBtn:'🕍 השבת שלי',
-    myAreaBtn:'🕍 האזור שלי',
-    regBtn:'📝 הרשמה',
+    myAreaBtn:'האזור שלי',
+    regBtn:'הרשמה',
     selfEditErrEmpty:'אנא הזן טלפון, שם מלא ושם האב',
     selfEditErrName:'טלפון נמצא אך השם או שם האב אינם תואמים',
     selfEditErrNotFound:'לא נמצא מתפלל עם פרטים אלו',
@@ -3010,9 +3059,9 @@ var I18N={
     payNotesLabel:'הערות',
     payConfirmBtn:'אשר תשלום',
     reminderListTitle:'שליחת תזכורות',
-    payBtn:'💳 תשלום',
-    installBtn:'📲 התקן',
-    mbrPromptTitle:'🕍 ברוכים הבאים לקהילת מבשר ציון',
+    payBtn:'תשלום',
+    installBtn:'התקן',
+    mbrPromptTitle:'ברוכים הבאים לקהילת מבשר ציון',
     mbrPromptText:'אנו שמחים לרשום את פרטי המתפלל לשנת <strong id="prompt-year" style="color:var(--gold2)">תשפ״ו</strong>.<br>האם שולמו דמי החבר לשנה זו?',
     mbrYes:'✓ כן, שולם',
     mbrNo:'עדיין לא',
@@ -3440,7 +3489,7 @@ var I18N={
     welcomeTitle:'🕍 Mevaser Zion Community \u2014 Tel Mond',
     welcomeText:'Welcome! We are glad to have you as part of our community.<br>Here you can register as a synagogue member, stay updated on upcoming events, and manage your personal details.',
     communityInfo:'📋 Community & Tel Mond Info',
-    adminBtn:'🔒 Admin',
+    adminBtn:'Admin',
     selfEditTitle:'📝 Edit My Details',
     selfEditSubtitle:'Enter your details to identify',
     selfEditPhone:'Phone',
@@ -3452,8 +3501,8 @@ var I18N={
     myShabbatSubtitle:'Enter your phone to view personal info',
     myShabbatShow:'Show',
     myShabbatBtn:'🕍 My Shabbat',
-    myAreaBtn:'🕍 My Area',
-    regBtn:'📝 Register',
+    myAreaBtn:'My Area',
+    regBtn:'Register',
     selfEditErrEmpty:'Please enter phone, full name and father\'s name',
     selfEditErrName:'Phone found but name or father\'s name don\'t match',
     selfEditErrNotFound:'No member found with these details',
@@ -3504,9 +3553,9 @@ var I18N={
     payNotesLabel:'Notes',
     payConfirmBtn:'Confirm Payment',
     reminderListTitle:'Send Reminders',
-    payBtn:'💳 Payment',
-    installBtn:'📲 Install',
-    mbrPromptTitle:'🕍 Welcome to Mevaser Zion',
+    payBtn:'Payment',
+    installBtn:'Install',
+    mbrPromptTitle:'Welcome to Mevaser Zion',
     mbrPromptText:'We are glad to register the worshipper for the year <strong id="prompt-year" style="color:var(--gold2)">5786</strong>.<br>Has the membership fee been paid for this year?',
     mbrYes:'✓ Yes, paid',
     mbrNo:'Not yet',
