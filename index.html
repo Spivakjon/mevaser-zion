@@ -1844,6 +1844,46 @@ body.dark-mode .adm-ovl{z-index:100}
               </div>
             </div>
             <div class="settings-section full-width">
+              <h3 onclick="toggleSettingsSection(this)">💳 אזור תשלום בדף הראשי</h3>
+              <div class="settings-section-body">
+                <p style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:.6rem">עריכת הטקסטים, הסכומים והקישורים המוצגים באזור התשלום בדף הראשי.</p>
+                <div class="settings-field"><label>כותרת אזור תשלום</label><input type="text" id="st-pay-title" placeholder="💳 תשלום דמי חבר"></div>
+                <div class="settings-field"><label>טקסט הוגנות (פסקה ראשונה)</label><textarea id="st-pay-fairness" rows="3" style="width:100%;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;font-family:inherit;resize:vertical;padding:6px 10px;font-size:.84rem;color:#fff;background:rgba(0,0,0,.25)"></textarea></div>
+                <div class="settings-field"><label>הערת מס</label><textarea id="st-pay-taxnote" rows="2" style="width:100%;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;font-family:inherit;resize:vertical;padding:6px 10px;font-size:.84rem;color:#fff;background:rgba(0,0,0,.25)"></textarea></div>
+                <h4 style="font-size:.82rem;color:var(--gold2);margin:1rem 0 .4rem;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:.3rem">מסלול שנתי</h4>
+                <div class="settings-row">
+                  <div class="settings-field"><label>תיאור מסלול שנתי</label><input type="text" id="st-pay-annual-desc" placeholder="דמי חבר שנתיים"></div>
+                  <div class="settings-field"><label>סכום שנתי (ש"ח)</label><input type="text" id="st-pay-annual-amount" placeholder="2,760"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>קישור תשלום שנתי</label><input type="text" id="st-pay-annual-link" placeholder="https://..." dir="ltr" style="text-align:left"></div>
+                  <div class="settings-field"><label>טקסט כפתור שנתי</label><input type="text" id="st-pay-annual-btn" placeholder="💳 לתשלום דמי חבר שנתיים"></div>
+                </div>
+                <h4 style="font-size:.82rem;color:var(--gold2);margin:1rem 0 .4rem;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:.3rem">מסלול מופחת</h4>
+                <div class="settings-row">
+                  <div class="settings-field"><label>תיאור מסלול מופחת</label><input type="text" id="st-pay-reduced-desc" placeholder="דמי חבר מופחתים – מתפללי מניין נוף ילדות"></div>
+                  <div class="settings-field"><label>סכום מופחת (ש"ח)</label><input type="text" id="st-pay-reduced-amount" placeholder="1,800"></div>
+                </div>
+                <div class="settings-row">
+                  <div class="settings-field"><label>תשלום חודשי (ש"ח)</label><input type="text" id="st-pay-monthly-amount" placeholder="150"></div>
+                  <div class="settings-field"><label>קישור תשלום מופחת</label><input type="text" id="st-pay-reduced-link" placeholder="https://..." dir="ltr" style="text-align:left"></div>
+                </div>
+                <div class="settings-field"><label>טקסט כפתור מופחת</label><input type="text" id="st-pay-reduced-btn" placeholder="💳 לתשלום דמי חבר מופחתים"></div>
+                <div class="settings-field"><label>הערה למסלול מופחת</label><input type="text" id="st-pay-reduced-note" placeholder="12 תשלומים חודשיים של 150 ש״ח"></div>
+                <h4 style="font-size:.82rem;color:var(--gold2);margin:1rem 0 .4rem;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:.3rem">תרומה חד־פעמית</h4>
+                <div class="settings-row">
+                  <div class="settings-field"><label>תיאור תרומה</label><input type="text" id="st-pay-donation-desc" placeholder="תרומה חד־פעמית"></div>
+                  <div class="settings-field"><label>קישור תרומה</label><input type="text" id="st-pay-donation-link" placeholder="https://..." dir="ltr" style="text-align:left"></div>
+                </div>
+                <div class="settings-field"><label>טקסט כפתור תרומה</label><input type="text" id="st-pay-donation-btn" placeholder="💳 לתרומה חד־פעמית"></div>
+                <div class="settings-field"><label>הערה לתרומה</label><input type="text" id="st-pay-donation-note" placeholder="אורחים ומתפללי שישי"></div>
+                <div style="margin-top:.8rem">
+                  <button class="abt" onclick="savePaySettingsFromSettings()" style="padding:6px 18px;font-size:.82rem">💾 שמור שינויים</button>
+                  <span id="pay-settings-msg" style="margin-right:10px;font-size:.8rem"></span>
+                </div>
+              </div>
+            </div>
+            <div class="settings-section full-width">
               <h3 onclick="toggleSettingsSection(this)">🕐 זמני שבת ותפילות</h3>
               <div class="settings-section-body">
                 <p style="font-size:.75rem;color:rgba(255,255,255,.5);margin-bottom:.6rem">שליטה בזמני השבת המוצגים בדף הראשי. הזמנים מחושבים אוטומטית לפי העיר שנבחרה, עם אפשרות התאמה ידנית.</p>
@@ -5612,6 +5652,54 @@ function populateSettingsFields(){
   renderCustomTagsList();
   initDailyTimesToggle();
   loadZmanimSettingsUI();
+  populatePaySettingsFields();
+}
+function populatePaySettingsFields(){
+  var s=getMbrSettings();
+  var defaults={
+    'st-pay-title':s.payTextTitle||'💳 תשלום דמי חבר',
+    'st-pay-fairness':s.payFairness||'מתוך רצון לשמור על הוגנות ושוויון בין כלל חברי הקהילה, חשוב לנו לציין כי פעילות בית הכנסת והשירותים הניתנים בו מתקיימים בזכות השתתפותם של הנושאים בדמי החבר. תשלום זה מהווה חלק משמעותי בתחושת השותפות והאחריות המשותפת.\n\nנשמח מאוד אם תוכלו להסדיר את דמי החבר באמצעות הקישורים שלהלן.',
+    'st-pay-taxnote':s.payTextTaxNote||'הטבת מס\nהתשלום לעמותה מוכר לפי סעיף 46 לפקודת מס הכנסה, ולכן ניתן לקבל החזר מס בשיעור של כ־35% מסכום התרומה, בהתאם לכללים הקבועים בדין.',
+    'st-pay-annual-desc':s.payTextAnnual||'דמי חבר שנתיים',
+    'st-pay-annual-amount':s.payAnnual||'2,760',
+    'st-pay-annual-link':s.payAnnualLink||'https://mevaser.org.il/mz/annual-membership-donation',
+    'st-pay-annual-btn':s.payAnnualBtn||'💳 לתשלום דמי חבר שנתיים',
+    'st-pay-reduced-desc':s.payTextReduced||'דמי חבר מופחתים – מתפללי מניין נוף ילדות',
+    'st-pay-reduced-amount':s.payReduced||'1,800',
+    'st-pay-monthly-amount':s.payMonthly||'150',
+    'st-pay-reduced-link':s.payReducedLink||'https://mevaser.org.il/mz/product/Monthly_Membership_Nof_Yaldut_Congregants',
+    'st-pay-reduced-btn':s.payReducedBtn||'💳 לתשלום דמי חבר מופחתים',
+    'st-pay-reduced-note':s.payTextReducedNote||'12 תשלומים חודשיים של 150 ש״ח',
+    'st-pay-donation-desc':s.payTextDonation||'תרומה חד־פעמית',
+    'st-pay-donation-link':s.payDonationLink||'https://mevaser.org.il/mz/product/donation-kiddush-nof-yaldut/',
+    'st-pay-donation-btn':s.payDonationBtn||'💳 לתרומה חד־פעמית',
+    'st-pay-donation-note':s.payTextDonationNote||'אורחים ומתפללי שישי'
+  };
+  for(var id in defaults){var el=document.getElementById(id);if(el)el.value=defaults[id];}
+}
+function savePaySettingsFromSettings(){
+  var s=getMbrSettings();
+  s.payTextTitle=(document.getElementById('st-pay-title').value||'').trim();
+  s.payFairness=(document.getElementById('st-pay-fairness').value||'').trim();
+  s.payTextTaxNote=(document.getElementById('st-pay-taxnote').value||'').trim();
+  s.payTextAnnual=(document.getElementById('st-pay-annual-desc').value||'').trim();
+  s.payAnnual=(document.getElementById('st-pay-annual-amount').value||'').trim();
+  s.payAnnualLink=(document.getElementById('st-pay-annual-link').value||'').trim();
+  s.payAnnualBtn=(document.getElementById('st-pay-annual-btn').value||'').trim();
+  s.payTextReduced=(document.getElementById('st-pay-reduced-desc').value||'').trim();
+  s.payReduced=(document.getElementById('st-pay-reduced-amount').value||'').trim();
+  s.payMonthly=(document.getElementById('st-pay-monthly-amount').value||'').trim();
+  s.payReducedLink=(document.getElementById('st-pay-reduced-link').value||'').trim();
+  s.payReducedBtn=(document.getElementById('st-pay-reduced-btn').value||'').trim();
+  s.payTextReducedNote=(document.getElementById('st-pay-reduced-note').value||'').trim();
+  s.payTextDonation=(document.getElementById('st-pay-donation-desc').value||'').trim();
+  s.payDonationLink=(document.getElementById('st-pay-donation-link').value||'').trim();
+  s.payDonationBtn=(document.getElementById('st-pay-donation-btn').value||'').trim();
+  s.payTextDonationNote=(document.getElementById('st-pay-donation-note').value||'').trim();
+  saveMbrSettings(s);
+  applyPaymentSettings(s);
+  var msg=document.getElementById('pay-settings-msg');
+  if(msg){msg.style.color='var(--grn)';msg.textContent='נשמר בהצלחה!';setTimeout(function(){msg.textContent=''},3000);}
 }
 function saveCustomTexts(){
   var custom=JSON.parse(localStorage.getItem('mbz_custom_texts')||'{"he":{},"en":{}}');
@@ -5731,24 +5819,26 @@ function initMbrPrompt(){
 function applyPaymentSettings(s){
   if(!s)s=getMbrSettings();
   var sec=document.getElementById('pay-info-section');if(!sec)return;
-  // Update amounts and links dynamically
   var links=sec.querySelectorAll('a.pay-link');
-  if(s.payAnnualLink&&links[0])links[0].href=s.payAnnualLink;
-  if(s.payReducedLink&&links[1])links[1].href=s.payReducedLink;
-  if(s.payDonationLink&&links[2])links[2].href=s.payDonationLink;
-  // Update displayed amounts
   var strongs=sec.querySelectorAll('strong[style*="gold2"]');
-  if(s.payAnnual&&strongs[0]){var t=strongs[0].textContent;var m=t.match(/[\d,]+/);if(m)strongs[0].textContent=t.replace(m[0],s.payAnnual)}
-  if(s.payReduced&&strongs[1]){var t=strongs[1].textContent;var m=t.match(/[\d,]+/);if(m)strongs[1].textContent=t.replace(m[0],s.payReduced)}
-  if(s.payMonthly){var notes=sec.querySelectorAll('p[style*="font-size:.8rem"]');if(notes[0]){var t=notes[0].textContent;var m=t.match(/\d+(?= ש)/);if(m)notes[0].textContent=t.replace(m[0],s.payMonthly)}}
-  // Update text content
+  // Title
   if(s.payTextTitle){var h=sec.querySelector('h2');if(h)h.textContent=s.payTextTitle}
-  if(s.payTextTaxNote){var tn=sec.querySelector('p[data-i18n="payTaxNote"]');if(tn)tn.textContent=s.payTextTaxNote}
-  if(s.payTextAnnual&&strongs[0])strongs[0].textContent=s.payTextAnnual+(s.payAnnual?' '+s.payAnnual+' ש"ח':'');
-  if(s.payTextReduced&&strongs[1])strongs[1].textContent=s.payTextReduced+(s.payReduced?' '+s.payReduced+' ש"ח':'');
-  if(s.payTextReducedNote){var rn=sec.querySelector('p[data-i18n="payReducedNote"]');if(rn)rn.textContent=s.payTextReducedNote}
+  // Fairness text
+  if(s.payFairness){var fp=sec.querySelector('p[data-i18n="payFairnessText"]');if(fp)fp.innerHTML=s.payFairness.replace(/\n/g,'<br>')}
+  // Tax note
+  if(s.payTextTaxNote){var tn=sec.querySelector('p[data-i18n="payTaxNote"]');if(tn)tn.innerHTML=s.payTextTaxNote.replace(/\n/g,'<br>')}
+  // Annual
+  if(s.payAnnualLink&&links[0])links[0].href=s.payAnnualLink;
+  if(s.payAnnualBtn&&links[0])links[0].textContent=s.payAnnualBtn;
+  if(s.payTextAnnual&&strongs[0])strongs[0].textContent=s.payTextAnnual;
+  // Reduced
+  if(s.payReducedLink&&links[1])links[1].href=s.payReducedLink;
+  if(s.payReducedBtn&&links[1])links[1].textContent=s.payReducedBtn;
+  if(s.payTextReduced&&strongs[1])strongs[1].textContent=s.payTextReduced;
+  // Donation
+  if(s.payDonationLink&&links[2])links[2].href=s.payDonationLink;
+  if(s.payDonationBtn&&links[2])links[2].textContent=s.payDonationBtn;
   if(s.payTextDonation&&strongs[2])strongs[2].textContent=s.payTextDonation;
-  if(s.payTextDonationNote){var dn=sec.querySelector('span[data-i18n="payDonationNote"]');if(dn)dn.textContent=s.payTextDonationNote}
 }
 function scrollToPayInfo(){
   var card=document.getElementById('payment-msg-card');
