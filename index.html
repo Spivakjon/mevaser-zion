@@ -1983,8 +1983,11 @@ body.dark-mode .adm-ovl{z-index:100}
         </div>
         <div style="margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid rgba(192,57,43,.35)">
           <h3 style="color:#e74c3c;font-family:'Frank Ruhl Libre',serif;font-size:.95rem;margin-bottom:.6rem">⚠️ אזור מסוכן</h3>
-          <p style="font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:.8rem">מחיקה מלאה של כל הנתונים המקומיים: מתפללים, עליות, קידוש, מודעות, תורנויות, חברות, טקסטים מותאמים ולוגו. הפעולה בלתי הפיכה — מומלץ להוריד גיבוי קודם.</p>
-          <button onclick="factoryReset()" style="padding:.6rem 1.2rem;background:rgba(192,57,43,.15);border:1.5px solid #c0392b;color:#e74c3c;border-radius:10px;font-family:'Heebo',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;min-height:42px">🗑️ איפוס מלא של כל הנתונים</button>
+          <p style="font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:.8rem">פעולות בלתי הפיכות — מומלץ להוריד גיבוי קודם.</p>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button onclick="wipeMembers()" style="padding:.6rem 1.2rem;background:rgba(230,126,34,.12);border:1.5px solid #e67e22;color:#f39c12;border-radius:10px;font-family:'Heebo',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;min-height:42px">👥 מחק את כל המתפללים</button>
+            <button onclick="factoryReset()" style="padding:.6rem 1.2rem;background:rgba(192,57,43,.15);border:1.5px solid #c0392b;color:#e74c3c;border-radius:10px;font-family:'Heebo',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;min-height:42px">🗑️ איפוס מלא של כל הנתונים</button>
+          </div>
         </div>
         <div style="margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid rgba(255,255,255,.12)">
           <h3 style="color:var(--gold2);font-family:'Frank Ruhl Libre',serif;font-size:.95rem;margin-bottom:.8rem">⚙️ הצגה בדף הראשי</h3>
@@ -7249,6 +7252,19 @@ function renderFullTable(){
 }
 
 // ── Backup & Restore ─────────────────────────────────────
+function wipeMembers(){
+  var n=getMs().length;
+  var pw=prompt('⚠️ פעולה זו תמחק את כל '+n+' המתפללים הרשומים.\nהפעולה בלתי הפיכה!\n\nלאישור, הזן את סיסמת הניהול:');
+  if(pw===null)return;
+  if(pw!=='Nir2026'){alert('סיסמה שגויה. הפעולה בוטלה.');return}
+  if(!confirm('אישור אחרון: למחוק לצמיתות את כל '+n+' המתפללים?'))return;
+  try{
+    lsSet([]);
+    try{invalidateCalCache&&invalidateCalCache()}catch(e){}
+    alert('✅ כל המתפללים נמחקו. האפליקציה תיטען מחדש.');
+    location.reload();
+  }catch(e){alert('שגיאה במחיקה: '+e.message)}
+}
 function factoryReset(){
   var pw=prompt('⚠️ איפוס מלא ימחק את כל המתפללים והנתונים המקומיים.\nפעולה זו בלתי הפיכה!\n\nלאישור, הזן את סיסמת הניהול:');
   if(pw===null)return;
