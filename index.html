@@ -1504,7 +1504,7 @@ body.dark-mode .adm-ovl{z-index:100}
 
       <p><strong style="color:var(--gold2)">תרומה חד־פעמית</strong></p>
       <p style="font-size:.85rem">מי שמגיע בימי שישי בלבד או מגיע כאורח ומעוניין לתרום, יכול לבצע תרומה חד־פעמית בקישור הבא:</p>
-      <p style="margin-top:.3rem"><a href="https://mevaser.org.il/mz/product/donation-kiddush-nof-yaldut/" target="_blank" rel="noopener" class="pay-link" style="display:inline-block;padding:8px 24px;font-size:.9rem;margin:.3rem 0">💳 לתרומה חד־פעמית</a></p>
+      <p style="margin-top:.3rem"><a href="https://app.icount.co.il/m/0ab58/c53e2p64u69e09add83" target="_blank" rel="noopener" class="pay-link" style="display:inline-block;padding:8px 24px;font-size:.9rem;margin:.3rem 0">💳 לתרומה חד־פעמית</a></p>
     </div>
     <button class="pay-continue" onclick="showFormAnyway()" data-i18n="payContinue">← המשך לטופס רישום</button>
   </div>
@@ -5671,13 +5671,23 @@ function populatePaySettingsFields(){
     'st-pay-reduced-btn':s.payReducedBtn||'💳 לתשלום דמי חבר מופחתים',
     'st-pay-reduced-note':s.payTextReducedNote||'12 תשלומים חודשיים של 150 ש״ח',
     'st-pay-donation-desc':s.payTextDonation||'תרומה חד־פעמית',
-    'st-pay-donation-link':s.payDonationLink||'https://mevaser.org.il/mz/product/donation-kiddush-nof-yaldut/',
+    'st-pay-donation-link':s.payDonationLink||'https://app.icount.co.il/m/0ab58/c53e2p64u69e09add83',
     'st-pay-donation-btn':s.payDonationBtn||'💳 לתרומה חד־פעמית',
     'st-pay-donation-note':s.payTextDonationNote||'אורחים ומתפללי שישי'
   };
   for(var id in defaults){var el=document.getElementById(id);if(el)el.value=defaults[id];}
 }
 function savePaySettingsFromSettings(){
+  var linkFields=['st-pay-annual-link','st-pay-reduced-link','st-pay-donation-link'];
+  for(var i=0;i<linkFields.length;i++){
+    var v=(document.getElementById(linkFields[i]).value||'').trim();
+    if(v&&!/^https?:\/\//.test(v)){
+      var msg=document.getElementById('pay-settings-msg');
+      if(msg){msg.style.color='var(--red)';msg.textContent='קישור חייב להתחיל ב-https:// — בדוק את שדות הקישורים';setTimeout(function(){msg.textContent=''},5000);}
+      document.getElementById(linkFields[i]).focus();
+      return;
+    }
+  }
   var s=getMbrSettings();
   s.payTextTitle=(document.getElementById('st-pay-title').value||'').trim();
   s.payFairness=(document.getElementById('st-pay-fairness').value||'').trim();
