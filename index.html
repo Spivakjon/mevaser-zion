@@ -5826,8 +5826,15 @@ function initMbrPrompt(){
     document.getElementById('main-card').style.display='';
   }
 }
+function _validUrl(v){return v&&/^https?:\/\//.test(v)}
 function applyPaymentSettings(s){
   if(!s)s=getMbrSettings();
+  // Sanitize: remove any link values that aren't valid URLs
+  var dirty=false;
+  ['payAnnualLink','payReducedLink','payDonationLink'].forEach(function(k){
+    if(s[k]&&!_validUrl(s[k])){delete s[k];dirty=true;}
+  });
+  if(dirty)saveMbrSettings(s);
   var sec=document.getElementById('pay-info-section');if(!sec)return;
   var links=sec.querySelectorAll('a.pay-link');
   var strongs=sec.querySelectorAll('strong[style*="gold2"]');
@@ -5838,15 +5845,15 @@ function applyPaymentSettings(s){
   // Tax note
   if(s.payTextTaxNote){var tn=sec.querySelector('p[data-i18n="payTaxNote"]');if(tn)tn.innerHTML=s.payTextTaxNote.replace(/\n/g,'<br>')}
   // Annual
-  if(s.payAnnualLink&&links[0])links[0].href=s.payAnnualLink;
+  if(_validUrl(s.payAnnualLink)&&links[0])links[0].href=s.payAnnualLink;
   if(s.payAnnualBtn&&links[0])links[0].textContent=s.payAnnualBtn;
   if(s.payTextAnnual&&strongs[0])strongs[0].textContent=s.payTextAnnual;
   // Reduced
-  if(s.payReducedLink&&links[1])links[1].href=s.payReducedLink;
+  if(_validUrl(s.payReducedLink)&&links[1])links[1].href=s.payReducedLink;
   if(s.payReducedBtn&&links[1])links[1].textContent=s.payReducedBtn;
   if(s.payTextReduced&&strongs[1])strongs[1].textContent=s.payTextReduced;
   // Donation
-  if(s.payDonationLink&&links[2])links[2].href=s.payDonationLink;
+  if(_validUrl(s.payDonationLink)&&links[2])links[2].href=s.payDonationLink;
   if(s.payDonationBtn&&links[2])links[2].textContent=s.payDonationBtn;
   if(s.payTextDonation&&strongs[2])strongs[2].textContent=s.payTextDonation;
 }
